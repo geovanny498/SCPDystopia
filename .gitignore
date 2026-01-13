@@ -1,4 +1,21 @@
 node_modules/
 dist/
+lib/
 *.mcaddon
 *.mcpack
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# # Environment variables (si tienes datos sensibles)
+# .env.local
+# .env.*.local

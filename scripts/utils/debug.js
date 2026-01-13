@@ -3,8 +3,8 @@ import { world } from "@minecraft/server";
 // =====================
 // Configuración global
 // =====================
-export const DEBUG = false;          // Mensajes en el chat
-export const DEBUG_CONSOLE = true;  // Mensajes en consola
+export const DEBUG = false; // Mensajes en el chat
+export const DEBUG_CONSOLE = true; // Mensajes en consola
 
 /*
 === CONFIGURACIONES PREESTABLECIDAS ===
@@ -64,47 +64,49 @@ Otros:
 - dynamicProperties → Propiedades dinámicas del mundo
 */
 export const DEBUG_MODULES = [
-    // === PASO 2: VERIFICAR APLICACIÓN A ENTIDADES EXISTENTES ===
-    "menuScope",          // Ver verificación de scope
-    "menuScope:check",    // Ver cada verificación individual de entidad
-    "menuApply",          // Ver aplicación general de sistemas
-    "menuApply:entity",   // Ver aplicación detallada por entidad
+  // === PRUEBA DE GUI MIGRADO ===
+  "playerInteractWithEntity", // Interacción jugador-entidad (GUI)
 
-    // === DEPURACIÓN DE APPLYMODE (existing_only) ===
-    // "menuEvents:spawn",   // Ver qué pasa cuando spawna una entidad
-    // "menuRules:apply",    // Ver verificación de applyMode
+  // === PASO 2: VERIFICAR APLICACIÓN A ENTIDADES EXISTENTES ===
+  // "menuScope",          // Ver verificación de scope
+  // "menuScope:check",    // Ver cada verificación individual de entidad
+  // "menuApply",          // Ver aplicación general de sistemas
+  // "menuApply:entity",   // Ver aplicación detallada por entidad
 
-    // === MENÚ: FLUJO GENERAL ===
-    // "commandMenu",        // Flujo general del menú
-    // "menuSystem",         // Formularios de sistemas
-    // "menuCategory",       // Menú de categorías
-    // "menuBuilder",        // Construcción de formularios
+  // === DEPURACIÓN DE APPLYMODE (existing_only) ===
+  // "menuEvents:spawn",   // Ver qué pasa cuando spawna una entidad
+  // "menuRules:apply",    // Ver verificación de applyMode
 
-    // === MENÚ: ESTADOS ===
-    // "menuState",          // Gestión de estados (guardar/cargar)
+  // === MENÚ: FLUJO GENERAL ===
+  // "commandMenu",        // Flujo general del menú
+  // "menuSystem",         // Formularios de sistemas
+  // "menuCategory",       // Menú de categorías
+  // "menuBuilder",        // Construcción de formularios
 
-    // === MENÚ: APLICACIÓN ===
-    // Ya activado arriba para Paso 2
+  // === MENÚ: ESTADOS ===
+  // "menuState",          // Gestión de estados (guardar/cargar)
 
-    // === MENÚ: EVENTOS ===
-    // "menuEvents",         // Eventos de spawn/load (general)
+  // === MENÚ: APLICACIÓN ===
+  // Ya activado arriba para Paso 2
 
-    // === MENÚ: REGLAS (NUEVO) ===
-    // "menuRules",          // Verificación de reglas (general)
-    // "menuRules:compat",   // Solo verificación de compatibilidad
+  // === MENÚ: EVENTOS ===
+  // "menuEvents",         // Eventos de spawn/load (general)
 
-    // === SISTEMAS LEGACY ===
-    // "applySystems",       // Sistema de aplicación antiguo
-    // "toggle_system",      // Sistema de toggle antiguo
-    // "toggle_entity",      // Interacción con entidades
-    // "playerInteractWithEntity", // Interacción jugador-entidad
+  // === MENÚ: REGLAS (NUEVO) ===
+  // "menuRules",          // Verificación de reglas (general)
+  // "menuRules:compat",   // Solo verificación de compatibilidad
 
-    // === OTROS ===
-    // "dynamicProperties"   // Propiedades dinámicas del mundo
+  // === SISTEMAS LEGACY ===
+  // "applySystems",       // Sistema de aplicación antiguo
+  // "toggle_system",      // Sistema de toggle antiguo
+  // "toggle_entity",      // Interacción con entidades
+
+  // === OTROS ===
+  // "dynamicProperties"   // Propiedades dinámicas del mundo
 ];
 
 function isModuleEnabled(module) {
-    return DEBUG_MODULES.includes("*") || DEBUG_MODULES.includes(module);
+  return DEBUG_MODULES.includes("*") || DEBUG_MODULES.includes(module);
 }
 
 // =====================
@@ -113,28 +115,28 @@ function isModuleEnabled(module) {
 
 // Colores para chat (Minecraft §)
 const CHAT_COLORS = {
-    gray: "§7",
-    red: "§c",
-    green: "§a",
-    yellow: "§e",
-    blue: "§9",
-    aqua: "§b",
-    magenta: "§d",
-    white: "§f",
-    dark: "§8",
-    reset: "§r"
+  gray: "§7",
+  red: "§c",
+  green: "§a",
+  yellow: "§e",
+  blue: "§9",
+  aqua: "§b",
+  magenta: "§d",
+  white: "§f",
+  dark: "§8",
+  reset: "§r",
 };
 
 // Colores para consola (ANSI)
 const CONSOLE_COLORS = {
-    gray: 90,
-    red: 31,
-    green: 32,
-    yellow: 33,
-    blue: 34,
-    magenta: 35,
-    cyan: 36,
-    white: 37
+  gray: 90,
+  red: 31,
+  green: 32,
+  yellow: 33,
+  blue: 34,
+  magenta: 35,
+  cyan: 36,
+  white: 37,
 };
 
 // =====================
@@ -145,36 +147,36 @@ const CONSOLE_COLORS = {
  * Muestra mensajes de debug en la consola del servidor.
  * Úsalo para información general durante el desarrollo.
  * Requiere DEBUG_CONSOLE = true
- * 
+ *
  * @param {string} module - Nombre del módulo (debe estar en DEBUG_MODULES)
  * @param {string} message - Mensaje a mostrar
  * @param {string} color - Color del texto (gray, red, green, yellow, blue, magenta, cyan, white)
- * 
+ *
  * @example debugMessage("menuApply", "Aplicando sistema a entidad", "green");
  */
 export function debugMessage(module, message, color = "gray") {
-    if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
+  if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
 
-    const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.gray;
-    console.log(`\x1b[${c}m[DEBUG:${module}] ${message}\x1b[0m`);
+  const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.gray;
+  console.log(`\x1b[${c}m[DEBUG:${module}] ${message}\x1b[0m`);
 }
 
 /**
  * Muestra advertencias en la consola del servidor.
  * Úsalo para situaciones inesperadas o potencialmente problemáticas.
  * Requiere DEBUG_CONSOLE = true
- * 
+ *
  * @param {string} module - Nombre del módulo (debe estar en DEBUG_MODULES)
  * @param {string} message - Mensaje de advertencia
  * @param {string} color - Color del texto (por defecto yellow)
- * 
+ *
  * @example debugWarn("menuRules", "Sistema incompatible detectado", "red");
  */
 export function debugWarn(module, message, color = "yellow") {
-    if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
+  if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
 
-    const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.yellow;
-    console.warn(`\x1b[${c}m[WARN:${module}] ${message}\x1b[0m`);
+  const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.yellow;
+  console.warn(`\x1b[${c}m[WARN:${module}] ${message}\x1b[0m`);
 }
 
 // =====================
@@ -185,18 +187,16 @@ export function debugWarn(module, message, color = "yellow") {
  * Muestra mensajes de debug en el chat del juego.
  * Úsalo cuando necesites ver información en tiempo real mientras juegas.
  * Requiere DEBUG = true
- * 
+ *
  * @param {string} module - Nombre del módulo (debe estar en DEBUG_MODULES)
  * @param {string} message - Mensaje a mostrar en el chat
  * @param {string} color - Color del texto (gray, red, green, yellow, blue, aqua, magenta, white)
- * 
+ *
  * @example debugChat("menuScope", "Verificando 5 entidades en el scope", "aqua");
  */
 export function debugChat(module, message, color = "gray") {
-    if (!DEBUG || !isModuleEnabled(module)) return;
+  if (!DEBUG || !isModuleEnabled(module)) return;
 
-    const c = CHAT_COLORS[color.toLowerCase()] ?? CHAT_COLORS.gray;
-    world.sendMessage(
-        `${CHAT_COLORS.dark}[DEBUG:${module}]${CHAT_COLORS.reset} ${c}${message}${CHAT_COLORS.reset}`
-    );
+  const c = CHAT_COLORS[color.toLowerCase()] ?? CHAT_COLORS.gray;
+  world.sendMessage(`${CHAT_COLORS.dark}[DEBUG:${module}]${CHAT_COLORS.reset} ${c}${message}${CHAT_COLORS.reset}`);
 }

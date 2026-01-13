@@ -1,4 +1,4 @@
-{   
+{
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
@@ -12,7 +12,6 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "git.ignoreLimitWarning": true,
-    "editor.formatOnSave": true,
     "search.exclude": {
         "**/.git": true,
         "**/node_modules": true,
@@ -20,9 +19,10 @@
         "**/lib": true
     },
     "files.exclude": {
-        "**/.git": true,    
+        "**/.git": true,
         "**/.DS_Store": true,
-        "**/node_modules": true
+        "**/node_modules/*": true,
+        "**/node_modules/@minecraft/**": false,
     },
     "cSpell.words": [
         "gametest",
@@ -33,5 +33,9 @@
         "zoglin"
     ],
     "editor.tabSize": 2,
-    "eslint.experimental.useFlatConfig": true
+    "eslint.experimental.useFlatConfig": true,
+    "editor.guides.bracketPairs": "active",
+    "files.autoSave": "afterDelay",
+    "editor.formatOnSave": true,
+    "BC-MC.Diagnostics.Lang": false,
 }
