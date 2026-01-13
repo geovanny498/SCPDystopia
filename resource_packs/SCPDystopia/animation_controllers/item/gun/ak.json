@@ -1,0 +1,165 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.item.dt_ak.hold": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"pick": "q.cooldown_time_remaining('dt_ak_reloading') == 0.0"
+						},
+						{
+							"first_person": "q.cooldown_time_remaining('dt_ak_reloading') != 0.0 || q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:ak_empty')"
+						}
+					]
+				},
+				"pick": {
+					"animations": ["pickup"],
+					"transitions": [
+						{
+							"first_person": "q.all_animations_finished"
+						},
+						{
+							"shoot": "q.cooldown_time_remaining('dt_ak_shooting') != 0.0"
+						}
+					]
+				},
+				"first_person": {
+					"animations": ["holding"],
+					"transitions": [
+						{
+							"sneak_trans": "c.is_first_person && q.is_sneaking"
+						},
+						{
+							"shoot": "q.cooldown_time_remaining('dt_ak_shooting') != 0.0"
+						}
+					],
+					"blend_transition": 0.1
+				},
+				"sneak_trans": {
+					"animations": ["sneaking"],
+					"transitions": [
+						{
+							"first_person_sneak": "q.all_animations_finished"
+						},
+						{
+							"shoot": "q.cooldown_time_remaining('dt_ak_shooting') != 0.0"
+						}
+					],
+					"blend_transition": 0.1
+				},
+				"first_person_sneak": {
+					"animations": ["holding_sneak"],
+					"transitions": [
+						{
+							"sneak_leave": "c.is_first_person && !q.is_sneaking"
+						},
+						{
+							"shoot_sneak": "q.cooldown_time_remaining('dt_ak_shooting') != 0.0"
+						}
+					],
+					"blend_transition": 0.1
+				},
+				"sneak_leave": {
+					"animations": ["sneak_leaving"],
+					"transitions": [
+						{
+							"first_person": "q.all_animations_finished"
+						},
+						{
+							"shoot_sneak": "q.cooldown_time_remaining('dt_ak_shooting') != 0.0"
+						}
+					],
+					"blend_transition": 0.1
+				},
+				"shoot": {
+					"animations": ["shooting"],
+					"transitions": [
+						{
+							"first_person": "q.cooldown_time_remaining('dt_ak_shooting') == 0.0"
+						}
+					]
+				},
+				"shoot_sneak": {
+					"animations": ["shooting_sneak"],
+					"transitions": [
+						{
+							"first_person_sneak": "q.cooldown_time_remaining('dt_ak_shooting') == 0.0"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_ak_empty.hold": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"first_person": "!q.is_sneaking"
+						},
+						{
+							"first_person_sneak": "q.is_sneaking"
+						}
+					]
+				},
+				"first_person": {
+					"animations": ["holding"],
+					"transitions": [
+						{
+							"sneak_trans": "c.is_first_person && q.is_sneaking"
+						},
+						{
+							"reload": "q.cooldown_time_remaining('dt_ak_reloading') != 0.0"
+						}
+					]
+				},
+				"sneak_trans": {
+					"animations": ["sneaking"],
+					"transitions": [
+						{
+							"first_person_sneak": "q.all_animations_finished"
+						},
+						{
+							"reload": "q.cooldown_time_remaining('dt_ak_reloading') != 0.0"
+						}
+					],
+					"blend_transition": 0.1
+				},
+				"first_person_sneak": {
+					"animations": ["holding_sneak"],
+					"transitions": [
+						{
+							"sneak_leave": "c.is_first_person && !q.is_sneaking"
+						},
+						{
+							"reload": "q.cooldown_time_remaining('dt_ak_reloading') != 0.0"
+						}
+					],
+					"blend_transition": 0.1
+				},
+				"sneak_leave": {
+					"animations": ["sneak_leaving"],
+					"transitions": [
+						{
+							"first_person": "q.all_animations_finished"
+						},
+						{
+							"reload": "q.cooldown_time_remaining('dt_ak_reloading') != 0.0"
+						}
+					],
+					"blend_transition": 0.1
+				},
+				"reload": {
+					"animations": ["reloading"],
+					"transitions": [
+						{
+							"first_person": "q.cooldown_time_remaining('dt_ak_reloading') == 0.0"
+						}
+					]
+				}
+			}
+		}
+	}
+}

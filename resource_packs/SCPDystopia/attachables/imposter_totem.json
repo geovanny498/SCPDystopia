@@ -1,0 +1,29 @@
+{
+	"format_version": "1.10",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_imposter_totem",
+			"materials": {
+				"default": "entity_alphatest",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/attachment/dt_imposter_totem",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.item.dt_imposter_totem"
+			},
+			"animations": {
+				"hold": "controller.animation.item.dt_imposter_totem.hold",
+				"hold_first_person": "animation.item.dt_imposter_totem.hold_first_person",
+				"hold_first_person_sneak": "animation.item.dt_imposter_totem.hold_first_person_sneak",
+				"hold_third_person": "animation.item.dt_imposter_totem.hold_third_person"
+			},
+			"scripts": {
+				"animate": ["hold"]
+			},
+			"render_controllers": ["controller.render.item_default"]
+		}
+	}
+}

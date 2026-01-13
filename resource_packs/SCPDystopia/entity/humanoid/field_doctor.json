@@ -1,0 +1,40 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_field_doctor",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/humanoid/dt_field_doctor"
+			},
+			"geometry": {
+				"default": "geometry.dt_field_doctor"
+			},
+			"animations": {
+				"general": "animation.dt_field_doctor.general",
+				"walk": "animation.dt_field_doctor.walking",
+				"aiming": "animation.dt_field_doctor.aiming",
+				"give_medkit": "animation.dt_field_doctor.give_medkit",
+
+				"move_v2": "animation.dt_misc.walking_legs1",
+				"shoot": "animation.dt_misc.mp5k_shooter",
+
+				"anim_cont": "controller.animation.dt_field_doctor.anim_cont"
+			},
+			"scripts": {
+				"scale": "0.9375",
+				"animate": ["anim_cont", "move_v2"],
+				"pre_animation": [
+					"variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
+				]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#C5C5C5",
+				"overlay_color": "#FF0000"
+			}
+		}
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_guard_turret",
+			"materials": {
+				"default": "entity_emissive_alpha"
+			},
+			"textures": {
+				"default": "textures/entity/dt_guard_turret"
+			},
+			"geometry": {
+				"default": "geometry.dt_guard_turret"
+			},
+			"animations": {
+				"resize": "animation.dt_guard_turret.resize",
+				"look_at_target": "animation.common.look_at_target"
+			},
+			"scripts": {
+				"animate": ["look_at_target", "resize"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#3D4251",
+				"overlay_color": "#E3DA48"
+			}
+		}
+	}
+}

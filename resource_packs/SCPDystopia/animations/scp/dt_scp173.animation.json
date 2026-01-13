@@ -1,0 +1,28 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp173.general": {
+			"loop": true,
+			"bones": {
+				"leftArm": {
+					"rotation": [-75, -12.5, 0]
+				},
+				"rightArm": {
+					"rotation": [-90, 10, -7.5]
+				},
+				"chest": {
+					"rotation": [2.5, 0, 0]
+				},
+				"head": {
+					"rotation": [10, 0, 10]
+				},
+				"rightLeg": {
+					"rotation": [0, 5, 2.5]
+				},
+				"leftLeg": {
+					"rotation": [0, -5, -2.5]
+				}
+			}
+		}
+	}
+}

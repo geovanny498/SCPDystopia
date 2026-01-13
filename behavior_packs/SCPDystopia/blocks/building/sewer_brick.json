@@ -1,0 +1,14 @@
+{
+	"format_version": "1.17.0",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_sewer_brick",
+			"is_experimental": false
+		},
+		"components": {
+			"minecraft:destroy_time": 1.5,
+			"minecraft:explosion_resistance": 10.0,
+			"tag:lc:dystopiablock": {}
+		}
+	}
+}

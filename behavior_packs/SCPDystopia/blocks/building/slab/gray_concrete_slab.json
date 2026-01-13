@@ -1,0 +1,66 @@
+{
+	"format_version": "1.21.110",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_gray_concrete_slab",
+			"traits": {
+				"minecraft:placement_position": {
+					"enabled_states": ["minecraft:vertical_half"]
+				}
+			}
+		},
+		"components": {
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_gray_concrete",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:geometry": {
+				"identifier": "geometry.block.dt_slab_bottom"
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.5
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 11.0
+			},
+			"minecraft:map_color": "#3B3D94",
+			"minecraft:light_dampening": 5.0
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('minecraft:vertical_half') == 'top'",
+				"components": {
+					"minecraft:geometry": {
+						"identifier": "geometry.block.dt_slab_top"
+					},
+					"minecraft:collision_box": {
+						"origin": [-8, 8, -8],
+						"size": [16, 8, 16]
+					},
+					"minecraft:selection_box": {
+						"origin": [-8, 8, -8],
+						"size": [16, 8, 16]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('minecraft:vertical_half') == 'bottom'",
+				"components": {
+					"minecraft:geometry": {
+						"identifier": "geometry.block.dt_slab_bottom"
+					},
+					"minecraft:collision_box": {
+						"origin": [-8, 0, -8],
+						"size": [16, 8, 16]
+					},
+					"minecraft:selection_box": {
+						"origin": [-8, 0, -8],
+						"size": [16, 8, 16]
+					}
+				}
+			}
+		]
+	}
+}

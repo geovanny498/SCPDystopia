@@ -1,0 +1,45 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp_redacted",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp_redacted"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp_redacted"
+			},
+			"animations": {
+				"spawning": "animation.dt_scp_redacted.humanoid.spawning",
+				"humanoid_general": "animation.dt_scp_redacted.humanoid.general",
+				"humanoid_tentacle_general": "animation.dt_scp_redacted.humanoid.tentacle_general",
+				"humanoid_move_arms": "animation.dt_scp_redacted.humanoid.walk_arms",
+				"humanoid_move_legs": "animation.dt_scp_redacted.humanoid.walk_legs",
+				"humanoid_attack": "animation.dt_scp_redacted.humanoid.attack",
+
+				"anim_cont1": "controller.animation.dt_scp_redacted.humanoid.anim_cont"
+			},
+			"scripts": {
+				"animate": [
+					{
+						"spawning": "q.mark_variant == 0"
+					},
+					{
+						"anim_cont1": "q.mark_variant == 1"
+					}
+				]
+			},
+			"particle_effects": {
+				"general_smoke": "lc:dt_scp_redacted_smoke_emitter"
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#BB1A1A",
+				"overlay_color": "#D1E8EF"
+			}
+		}
+	}
+}

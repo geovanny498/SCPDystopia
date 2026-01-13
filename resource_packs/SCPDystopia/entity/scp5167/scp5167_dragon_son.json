@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp5167_dragon_son",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp5167_dragon_son"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp5167_dragon_son"
+			},
+			"animations": {
+				"general": "animation.dt_scp5167_dragon_son.general"
+			},
+			"scripts": {
+				"animate": ["general"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#A64949",
+				"overlay_color": "#EC1919"
+			}
+		}
+	}
+}

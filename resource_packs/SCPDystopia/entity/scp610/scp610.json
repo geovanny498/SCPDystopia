@@ -1,0 +1,47 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp610",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"type1": "textures/entity/scp610/dt_scp610_type1",
+				"type2": "textures/entity/scp610/dt_scp610_type2",
+				"type3": "textures/entity/scp610/dt_scp610_type3",
+				"type4": "textures/entity/scp610/dt_scp610_type4"
+			},
+			"geometry": {
+				"type1": "geometry.dt_scp610_type1",
+				"type2": "geometry.dt_scp610_type2",
+				"type3": "geometry.dt_scp610_type3",
+				"type4": "geometry.dt_scp610_type4"
+			},
+			"animations": {
+				"type1_general": "animation.dt_scp610_type1.general",
+				"type1_walking": "animation.dt_scp610_type1.walking",
+				"type2_general": "animation.dt_scp610_type2.general",
+				"type2_walking": "animation.dt_scp610_type2.walking",
+				"type3_general": "animation.dt_scp610_type3.general",
+				"type3_walking": "animation.dt_scp610_type3.walking",
+				"type4_general": "animation.dt_scp610_type4.general",
+				"type4_walking": "animation.dt_scp610_type4.walking",
+
+				"anim_cont": "controller.animation.dt_scp610.anim_cont"
+			},
+			"scripts": {
+				"animate": ["anim_cont"],
+				"pre_animation": [
+					"variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;",
+					"variable.delayed_attack = (query.is_delayed_attacking == 1);"
+				]
+			},
+			"render_controllers": ["controller.render.scpdt_scp610"],
+			"spawn_egg": {
+				"base_color": "#A91200",
+				"overlay_color": "#C02917"
+			}
+		}
+	}
+}

@@ -1,0 +1,36 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_tro_s_dead",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"tro1": "textures/entity/humanoid/tro/dt_tro1_shotgun",
+				"tro2": "textures/entity/humanoid/tro/dt_tro2_shotgun",
+				"tro3": "textures/entity/humanoid/tro/dt_tro3_shotgun"
+			},
+			"geometry": {
+				"default": "geometry.dt_tactical_response_officer_shotgun"
+			},
+			"animations": {
+				"death": "animation.dt_misc.dead_body.death1",
+				"gun_taken": "animation.dt_misc.dead_body.spas12_taken"
+			},
+			"scripts": {
+				"animate": [
+					"death",
+					{
+						"gun_taken": "query.is_sheared"
+					}
+				]
+			},
+			"render_controllers": ["controller.render.scpdt_tro"],
+			"spawn_egg": {
+				"base_color": "#F5A30B",
+				"overlay_color": "#5A3E18"
+			}
+		}
+	}
+}

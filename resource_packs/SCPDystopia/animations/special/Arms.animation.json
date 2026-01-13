@@ -1,0 +1,94 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.Arms.new": {
+			"loop": true,
+			"bones": {
+				"thumb": {
+					"rotation": [-4.53659, -6.06809, -15.42277]
+				},
+				"thumbjoint": {
+					"rotation": [52.52707, 27.83043, -1.88041]
+				},
+				"thumbjoint2": {
+					"rotation": [-16.40215, -6.1864, -2.60756]
+				},
+				"indexfinger": {
+					"rotation": [87.50238, -0.10901, -7.49762]
+				},
+				"indexfingerjoint": {
+					"rotation": [77.5, 0, 0]
+				},
+				"indexfingerjoint2": {
+					"rotation": [30, 0, 0]
+				},
+				"middlefinger": {
+					"rotation": [-8.09469, 0.77103, 0.00699]
+				},
+				"middlefingerjoint": {
+					"rotation": [-3, 0, 0]
+				},
+				"middlefingerjoint2": {
+					"rotation": [0, 0, 0]
+				},
+				"ringfinger": {
+					"rotation": [85.04256, 0.65182, 7.47178],
+					"position": [-0.1, 0.2, 0]
+				},
+				"ringfingerjoint": {
+					"rotation": [67.5, 0, 0]
+				},
+				"ringfingerjoint2": {
+					"rotation": [40, 0, 0]
+				},
+				"littlefinger": {
+					"rotation": [80.96507, 2.55986, 13.40156],
+					"position": [-0.1, 0.2, -0.3]
+				},
+				"littlefingerjoint": {
+					"rotation": [75, 0, 0]
+				},
+				"littlefingerjoint2": {
+					"rotation": [35, 0, 0]
+				},
+				"thumb2": {
+					"rotation": [0, 0, 32.5]
+				},
+				"thumbjoint3": {
+					"rotation": [27.5, 0, 0]
+				},
+				"thumbjoint4": {
+					"rotation": [27.5, 0, 0]
+				},
+				"indexfinger2": {
+					"rotation": [79.98681, 5.79149, 4.05601]
+				},
+				"indexfingerjoint3": {
+					"rotation": [77.5, 0, 0]
+				},
+				"indexfingerjoint4": {
+					"rotation": [45, 0, 0]
+				},
+				"ringfinger2": {
+					"rotation": [77.60362, -1.61888, -7.32417]
+				},
+				"ringfingerjoint3": {
+					"rotation": [85, 0, 0]
+				},
+				"ringfingerjoint4": {
+					"rotation": [42.5, 0, 0]
+				},
+				"littlefinger2": {
+					"rotation": [78.06155, -3.73171, -17.10967],
+					"position": [0, 0.3, 0]
+				},
+				"littlefingerjoint3": {
+					"rotation": [50, 0, 0]
+				},
+				"littlefingerjoint4": {
+					"rotation": [82.5, 0, 0]
+				}
+			}
+		}
+	}
+}

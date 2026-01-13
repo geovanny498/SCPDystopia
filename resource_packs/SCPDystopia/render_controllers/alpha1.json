@@ -1,0 +1,32 @@
+{
+    "format_version": "1.8.0",
+    "render_controllers": {
+        "controller.render.alpha1": {
+            "arrays": {
+                "geometries": {
+                    "Array.geos": [ 
+                        "Geometry.alpha1",
+                        "Geometry.alpha2",
+                        "Geometry.alpha3",
+                        "Geometry.alpha1f",
+                        "Geometry.alpha2f",
+                        "Geometry.alpha3f"
+                    ]
+                },
+                "textures": {
+                    "Array.skins": [
+                        "Texture.alpha1",
+                        "Texture.alpha2",
+                        "Texture.alpha3",
+                        "Texture.alpha1f",
+                        "Texture.alpha2f",
+                        "Texture.alpha3f"
+                    ]
+                }
+            },
+            "geometry": "Array.geos[query.variant]",
+            "materials": [ { "*": "Material.default" } ],
+            "textures": [ "Array.skins[query.variant]" ]
+        }
+    }
+}

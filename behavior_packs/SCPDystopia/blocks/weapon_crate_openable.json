@@ -1,0 +1,156 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_weapon_crate_openable",
+			"menu_category": {
+				"category": "construction"
+			},
+			"states": {
+				"facing:direction": [2, 3, 4, 5],
+				"crate:state": [0, 1],
+				"crate:loot": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+			}
+		},
+		"components": {
+			"scpdt:legacy_placement_state": {
+				"facingDirectionState": "facing:direction",
+				"facingDirectionReverse": true
+			},
+			"scpdt:weapon_crate_openable": {},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_weapon_crate",
+					"render_method": "alpha_test"
+				}
+			},
+			"minecraft:selection_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 8, 16]
+			},
+			"minecraft:collision_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 8, 16]
+			},
+			"minecraft:geometry": "geometry.dt_weapon_crate",
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.4
+			},
+			"minecraft:light_dampening": 2,
+			"tag:lc:dystopiablock": {}
+		},
+		"permutations": [
+			{
+				"condition": "query.block_state('crate:state') == 1",
+				"components": {
+					"minecraft:geometry": "geometry.dt_weapon_crate_opened",
+					"minecraft:loot": "loot_tables/empty.json"
+				}
+			},
+
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 0",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/random.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 1",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/melee.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 2",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/food.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 3",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/pistol.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 4",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/smg.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 5",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/rifles.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 6",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/special_firearm.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 7",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/pistol_mag.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 8",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/smg_mag.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 9",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/rifle_mag.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 10",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/special_mag.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 11",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/bow.json"
+				}
+			},
+			{
+				"condition": "query.block_state('crate:state') == 0 && query.block_state('crate:loot') == 12",
+				"components": {
+					"minecraft:loot": "loot_tables/blocks/scpdt/weapon_crate/arrow.json"
+				}
+			},
+
+			{
+				"condition": "q.block_state('facing:direction') == 2",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 0, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 3",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 180, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 4",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 90, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 5",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 270, 0] }
+				}
+			}
+		]
+	}
+}

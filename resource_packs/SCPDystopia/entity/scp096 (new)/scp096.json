@@ -1,0 +1,57 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp096",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"without_bag": "textures/entity/dt_scp096_new",
+				"with_bag": "textures/entity/dt_scp096_new_bag"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp096_new"
+			},
+			"animations": {
+				"calm": "animation.dt_scp096_new.calm",
+				"triggered": "animation.dt_scp096_new.triggered",
+				"angry": "animation.dt_scp096_new.angry",
+				"angry_end": "animation.dt_scp096_new.angry_end",
+				"attack": "animation.dt_scp096_new.attacking",
+				"climb": "animation.dt_scp096_new.climbing",
+				"death": "animation.dt_scp096_new.die",
+				"chase_tilt": "animation.dt_scp096_new.chase_tilt",
+
+				"move_legs": "animation.dt_scp096_new.move_legs",
+				"move_legs2": "animation.dt_scp096_new.move_legs2",
+				"move_arms": "animation.dt_scp096_new.move_arms",
+
+				"controller1": "controller.animation.dt_scp096.animation_controller1"
+			},
+			"scripts": {
+				"animate": [
+					{
+						"controller1": "query.health > 0"
+					},
+					{
+						"death": "query.health <= 0"
+					}
+				],
+				"pre_animation": [
+					"variable.dt_scp096_calm = (query.mark_variant == 0);",
+					"variable.dt_scp096_triggered = (query.mark_variant == 1);",
+					"variable.dt_scp096_angry = (query.mark_variant == 2);",
+
+					"variable.tcos0 = (Math.cos(query.modified_distance_moved * 45) * query.modified_move_speed / variable.gliding_speed_value) * 26;",
+					"variable.tcos1 = (Math.cos(query.modified_distance_moved * 150) * query.modified_move_speed / variable.gliding_speed_value) * 45;"
+				]
+			},
+			"render_controllers": ["controller.render.scpdt_scp096_new"],
+			"spawn_egg": {
+				"base_color": "#EEE2E2",
+				"overlay_color": "#5D0B0B"
+			}
+		}
+	}
+}

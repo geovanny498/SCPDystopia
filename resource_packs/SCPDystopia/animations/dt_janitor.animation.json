@@ -1,0 +1,36 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_janitor.mopping": {
+			"loop": true,
+			"bones": {
+				"chest": {
+					"rotation": [20, "math.sin(query.life_time * -500) * 4", 0],
+					"position": [0, -0.2, "-0.3+math.sin(query.life_time * -500) * 0.3"]
+				},
+				"head": {
+					"rotation": [20, "10+query.target_y_rotation", "5+math.sin(query.life_time * 100) * 2"]
+				},
+				"leftArm": {
+					"rotation": ["-42.5+math.sin(query.life_time * -500) * 5", "65+math.sin(query.life_time * 500) * 5", 0],
+					"position": [0, 0, "-1+math.sin(query.life_time * -500) * 0.7"]
+				},
+				"rightArm": {
+					"rotation": ["20+math.sin(query.life_time * -500) * 5", -10, 0],
+					"position": [0, 0, "math.sin(query.life_time * -500) * 1"]
+				},
+				"rightLeg": {
+					"rotation": [5, 0, 2.5]
+				},
+				"leftLeg": {
+					"rotation": [-10, -7.5, 0],
+					"position": [0, -0.2, 0]
+				},
+				"mop": {
+					"rotation": [0, 0, 90],
+					"position": [-1, 0, -6]
+				}
+			}
+		}
+	}
+}

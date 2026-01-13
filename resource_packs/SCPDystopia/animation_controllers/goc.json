@@ -1,0 +1,78 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_goc_soldier.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general", "walking"],
+					"transitions": [
+						{
+							"aim": "q.has_target && q.facing_target_to_range_attack"
+						},
+						{
+							"shoot": "q.has_target && q.is_charged"
+						},
+						{
+							"melee_attack": "q.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"aim": {
+					"animations": ["aiming", "walking"],
+					"transitions": [
+						{
+							"default": "!q.has_target"
+						},
+						{
+							"shoot": "q.has_target && q.is_charged"
+						},
+						{
+							"melee_attack": "q.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"shoot": {
+					"animations": ["shooting", "walking"],
+					"transitions": [
+						{
+							"default": "!q.has_target"
+						},
+						{
+							"aim": "q.has_target && !q.is_charged"
+						},
+						{
+							"melee_attack": "q.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"melee_attack": {
+					"animations": ["melee_attacking", "walking"],
+					"transitions": [
+						{
+							"default": "q.all_animations_finished && !q.has_target"
+						},
+						{
+							"aim": "q.all_animations_finished && q.has_target && !q.is_charged"
+						},
+						{
+							"shoot": "q.all_animations_finished && q.has_target && q.is_charged"
+						}
+					],
+					"blend_transition": 0.3
+				}
+			}
+		},
+		"controller.animation.dt_goc_soldier_retreat.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["retreat"]
+				}
+			}
+		}
+	}
+}

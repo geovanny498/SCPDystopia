@@ -1,0 +1,25 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp5167_dragon.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general1"]
+				}
+			}
+		},
+		"controller.animation.dt_scp5167_dragon_shot.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"particle_effects": [
+						{
+							"effect": "charged_flames"
+						}
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,936 @@
+{
+	"resource_pack_name": "SCP: Dystopia",
+	"texture_name": "atlas.terrain",
+	"num_mip_levels": 4,
+	"padding": 8,
+	"texture_data": {
+		"dt_outdated": {
+			"textures": "textures/blocks/dt_outdated"
+		},
+		//Building Blocks
+		"dt_tile_floor": {
+			"textures": "textures/blocks/building/dt_tile_floor"
+		},
+		"dt_tile_floor2": {
+			"textures": "textures/blocks/building/dt_tile_floor2"
+		},
+		"dt_tile_floor3": {
+			"textures": "textures/blocks/building/dt_tile_floor3"
+		},
+		"dt_tile_floor4": {
+			"textures": "textures/blocks/building/dt_tile_floor4"
+		},
+		"dt_gray_concrete": {
+			"textures": "textures/blocks/building/dt_gray_concrete"
+		},
+		"dt_light_gray_concrete": {
+			"textures": "textures/blocks/building/dt_light_gray_concrete"
+		},
+		"dt_facility_wall": {
+			"textures": "textures/blocks/building/dt_facility_wall"
+		},
+		"dt_entrance_wall_bottom": {
+			"textures": "textures/blocks/building/dt_entrance_wall_bottom"
+		},
+		"dt_entrance_wall_top": {
+			"textures": "textures/blocks/building/dt_entrance_wall_top"
+		},
+		"dt_metal_wall": {
+			"textures": "textures/blocks/building/dt_metal_wall"
+		},
+		"dt_ceiling1": {
+			"textures": "textures/blocks/building/dt_ceiling1"
+		},
+		"dt_ceiling2": {
+			"textures": "textures/blocks/building/dt_ceiling2"
+		},
+		"dt_dirty_metal": {
+			"textures": "textures/blocks/building/dt_dirty_metal"
+		},
+		"dt_ceiling_lamp_on": {
+			"textures": "textures/blocks/building/lamp/dt_ceiling_lamp"
+		},
+		"dt_ceiling_lamp_off": {
+			"textures": "textures/blocks/building/lamp/dt_ceiling_lamp_off"
+		},
+		"dt_ceiling_lamp2_on": {
+			"textures": "textures/blocks/building/lamp/dt_ceiling_lamp2"
+		},
+		"dt_ceiling_lamp2_off": {
+			"textures": "textures/blocks/building/lamp/dt_ceiling_lamp2_off"
+		},
+		"dt_lcz_wall_bottom": {
+			"textures": "textures/blocks/building/dt_lcz_wall_bottom"
+		},
+		"dt_lcz_wall_top": {
+			"textures": "textures/blocks/building/dt_lcz_wall_top"
+		},
+		"dt_hcz_wall": {
+			"textures": "textures/blocks/building/dt_hcz_wall"
+		},
+		"dt_hcz_wall2": {
+			"textures": "textures/blocks/building/dt_hcz_wall2"
+		},
+		"dt_hcz_wall3": {
+			"textures": "textures/blocks/building/dt_hcz_wall3"
+		},
+		"dt_o5_wall_bottom": {
+			"textures": "textures/blocks/building/dt_o5_wall_bottom"
+		},
+		"dt_o5_wall_top": {
+			"textures": "textures/blocks/building/dt_o5_wall_top"
+		},
+		"dt_med_wall_bottom": {
+			"textures": "textures/blocks/building/dt_med_wall_bottom"
+		},
+		"dt_med_wall_top": {
+			"textures": "textures/blocks/building/dt_med_wall_top"
+		},
+		"dt_blue_wall_bottom": {
+			"textures": "textures/blocks/building/dt_blue_wall_bottom"
+		},
+		"dt_blue_wall_top": {
+			"textures": "textures/blocks/building/dt_blue_wall_top"
+		},
+		"dt_red_wall_bottom": {
+			"textures": "textures/blocks/building/dt_red_wall_bottom"
+		},
+		"dt_red_wall_top": {
+			"textures": "textures/blocks/building/dt_red_wall_top"
+		},
+		"dt_cushion_wall": {
+			"textures": "textures/blocks/building/dt_cushion_wall"
+		},
+		"dt_facility_wall_middle": {
+			"textures": "textures/blocks/building/dt_facility_wall_middle"
+		},
+		"dt_facility_wall_middle2": {
+			"textures": "textures/blocks/building/dt_facility_wall_middle2"
+		},
+		"dt_exterior_brick": {
+			"textures": "textures/blocks/building/dt_exterior_brick"
+		},
+		"dt_exterior_brick_bottom": {
+			"textures": "textures/blocks/building/dt_exterior_brick_bottom"
+		},
+		"dt_exterior_brick_middle1": {
+			"textures": "textures/blocks/building/dt_exterior_brick_middle1"
+		},
+		"dt_exterior_brick_middle2": {
+			"textures": "textures/blocks/building/dt_exterior_brick_middle2"
+		},
+		"dt_general_floor1": {
+			"textures": "textures/blocks/building/dt_general_floor1"
+		},
+		"dt_general_floor2": {
+			"textures": "textures/blocks/building/dt_general_floor2"
+		},
+		"dt_panel_wall_blue": {
+			"textures": "textures/blocks/building/dt_panel_wall_blue"
+		},
+		"dt_panel_wall_red": {
+			"textures": "textures/blocks/building/dt_panel_wall_red"
+		},
+		"dt_hcz_floor": {
+			"textures": "textures/blocks/building/dt_hcz_floor"
+		},
+		"dt_panel_wall_white1": {
+			"textures": "textures/blocks/building/dt_panel_wall_white1"
+		},
+		"dt_panel_wall_white2": {
+			"textures": "textures/blocks/building/dt_panel_wall_white2"
+		},
+		"dt_scpdystopia_orb_block": {
+			"textures": "textures/blocks/building/misc/dt_scpdystopia_orb_block"
+		},
+		"dt_scp610_clod": {
+			"textures": "textures/blocks/scp610/dt_scp610_clod"
+		},
+		"dt_scp610_pond": {
+			"textures": "textures/blocks/scp610/dt_scp610_pond"
+		},
+		"dt_pd_block": {
+			"textures": "textures/blocks/pd/dt_pd_block"
+		},
+		"dt_pd_block2": {
+			"textures": "textures/blocks/pd/dt_pd_block2"
+		},
+		"dt_pd_block3": {
+			"textures": "textures/blocks/pd/dt_pd_block3"
+		},
+		"dt_pd_floor": {
+			"textures": "textures/blocks/pd/dt_pd_floor"
+		},
+		"dt_pd_bedrock": {
+			"textures": "textures/blocks/pd/dt_pd_bedrock"
+		},
+		"dt_tesla_caution_block": {
+			"textures": "textures/blocks/building/dt_tesla_caution_block"
+		},
+		"dt_tesla_outside_block": {
+			"textures": "textures/blocks/building/dt_tesla_outside_block"
+		},
+		"dt_rusted_metal_panel": {
+			"textures": "textures/blocks/building/dt_rusted_metal_panel"
+		},
+		"dt_storage_wall": {
+			"textures": "textures/blocks/building/dt_storage_wall"
+		},
+		"dt_sewer_brick": {
+			"textures": "textures/blocks/building/dt_sewer_brick"
+		},
+
+		// - - - - -
+		"dt_keyreader1_old": {
+			"textures": "textures/blocks/keyreader_old/dt_keyreader1"
+		},
+		"dt_keyreader2_old": {
+			"textures": "textures/blocks/keyreader_old/dt_keyreader2"
+		},
+		"dt_keyreader3_old": {
+			"textures": "textures/blocks/keyreader_old/dt_keyreader3"
+		},
+		"dt_keyreader4_old": {
+			"textures": "textures/blocks/keyreader_old/dt_keyreader4"
+		},
+		"dt_keyreader5_old": {
+			"textures": "textures/blocks/keyreader_old/dt_keyreader5"
+		},
+		"dt_keyreader1": {
+			"textures": "textures/blocks/dt_keyreader1"
+		},
+		"dt_keyreader2": {
+			"textures": "textures/blocks/dt_keyreader2"
+		},
+		"dt_keyreader3": {
+			"textures": "textures/blocks/dt_keyreader3"
+		},
+		"dt_keyreader4": {
+			"textures": "textures/blocks/dt_keyreader4"
+		},
+		"dt_keyreader5": {
+			"textures": "textures/blocks/dt_keyreader5"
+		},
+		"dt_button": {
+			"textures": "textures/blocks/dt_button"
+		},
+		"dt_scp106_corrosion": {
+			"textures": "textures/blocks/dt_scp106_corrosion"
+		},
+		"dt_lab_monitor": {
+			"textures": "textures/blocks/dt_lab_monitor"
+		},
+		"dt_pc": {
+			"textures": "textures/blocks/dt_pc"
+		},
+		"dt_steel_fence": {
+			"textures": "textures/blocks/dt_steel_fence"
+		},
+		"dt_plant": {
+			"textures": "textures/blocks/dt_plant"
+		},
+		"dt_office_chair": {
+			"textures": "textures/blocks/dt_office_chair"
+		},
+		"dt_table": {
+			"textures": "textures/blocks/dt_table"
+		},
+		"dt_ceiling_monitor": {
+			"textures": "textures/blocks/dt_ceiling_monitor"
+		},
+		"dt_living_bench": {
+			"textures": "textures/blocks/dt_living_bench"
+		},
+		"dt_mesh_catwalk": {
+			"textures": "textures/blocks/dt_mesh_catwalk"
+		},
+		"dt_pipe": {
+			"textures": "textures/blocks/dt_pipe"
+		},
+		"dt_valve": {
+			"textures": "textures/blocks/dt_valve"
+		},
+		"dt_scp006": {
+			"textures": "textures/blocks/dt_scp006"
+		},
+		"dt_camera": {
+			"textures": "textures/blocks/dt_camera"
+		},
+		"dt_camera_ceiling": {
+			"textures": "textures/blocks/dt_camera_ceiling"
+		},
+		"dt_big_plant": {
+			"textures": "textures/blocks/dt_big_plant"
+		},
+		"dt_metal_crate": {
+			"textures": "textures/blocks/dt_metal_crate"
+		},
+		"dt_wood_table": {
+			"textures": "textures/blocks/dt_wood_table"
+		},
+		"dt_wood_chair": {
+			"textures": "textures/blocks/dt_wood_chair"
+		},
+		"dt_control_panel": {
+			"textures": "textures/blocks/dt_control_panel"
+		},
+		"dt_electrical_panel": {
+			"textures": "textures/blocks/dt_electrical_panel"
+		},
+		"dt_blastproof_glass": {
+			"textures": "textures/blocks/dt_blastproof_glass"
+		},
+		"dt_wines": {
+			"textures": "textures/blocks/dt_wines"
+		},
+		"dt_speaker": {
+			"textures": "textures/blocks/dt_speaker"
+		},
+		"dt_light1": {
+			"textures": "textures/blocks/dt_light1"
+		},
+		"dt_light2": {
+			"textures": "textures/blocks/dt_light2"
+		},
+		"dt_light3": {
+			"textures": "textures/blocks/dt_light3"
+		},
+		"dt_light4": {
+			"textures": "textures/blocks/dt_light4"
+		},
+		"dt_office_lamp": {
+			"textures": "textures/blocks/dt_office_lamp"
+		},
+		"dt_coffee_mug_block": {
+			"textures": "textures/blocks/dt_coffee_mug"
+		},
+		"dt_coffee_machine": {
+			"textures": "textures/blocks/dt_coffee_machine"
+		},
+		"dt_scp173_plush": {
+			"textures": "textures/blocks/plushes/dt_scp173_plush"
+		},
+		"dt_scp106_plush": {
+			"textures": "textures/blocks/plushes/dt_scp106_plush"
+		},
+		"dt_scp049_plush": {
+			"textures": "textures/blocks/plushes/dt_scp049_plush"
+		},
+		"dt_scp939_plush": {
+			"textures": "textures/blocks/plushes/dt_scp939_plush"
+		},
+		"dt_weapon_crate": {
+			"textures": "textures/blocks/dt_weapon_crate"
+		},
+		"dt_stand_light": {
+			"textures": "textures/blocks/dt_stand_light"
+		},
+		"dt_stand_light_off": {
+			"textures": "textures/blocks/dt_stand_light_off"
+		},
+		"dt_office_desk": {
+			"textures": "textures/blocks/dt_office_desk"
+		},
+		"dt_telephone": {
+			"textures": "textures/blocks/dt_telephone"
+		},
+		"dt_desktop_display_off": {
+			"textures": "textures/blocks/dt_desktop_display"
+		},
+		"dt_desktop_display_on": {
+			"textures": "textures/blocks/dt_desktop_display_on"
+		},
+		"dt_light1_root": {
+			"textures": "textures/blocks/dt_light1_root"
+		},
+		"dt_laptop_off": {
+			"textures": "textures/blocks/dt_laptop"
+		},
+		"dt_laptop_on": {
+			"textures": "textures/blocks/dt_laptop_on"
+		},
+		"dt_memo_book": {
+			"textures": "textures/blocks/dt_memo_book"
+		},
+		"dt_table2": {
+			"textures": "textures/blocks/dt_table2"
+		},
+		"dt_bulletin_board": {
+			"textures": "textures/blocks/dt_bulletin_board"
+		},
+		"dt_door1": {
+			"textures": "textures/blocks/doors/dt_door1"
+		},
+		"dt_door1_lvl1": {
+			"textures": "textures/blocks/doors/dt_door1_lvl1"
+		},
+		"dt_door1_lvl2": {
+			"textures": "textures/blocks/doors/dt_door1_lvl2"
+		},
+		"dt_door1_lvl3": {
+			"textures": "textures/blocks/doors/dt_door1_lvl3"
+		},
+		"dt_door1_lvl4": {
+			"textures": "textures/blocks/doors/dt_door1_lvl4"
+		},
+		"dt_door1_lvl5": {
+			"textures": "textures/blocks/doors/dt_door1_lvl5"
+		},
+		"dt_door2": {
+			"textures": "textures/blocks/doors/dt_door2"
+		},
+		"dt_door2_lvl1": {
+			"textures": "textures/blocks/doors/dt_door2_lvl1"
+		},
+		"dt_door2_lvl2": {
+			"textures": "textures/blocks/doors/dt_door2_lvl2"
+		},
+		"dt_door2_lvl3": {
+			"textures": "textures/blocks/doors/dt_door2_lvl3"
+		},
+		"dt_door2_lvl4": {
+			"textures": "textures/blocks/doors/dt_door2_lvl4"
+		},
+		"dt_door2_lvl5": {
+			"textures": "textures/blocks/doors/dt_door2_lvl5"
+		},
+		"dt_door3": {
+			"textures": "textures/blocks/doors/dt_door3"
+		},
+		"dt_door3_lvl1": {
+			"textures": "textures/blocks/doors/dt_door3_lvl1"
+		},
+		"dt_door3_lvl2": {
+			"textures": "textures/blocks/doors/dt_door3_lvl2"
+		},
+		"dt_door3_lvl3": {
+			"textures": "textures/blocks/doors/dt_door3_lvl3"
+		},
+		"dt_door3_lvl4": {
+			"textures": "textures/blocks/doors/dt_door3_lvl4"
+		},
+		"dt_door3_lvl5": {
+			"textures": "textures/blocks/doors/dt_door3_lvl5"
+		},
+		"dt_door4": {
+			"textures": "textures/blocks/doors/dt_door4"
+		},
+		"dt_door4_lvl1": {
+			"textures": "textures/blocks/doors/dt_door4_lvl1"
+		},
+		"dt_door4_lvl2": {
+			"textures": "textures/blocks/doors/dt_door4_lvl2"
+		},
+		"dt_door4_lvl3": {
+			"textures": "textures/blocks/doors/dt_door4_lvl3"
+		},
+		"dt_door4_lvl4": {
+			"textures": "textures/blocks/doors/dt_door4_lvl4"
+		},
+		"dt_door4_lvl5": {
+			"textures": "textures/blocks/doors/dt_door4_lvl5"
+		},
+		"dt_experiment_tools": {
+			"textures": "textures/blocks/dt_experiment_tools"
+		},
+		"dt_pizza_box": {
+			"textures": "textures/blocks/dt_pizza_box"
+		},
+		"dt_scp458_pizza_box": {
+			"textures": "textures/blocks/dt_scp458_pizza_box"
+		},
+		"dt_rack1": {
+			"textures": "textures/blocks/dt_rack1"
+		},
+		"dt_alarm_off": {
+			"textures": "textures/blocks/dt_alarm"
+		},
+		"dt_alarm_on": {
+			"textures": "textures/blocks/dt_alarm_on"
+		},
+		"dt_scp_logo": {
+			"textures": "textures/blocks/dt_scp_logo"
+		},
+		"dt_sink": {
+			"textures": "textures/blocks/dt_sink"
+		},
+		"dt_toilet": {
+			"textures": "textures/blocks/dt_toilet"
+		},
+		"dt_toilet_buttghost": {
+			"textures": "textures/blocks/dt_toilet_buttghost"
+		},
+		"dt_men_toilet": {
+			"textures": "textures/blocks/dt_men_toilet"
+		},
+		"dt_tissue_box1": {
+			"textures": "textures/blocks/dt_tissue_box1"
+		},
+		"dt_tissue_box2": {
+			"textures": "textures/blocks/dt_tissue_box2"
+		},
+		"dt_hand_dryer": {
+			"textures": "textures/blocks/dt_hand_dryer"
+		},
+		"dt_air_conditioner_on": {
+			"textures": "textures/blocks/dt_air_conditioner_on"
+		},
+		"dt_air_conditioner_off": {
+			"textures": "textures/blocks/dt_air_conditioner_off"
+		},
+		"dt_radio_block": {
+			"textures": "textures/blocks/dt_radio_block"
+		},
+		"dt_printer": {
+			"textures": "textures/blocks/dt_printer"
+		},
+		"dt_cleaning_tools": {
+			"textures": "textures/blocks/dt_cleaning_tools"
+		},
+		"dt_lunch_plate": {
+			"textures": "textures/blocks/dt_lunch_plate"
+		},
+		"dt_server_rack": {
+			"textures": "textures/blocks/dt_server_rack"
+		},
+		"dt_intercom": {
+			"textures": "textures/blocks/dt_intercom"
+		},
+		"dt_scream_sound_loader": {
+			"textures": "textures/blocks/dt_scream_sound_loader"
+		},
+		"dt_blast_door": {
+			"textures": "textures/blocks/doors/dt_blast_door"
+		},
+		"dt_blast_door_lvl1": {
+			"textures": "textures/blocks/doors/dt_blast_door_lvl1"
+		},
+		"dt_blast_door_lvl2": {
+			"textures": "textures/blocks/doors/dt_blast_door_lvl2"
+		},
+		"dt_blast_door_lvl3": {
+			"textures": "textures/blocks/doors/dt_blast_door_lvl3"
+		},
+		"dt_blast_door_lvl4": {
+			"textures": "textures/blocks/doors/dt_blast_door_lvl4"
+		},
+		"dt_blast_door_lvl5": {
+			"textures": "textures/blocks/doors/dt_blast_door_lvl5"
+		},
+		"dt_medbay_sign": {
+			"textures": "textures/blocks/dt_medbay_sign"
+		},
+		"dt_door_o5": {
+			"textures": "textures/blocks/doors/dt_door_o5"
+		},
+		"dt_lamp_cover": {
+			"textures": "textures/blocks/dt_lamp_cover"
+		},
+		"dt_wet_floor_sign": {
+			"textures": "textures/blocks/dt_wet_floor_sign"
+		},
+		"dt_ceiling_pipe": {
+			"textures": "textures/blocks/dt_ceiling_pipe"
+		},
+		"dt_delivery_box": {
+			"textures": "textures/blocks/dt_delivery_box"
+		},
+		"dt_warehouse_rack": {
+			"textures": "textures/blocks/dt_warehouse_rack"
+		},
+		"dt_scp079_on": {
+			"textures": "textures/blocks/scp079/dt_scp079"
+		},
+		"dt_scp079_off": {
+			"textures": "textures/blocks/scp079/dt_scp079_off"
+		},
+		"dt_scp079_booting": {
+			"textures": "textures/blocks/scp079/dt_scp079_booting"
+		},
+		"dt_wood_crate": {
+			"textures": "textures/blocks/dt_wood_crate"
+		},
+		"dt_scp5167_statue": {
+			"textures": "textures/blocks/dt_imposter_statue"
+		},
+		"dt_dystopia_craftbench": {
+			"textures": "textures/blocks/dt_dystopia_craftbench"
+		},
+		"dt_scp914": {
+			"textures": "textures/blocks/dt_scp914"
+		},
+		"dt_scp294": {
+			"textures": "textures/blocks/dt_scp294"
+		},
+		"dt_recycle_bin": {
+			"textures": "textures/blocks/dt_recycle_bin"
+		},
+		"dt_scp1074": {
+			"textures": "textures/blocks/dt_scp1074"
+		},
+		"dt_mine": {
+			"textures": "textures/blocks/dt_mine"
+		},
+		"dt_scp330": {
+			"textures": "textures/blocks/dt_scp330"
+		},
+		"dt_scp012": {
+			"textures": "textures/blocks/dt_scp012"
+		},
+		"dt_bomb_activator_unable": {
+			"textures": "textures/blocks/bomb_activator/dt_bomb_activator_unable"
+		},
+		"dt_bomb_activator_able": {
+			"textures": "textures/blocks/bomb_activator/dt_bomb_activator_able"
+		},
+		"dt_bomb_activator_off": {
+			"textures": "textures/blocks/bomb_activator/dt_bomb_activator_off"
+		},
+		"dt_bomb_activator_activated": {
+			"textures": "textures/blocks/bomb_activator/dt_bomb_activator_activated"
+		},
+		"dt_scp143_log": {
+			"textures": "textures/blocks/scp143/dt_scp143_log"
+		},
+		"dt_scp143_log_top": {
+			"textures": "textures/blocks/scp143/dt_scp143_log_top"
+		},
+		"dt_scp143_stripped_log": {
+			"textures": "textures/blocks/scp143/dt_scp143_stripped_log"
+		},
+		"dt_scp143_stripped_log_top": {
+			"textures": "textures/blocks/scp143/dt_scp143_stripped_log_top"
+		},
+		"dt_scp143_leaves": {
+			"textures": "textures/blocks/scp143/dt_scp143_leaves"
+		},
+		"dt_scp143_sapling": {
+			"textures": "textures/blocks/scp143/dt_scp143_sapling"
+		},
+		"dt_tesla_shock_block": {
+			"textures": "textures/blocks/dt_tesla_shock_block"
+		},
+		"dt_dummy": {
+			"textures": "textures/blocks/building/misc/dt_dummy"
+		},
+		"dt_fire_extinguisher": {
+			"textures": "textures/blocks/dt_fire_extinguisher"
+		},
+		"dt_floor_vent": {
+			"textures": "textures/blocks/dt_floor_vent"
+		},
+		"dt_heating": {
+			"textures": "textures/blocks/dt_heating"
+		},
+		"dt_ceiling_speaker": {
+			"textures": "textures/blocks/dt_ceiling_speaker"
+		},
+		"dt_water_dispenser": {
+			"textures": "textures/blocks/dt_water_dispenser"
+		},
+		"dt_cafeteria_chair_red": {
+			"textures": "textures/blocks/dt_cafeteria_chair_red"
+		},
+		"dt_cafeteria_chair_yellow": {
+			"textures": "textures/blocks/dt_cafeteria_chair_yellow"
+		},
+		"dt_cafeteria_chair_lime": {
+			"textures": "textures/blocks/dt_cafeteria_chair_lime"
+		},
+		"dt_cafeteria_chair_wood": {
+			"textures": "textures/blocks/dt_cafeteria_chair_wood"
+		},
+		"dt_low_wood_bench": {
+			"textures": "textures/blocks/dt_low_wood_bench"
+		},
+		"dt_supply_box": {
+			"textures": "textures/blocks/dt_supply_box"
+		},
+		"dt_coolant": {
+			"textures": "textures/blocks/dt_coolant"
+		},
+		"dt_data_bank": {
+			"textures": "textures/blocks/dt_data_bank"
+		},
+		"dt_scattered_documents": {
+			"textures": "textures/blocks/dt_scattered_documents"
+		},
+		"dt_nuclear_box": {
+			"textures": "textures/blocks/dt_nuclear_box"
+		},
+		"dt_barbed_wire": {
+			"textures": "textures/blocks/dt_barbed_wire"
+		},
+		"dt_hang_lamp_on": {
+			"textures": "textures/blocks/dt_hang_lamp"
+		},
+		"dt_hang_lamp_off": {
+			"textures": "textures/blocks/dt_hang_lamp_off"
+		},
+		"dt_blood_stain": {
+			"textures": "textures/blocks/dt_blood_stain"
+		},
+		"dt_towel": {
+			"textures": "textures/blocks/dt_towel"
+		},
+		"dt_mirror": {
+			"textures": "textures/blocks/dt_mirror"
+		},
+		"dt_restroom_sign": {
+			"textures": "textures/blocks/dt_restroom_sign"
+		},
+		"dt_restroom_sign2": {
+			"textures": "textures/blocks/dt_restroom_sign2"
+		},
+		"dt_catwalk_fence": {
+			"textures": "textures/blocks/dt_catwalk_fence"
+		},
+		"dt_catwalk_root": {
+			"textures": "textures/blocks/dt_catwalk_root"
+		},
+
+		//Poster / Wall Sign
+		"dt_poster_scplogo": {
+			"textures": "textures/blocks/poster/dt_poster_scplogo"
+		},
+		"dt_poster_ntf": {
+			"textures": "textures/blocks/poster/dt_poster_ntf"
+		},
+		"dt_poster_recycle": {
+			"textures": "textures/blocks/poster/dt_poster_recycle"
+		},
+		"dt_poster_cafeteria": {
+			"textures": "textures/blocks/poster/dt_poster_cafeteria"
+		},
+		"dt_poster_winningson": {
+			"textures": "textures/blocks/poster/dt_poster_winningson"
+		},
+		"dt_wall_sign_nocam": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_nocam"
+		},
+		"dt_wall_sign_nosound": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_nosound"
+		},
+		"dt_wall_sign_watchstep": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_watchstep"
+		},
+		"dt_wall_sign_getout": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_getout"
+		},
+		"dt_wall_sign_amogus": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_amogus"
+		},
+		"dt_wall_sign_armory1": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_armory1"
+		},
+		"dt_wall_sign_armory2": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_armory2"
+		},
+		"dt_wall_sign_armory3": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_armory3"
+		},
+		"dt_wall_sign_gasmask": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_gasmask"
+		},
+		"dt_wall_sign_radioactive": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_radioactive"
+		},
+		"dt_wall_sign_hightemp": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_hightemp"
+		},
+		"dt_wall_sign_lowtemp": {
+			"textures": "textures/blocks/wall_sign/dt_wall_sign_lowtemp"
+		},
+		"dt_wall_image_cityscape": {
+			"textures": "textures/blocks/wall_image/dt_fake_cityscape"
+		},
+		"dt_wall_image_forest": {
+			"textures": "textures/blocks/wall_image/dt_fake_forest"
+		},
+		"dt_wall_image_nature": {
+			"textures": "textures/blocks/wall_image/dt_fake_nature"
+		},
+		"dt_wall_image_office": {
+			"textures": "textures/blocks/wall_image/dt_office"
+		},
+		"dt_wall_image_mtf": {
+			"textures": "textures/blocks/wall_image/dt_mtf"
+		},
+		"dt_big_number_sign0": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign0"
+		},
+		"dt_big_number_sign1": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign1"
+		},
+		"dt_big_number_sign2": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign2"
+		},
+		"dt_big_number_sign3": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign3"
+		},
+		"dt_big_number_sign4": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign4"
+		},
+		"dt_big_number_sign5": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign5"
+		},
+		"dt_big_number_sign6": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign6"
+		},
+		"dt_big_number_sign7": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign7"
+		},
+		"dt_big_number_sign8": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign8"
+		},
+		"dt_big_number_sign9": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign9"
+		},
+		"dt_big_number_sign_m": {
+			"textures": "textures/blocks/big_number_sign/dt_big_number_sign_m"
+		},
+
+		//Labels
+		"dt_label049": {
+			"textures": "textures/blocks/labels/label049"
+		},
+		"dt_label096": {
+			"textures": "textures/blocks/labels/label096"
+		},
+		"dt_label939": {
+			"textures": "textures/blocks/labels/label939"
+		},
+		"dt_label457": {
+			"textures": "textures/blocks/labels/label457"
+		},
+		"dt_label280": {
+			"textures": "textures/blocks/labels/label280"
+		},
+		"dt_label087": {
+			"textures": "textures/blocks/labels/label087"
+		},
+		"dt_label191": {
+			"textures": "textures/blocks/labels/label191"
+		},
+		"dt_label999": {
+			"textures": "textures/blocks/labels/label999"
+		},
+		"dt_label035": {
+			"textures": "textures/blocks/labels/label035"
+		},
+		"dt_label173": {
+			"textures": "textures/blocks/labels/label173"
+		},
+		"dt_label007": {
+			"textures": "textures/blocks/labels/label007"
+		},
+		"dt_label734": {
+			"textures": "textures/blocks/labels/label734"
+		},
+		"dt_label5167": {
+			"textures": "textures/blocks/labels/label5167"
+		},
+		"dt_label682": {
+			"textures": "textures/blocks/labels/label682"
+		},
+		"dt_label500": {
+			"textures": "textures/blocks/labels/label500"
+		},
+		"dt_label1023_arc": {
+			"textures": "textures/blocks/labels/label1023_arc"
+		},
+		"dt_label3998": {
+			"textures": "textures/blocks/labels/label3998"
+		},
+		"dt_label058": {
+			"textures": "textures/blocks/labels/label058"
+		},
+		"dt_label006": {
+			"textures": "textures/blocks/labels/label006"
+		},
+		"dt_label106": {
+			"textures": "textures/blocks/labels/label106"
+		},
+		"dt_label1025": {
+			"textures": "textures/blocks/labels/label1025"
+		},
+		"dt_label439": {
+			"textures": "textures/blocks/labels/label439"
+		},
+		"dt_label458": {
+			"textures": "textures/blocks/labels/label458"
+		},
+		"dt_label4959": {
+			"textures": "textures/blocks/labels/label4959"
+		},
+		"dt_label914": {
+			"textures": "textures/blocks/labels/label914"
+		},
+		"dt_label294": {
+			"textures": "textures/blocks/labels/label294"
+		},
+		"dt_label1074": {
+			"textures": "textures/blocks/labels/label1074"
+		},
+		"dt_label330": {
+			"textures": "textures/blocks/labels/label330"
+		},
+		"dt_label098": {
+			"textures": "textures/blocks/labels/label098"
+		},
+		"dt_label131": {
+			"textures": "textures/blocks/labels/label131"
+		},
+		"dt_label5535": {
+			"textures": "textures/blocks/labels/label5535"
+		},
+		"dt_label577": {
+			"textures": "textures/blocks/labels/label577"
+		},
+		"dt_label001_sp": {
+			"textures": "textures/blocks/labels/label001_sp"
+		},
+		"dt_label001_gg": {
+			"textures": "textures/blocks/labels/label001_gg"
+		},
+		"dt_label012": {
+			"textures": "textures/blocks/labels/label012"
+		},
+		"dt_label610": {
+			"textures": "textures/blocks/labels/label610"
+		},
+		"dt_label066": {
+			"textures": "textures/blocks/labels/label066"
+		},
+		"dt_label079": {
+			"textures": "textures/blocks/labels/label079"
+		},
+		"dt_label029": {
+			"textures": "textures/blocks/labels/label029"
+		},
+		"dt_label966": {
+			"textures": "textures/blocks/labels/label966"
+		},
+		"dt_label005": {
+			"textures": "textures/blocks/labels/label005"
+		},
+		"dt_label714": {
+			"textures": "textures/blocks/labels/label714"
+		},
+		"dt_label207": {
+			"textures": "textures/blocks/labels/label207"
+		},
+		"dt_label063": {
+			"textures": "textures/blocks/labels/label063"
+		},
+		"dt_label3199": {
+			"textures": "textures/blocks/labels/label3199"
+		},
+		"dt_label268": {
+			"textures": "textures/blocks/labels/label268"
+		},
+		"dt_label1000": {
+			"textures": "textures/blocks/labels/label1000"
+		}
+	}
+}

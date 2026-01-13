@@ -1,0 +1,43 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_flamethrower",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/attachment/dt_flamethrower"
+			},
+			"geometry": {
+				"default": "geometry.item.dt_flamethrower"
+			},
+			"animations": {
+				"hold": "controller.animation.item.dt_flamethrower.hold",
+				"holding": "animation.item.dt_flamethrower.holding",
+				"hide_ra": "animation.item.dt_flamethrower.hide_ra",
+				"hide_head": "animation.item.dt_flamethrower.hide_head",
+				"pickup": "animation.item.dt_flamethrower.pick",
+				"shoot": "animation.item.dt_flamethrower.shoot",
+				"reload": "animation.item.dt_flamethrower.reload",
+				"empty": "animation.item.dt_flamethrower.empty",
+				"tp_offset": "animation.item.dt_flamethrower.tp_offset"
+			},
+			"scripts": {
+				"animate": [
+					"hold",
+					{
+						"hide_ra": "c.is_first_person"
+					},
+					{
+						"hide_head": "!c.is_first_person"
+					},
+					{
+						"tp_offset": "!c.is_first_person"
+					}
+				]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"]
+		}
+	}
+}

@@ -1,0 +1,39 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_janitor.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						"look_at_target",
+						{
+							"move": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"mopping": "query.mark_variant == 1"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"mopping": {
+					"animations": [
+						"mopping",
+						{
+							"move": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.mark_variant == 0"
+						}
+					],
+					"blend_transition": 0.4
+				}
+			}
+		}
+	}
+}

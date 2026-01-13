@@ -1,0 +1,33 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp049_2_human1.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						{
+							"move": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"attacking": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"attacking": {
+					"animations": ["attack"],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					],
+					"blend_transition": 0.3
+				}
+			}
+		}
+	}
+}

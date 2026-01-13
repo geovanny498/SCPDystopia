@@ -1,0 +1,13 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp610_dead.general": {
+			"loop": true,
+			"bones": {
+				"scp610": {
+					"scale": ["1.5+math.sin(query.life_time * 1020) * 0.1", "1.5+math.sin(query.life_time * 820) * 0.1", "1.5+math.sin(query.life_time * 520) * 0.1"]
+				}
+			}
+		}
+	}
+}

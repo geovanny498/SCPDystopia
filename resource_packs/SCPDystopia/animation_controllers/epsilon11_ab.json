@@ -1,0 +1,76 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_epsilon11_ab.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general1",
+						{
+							"move1": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"aim": "query.has_target && query.is_sheared"
+						},
+						{
+							"melee_attack": "(query.is_delayed_attacking == 1) && (!query.is_sheared)"
+						},
+						{
+							"escaping": "query.mark_variant == 1"
+						}
+					],
+					"blend_transition": 1
+				},
+				"aim": {
+					"animations": [
+						"aim",
+						{
+							"move1": "query.modified_move_speed"
+						},
+						{
+							"escaping": "query.mark_variant == 1"
+						}
+					],
+					"transitions": [
+						{
+							"default": "!query.has_target"
+						}
+					],
+					"blend_transition": 1
+				},
+				"melee_attack": {
+					"animations": ["melee_attack"],
+					"transitions": [
+						{
+							"escaping": "query.mark_variant == 1"
+						},
+						{
+							"aim": "query.has_target && query.is_sheared"
+						},
+						{
+							"default": "!query.is_delayed_attacking == 0"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"escaping": {
+					"animations": [
+						"escape",
+						{
+							"move1": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.mark_variant == 0"
+						}
+					],
+					"blend_transition": 1
+				}
+			}
+		}
+	}
+}

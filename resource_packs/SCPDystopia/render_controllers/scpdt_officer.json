@@ -1,0 +1,18 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+		"controller.render.scpdt_officer": {
+			"arrays": {
+				"geometries": {
+					"Array.geos": ["Geometry.ranged", "Geometry.combat"]
+				},
+				"textures": {
+					"Array.skins": ["Texture.ranged", "Texture.combat"]
+				}
+			},
+			"geometry": "Array.geos[query.variant]",
+			"materials": [{ "*": "Material.default" }],
+			"textures": ["Array.skins[query.variant]"]
+		}
+	}
+}

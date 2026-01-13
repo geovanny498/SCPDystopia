@@ -1,0 +1,48 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_coffee_machine_with_cup",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "coffee_machine",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-4, 0, -4], "size": [8, 1, 9], "uv": [0, 21]},
+						{"origin": [-5, 0, -4], "size": [1, 8, 8], "uv": [0, 32]},
+						{"origin": [4, 0, -4], "size": [1, 8, 8], "uv": [27, 24]},
+						{"origin": [-5, 0, -5], "size": [10, 8, 1], "uv": [38, 20]},
+						{"origin": [-5, 8, -5], "size": [10, 11, 9], "uv": [0, 0]},
+						{"origin": [-4, 8, 4], "size": [8, 11, 1], "uv": [39, 0]},
+						{"origin": [-1, 7, -1], "size": [2, 1, 2], "uv": [0, 0]},
+						{"origin": [1.5, 9, 4.5], "size": [1, 1, 1], "uv": [0, 21]},
+						{"origin": [-2.5, 9, 4.5], "size": [1, 1, 1], "uv": [4, 6]},
+						{"origin": [-0.5, 9, 4.5], "size": [1, 1, 1], "uv": [0, 4]}
+					]
+				},
+				{
+					"name": "mug",
+					"parent": "coffee_machine",
+					"pivot": [0, 1, -1],
+					"cubes": [
+						{"origin": [-2, 1, -2], "size": [4, 1, 4], "uv": [47, 49]},
+						{"origin": [2, 2, -2], "size": [1, 5, 4], "uv": [47, 49]},
+						{"origin": [-3, 2, -2], "size": [1, 5, 4], "uv": [47, 49]},
+						{"origin": [-2, 2, 2], "size": [4, 5, 1], "uv": [47, 49]},
+						{"origin": [-2, 2, -3], "size": [4, 5, 1], "uv": [47, 49]},
+						{"origin": [-0.5, 3, 3], "size": [1, 1, 2], "uv": [52, 50]},
+						{"origin": [-0.5, 5, 3], "size": [1, 1, 2], "uv": [52, 50]},
+						{"origin": [-0.5, 4, 4], "size": [1, 1, 1], "uv": [52, 50]}
+					]
+				}
+			]
+		}
+	]
+}

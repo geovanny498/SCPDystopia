@@ -1,0 +1,35 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.sus.shake": {
+			"loop": true,
+			"bones": {
+				"body": {
+					"rotation": ["math.sin(query.life_time * 800) * 38", "math.sin(query.life_time * 400) * 64", "math.sin(query.life_time * -800) * 23"],
+					"position": ["math.sin(query.life_time * 2000) * 0.7", "math.sin(query.life_time * 3000) * 0.4", "math.sin(query.life_time * 1700) * 0.5"]
+				}
+			}
+		},
+		"animation.arrow.move": {
+			"loop": true,
+			"bones": {
+				"body": {
+					"rotation": ["variable.shake_power - query.target_x_rotation", "variable.shake_power - query.target_y_rotation", 0],
+					"scale": [0.7, 0.7, 0.9]
+				}
+			}
+		},
+		"animation.amogus.spin": {
+			"loop": true,
+			"animation_length": 0.52,
+			"bones": {
+				"body": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.52": [0, 360, 0]
+					}
+				}
+			}
+		}
+	}
+}

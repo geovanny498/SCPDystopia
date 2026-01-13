@@ -1,0 +1,45 @@
+{
+    "format_version": 2,
+    "header": {
+        "description": "§l§bMade by LC Studios MC. Helped by Kaiboi39 and RianDewa45.\n§cYou have to enable Holiday Creator Features and Molang Features in experiments.\n§7Thank you for download!",
+        "name": "§g[DEV] §d§lSCP: Dystopia RP §7v1.9.0§f",
+        "uuid": "03cce329-48ac-45be-ae8a-4301f4687e46",
+        "version": [
+            1,
+            9,
+            0
+        ],
+        "min_engine_version": [
+            1,
+            17,
+            0
+        ]
+    },
+    "modules": [
+        {
+            "description": "Made by LC Studios MC",
+            "type": "resources",
+            "uuid": "15e4494f-d558-46e0-9108-ca086eca59ef",
+            "version": [
+                1,
+                8,
+                1
+            ]
+        }
+    ],
+    "capabilities": [
+        "pbr"
+    ],
+    "subpacks": [
+        {
+            "folder_name": "hazmat",
+            "memory_tier": 1,
+            "name": "§7§lHazmat Delta-1"
+        },
+        {
+            "folder_name": "normal",
+            "memory_tier": 1,
+            "name": "§4§lNormal Delta-1"
+        }
+    ]
+}

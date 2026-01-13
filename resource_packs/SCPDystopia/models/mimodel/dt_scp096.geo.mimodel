@@ -1,0 +1,141 @@
+{
+	"name": "dt_scp096",
+	"texture": "dt_scp096_BoxUV.png",
+	"texture_size": [64, 64],
+	"parts": [
+		{
+			"name": "scp096",
+			"position": [0, 0, 0],
+			"parts": [
+				{
+					"name": "leftleg",
+					"position": [2, 23, 0],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [1, 0, -1],
+							"to": [3, 24, 1],
+							"uv": [15, 40],
+							"position": [-2, -23, 0]
+						}
+					]
+				},
+				{
+					"name": "rightleg",
+					"position": [-2, 23, 0],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-3, 0, -1],
+							"to": [-1, 24, 1],
+							"uv": [2, 40],
+							"position": [2, -23, 0]
+						}
+					]
+				},
+				{
+					"name": "body",
+					"position": [0, 22, 0],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-4, 22, -2],
+							"to": [4, 36, 2],
+							"uv": [4, 20],
+							"position": [0, -22, 0]
+						}
+					],
+					"parts": [
+						{
+							"name": "leftarm",
+							"position": [-5, 13, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-6, 22, -1],
+									"to": [-4, 36, 1],
+									"uv": [58, 2],
+									"position": [5, -35, 0]
+								}
+							],
+							"parts": [
+								{
+									"name": "leftarm2",
+									"position": [0, -13, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-6, 8, -1],
+											"to": [-4, 22, 1],
+											"uv": [58, 18],
+											"position": [5, -22, 0]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "rightarm",
+							"position": [5, 13, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [4, 22, -1],
+									"to": [6, 36, 1],
+									"uv": [58, 2],
+									"position": [-5, -35, 0]
+								}
+							],
+							"parts": [
+								{
+									"name": "rightarm2",
+									"position": [0, -13, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [4, 8, -1],
+											"to": [6, 22, 1],
+											"uv": [58, 18],
+											"texture_mirror": true,
+											"position": [-5, -22, 0]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "head",
+							"position": [0, 14, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-4, 36, -4],
+									"to": [4, 44, 4],
+									"inflate": 0.1,
+									"uv": [8, 8],
+									"position": [0, -36, 0]
+								}
+							],
+							"parts": [
+								{
+									"name": "jaw",
+									"position": [0, 0, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-4, 36, -4],
+											"to": [4, 44, 4],
+											"uv": [40, 56],
+											"texture_mirror": true,
+											"position": [0, -36, 0]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

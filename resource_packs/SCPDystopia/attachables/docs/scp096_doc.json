@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_scp096_doc",
+			"materials": {
+				"default": "entity_alphatest",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/attachment/docs/dt_scp096_doc",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.item.dt_document"
+			},
+			"animations": {
+				"hold": "controller.animation.item.dt_document.hold",
+				"hold_first_person": "animation.item.dt_document.hold_first_person",
+				"hold_third_person": "animation.item.dt_document.hold_third_person"
+			},
+			"scripts": {
+				"animate": ["hold"]
+			},
+			"render_controllers": ["controller.render.item_default"]
+		}
+	}
+}

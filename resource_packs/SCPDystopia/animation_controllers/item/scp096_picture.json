@@ -1,0 +1,26 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.item.dt_scp096_picture.anim_cont": {
+			"initial_state": "hold",
+			"states": {
+				"hold": {
+					"animations": ["holding"],
+					"transitions": [
+						{
+							"open": "query.cooldown_time_remaining('dt_scp096_picture_opening') != 0.0"
+						}
+					]
+				},
+				"open": {
+					"animations": ["picture_opening"],
+					"transitions": [
+						{
+							"hold": "query.cooldown_time_remaining('dt_scp096_picture_opening') == 0.0"
+						}
+					]
+				}
+			}
+		}
+	}
+}

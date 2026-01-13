@@ -1,0 +1,18 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+		"controller.render.scpdt_scp049_2_mtf": {
+			"arrays": {
+				"geometries": {
+					"Array.geos": ["Geometry.ntf", "Geometry.sne", "Geometry.hammerdown"]
+				},
+				"textures": {
+					"Array.skins": ["Texture.ntf", "Texture.sne", "Texture.hammerdown"]
+				}
+			},
+			"geometry": "Array.geos[query.variant]",
+			"materials": [{ "*": "Material.default" }],
+			"textures": ["Array.skins[query.variant]"]
+		}
+	}
+}

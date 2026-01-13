@@ -1,0 +1,37 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_mtf_scp049_2",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"ntf": "textures/entity/scp049_2/dt_scp049_2_epsilon11",
+				"sne": "textures/entity/scp049_2/dt_scp049_2_eta10",
+				"hammerdown": "textures/entity/scp049_2/dt_scp049_2_nu7"
+			},
+			"geometry": {
+				"ntf": "geometry.dt_scp049_2_human2",
+				"sne": "geometry.dt_scp049_2_human3",
+				"hammerdown": "geometry.dt_scp049_2_nu7"
+			},
+			"animations": {
+				"general": "animation.dt_scp049_2.general1",
+				"move": "animation.dt_scp049_2.walking1",
+				"attack": "animation.dt_scp049_2.attack_strong",
+
+				"anim_cont": "controller.animation.dt_scp049_2_human1.anim_cont",
+				"look_at_target": "animation.common.look_at_target"
+			},
+			"scripts": {
+				"animate": ["anim_cont", "look_at_target"]
+			},
+			"render_controllers": ["controller.render.scpdt_scp049_2_mtf"],
+			"spawn_egg": {
+				"base_color": "#775129",
+				"overlay_color": "#860F0F"
+			}
+		}
+	}
+}

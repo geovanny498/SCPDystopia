@@ -1,0 +1,41 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp939.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						{
+							"move": "query.modified_move_speed"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.dt_scp939_new.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general", "move"],
+					"transitions": [
+						{
+							"sit": "query.is_sitting"
+						}
+					],
+					"blend_transition": 1
+				},
+				"sit": {
+					"animations": ["sitting"],
+					"transitions": [
+						{
+							"default": "!query.is_sitting"
+						}
+					],
+					"blend_transition": 1
+				}
+			}
+		}
+	}
+}

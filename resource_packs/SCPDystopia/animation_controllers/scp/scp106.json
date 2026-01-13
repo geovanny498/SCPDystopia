@@ -1,0 +1,56 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp106.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						{
+							"general": "!query.is_sheared"
+						},
+						{
+							"move": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"attacking": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"attacking": {
+					"animations": ["attack"],
+					"transitions": [
+						{
+							"default": "query.is_delayed_attacking == 0"
+						}
+					],
+					"blend_transition": 0.4
+				}
+			}
+		},
+		"controller.animation.dt_scp106.spawn": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"sp": "query.is_sheared"
+						}
+					]
+				},
+				"sp": {
+					"animations": ["spawning"],
+					"transitions": [
+						{
+							"default": "!query.is_sheared"
+						}
+					],
+					"blend_transition": 0.3
+				}
+			}
+		}
+	}
+}

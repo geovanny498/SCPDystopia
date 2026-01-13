@@ -1,0 +1,24 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_sheaf_of_papers",
+			"menu_category": {
+				"category": "items"
+			}
+		},
+		"components": {
+			"scpdt:scp001_sheaf_of_papers": {},
+			"minecraft:interact_button": true,
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dt_sheaf_of_papers",
+			"minecraft:display_name": {
+				"value": "SCP-001 \"Sheaf of Papers\""
+			},
+			"minecraft:cooldown": {
+				"duration": 10.0,
+				"category": "scp001"
+			}
+		}
+	}
+}

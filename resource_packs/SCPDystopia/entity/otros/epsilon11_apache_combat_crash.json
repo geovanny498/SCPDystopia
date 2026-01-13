@@ -1,0 +1,49 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_epsilon11_apache_combat_crash",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_apache_new"
+			},
+			"geometry": {
+				"default": "geometry.dt_apache_new"
+			},
+			"animations": {
+				"launch": "animation.dt_apache_new.launch",
+				"flying": "animation.dt_apache_new.flying",
+				"hover": "animation.dt_apache_new.hover",
+				"crash": "animation.dt_apache_new.crash",
+				"has_target": "animation.dt_apache_new.has_target",
+				"propeller_roll": "animation.dt_apache_new.propeller_roll",
+
+				"anim_cont": "controller.animation.dt_epsilon11_apache_combat_crash.anim_cont"
+			},
+			"scripts": {
+				"animate": [
+					"anim_cont",
+					{
+						"has_target": "q.has_target"
+					}
+				],
+				"pre_animation": [
+					"variable.launching = query.mark_variant == 0;",
+					"variable.flying = query.mark_variant == 1;",
+					"variable.hovering = query.is_sheared == true;"
+				]
+			},
+			"particle_effects": {
+				"crash_smoke": "lc:dt_apache_crash_smoke_emitter",
+				"crash_explosion": "lc:dt_apache_crash_explosion_particle"
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#282828",
+				"overlay_color": "#414141"
+			}
+		}
+	}
+}

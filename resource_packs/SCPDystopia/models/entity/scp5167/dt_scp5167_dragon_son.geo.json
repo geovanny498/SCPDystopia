@@ -1,0 +1,85 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_scp5167_dragon_son",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 4,
+				"visible_bounds_offset": [0, 1, 0]
+			},
+			"bones": [
+				{
+					"name": "amogus",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-8, 0, -8], "size": [16, 16, 16], "uv": [0, 0]},
+						{"origin": [-7, 3, -9], "size": [14, 10, 1], "uv": [32, 32]},
+						{"origin": [-4, 16, -1], "size": [8, 3, 1], "uv": [42, 47]},
+						{"origin": [-4, -3, -1], "size": [8, 3, 1], "uv": [36, 43]},
+						{"origin": [-11, 4, -1], "size": [3, 8, 1], "uv": [14, 48]},
+						{"origin": [8, 4, -1], "size": [3, 8, 1], "uv": [48, 0]}
+					]
+				},
+				{
+					"name": "ring",
+					"parent": "amogus",
+					"pivot": [0, 8, 0]
+				},
+				{
+					"name": "am1",
+					"parent": "ring",
+					"pivot": [0, 21, 0],
+					"cubes": [
+						{"origin": [-4, 22, -4], "size": [8, 8, 8], "uv": [0, 32]},
+						{"origin": [-3, 25, -5], "size": [6, 4, 1], "uv": [0, 48]},
+						{"origin": [-3, 24, 4], "size": [6, 5, 2], "uv": [0, 0]},
+						{"origin": [2, 21, -3], "size": [2, 1, 6], "uv": [26, 43]},
+						{"origin": [-4, 21, -3], "size": [2, 1, 6], "uv": [0, 7]}
+					]
+				},
+				{
+					"name": "am2",
+					"parent": "ring",
+					"pivot": [13, 8, 0],
+					"rotation": [0, 0, 90],
+					"cubes": [
+						{"origin": [9, 9, -4], "size": [8, 8, 8], "uv": [0, 32]},
+						{"origin": [10, 12, -5], "size": [6, 4, 1], "uv": [0, 48]},
+						{"origin": [10, 11, 4], "size": [6, 5, 2], "uv": [0, 0]},
+						{"origin": [15, 8, -3], "size": [2, 1, 6], "uv": [26, 43]},
+						{"origin": [9, 8, -3], "size": [2, 1, 6], "uv": [0, 7]}
+					]
+				},
+				{
+					"name": "am3",
+					"parent": "ring",
+					"pivot": [0, -5, 0],
+					"rotation": [0, 0, -180],
+					"cubes": [
+						{"origin": [-4, -4, -4], "size": [8, 8, 8], "uv": [0, 32]},
+						{"origin": [-3, -1, -5], "size": [6, 4, 1], "uv": [0, 48]},
+						{"origin": [-3, -2, 4], "size": [6, 5, 2], "uv": [0, 0]},
+						{"origin": [2, -5, -3], "size": [2, 1, 6], "uv": [26, 43]},
+						{"origin": [-4, -5, -3], "size": [2, 1, 6], "uv": [0, 7]}
+					]
+				},
+				{
+					"name": "am4",
+					"parent": "ring",
+					"pivot": [-13, 8, 0],
+					"rotation": [0, 0, -90],
+					"cubes": [
+						{"origin": [-17, 9, -4], "size": [8, 8, 8], "uv": [0, 32]},
+						{"origin": [-16, 12, -5], "size": [6, 4, 1], "uv": [0, 48]},
+						{"origin": [-16, 11, 4], "size": [6, 5, 2], "uv": [0, 0]},
+						{"origin": [-11, 8, -3], "size": [2, 1, 6], "uv": [26, 43]},
+						{"origin": [-17, 8, -3], "size": [2, 1, 6], "uv": [0, 7]}
+					]
+				}
+			]
+		}
+	]
+}

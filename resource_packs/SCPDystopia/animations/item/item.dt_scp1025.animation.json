@@ -1,0 +1,23 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.item.dt_scp1025.hold_first_person": {
+			"loop": true,
+			"bones": {
+				"scp1025": {
+					"rotation": [40, 0, 0],
+					"position": [-3, 0, 4]
+				}
+			}
+		},
+		"animation.item.dt_scp1025.hold_third_person": {
+			"loop": true,
+			"bones": {
+				"scp1025": {
+					"rotation": [-27.5, -45, 0],
+					"position": [0, -3, 2]
+				}
+			}
+		}
+	}
+}

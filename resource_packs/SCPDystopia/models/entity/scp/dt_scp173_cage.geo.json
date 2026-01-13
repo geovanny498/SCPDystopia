@@ -1,0 +1,37 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_scp173_cage",
+				"texture_width": 80,
+				"texture_height": 80,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "cage",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-8, 3, -8], "size": [16, 1, 16], "uv": [0, 17]},
+						{"origin": [-8, 36, -8], "size": [16, 1, 16], "uv": [0, 0]},
+						{"origin": [6, 4, -7], "size": [1, 32, 1], "uv": [44, 34]},
+						{"origin": [6, 4, 6], "size": [1, 32, 1], "uv": [40, 34]},
+						{"origin": [6, 4, -3], "size": [1, 32, 1], "uv": [36, 34]},
+						{"origin": [6, 4, 2], "size": [1, 32, 1], "uv": [32, 34]},
+						{"origin": [-7, 4, -7], "size": [1, 32, 1], "uv": [28, 34]},
+						{"origin": [-7, 4, -3], "size": [1, 32, 1], "uv": [24, 34]},
+						{"origin": [-7, 4, 2], "size": [1, 32, 1], "uv": [20, 34]},
+						{"origin": [-7, 4, 6], "size": [1, 32, 1], "uv": [16, 34]},
+						{"origin": [-3, 4, -7], "size": [1, 32, 1], "uv": [12, 34]},
+						{"origin": [2, 4, -7], "size": [1, 32, 1], "uv": [8, 34]},
+						{"origin": [2, 4, 6], "size": [1, 32, 1], "uv": [4, 34]},
+						{"origin": [-3, 4, 6], "size": [1, 32, 1], "uv": [0, 34]}
+					]
+				}
+			]
+		}
+	]
+}

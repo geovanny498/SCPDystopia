@@ -1,0 +1,100 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_bulletin_board",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "bulletin_board",
+					"pivot": [0, 0, -0.6],
+					"cubes": [
+						{"origin": [-13, 0, -8.6], "size": [26, 16, 1], "uv": [0, 0]},
+						{"origin": [-13, 0, -7.6], "size": [26, 1, 1], "uv": [0, 21]},
+						{"origin": [-13, 15, -7.6], "size": [26, 1, 1], "uv": [0, 18]},
+						{"origin": [12, 1, -7.6], "size": [1, 14, 1], "uv": [15, 31]},
+						{"origin": [-13, 1, -7.6], "size": [1, 14, 1], "uv": [30, 24]},
+						{"origin": [-10.2, 2, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [35, 33]},
+						{"origin": [-11.2, 4, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [35, 30]}
+					]
+				},
+				{
+					"name": "d1",
+					"parent": "bulletin_board",
+					"pivot": [7, 12, -7.6],
+					"cubes": [
+						{"origin": [6.5, 12, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [20, 40]},
+						{"origin": [3.5, 3, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [39, 38]},
+						{"origin": [9.5, 3, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [34, 39]}
+					]
+				},
+				{
+					"name": "d1_2",
+					"parent": "d1",
+					"pivot": [7, 12, -7.6],
+					"cubes": [
+						{"origin": [3.5, 3, -7.6], "size": [7, 10, 0], "inflate": 0.1, "uv": [0, 24]}
+					]
+				},
+				{
+					"name": "d2",
+					"parent": "bulletin_board",
+					"pivot": [-9.5, 12, -7.6],
+					"cubes": [
+						{"origin": [-8.7, 12, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [25, 37]}
+					]
+				},
+				{
+					"name": "d2_2",
+					"parent": "d2",
+					"pivot": [-8.5, 12, -7.6],
+					"rotation": [0, 0, -25],
+					"cubes": [
+						{"origin": [-11.5, 8, -7.6], "size": [4, 5, 0], "inflate": 0.1, "uv": [20, 31]}
+					]
+				},
+				{
+					"name": "d3",
+					"parent": "bulletin_board",
+					"pivot": [0, 13, -7.6],
+					"cubes": [
+						{"origin": [0.8, 13, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [20, 37]},
+						{"origin": [-4.9, 13, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [35, 36]}
+					]
+				},
+				{
+					"name": "d3_2",
+					"parent": "d3",
+					"pivot": [1, 13, -7.6],
+					"cubes": [
+						{"origin": [-5, 8, -7.6], "size": [7, 6, 0], "inflate": 0.1, "uv": [15, 24]}
+					]
+				},
+				{
+					"name": "d4",
+					"parent": "bulletin_board",
+					"pivot": [-2, 6, -7.6],
+					"cubes": [
+						{"origin": [-1.1, 5.7, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [35, 27]},
+						{"origin": [-5.9, 6, -8.1], "size": [1, 1, 1], "inflate": -0.15, "uv": [35, 24]}
+					]
+				},
+				{
+					"name": "d4_2",
+					"parent": "d4",
+					"pivot": [-5, 6, -7.6],
+					"rotation": [0, 0, 3],
+					"cubes": [
+						{"origin": [-6, 2, -7.6], "size": [6, 5, 0], "inflate": 0.1, "uv": [0, 35]}
+					]
+				}
+			]
+		}
+	]
+}

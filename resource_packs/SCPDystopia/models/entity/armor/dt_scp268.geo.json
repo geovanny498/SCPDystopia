@@ -1,0 +1,35 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.armor.dt_scp268",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "head",
+					"pivot": [0, 24, 0],
+					"cubes": [
+						{"origin": [-6, 30.1, -6], "size": [12, 3, 12], "uv": [0, 0]},
+						{"origin": [-6, 30, -6], "size": [12, 1, 12], "inflate": 0.2, "pivot": [0, 31, -6], "rotation": [-3, 0, 0], "uv": [0, 15]}
+					]
+				},
+				{
+					"name": "h1",
+					"parent": "head",
+					"pivot": [0, 30, -6],
+					"rotation": [10, 0, 0],
+					"cubes": [
+						{"origin": [-5.5, 29.4, -8], "size": [11, 1, 3], "inflate": 0.1, "uv": [0, 28]},
+						{"origin": [-4.5, 29.4, -9], "size": [9, 1, 1], "uv": [25, 28]}
+					]
+				}
+			]
+		}
+	]
+}

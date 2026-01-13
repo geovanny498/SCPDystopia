@@ -1,0 +1,104 @@
+{
+	"name": "dt_blast_door_closed",
+	"texture": "dt_blast_door.png",
+	"texture_size": [256, 256],
+	"parts": [
+		{
+			"name": "blast_door",
+			"position": [0, 0, 0],
+			"shapes": [
+				{
+					"type": "block",
+					"from": [32, 0, -7],
+					"to": [40, 48, 7],
+					"uv": [59, 137],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-32, 40, -7],
+					"to": [32, 48, 7],
+					"uv": [14, 14],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-40, 0, -7],
+					"to": [-32, 48, 7],
+					"uv": [14, 96],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-38, 0, 7],
+					"to": [-34, 48, 8],
+					"uv": [113, 124],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [34, 0, 7],
+					"to": [38, 48, 8],
+					"uv": [102, 124],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [34, 0, -8],
+					"to": [38, 48, -7],
+					"uv": [91, 124],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-38, 0, -8],
+					"to": [-34, 48, -7],
+					"uv": [46, 83],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-34, 42, -8],
+					"to": [34, 45, -7],
+					"uv": [1, 29],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-34, 42, 7],
+					"to": [34, 45, 8],
+					"uv": [1, 24],
+					"position": [0, 0, 0]
+				}
+			],
+			"parts": [
+				{
+					"name": "side1",
+					"position": [0, 0, 0],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-32, 0, -4],
+							"to": [0, 40, 4],
+							"uv": [81, 82],
+							"position": [0, 0, 0]
+						}
+					]
+				},
+				{
+					"name": "side2",
+					"position": [0, 0, 0],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [0, 0, -4],
+							"to": [32, 40, 4],
+							"uv": [8, 41],
+							"position": [0, 0, 0]
+						}
+					]
+				}
+			]
+		}
+	]
+}

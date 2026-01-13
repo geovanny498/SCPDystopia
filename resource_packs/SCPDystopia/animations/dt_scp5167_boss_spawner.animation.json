@@ -1,0 +1,53 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp5167_boss.spawning": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 9.76,
+			"bones": {
+				"spawner": {
+					"rotation": {
+						"0.0": ["math.sin(query.life_time * 300) * 12", "math.sin(query.life_time * 200) * 14", "math.sin(query.life_time * 100) * 10"],
+						"3.64": ["math.sin(query.life_time * 350) * 26", "math.sin(query.life_time * 250) * 28", "math.sin(query.life_time * 150) * 23"]
+					},
+					"position": {
+						"0.0": [0, 47, 0],
+						"1.04": [0, 37, 0],
+						"3.64": [0, 25.08, 0],
+						"7.8": ["math.sin(query.life_time * 3000) * 0.6", "10+math.sin(query.life_time * 4000) * 2", "math.sin(query.life_time * 2000) * 0.6"],
+						"8.28": ["math.sin(query.life_time * 3000) * 0.2", "10+math.sin(query.life_time * 4000) * 0.2", "math.sin(query.life_time * 2000) * 0.2"],
+						"9.36": ["math.sin(query.life_time * 3000) * 0.2", "16+math.sin(query.life_time * 4000) * 0.2", "math.sin(query.life_time * 2000) * 0.2"]
+					},
+					"scale": {
+						"0.0": [0, 0, 0],
+						"1.04": [1, 1, 1],
+						"7.8": ["1+math.sin(query.life_time * 3000) * 0.1", "1+math.sin(query.life_time * 4000) * 0.1", "1+math.sin(query.life_time * 3500) * 0.1"],
+						"9.36": ["2+math.sin(query.life_time * 3000) * 0.3", "2+math.sin(query.life_time * 4000) * 0.3", "2+math.sin(query.life_time * 3500) * 0.3"]
+					}
+				},
+				"effect1": {
+					"rotation": [0, "math.sin(query.life_time * 300) * 12", 0]
+				},
+				"effect2": {
+					"rotation": [0, "math.sin(query.life_time * 300) * 12", 0]
+				},
+				"effect3": {
+					"rotation": [0, "math.sin(query.life_time * 300) * 12", 0]
+				},
+				"effect4": {
+					"rotation": [0, "math.sin(query.life_time * 300) * 12", 0]
+				},
+				"effects": {
+					"rotation": {
+						"0.0": ["math.sin(query.life_time * 500) * 15", "math.sin(query.life_time * 300) * 10", "math.sin(query.life_time * 500) * 80"],
+						"3.64": ["math.sin(query.life_time * 500) * 35", "math.sin(query.life_time * 300) * 30", "math.sin(query.life_time * 400) * 110"]
+					},
+					"scale": {
+						"8.28": [1, 1, 1],
+						"9.68": [0, 0, 0]
+					}
+				}
+			}
+		}
+	}
+}

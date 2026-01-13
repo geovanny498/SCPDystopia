@@ -1,0 +1,47 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lc:dt_epsilon11",
+      "materials": {
+        "default": "npc"
+      },
+      "textures": {
+        "default": "textures/entity/humanoid/dt_epsilon11"
+      },
+      "geometry": {
+        "default": "geometry.dt_epsilon11"
+      },
+      "animations": {
+        "general": "animation.dt_chara.general",
+        "move": "animation.dt_chara.walking",
+        "aim": "animation.dt_chara.aim",
+        // "shoot": "animation.dt_chara.shooting",
+        "melee_attack": "animation.dt_chara.melee_attacking_gun",
+        "looking_at_target": "animation.dt_chara.looking_at_target",
+        "gun_resize": "animation.dt_chara.gun_resize",
+        "anim_cont": "controller.animation.dt_chara.anim_cont",
+        "reloading_gun": "animation.dt_chara.reloading_gun",
+        "melee_attacking_gun": "animation.dt_chara.melee_attacking_gun"
+      },
+      "scripts": {
+        "scale": "0.9375",
+        "animate": [
+          "anim_cont",
+          "move",
+          "gun_resize"
+        ],
+        "pre_animation": [
+          "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.scp_dystopia"
+      ],
+      "spawn_egg": {
+        "base_color": "#325077",
+        "overlay_color": "#444748"
+      }
+    }
+  }
+}

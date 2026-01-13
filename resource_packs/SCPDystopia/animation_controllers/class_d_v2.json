@@ -1,0 +1,52 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_class_d_v2.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general", "move_v2_legs", "move_v2_arms", "look_at_target"],
+					"transitions": [
+						{
+							"picking_up_gun": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:class_d_can_equip')"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"picking_up_gun": {
+					"animations": ["pickup_gun"],
+					"transitions": [
+						{
+							"got_a_gun": "query.all_animations_finished"
+						}
+					],
+					"blend_transition": 1
+				},
+				"got_a_gun": {
+					"animations": ["gun_ready", "move_v2_legs"],
+					"transitions": [
+						{
+							"default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:class_d_can_equip') == 0"
+						},
+						{
+							"shooting_gun": "query.has_target ? query.facing_target_to_range_attack"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"shooting_gun": {
+					"animations": ["firing_gun", "move_v2_legs"],
+					"transitions": [
+						{
+							"default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:class_d_can_equip') == 0"
+						},
+						{
+							"got_a_gun": "!query.has_target"
+						}
+					],
+					"blend_transition": 0.3
+				}
+			}
+		}
+	}
+}

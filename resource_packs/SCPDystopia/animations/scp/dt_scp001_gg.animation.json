@@ -1,0 +1,178 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp001_gg.general": {
+			"loop": true,
+			"bones": {
+				"scp001_gg": {
+					"position": [0, "6+math.sin(query.life_time * 70) * 3", 0]
+				},
+				"bone2": {
+					"rotation": ["-15+math.sin(query.life_time * 70) * 10", 0, 5]
+				},
+				"bone3": {
+					"rotation": ["75+math.sin(query.life_time * 70) * 13", 0, 0]
+				},
+				"bone10": {
+					"rotation": ["-20+math.sin(query.life_time * 70) * 14", -15, -2.5]
+				},
+				"bone11": {
+					"rotation": ["60+math.sin(query.life_time * 70) * 7", 0, 0]
+				},
+				"waist": {
+					"rotation": ["7.5+math.sin(query.life_time * 70) * 1", 0, 0]
+				},
+				"chest": {
+					"rotation": ["math.sin(query.life_time * 70) * 3", 0, 0]
+				},
+				"bone8": {
+					"rotation": [25, -55, "10+math.sin(query.life_time * -70) * 5"]
+				},
+				"bone9": {
+					"rotation": [-70, 0, 0]
+				},
+				"sword": {
+					"scale": [1, 1, 1.4]
+				},
+				"bone4": {
+					"rotation": ["-12.5+math.sin(query.life_time * -70) * 2.5", "-12.5+math.sin(query.life_time * 70) * 2.5", 0]
+				},
+				"bone5": {
+					"rotation": ["-112.5+math.sin(query.life_time * -70) * 5", 0, 0]
+				},
+				"bone13": {
+					"rotation": [10, 0, 0]
+				},
+				"head": {
+					"rotation": [7.5, 0, 0]
+				},
+				"bone15": {
+					"rotation": [0, "-10+math.sin(query.life_time * 70) * 10", "math.sin(query.life_time * -70) * 5"]
+				},
+				"bone14": {
+					"rotation": [0, "10+math.sin(query.life_time * -70) * 10", "math.sin(query.life_time * 70) * 5"]
+				}
+			}
+		},
+		"animation.dt_scp001_gg.attack": {
+			"loop": true,
+			"animation_length": 4.12,
+			"bones": {
+				"scp001_gg": {
+					"position": {
+						"0.0": [0, "6+math.sin(query.life_time * 70) * 3", 0],
+						"1.12": [0, 6, 0],
+						"1.92": [0, 16, 0],
+						"2.32": [0, -1, 0],
+						"3.2": [0, -1, 0],
+						"4.12": [0, 6, 0]
+					}
+				},
+				"bone2": {
+					"rotation": {
+						"0.0": ["-15+math.sin(query.life_time * 70) * 10", 0, 5],
+						"3.56": ["-15+math.sin(query.life_time * 70) * 10", 0, 5],
+						"4.12": [-15, 0, 5]
+					}
+				},
+				"bone3": {
+					"rotation": ["75+math.sin(query.life_time * 70) * 13", 0, 0]
+				},
+				"bone10": {
+					"rotation": {
+						"0.0": ["-20+math.sin(query.life_time * 70) * 14", -15, -2.5],
+						"3.56": ["-20+math.sin(query.life_time * 70) * 14", -15, -2.5],
+						"4.12": [-20, -15, -2.5]
+					}
+				},
+				"bone11": {
+					"rotation": ["60+math.sin(query.life_time * 70) * 7", 0, 0]
+				},
+				"waist": {
+					"rotation": {
+						"0.0": ["7.5+math.sin(query.life_time * 70) * 1", 0, 0],
+						"1.92": ["7.5+math.sin(query.life_time * 70) * 1", 0, 0],
+						"2.32": ["37.5+math.sin(query.life_time * 70) * 1", 0, 0],
+						"3.2": ["37.5+math.sin(query.life_time * 70) * 1", 0, 0],
+						"4.12": [7.5, 0, 0]
+					}
+				},
+				"chest": {
+					"rotation": {
+						"0.0": ["math.sin(query.life_time * 70) * 3", 0, 0],
+						"1.92": ["math.sin(query.life_time * 70) * 3", 0, 0],
+						"2.32": ["7.5+math.sin(query.life_time * 70) * 3", 0, 0]
+					}
+				},
+				"bone8": {
+					"rotation": {
+						"0.0": [25, -55, "10+math.sin(query.life_time * -70) * 5"],
+						"1.12": [-55, -12.5, "10+math.sin(query.life_time * -70) * 5"],
+						"1.92": [-92.5, -12.5, "10+math.sin(query.life_time * -70) * 5"],
+						"2.32": [-15, -12.5, "10+math.sin(query.life_time * -70) * 5"],
+						"3.2": [-15, -12.5, "10+math.sin(query.life_time * -70) * 5"],
+						"4.12": [25, -55, 10]
+					}
+				},
+				"bone9": {
+					"rotation": {
+						"0.0": [-70, 0, 0],
+						"1.12": [-27.5, 0, 0],
+						"2.32": [-10, 0, 0],
+						"3.2": [-10, 0, 0],
+						"4.12": [-70, 0, 0]
+					}
+				},
+				"sword": {
+					"scale": [1, 1, 1.4]
+				},
+				"bone4": {
+					"rotation": {
+						"0.0": ["-12.5+math.sin(query.life_time * -70) * 2.5", "-12.5+math.sin(query.life_time * 70) * 2.5", 0],
+						"1.12": ["-35+math.sin(query.life_time * -70) * 2.5", "32.5+math.sin(query.life_time * 70) * 2.5", 0],
+						"1.92": ["-70+math.sin(query.life_time * -70) * 2.5", "32.5+math.sin(query.life_time * 70) * 2.5", 0],
+						"2.32": ["-17.5+math.sin(query.life_time * -70) * 2.5", "57.5+math.sin(query.life_time * 70) * 2.5", 12.5],
+						"3.2": ["-17.5+math.sin(query.life_time * -70) * 2.5", "57.5+math.sin(query.life_time * 70) * 2.5", 12.5],
+						"4.12": [-12.5, -12.5, 0]
+					}
+				},
+				"bone5": {
+					"rotation": {
+						"0.0": ["-112.5+math.sin(query.life_time * -70) * 5", 0, 0],
+						"1.12": ["-50+math.sin(query.life_time * -70) * 5", 0, 0],
+						"2.32": ["-25+math.sin(query.life_time * -70) * 5", 0, 0],
+						"3.2": ["-25+math.sin(query.life_time * -70) * 5", 0, 0],
+						"4.12": [-112.5, 0, 0]
+					}
+				},
+				"bone13": {
+					"rotation": {
+						"0.0": [10, 0, 0],
+						"1.12": [10, 0, 0],
+						"1.92": [-27.5, 0, 0],
+						"2.32": [7.5, 0, 0],
+						"3.2": [7.5, 0, 0],
+						"4.12": [10, 0, 0]
+					}
+				},
+				"head": {
+					"rotation": [7.5, 0, 0]
+				},
+				"bone15": {
+					"rotation": {
+						"0.0": [0, "-10+math.sin(query.life_time * 70) * 10", "math.sin(query.life_time * -70) * 5"],
+						"3.56": [0, "-10+math.sin(query.life_time * 70) * 10", "math.sin(query.life_time * -70) * 5"],
+						"4.12": [0, -10, 0]
+					}
+				},
+				"bone14": {
+					"rotation": {
+						"0.0": [0, "10+math.sin(query.life_time * -70) * 10", "math.sin(query.life_time * 70) * 5"],
+						"3.56": [0, "10+math.sin(query.life_time * -70) * 10", "math.sin(query.life_time * 70) * 5"],
+						"4.12": [0, 10, 0]
+					}
+				}
+			}
+		}
+	}
+}

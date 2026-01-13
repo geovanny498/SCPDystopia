@@ -1,0 +1,39 @@
+{
+	"format_version": "1.10",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_scp096_picture",
+			"materials": {
+				"default": "entity_alphatest",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/attachment/dt_scp096_picture",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp096_picture"
+			},
+			"animations": {
+				"anim_cont": "controller.animation.item.dt_scp096_picture.anim_cont",
+				"holding": "animation.dt_scp096_picture.holding",
+				"picture_opening": "animation.dt_scp096_picture.open",
+
+				"third_person_hide": "animation.dt_scp096_picture.third_person_hide",
+				"first_person_hide": "animation.dt_scp096_picture.first_person_hide"
+			},
+			"scripts": {
+				"animate": [
+					"anim_cont",
+					{
+						"third_person_hide": "!c.is_first_person"
+					},
+					{
+						"first_person_hide": "c.is_first_person"
+					}
+				]
+			},
+			"render_controllers": ["controller.render.item_default"]
+		}
+	}
+}

@@ -1,0 +1,119 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_officer.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						{
+							"move": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"attacking": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"attacking": {
+					"animations": ["baton_attack"],
+					"transitions": [
+						{
+							"default": "query.is_delayed_attacking == 0"
+						}
+					],
+					"blend_transition": 0.4
+				}
+			}
+		},
+		"controller.animation.dt_officer.anim_cont_new": {
+			"initial_state": "ranged",
+			"states": {
+				"ranged": {
+					"animations": [
+						"general2",
+						{
+							"move": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"holding_gun": "query.has_target"
+						},
+						{
+							"baton": "query.variant == 1"
+						}
+					],
+					"blend_transition": 0.25
+				},
+				"holding_gun": {
+					"animations": [
+						"hold_gun",
+						{
+							"move2": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"ranged": "!query.has_target"
+						}
+					],
+					"blend_transition": 0.35
+				},
+				"baton": {
+					"animations": [
+						"general",
+						{
+							"move": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"baton_attacking": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.16
+				},
+				"baton_attacking": {
+					"animations": [
+						"baton_attack",
+						{
+							"move2": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					],
+					"blend_transition": 0.16
+				}
+			}
+		},
+		"controller.animation.dt_officer_hold_gun.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"holding_gun": "query.has_target && query.variant == 0"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"holding_gun": {
+					"animations": ["hold_gun"],
+					"transitions": [
+						{
+							"default": "!query.has_target"
+						}
+					],
+					"blend_transition": 0.4
+				}
+			}
+		}
+	}
+}

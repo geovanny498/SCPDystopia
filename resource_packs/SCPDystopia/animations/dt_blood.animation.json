@@ -1,0 +1,32 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_blood.general": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 7.24,
+			"bones": {
+				"blood_stain1": {
+					"rotation": [0, -45, 0],
+					"scale": {
+						"0.0": [0.4, 0.4, 0.4],
+						"7.24": [2.3, 2.3, 2.3]
+					}
+				},
+				"blood_stain2": {
+					"rotation": [0, 55, 0],
+					"scale": {
+						"0.0": [0.4, 0.4, 0.4],
+						"7.24": [2.3, 2.3, 2.3]
+					}
+				},
+				"blood_stain3": {
+					"rotation": [0, 10, 0],
+					"scale": {
+						"0.0": [0.4, 0.4, 0.4],
+						"7.24": [2.3, 2.3, 2.3]
+					}
+				}
+			}
+		}
+	}
+}

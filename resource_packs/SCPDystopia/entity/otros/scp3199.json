@@ -1,0 +1,49 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp3199",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp3199",
+				"injected": "textures/entity/dt_scp3199_injected"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp3199"
+			},
+			"animations": {
+				"general": "animation.dt_scp3199.idle",
+				"spit_egg": "animation.dt_scp3199.spit_egg",
+				"attack": "animation.dt_scp3199.attack",
+
+				"move_arms": "animation.dt_scp3199.move_arms",
+				"move_legs": "animation.dt_scp3199.move_legs",
+				"egg_invisible": "animation.dt_scp3199.egg_invisible",
+				"vomit_invisible": "animation.dt_scp3199.vomit_invisible",
+
+				"anim_cont": "controller.animation.dt_scp3199.anim_cont"
+			},
+			"scripts": {
+				"animate": [
+					"anim_cont",
+					{
+						"egg_invisible": "!query.is_sheared"
+					},
+					{
+						"vomit_invisible": "!query.is_sheared"
+					}
+				],
+				"pre_animation": [
+					"variable.scp3199_move = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
+				]
+			},
+			"render_controllers": ["controller.render.scpdt_scp3199"],
+			"spawn_egg": {
+				"base_color": "#D4C6B0",
+				"overlay_color": "#C0B19A"
+			}
+		}
+	}
+}

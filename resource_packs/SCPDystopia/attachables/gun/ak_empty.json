@@ -1,0 +1,55 @@
+{
+	"format_version": "1.10",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_ak_empty",
+			"materials": {
+				"default": "entity_emissive_alpha",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/attachment/dt_ak",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.item.dt_ak"
+			},
+			"animations": {
+				"controller": "controller.animation.item.dt_ak_empty.hold",
+				"holding": "animation.item.dt_ak.hold",
+				"sneaking": "animation.item.dt_ak.sneak_trans",
+				"holding_sneak": "animation.item.dt_ak.hold_sneak",
+				"sneak_leaving": "animation.item.dt_ak.sneak_leave",
+				"shooting": "animation.item.dt_ak.shoot",
+				"shooting_sneak": "animation.item.dt_ak.shoot_sneak",
+				"hide_ra": "animation.item.dt_ak.hide_ra",
+				"hide_head": "animation.item.dt_ak.hide_head",
+				"hide_flash": "animation.item.dt_ak.muzzleflash_hide",
+				"hide_arm_mag": "animation.item.dt_ak.arm_mag_hide",
+				"position_offset": "animation.item.dt_ak.position_offset",
+				"pickup": "animation.item.dt_ak.pick",
+				"reloading": "animation.item.dt_ak.reload"
+			},
+			"scripts": {
+				"animate": [
+					"controller",
+					"position_offset",
+					{
+						"hide_ra": "c.is_first_person"
+					},
+					{
+						"hide_head": "!c.is_first_person"
+					},
+					{
+						"hide_arm_mag": "q.cooldown_time_remaining('dt_ak_reloading') == 0.0"
+					},
+					"hide_flash"
+				]
+			},
+			"particle_effects": {
+				"firing": "lc:dt_muzzleflash_emitter"
+			},
+			"render_controllers": ["controller.render.item_default"]
+		}
+	}
+}

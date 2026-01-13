@@ -1,0 +1,48 @@
+{
+	"name": "dt_scp_logo",
+	"texture": "dt_scp_logo.png",
+	"texture_size": [128, 128],
+	"parts": [
+		{
+			"name": "logo",
+			"position": [0, 0, 0],
+			"shapes": [
+				{
+					"type": "block",
+					"from": [-24, 0, 6],
+					"to": [24, 1, 8],
+					"uv": [2, 36],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-24, 31, 6],
+					"to": [24, 32, 8],
+					"uv": [2, 33],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [23, 1, 6],
+					"to": [24, 31, 8],
+					"uv": [8, 39],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-24, 1, 6],
+					"to": [-23, 31, 8],
+					"uv": [2, 39],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-23, 1, 7],
+					"to": [23, 31, 8],
+					"uv": [1, 1],
+					"position": [0, 0, 0]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,33 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_tro_scp049_2",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/scp049_2/dt_scp049_2_tro"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp049_2_human1"
+			},
+			"animations": {
+				"general": "animation.dt_scp049_2.general1",
+				"move": "animation.dt_scp049_2.walking1",
+				"attack": "animation.dt_scp049_2.attack_strong",
+
+				"anim_cont": "controller.animation.dt_scp049_2_human1.anim_cont",
+				"look_at_target": "animation.common.look_at_target"
+			},
+			"scripts": {
+				"animate": ["anim_cont", "look_at_target"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#ECE2E2",
+				"overlay_color": "#5B3939"
+			}
+		}
+	}
+}

@@ -1,0 +1,49 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp173_new.head_rotating": {
+			"loop": true,
+			"animation_length": 0.28,
+			"bones": {
+				"head": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"0.28": [0, 360, 0]
+					}
+				}
+			}
+		},
+		"animation.dt_scp173_new.head_r1": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"rotation": [0, 180, 0]
+				}
+			}
+		},
+		"animation.dt_scp173_new.head_r2": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"rotation": [2, 90, 4.5]
+				}
+			}
+		},
+		"animation.dt_scp173_new.head_r3": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"rotation": [-90.5, -87.5, 88]
+				}
+			}
+		},
+		"animation.dt_scp173_new.head_r_d": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"rotation": [0, 0, 0]
+				}
+			}
+		}
+	}
+}

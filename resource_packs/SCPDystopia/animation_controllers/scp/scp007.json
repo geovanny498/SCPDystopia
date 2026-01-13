@@ -1,0 +1,18 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp007.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						{
+							"move": "query.modified_move_speed"
+						}
+					]
+				}
+			}
+		}
+	}
+}

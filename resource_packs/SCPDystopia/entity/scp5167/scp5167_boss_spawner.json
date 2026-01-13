@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp5167_boss_spawner",
+			"materials": {
+				"default": "entity_emissive_alpha"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp5167_boss_spawner"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp5167_boss_spawner"
+			},
+			"animations": {
+				"general": "animation.dt_scp5167_boss.spawning"
+			},
+			"scripts": {
+				"animate": ["general"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#B62929",
+				"overlay_color": "#5C8FB6"
+			}
+		}
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp173",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp173"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp173"
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#8f959c",
+				"overlay_color": "#4d0505"
+			}
+		}
+	}
+}

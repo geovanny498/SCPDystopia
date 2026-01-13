@@ -1,0 +1,76 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_pipe",
+			"menu_category": {
+				"category": "construction"
+			},
+			"states": {
+				"facing:direction": [0, 1, 2, 3, 4, 5, 6] // Legacy facing direction
+			},
+			"traits": {
+				"minecraft:placement_position": {
+					"enabled_states": ["minecraft:block_face"]
+				}
+			}
+		},
+		"components": {
+			"scpdt:pipe": {},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_pipe",
+					"render_method": "alpha_test"
+				}
+			},
+			"minecraft:selection_box": true,
+			"minecraft:collision_box": true,
+			"minecraft:geometry": "geometry.dt_pipe",
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.4
+			},
+			"minecraft:light_dampening": 1,
+			"tag:lc:dystopiablock": {}
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('facing:direction') == 0 || q.block_state('facing:direction') == 1",
+				"components": {
+					"minecraft:geometry": "geometry.dt_pipe_up",
+					"minecraft:selection_box": {
+						"origin": [-6, 0, -6],
+						"size": [12, 16, 12]
+					},
+					"minecraft:collision_box": {
+						"origin": [-6, 0, -6],
+						"size": [12, 16, 12]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 2",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 0, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 3",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 180, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 4",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 90, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 5",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 270, 0] }
+				}
+			}
+		]
+	}
+}

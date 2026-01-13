@@ -1,0 +1,87 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp5167_soldier.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						{
+							"move": "variable.sus_move"
+						}
+					],
+					"transitions": [
+						{
+							"aiming": "query.has_target"
+						},
+						{
+							"low_health": "query.health < 20"
+						}
+					],
+					"blend_transition": 0.27
+				},
+				"aiming": {
+					"animations": [
+						"has_target",
+						{
+							"move": "query.modified_move_speed"
+						},
+						{
+							"low_health_swell": "query.is_sheared"
+						}
+					],
+					"transitions": [
+						{
+							"default": "!query.has_target"
+						},
+						{
+							"low_health": "query.health < 20"
+						},
+						{
+							"low_health_swell": "query.is_sheared"
+						}
+					],
+					"blend_transition": 0.27
+				},
+				"low_health": {
+					"animations": [
+						"general",
+						{
+							"move": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"low_health_run": "variable.sus_run"
+						},
+						{
+							"low_health_swell": "query.is_sheared"
+						}
+					],
+					"blend_transition": 0.15
+				},
+				"low_health_run": {
+					"animations": ["run"],
+					"transitions": [
+						{
+							"low_health": "!variable.sus_run"
+						},
+						{
+							"low_health_swell": "query.is_sheared"
+						}
+					],
+					"blend_transition": 0.15
+				},
+				"low_health_swell": {
+					"animations": ["general", "swell"],
+					"particle_effects": [
+						{
+							"effect": "charged_flames"
+						}
+					]
+				}
+			}
+		}
+	}
+}

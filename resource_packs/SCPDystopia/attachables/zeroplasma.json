@@ -1,0 +1,32 @@
+{
+  "format_version": "1.10",
+  "minecraft:attachable": {
+    "description": {
+      "identifier": "lc:dt_zeroplasma",
+      "materials": {
+        "default": "entity_alphatest",
+        "enchanted": "entity_alphatest_glint"
+      },
+      "textures": {
+        "default": "textures/attachment/dt_zeroplasma",
+        "enchanted": "textures/misc/enchanted_item_glint"
+      },
+      "geometry": {
+        "default": "geometry.item.dt_zeroplasma"
+      },
+      "animations": {
+        "hold": "controller.animation.item.dt_zeroplasma.hold",
+        "hold_first_person": "animation.item.dt_zeroplasma.hold_first_person",
+        "hold_third_person": "animation.player.crossbow_hold",
+        "zeroplasma_general": "animation.item.dt_zeroplasma.general"
+      },
+      "scripts": {
+        "animate": [
+          "hold",
+          "zeroplasma_general"
+        ]
+      },
+      "render_controllers": [ "controller.render.item_default" ]
+    }
+  }
+}

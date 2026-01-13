@@ -1,0 +1,25 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp3998.general": {
+			"loop": true,
+			"bones": {
+				"waist": {
+					"rotation": [0, 0, 0]
+				},
+				"body": {
+					"rotation": [15, 0, 0]
+				},
+				"head": {
+					"rotation": [32.5, 0, -12.5]
+				},
+				"rightArm": {
+					"rotation": [115, -52.5, 0]
+				},
+				"leftArm": {
+					"rotation": [117.5, 45, 0]
+				}
+			}
+		}
+	}
+}

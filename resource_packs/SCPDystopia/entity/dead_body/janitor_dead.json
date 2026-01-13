@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_janitor_dead",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/humanoid/janitor/dt_janitor1"
+			},
+			"geometry": {
+				"default": "geometry.dt_janitor"
+			},
+			"animations": {
+				"death": "animation.dt_misc.dead_body.death2"
+			},
+			"scripts": {
+				"animate": ["death"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#F5A30B",
+				"overlay_color": "#5A3E18"
+			}
+		}
+	}
+}

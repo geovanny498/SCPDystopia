@@ -1,0 +1,40 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scientist",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"d1": "textures/entity/humanoid/dt_scientist1",
+				"d2": "textures/entity/humanoid/dt_scientist2",
+				"d3": "textures/entity/humanoid/dt_scientist3",
+				"kaiboi39": "textures/entity/humanoid/dt_scientist_kaiboi39",
+				"lc": "textures/entity/humanoid/dt_scientist_lc",
+				"rian": "textures/entity/humanoid/dt_scientist_rian",
+				"bb607": "textures/entity/humanoid/dt_scientist_bb607"
+			},
+			"geometry": {
+				"default": "geometry.dt_scientist"
+			},
+			"animations": {
+				"general": "animation.dt_humanoid1.general",
+				"move": "animation.dt_humanoid1.walking",
+
+				"anim_cont": "controller.animation.dt_humanoid1.anim_cont",
+				"look_at_target": "animation.common.look_at_target"
+			},
+			"scripts": {
+				"scale": "0.9375",
+				"animate": ["anim_cont", "look_at_target"]
+			},
+			"render_controllers": ["controller.render.scpdt_scientist"],
+			"spawn_egg": {
+				"base_color": "#EDEDED",
+				"overlay_color": "#524026"
+			},
+			"enable_attachables": true
+		}
+	}
+}

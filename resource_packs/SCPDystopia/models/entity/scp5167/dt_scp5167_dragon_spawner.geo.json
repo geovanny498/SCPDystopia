@@ -1,0 +1,77 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_scp5167_dragon_spawner",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "spawner",
+					"pivot": [0, 1, 0]
+				},
+				{
+					"name": "amoguses",
+					"parent": "spawner",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "amogus1",
+					"parent": "amoguses",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [1, 0, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [31, 29]},
+						{"origin": [-4, 0, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [0, 31]},
+						{"origin": [-5, 3, -3], "size": [10, 13, 6], "uv": [0, 0]},
+						{"origin": [-4, 5, 3], "size": [8, 10, 2], "uv": [0, 19]},
+						{"origin": [-4, 9, -4], "size": [8, 5, 1], "uv": [20, 19]}
+					]
+				},
+				{
+					"name": "amogus2",
+					"parent": "amoguses",
+					"pivot": [0, 0, 0],
+					"rotation": [0, -90, 0],
+					"cubes": [
+						{"origin": [1, 0, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [31, 29]},
+						{"origin": [-4, 0, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [0, 31]},
+						{"origin": [-5, 3, -3], "size": [10, 13, 6], "uv": [0, 0]},
+						{"origin": [-4, 5, 3], "size": [8, 10, 2], "uv": [0, 19]},
+						{"origin": [-4, 9, -4], "size": [8, 5, 1], "uv": [20, 19]}
+					]
+				},
+				{
+					"name": "amogus3",
+					"parent": "amoguses",
+					"pivot": [0, 0, 0],
+					"rotation": [0, 180, 0],
+					"cubes": [
+						{"origin": [1, 0, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [31, 29]},
+						{"origin": [-4, 0, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [0, 31]},
+						{"origin": [-5, 3, -3], "size": [10, 13, 6], "uv": [0, 0]},
+						{"origin": [-4, 5, 3], "size": [8, 10, 2], "uv": [0, 19]},
+						{"origin": [-4, 9, -4], "size": [8, 5, 1], "uv": [20, 19]}
+					]
+				},
+				{
+					"name": "amogus4",
+					"parent": "amoguses",
+					"pivot": [0, 0, 0],
+					"rotation": [0, 90, 0],
+					"cubes": [
+						{"origin": [1, 0, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [31, 29]},
+						{"origin": [-4, 0, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [0, 31]},
+						{"origin": [-5, 3, -3], "size": [10, 13, 6], "uv": [0, 0]},
+						{"origin": [-4, 5, 3], "size": [8, 10, 2], "uv": [0, 19]},
+						{"origin": [-4, 9, -4], "size": [8, 5, 1], "uv": [20, 19]}
+					]
+				}
+			]
+		}
+	]
+}

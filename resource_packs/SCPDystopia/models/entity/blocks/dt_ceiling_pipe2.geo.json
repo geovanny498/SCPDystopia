@@ -1,0 +1,48 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_ceiling_pipe2",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "ceiling_pipe",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "pipe1",
+					"parent": "ceiling_pipe",
+					"pivot": [-5, 10.5, 0],
+					"cubes": [
+						{"origin": [-6, 11.5, -8], "size": [2, 2, 16], "uv": [89, 29]},
+						{"origin": [-6, 11.5, -7.8], "size": [2, 2, 1], "inflate": 0.2, "uv": [89, 29]}
+					]
+				},
+				{
+					"name": "pipe2",
+					"parent": "ceiling_pipe",
+					"pivot": [0, 10.5, 0],
+					"cubes": [
+						{"origin": [-1, 11.5, -8], "size": [2, 2, 16], "uv": [89, 29]},
+						{"origin": [-1, 11.5, -7.8], "size": [2, 2, 1], "inflate": 0.2, "uv": [89, 29]}
+					]
+				},
+				{
+					"name": "pipe3",
+					"parent": "ceiling_pipe",
+					"pivot": [5, 10.5, 0],
+					"cubes": [
+						{"origin": [4, 11.5, -8], "size": [2, 2, 16], "uv": [89, 29]},
+						{"origin": [4, 11.5, -7.8], "size": [2, 2, 1], "inflate": 0.2, "uv": [89, 29]}
+					]
+				}
+			]
+		}
+	]
+}

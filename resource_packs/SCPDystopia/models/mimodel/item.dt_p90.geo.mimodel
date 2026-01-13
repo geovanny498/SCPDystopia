@@ -1,0 +1,340 @@
+{
+	"name": "item.dt_p90",
+	"texture": "dt_p90.png",
+	"texture_size": [64, 64],
+	"parts": [
+		{
+			"name": "p90",
+			"position": [0, 0, 1],
+			"shapes": [
+				{
+					"type": "block",
+					"from": [-7, 23, -2],
+					"to": [-5, 28, 5],
+					"inflate": 0.08,
+					"uv": [7, 7],
+					"position": [6, -23, -8]
+				},
+				{
+					"type": "block",
+					"from": [-7, 25, 5],
+					"to": [-5, 27, 11],
+					"inflate": 0.07,
+					"uv": [6, 26],
+					"position": [6, -23, -8]
+				},
+				{
+					"type": "block",
+					"from": [-7, 25, 11],
+					"to": [-5, 27, 16],
+					"inflate": 0.02,
+					"uv": [27, 25],
+					"position": [6, -23, -8]
+				},
+				{
+					"type": "block",
+					"from": [-5.8, 25.5, 10.9],
+					"to": [-4.8, 26.5, 14.9],
+					"inflate": -0.1,
+					"uv": [26, 4],
+					"position": [6, -23, -8]
+				},
+				{
+					"type": "block",
+					"from": [-6.5, 25.5, 15],
+					"to": [-5.5, 26.5, 17],
+					"inflate": -0.1,
+					"uv": [2, 5],
+					"position": [6, -23, -8]
+				},
+				{
+					"type": "block",
+					"from": [-6.5, 25.5, 16.2],
+					"to": [-5.5, 26.5, 18.2],
+					"inflate": -0.02,
+					"uv": [2, 2],
+					"position": [6, -23, -8]
+				}
+			],
+			"parts": [
+				{
+					"name": "s",
+					"position": [1, 3, 6.4],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-5.3, 25.5, 13.9],
+							"to": [-4.3, 26.5, 14.9],
+							"inflate": -0.25,
+							"uv": [1, 14],
+							"position": [5, -26, -14.4]
+						}
+					]
+				},
+				{
+					"name": "d",
+					"position": [0, 2, 0],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-7, 23.4, 9.6],
+							"to": [-5, 25.4, 11.6],
+							"uv": [12, 22],
+							"position": [6, -25, -8]
+						},
+						{
+							"type": "block",
+							"from": [-1, 0, 0],
+							"to": [1, 1, 3],
+							"inflate": -0.01,
+							"uv": [25, 30],
+							"position": [0, -2.5, 0],
+							"rotation": [-18.5, 0, 0]
+						},
+						{
+							"type": "block",
+							"from": [-7, 22.5, 6],
+							"to": [-5, 23.5, 8],
+							"uv": [32, 32],
+							"position": [6, -25, -8]
+						},
+						{
+							"type": "block",
+							"from": [-7, 22.5, 5],
+							"to": [-5, 25.5, 7],
+							"inflate": 0.01,
+							"uv": [11, 14],
+							"position": [6, -25, -8]
+						},
+						{
+							"type": "block",
+							"from": [-7, 23.4, 11],
+							"to": [-5, 25.4, 12],
+							"inflate": 0.01,
+							"uv": [1, 21],
+							"position": [6, -25, -8]
+						},
+						{
+							"type": "block",
+							"from": [-7, 24.2, 14],
+							"to": [-5, 25.2, 16],
+							"inflate": 0.01,
+							"uv": [32, 14],
+							"position": [6, -25, -8]
+						},
+						{
+							"type": "block",
+							"from": [-7, 23.2, 15.2],
+							"to": [-5, 25.2, 16.2],
+							"inflate": -0.2,
+							"uv": [12, 4],
+							"position": [6, -25, -8]
+						},
+						{
+							"type": "block",
+							"from": [-7, 22.7, 11.6],
+							"to": [-5, 23.7, 13.6],
+							"inflate": -0.01,
+							"uv": [31, 29],
+							"position": [6, -25, -8]
+						},
+						{
+							"type": "block",
+							"from": [-7, 24.1, 11.6],
+							"to": [-5, 25.1, 12.6],
+							"inflate": -0.1,
+							"uv": [9, 19],
+							"position": [6, -25, -8]
+						},
+						{
+							"type": "block",
+							"from": [-1, 0, 0],
+							"to": [1, 1, 2],
+							"uv": [10, 30],
+							"position": [0, -2.3, 5.6],
+							"rotation": [-50, 0, 0]
+						}
+					]
+				},
+				{
+					"name": "u",
+					"position": [0, 4, 0],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-7, 27, 15],
+							"to": [-5, 29, 16],
+							"uv": [12, 1],
+							"position": [6, -27, -8]
+						},
+						{
+							"type": "block",
+							"from": [-1, 0, -4.8],
+							"to": [1, 1, 0.2],
+							"inflate": -0.03,
+							"uv": [5, 17],
+							"position": [0, 1, 7],
+							"rotation": [8, 0, 0]
+						}
+					],
+					"parts": [
+						{
+							"name": "mag",
+							"position": [0, 0, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-7, 26.9, 4.9],
+									"to": [-5, 27.9, 15.9],
+									"inflate": -0.1,
+									"uv": [33, 11],
+									"position": [6, -27, -8]
+								},
+								{
+									"type": "block",
+									"from": [-7, 26.9, 4.9],
+									"to": [-5, 27.9, 6.9],
+									"inflate": -0.05,
+									"uv": [58, 10],
+									"position": [6, -27, -8]
+								}
+							]
+						},
+						{
+							"name": "u2",
+							"position": [0, 0, 5],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-5.1, 27.1, 10],
+									"to": [-5.1, 28.1, 11],
+									"inflate": 0.1,
+									"uv": [12, 6],
+									"invert": true,
+									"position": [6, -27, -13]
+								},
+								{
+									"type": "block",
+									"from": [-6.9, 27.1, 10],
+									"to": [-6.9, 28.1, 11],
+									"inflate": 0.1,
+									"uv": [5, 6],
+									"invert": true,
+									"position": [6, -27, -13]
+								},
+								{
+									"type": "block",
+									"from": [0.9, 0.1, 0.1],
+									"to": [0.9, 1.1, 1.1],
+									"inflate": 0.1,
+									"uv": [5, 4],
+									"invert": true,
+									"position": [0, 1.2, -3.1],
+									"rotation": [19, 0, 0]
+								},
+								{
+									"type": "block",
+									"from": [-0.9, 0.1, 0.1],
+									"to": [-0.9, 1.1, 1.1],
+									"inflate": 0.1,
+									"uv": [5, 3],
+									"invert": true,
+									"position": [0, 1.2, -3.1],
+									"rotation": [19, 0, 0]
+								},
+								{
+									"type": "block",
+									"from": [0.8, 1.3, 0.2],
+									"to": [0.8, 2.3, 2.2],
+									"inflate": 0.19,
+									"uv": [2, 12],
+									"invert": true,
+									"position": [0, 1.2, -3.1],
+									"rotation": [19, 0, 0]
+								},
+								{
+									"type": "block",
+									"from": [-0.8, 1.3, 0.2],
+									"to": [-0.8, 2.3, 2.2],
+									"inflate": 0.19,
+									"uv": [2, 6],
+									"invert": true,
+									"position": [0, 1.2, -3.1],
+									"rotation": [19, 0, 0]
+								},
+								{
+									"type": "block",
+									"from": [-7, 28.9, 11],
+									"to": [-5, 29.9, 15],
+									"inflate": -0.02,
+									"uv": [26, 16],
+									"position": [6, -27, -13]
+								},
+								{
+									"type": "block",
+									"from": [-7, 28.5, 14],
+									"to": [-5, 29.5, 16],
+									"inflate": -0.09,
+									"uv": [2, 30],
+									"position": [6, -27, -13]
+								},
+								{
+									"type": "block",
+									"from": [-5.2, 28.7, 14.8],
+									"to": [-5.2, 29.7, 15.8],
+									"inflate": 0.1,
+									"uv": [5, 1],
+									"invert": true,
+									"position": [6, -27, -13]
+								},
+								{
+									"type": "block",
+									"from": [-6.8, 28.7, 14.8],
+									"to": [-6.8, 29.7, 15.8],
+									"inflate": 0.1,
+									"uv": [1, 4],
+									"invert": true,
+									"position": [6, -27, -13]
+								},
+								{
+									"type": "block",
+									"from": [-1, 1.1, 0],
+									"to": [1, 2.1, 1],
+									"uv": [23, 10],
+									"position": [0, 1.2, -3.1],
+									"rotation": [19, 0, 0]
+								},
+								{
+									"type": "block",
+									"from": [-7, 29.6, 11.8],
+									"to": [-5, 30.6, 14.8],
+									"inflate": -0.1,
+									"uv": [25, 8],
+									"position": [6, -27, -13]
+								},
+								{
+									"type": "block",
+									"from": [-5.2, 29.8, 13.5],
+									"to": [-5.2, 30.8, 14.5],
+									"inflate": 0.09,
+									"uv": [1, 3],
+									"invert": true,
+									"position": [6, -27, -13]
+								},
+								{
+									"type": "block",
+									"from": [-6.8, 29.8, 13.5],
+									"to": [-6.8, 30.8, 14.5],
+									"inflate": 0.09,
+									"uv": [1, 1],
+									"invert": true,
+									"position": [6, -27, -13]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

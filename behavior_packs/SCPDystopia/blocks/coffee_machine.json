@@ -1,0 +1,83 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_coffee_machine",
+			"menu_category": {
+				"category": "construction"
+			},
+			"states": {
+				"coffee:vending_states": [1, 2],
+				"facing:direction": [2, 3, 4, 5],
+				"coffee:vending": [false, true]
+			}
+		},
+		"components": {
+			"scpdt:legacy_placement_state": {
+				"facingDirectionState": "facing:direction",
+				"facingDirectionReverse": true
+			},
+			"scpdt:coffee_machine": {},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_coffee_machine",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:collision_box": {
+				"origin": [-5, 0, -5],
+				"size": [10, 16, 10]
+			},
+			"minecraft:selection_box": {
+				"origin": [-5, 0, -5],
+				"size": [10, 16, 10]
+			},
+			"minecraft:geometry": "geometry.dt_coffee_machine",
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.1
+			},
+			"tag:lc:dystopiablock": {}
+		},
+		"permutations": [
+			{
+				"condition": "query.block_state('coffee:vending') == true",
+				"components": {
+					"minecraft:geometry": "geometry.dt_coffee_machine_with_cup"
+				}
+			},
+			{
+				"condition": "query.block_state('coffee:vending_states') == 2",
+				"components": {
+					"minecraft:tick": {
+						"looping": false,
+						"interval_range": [160, 160]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 2",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 0, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 3",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 180, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 4",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 90, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 5",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 270, 0] }
+				}
+			}
+		]
+	}
+}

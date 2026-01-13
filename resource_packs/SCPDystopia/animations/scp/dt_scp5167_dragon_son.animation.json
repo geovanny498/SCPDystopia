@@ -1,0 +1,20 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp5167_dragon_son.general": {
+			"loop": true,
+			"animation_length": 2.6,
+			"bones": {
+				"amogus": {
+					"rotation": ["query.target_x_rotation", "query.target_y_rotation", 0]
+				},
+				"ring": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"2.6": [0, 0, 360]
+					}
+				}
+			}
+		}
+	}
+}

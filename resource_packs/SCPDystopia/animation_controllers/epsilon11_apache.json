@@ -1,0 +1,63 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_epsilon11_apache.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general"]
+				}
+			}
+		},
+		"controller.animation.dt_epsilon11_apache_combat.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"launching": "variable.launching"
+						},
+						{
+							"fly": "variable.flying"
+						},
+						{
+							"hovering": "variable.hovering"
+						}
+					]
+				},
+				"launching": {
+					"animations": ["launch"],
+					"transitions": [
+						{
+							"fly": "variable.flying"
+						}
+					]
+				},
+				"fly": {
+					"animations": ["flying", "propeller_roll"],
+					"transitions": [
+						{
+							"hovering": "variable.hovering"
+						}
+					]
+				},
+				"hovering": {
+					"animations": ["hover", "propeller_roll"],
+					"transitions": [
+						{
+							"fly": "!variable.hovering"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.dt_epsilon11_apache_combat_crash.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["crash"]
+				}
+			}
+		}
+	}
+}

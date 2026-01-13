@@ -1,0 +1,38 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_blood_r2",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 6,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "blood_stain1",
+					"pivot": [-15, 0.2, -1],
+					"cubes": [
+						{"origin": [-23, -0.7, -9], "size": [16, 1, 16], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "blood_stain2",
+					"pivot": [12, 0.3, 10],
+					"cubes": [
+						{"origin": [4, -0.6, 2], "size": [16, 1, 16], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "blood_stain3",
+					"pivot": [4, 0.1, -14],
+					"cubes": [
+						{"origin": [-4, -0.8, -22], "size": [16, 1, 16], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

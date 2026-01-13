@@ -1,0 +1,39 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp035_scientist.general": {
+			"loop": true,
+			"bones": {
+				"chest": {
+					"rotation": ["math.sin(query.life_time * -80) * 1.5", 0, 0]
+				},
+				"head": {
+					"rotation": ["math.sin(query.life_time * 130) * 1", 0, "-2.5+math.sin(query.life_time * 60) * 1"]
+				},
+				"leftArm": {
+					"rotation": [0, 0, "-1.5+math.sin(query.life_time * -80) * 1.5"]
+				},
+				"rightArm": {
+					"rotation": [0, 0, "1.5+math.sin(query.life_time * 80) * 1.5"]
+				}
+			}
+		},
+		"animation.dt_scp035_scientist.walking": {
+			"loop": true,
+			"bones": {
+				"leftArm": {
+					"rotation": ["math.sin(query.life_time * 610) * 45", 0, 0]
+				},
+				"rightArm": {
+					"rotation": ["math.sin(query.life_time * -610) * 45", 0, 0]
+				},
+				"rightLeg": {
+					"rotation": ["math.sin(query.life_time * 610) * 45", 0, 0]
+				},
+				"leftLeg": {
+					"rotation": ["math.sin(query.life_time * -610) * 45", 0, 0]
+				}
+			}
+		}
+	}
+}

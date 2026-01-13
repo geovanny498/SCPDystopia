@@ -1,0 +1,20 @@
+{
+    "format_version": "1.10.0",
+    "minecraft:client_entity": {
+        "description": {
+            "identifier": "lc:dt_scar_bullet_player_ads",
+            "materials": {
+                "default": "entity_emissive_alpha"
+            },
+            "textures": {
+                "default": "textures/entity/deathbullet"
+            },
+            "geometry": {
+                "default": "geometry.scpdt_de.misc.bullet"
+            },
+            "render_controllers": [
+                "controller.render.scpdt_de.standard"
+            ]
+        }
+    }
+}

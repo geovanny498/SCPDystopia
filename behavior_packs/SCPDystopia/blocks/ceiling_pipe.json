@@ -1,0 +1,80 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_ceiling_pipe",
+			"menu_category": {
+				"category": "construction"
+			},
+			"states": {
+				"facing:direction": [2, 3, 4, 5],
+				"ceiling_pipe:states": [1, 2, 3]
+			}
+		},
+		"components": {
+			"scpdt:legacy_placement_state": {
+				"facingDirectionState": "facing:direction",
+				"facingDirectionReverse": true
+			},
+			"scpdt:ceiling_pipe": {},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_ceiling_pipe",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:geometry": "geometry.dt_ceiling_pipe1",
+			"minecraft:selection_box": {
+				"origin": [-8, 10, -8],
+				"size": [16, 6, 16]
+			},
+			"minecraft:collision_box": {
+				"origin": [-8, 10, -8],
+				"size": [16, 6, 16]
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.5
+			},
+			"minecraft:light_dampening": 2,
+			"tag:lc:dystopiablock": {}
+		},
+		"permutations": [
+			{
+				"condition": "query.block_state('ceiling_pipe:states') == 2",
+				"components": {
+					"minecraft:geometry": "geometry.dt_ceiling_pipe2"
+				}
+			},
+			{
+				"condition": "query.block_state('ceiling_pipe:states') == 3",
+				"components": {
+					"minecraft:geometry": "geometry.dt_ceiling_pipe_center"
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 2",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 0, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 3",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 180, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 4",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 90, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 5",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 270, 0] }
+				}
+			}
+		]
+	}
+}

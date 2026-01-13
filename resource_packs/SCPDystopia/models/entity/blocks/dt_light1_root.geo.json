@@ -1,0 +1,28 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_light1_root",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "light1_a",
+					"pivot": [0, 0, 0],
+					"rotation": [0, -90, 0],
+					"cubes": [
+						{"origin": [-7, 0, -2], "size": [1, 16, 1], "uv": [24, 32]},
+						{"origin": [-7, 0, 1], "size": [1, 16, 1], "uv": [5, 32]},
+						{"origin": [6, 0, 1], "size": [1, 16, 1], "uv": [0, 32]},
+						{"origin": [6, 0, -2], "size": [1, 16, 1], "uv": [13, 32]}
+					]
+				}
+			]
+		}
+	]
+}

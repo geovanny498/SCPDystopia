@@ -1,0 +1,71 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_blast_door_e.closed": {
+			"loop": "hold_on_last_frame",
+			"bones": {
+				"side1": {
+					"position": [0, 0, 0]
+				},
+				"side2": {
+					"position": [0, 0, 0]
+				}
+			}
+		},
+		"animation.dt_blast_door_e.closing": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 2.8333,
+			"bones": {
+				"side1": {
+					"position": {
+						"0.0": [-28, 0, 0],
+						"2.8333": [0, 0, 0]
+					}
+				},
+				"side2": {
+					"position": {
+						"0.0": [28, 0, 0],
+						"2.8333": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.dt_blast_door_e.opened": {
+			"loop": "hold_on_last_frame",
+			"bones": {
+				"side1": {
+					"position": [-28, 0, 0]
+				},
+				"side2": {
+					"position": [28, 0, 0]
+				}
+			}
+		},
+		"animation.dt_blast_door_e.opening": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 3.25,
+			"bones": {
+				"side1": {
+					"position": {
+						"0.0": [0, 0, 0],
+						"3.25": [-28, 0, 0]
+					}
+				},
+				"side2": {
+					"position": {
+						"0.0": [0, 0, 0],
+						"3.25": [28, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.dt_blast_door_e.rotated": {
+			"loop": true,
+			"bones": {
+				"blast_door": {
+					"rotation": [0, -90, 0]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,43 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp131.spin": {
+			"loop": true,
+			"animation_length": 1.16,
+			"bones": {
+				"spin": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"1.16": [0, 360, 0]
+					}
+				}
+			}
+		},
+		"animation.dt_scp131.general": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"rotation": ["math.sin(query.life_time * 80) * 0.3", "query.target_y_rotation", "math.sin(query.life_time * -60) * 0.4"],
+					"position": [0, "math.sin(query.life_time * -60) * 0.1", 0],
+					"scale": 1.06
+				},
+				"eye": {
+					"position": [0, 0, "0.1+math.sin(query.life_time * -90) * 0.1"]
+				},
+				"eye2": {
+					"rotation": [0, 0, "math.sin(query.life_time * 25) * 250"]
+				},
+				"h1": {
+					"rotation": ["-12.5+math.sin(query.life_time * -80) * 2", 0, 0],
+					"position": [0, 0, -0.2]
+				},
+				"h2": {
+					"rotation": ["-12.5+math.sin(query.life_time * -80) * 2", 0, 0]
+				},
+				"h3": {
+					"rotation": ["-22.5+math.sin(query.life_time * -80) * 2", 0, 0]
+				}
+			}
+		}
+	}
+}

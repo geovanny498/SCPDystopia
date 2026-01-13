@@ -1,0 +1,56 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp096.move_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						{
+							"walk": "variable.scp096_walking"
+						}
+					],
+					"transitions": [
+						{
+							"running": "variable.scp096_running"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"running": {
+					"animations": ["run"],
+					"transitions": [
+						{
+							"default": "!variable.scp096_running"
+						}
+					],
+					"blend_transition": 0.3
+				}
+			}
+		},
+		"controller.animation.dt_scp096.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general"],
+					"transitions": [
+						{
+							"rage": "query.is_casting"
+						}
+					],
+					"blend_transition": 1
+				},
+				"rage": {
+					"animations": ["rageing"],
+					"transitions": [
+						{
+							"default": "!query.is_casting"
+						}
+					],
+					"blend_transition": 1
+				}
+			}
+		}
+	}
+}

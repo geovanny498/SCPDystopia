@@ -1,0 +1,45 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.sit.despawn_if_outside_sittable": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [{ "despawn": "!q.relative_block_has_all_tags(0, 0, 0, 'lc:sittable')" }]
+				},
+				"despawn": {
+					"on_entry": ["@s sit:death"]
+				}
+			}
+		},
+		"controller.animation.sit.toilet": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [{ "being_ridden": "query.has_rider" }]
+				},
+				"being_ridden": {
+					"transitions": [{ "lost_rider": "!query.has_rider" }]
+				},
+				"lost_rider": {
+					"on_entry": ["/playsound scpdt.toilet_flush @a[r=5] ~~~"]
+				}
+			}
+		},
+		"controller.animation.sit.toilet_buttghost": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [{ "being_ridden": "query.has_rider" }]
+				},
+				"being_ridden": {
+					"transitions": [{ "lost_rider": "!query.has_rider" }],
+					"on_entry": ["/effect @p wither 2 1 true"]
+				},
+				"lost_rider": {
+					"on_entry": ["/playsound scpdt.toilet_flush @a[r=5] ~~~"]
+				}
+			}
+		}
+	}
+}

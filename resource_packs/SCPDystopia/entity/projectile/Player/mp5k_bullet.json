@@ -1,0 +1,19 @@
+{
+    "format_version": "1.10.0",
+    "minecraft:client_entity": {
+      "description": {
+        "identifier": "lc:dt_mp5k_bullet_player",
+        "materials": {
+          "default": "arrow"
+        },
+        "textures": {
+          "default": "textures/entity/bullet"
+        },
+        "geometry": {
+          "default": "geometry.dt_bullet"
+        },
+        "render_controllers": [ "controller.render.scpdt_de.standard" ]
+      }
+    }
+  }
+  

@@ -1,0 +1,30 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_table"
+		},
+		"components": {
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_table",
+					"render_method": "alpha_test"
+				}
+			},
+			"minecraft:collision_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 16, 16]
+			},
+			"minecraft:selection_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 16, 16]
+			},
+			"minecraft:geometry": "geometry.dt_table",
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.3
+			},
+			"minecraft:light_dampening": 2,
+			"tag:lc:dystopiablock": {}
+		}
+	}
+}

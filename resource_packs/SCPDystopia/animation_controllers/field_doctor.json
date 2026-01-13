@@ -1,0 +1,70 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_field_doctor.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general", "walk"],
+					"transitions": [
+						{
+							"take_aim": "query.has_target"
+						},
+						{
+							"giving_medkit": "query.mark_variant == 1"
+						},
+						{
+							"shooting": "query.has_target && query.facing_target_to_range_attack"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"take_aim": {
+					"animations": ["aiming", "walk"],
+					"transitions": [
+						{
+							"default": "!query.has_target"
+						},
+						{
+							"giving_medkit": "query.mark_variant == 1"
+						},
+						{
+							"shooting": "query.has_target && query.facing_target_to_range_attack"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"shooting": {
+					"animations": ["shoot"],
+					"transitions": [
+						{
+							"default": "!query.has_target || !query.facing_target_to_range_attack"
+						},
+						{
+							"giving_medkit": "query.mark_variant == 1"
+						},
+						{
+							"aim": "!query.facing_target_to_range_attack"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"giving_medkit": {
+					"animations": ["give_medkit", "walk"],
+					"transitions": [
+						{
+							"default": "(query.mark_variant != 1) && !query.has_target"
+						},
+						{
+							"take_aim": "(query.mark_variant != 1) && query.has_target"
+						},
+						{
+							"shooting": "query.has_target && query.facing_target_to_range_attack"
+						}
+					],
+					"blend_transition": 0.4
+				}
+			}
+		}
+	}
+}

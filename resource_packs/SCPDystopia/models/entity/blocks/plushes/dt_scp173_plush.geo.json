@@ -1,0 +1,69 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_scp173_plush",
+				"texture_width": 32,
+				"texture_height": 32,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "plush",
+					"pivot": [0, 0, 0],
+					"rotation": [0, 180, 0],
+					"cubes": [
+						{"origin": [-2, 0.25, -1], "size": [4, 8, 2], "inflate": 0.14, "uv": [0, 9]}
+					]
+				},
+				{
+					"name": "leg1",
+					"parent": "plush",
+					"pivot": [-1, 1, 0],
+					"rotation": [0, 20, 0],
+					"cubes": [
+						{"origin": [-2, 0, -5], "size": [2, 2, 4], "uv": [0, 22]}
+					]
+				},
+				{
+					"name": "leg2",
+					"parent": "plush",
+					"pivot": [1, 1, 0],
+					"rotation": [0, -20, 0],
+					"cubes": [
+						{"origin": [0, 0, -5], "size": [2, 2, 4], "uv": [9, 19]}
+					]
+				},
+				{
+					"name": "arm1",
+					"parent": "plush",
+					"pivot": [-1, 6.7, 0],
+					"rotation": [15, 30, 0],
+					"cubes": [
+						{"origin": [-2, 5.7, -5], "size": [2, 2, 4], "uv": [13, 12]}
+					]
+				},
+				{
+					"name": "arm2",
+					"parent": "plush",
+					"pivot": [1, 6.7, 0],
+					"rotation": [15, -30, 0],
+					"cubes": [
+						{"origin": [0, 5.7, -5], "size": [2, 2, 4], "uv": [13, 5]}
+					]
+				},
+				{
+					"name": "head",
+					"parent": "plush",
+					"pivot": [0, 8, 0],
+					"cubes": [
+						{"origin": [-2, 8, -2], "size": [4, 4, 4], "inflate": 0.7, "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

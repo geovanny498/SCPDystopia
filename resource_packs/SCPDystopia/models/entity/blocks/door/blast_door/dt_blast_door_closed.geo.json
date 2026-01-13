@@ -1,0 +1,48 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_blast_door_closed",
+				"texture_width": 256,
+				"texture_height": 256,
+				"visible_bounds_width": 6,
+				"visible_bounds_height": 4.5,
+				"visible_bounds_offset": [0, 1.75, 0]
+			},
+			"bones": [
+				{
+					"name": "blast_door",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [32, 0, -7], "size": [8, 48, 14], "uv": [45, 123]},
+						{"origin": [-32, 40, -7], "size": [64, 8, 14], "uv": [0, 0]},
+						{"origin": [-40, 0, -7], "size": [8, 48, 14], "uv": [0, 82]},
+						{"origin": [-38, 0, -8], "size": [4, 48, 1], "uv": [112, 123]},
+						{"origin": [34, 0, -8], "size": [4, 48, 1], "uv": [101, 123]},
+						{"origin": [34, 0, 7], "size": [4, 48, 1], "uv": [90, 123]},
+						{"origin": [-38, 0, 7], "size": [4, 48, 1], "uv": [45, 82]},
+						{"origin": [-34, 42, 7], "size": [68, 3, 1], "uv": [0, 28]},
+						{"origin": [-34, 42, -8], "size": [68, 3, 1], "uv": [0, 23]}
+					]
+				},
+				{
+					"name": "side1",
+					"parent": "blast_door",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-32, 0, -4], "size": [32, 40, 8], "uv": [73, 74]}
+					]
+				},
+				{
+					"name": "side2",
+					"parent": "blast_door",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [0, 0, -4], "size": [32, 40, 8], "uv": [0, 33]}
+					]
+				}
+			]
+		}
+	]
+}

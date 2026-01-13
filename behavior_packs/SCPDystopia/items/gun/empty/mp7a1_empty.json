@@ -1,0 +1,33 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_mp7a1_empty",
+			"menu_category": {
+				"category": "none"
+			}
+		},
+		"components": {
+			"scpdt:dont_damage_durability_on_hit": {},
+			"scpdt:mp7a1_empty": {},
+			"minecraft:use_modifiers": {
+				"movement_modifier": 1.0,
+				"use_duration": 1.6
+			},
+			"minecraft:damage": 4,
+			"minecraft:durability": {
+				"max_durability": 2,
+				"damage_chance": {
+					"min": 0,
+					"max": 0
+				}
+			},
+			"minecraft:hand_equipped": true,
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dt_mp7a1_icon",
+			"minecraft:display_name": {
+				"value": "MP7A1 PDW (Empty)"
+			}
+		}
+	}
+}

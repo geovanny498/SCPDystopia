@@ -1,0 +1,45 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_telephone",
+				"texture_width": 48,
+				"texture_height": 48,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "telephone",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-4, 0, -5], "size": [8, 2, 10], "uv": [0, 0]},
+						{"origin": [0, 1.6, -1], "size": [1, 1, 1], "inflate": -0.1, "uv": [3, 7]},
+						{"origin": [-1.5, 1.6, -1], "size": [1, 1, 1], "inflate": -0.1, "uv": [6, 6]},
+						{"origin": [-3, 1.6, -1], "size": [1, 1, 1], "inflate": -0.1, "uv": [6, 4]},
+						{"origin": [-3, 1.6, 0.5], "size": [1, 1, 1], "inflate": -0.1, "uv": [0, 6]},
+						{"origin": [0, 1.6, 0.5], "size": [1, 1, 1], "inflate": -0.1, "uv": [6, 0]},
+						{"origin": [-1.5, 1.6, 0.5], "size": [1, 1, 1], "inflate": -0.1, "uv": [6, 2]},
+						{"origin": [-3, 1.6, 2], "size": [1, 1, 1], "inflate": -0.1, "uv": [3, 3]},
+						{"origin": [0, 1.6, 2], "size": [1, 1, 1], "inflate": -0.1, "uv": [0, 4]},
+						{"origin": [-1.5, 1.6, 2], "size": [1, 1, 1], "inflate": -0.1, "uv": [3, 5]},
+						{"origin": [-3, 1.6, 3.5], "size": [1, 1, 1], "inflate": -0.1, "uv": [0, 0]},
+						{"origin": [0, 1.6, 3.5], "size": [1, 1, 1], "inflate": -0.1, "uv": [0, 2]},
+						{"origin": [-1.5, 1.6, 3.5], "size": [1, 1, 1], "inflate": -0.1, "uv": [3, 1]}
+					]
+				},
+				{
+					"name": "t1",
+					"parent": "telephone",
+					"pivot": [2.5, 2, -4.5],
+					"rotation": [-2.5, 0, 0],
+					"cubes": [
+						{"origin": [1.5, 2, -4.5], "size": [2, 1, 9], "uv": [0, 12]}
+					]
+				}
+			]
+		}
+	]
+}

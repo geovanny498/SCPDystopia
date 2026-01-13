@@ -1,0 +1,28 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_metal_crate"
+		},
+		"components": {
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_metal_crate",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:collision_box": true,
+			"minecraft:selection_box": true,
+			"minecraft:geometry": "geometry.dt_metal_crate",
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.7
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 25.0
+			},
+			"minecraft:light_dampening": 10,
+			"tag:metal": {},
+			"tag:lc:dystopiablock": {}
+		}
+	}
+}

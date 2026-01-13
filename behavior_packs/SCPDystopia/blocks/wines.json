@@ -1,0 +1,29 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_wines",
+			"menu_category": {
+				"category": "construction"
+			}
+		},
+		"components": {
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_wines",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:selection_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 16, 16]
+			},
+			"minecraft:collision_box": false,
+			"minecraft:geometry": "geometry.dt_wines",
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 0.3
+			},
+			"tag:lc:dystopiablock": {}
+		}
+	}
+}

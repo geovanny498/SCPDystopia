@@ -1,0 +1,30 @@
+{
+    "format_version": "1.10.0",
+    "minecraft:client_entity": {
+      "description": {
+        "identifier": "lc:dt_flame_player_uncertain",
+        "materials": {
+          "default": "arrow"
+        },
+        "textures": {
+          "default": "textures/none"
+        },
+        "geometry": {
+          "default": "geometry.dt_flamethrower_flame"
+        },
+        "animations": {
+          "particle": "controller.animation.dt_flame.anim_cont"
+        },
+        "particle_effects": {
+          "charged_flames": "minecraft:mobflame_emitter"
+        },
+        "scripts": {
+          "animate": [
+            "particle"
+          ]
+        },
+        "render_controllers": [ "controller.render.scpdt_de.standard" ]
+      }
+    }
+  }
+  

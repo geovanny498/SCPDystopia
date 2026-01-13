@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp5167_boss_dead",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp5167_boss"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp5167_boss"
+			},
+			"animations": {
+				"general": "animation.dt_scp5167_boss.death"
+			},
+			"scripts": {
+				"animate": ["general"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#BB1A1A",
+				"overlay_color": "#D1E8EF"
+			}
+		}
+	}
+}

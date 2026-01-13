@@ -1,0 +1,39 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scientist_scp049_2",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"d1": "textures/entity/scp049_2/dt_scp049_2_scientist1",
+				"d2": "textures/entity/scp049_2/dt_scp049_2_scientist2",
+				"d3": "textures/entity/scp049_2/dt_scp049_2_scientist3",
+				"kaiboi39": "textures/entity/scp049_2/dt_scp049_2_scientist_kaiboi39",
+				"lc": "textures/entity/scp049_2/dt_scp049_2_scientist_lc",
+				"rian": "textures/entity/scp049_2/dt_scp049_2_scientist_rian",
+				"bb607": "textures/entity/scp049_2/dt_scp049_2_scientist_bb607"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp049_2_human1"
+			},
+			"animations": {
+				"general": "animation.dt_scp049_2.general1",
+				"move": "animation.dt_scp049_2.walking1",
+				"attack": "animation.dt_scp049_2.attack",
+
+				"anim_cont": "controller.animation.dt_scp049_2_human1.anim_cont",
+				"look_at_target": "animation.common.look_at_target"
+			},
+			"scripts": {
+				"animate": ["anim_cont", "look_at_target"]
+			},
+			"render_controllers": ["controller.render.scpdt_scientist"],
+			"spawn_egg": {
+				"base_color": "#ECECEC",
+				"overlay_color": "#921C18"
+			}
+		}
+	}
+}

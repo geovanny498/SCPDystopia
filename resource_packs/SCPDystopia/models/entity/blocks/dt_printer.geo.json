@@ -1,0 +1,46 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_printer",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "printer",
+					"pivot": [6, 9, -6],
+					"cubes": [
+						{"origin": [-6, 0, -6], "size": [12, 1, 10], "uv": [0, 0]},
+						{"origin": [4, 1, -4], "size": [2, 3, 8], "uv": [0, 34]},
+						{"origin": [-6, 1, -4], "size": [2, 3, 8], "uv": [23, 32]},
+						{"origin": [-6, 1, -6], "size": [12, 3, 2], "uv": [28, 12]},
+						{"origin": [-6, 4, -6], "size": [12, 5, 3], "uv": [0, 25]},
+						{"origin": [-6, 4, 2], "size": [12, 5, 1], "uv": [31, 25]},
+						{"origin": [4, 4, -3], "size": [2, 5, 5], "uv": [16, 44]},
+						{"origin": [-6, 4, -3], "size": [2, 5, 5], "uv": [39, 39]},
+						{"origin": [4, 4, 3], "size": [2, 5, 1], "uv": [0, 12]},
+						{"origin": [-6, 4, 3], "size": [2, 5, 1], "uv": [0, 0]},
+						{"origin": [-4, 4, 3], "size": [8, 1, 1], "uv": [36, 32]},
+						{"origin": [-4, 8, 3], "size": [8, 1, 1], "uv": [28, 18]},
+						{"origin": [-7, 0, -4], "size": [1, 1, 6], "uv": [44, 2]},
+						{"origin": [6, 0, -4], "size": [1, 1, 6], "uv": [35, 0]}
+					]
+				},
+				{
+					"name": "p2",
+					"parent": "printer",
+					"pivot": [0, 0.7, 0],
+					"rotation": [-5, 0, 0],
+					"cubes": [
+						{"origin": [-4, 0.7, -4], "size": [8, 1, 11], "uv": [0, 12]}
+					]
+				}
+			]
+		}
+	]
+}

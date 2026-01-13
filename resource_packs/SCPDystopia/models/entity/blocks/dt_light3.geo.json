@@ -1,0 +1,26 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_light3",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "light3",
+					"pivot": [-0.5, 0, 0],
+					"cubes": [
+						{"origin": [-6.5, 15, -7], "size": [13, 1, 14], "uv": [0, 0]},
+						{"origin": [0.5, 14, -6], "size": [5, 1, 12], "uv": [22, 16]},
+						{"origin": [-5.5, 14, -6], "size": [5, 1, 12], "uv": [0, 15]}
+					]
+				}
+			]
+		}
+	]
+}

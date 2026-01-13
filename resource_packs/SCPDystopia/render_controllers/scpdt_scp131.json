@@ -1,0 +1,23 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+		"controller.render.scpdt_scp131": {
+			"arrays": {
+				"textures": {
+					"Array.skins": [
+						"Texture.orange",
+						"Texture.yellow",
+						"Texture.lime",
+						"Texture.blue",
+						"Texture.pink",
+						"Texture.white",
+						"Texture.darkside"
+					]
+				}
+			},
+			"geometry": "Geometry.default",
+			"materials": [{ "*": "Material.default" }],
+			"textures": ["Array.skins[query.variant]"]
+		}
+	}
+}

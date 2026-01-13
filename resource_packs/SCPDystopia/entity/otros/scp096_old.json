@@ -1,0 +1,50 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lc:dt_scp096_old",
+      "materials": {
+        "default": "entity_emissive_alpha",
+        "with_bag": "npc"
+      },
+      "textures": {
+        "default": "textures/entity/dt_scp096_BoxUV"
+      },
+      "geometry": {
+        "default": "geometry.dt_scp096",
+        "with_bag": "geometry.dt_scp096_bag"
+      },
+      "animations": {
+        "rageing": "animation.dt_scp096.rage",
+        "general": "animation.dt_scp096.general",
+        "walk": "animation.dt_scp096.walking",
+        "run": "animation.dt_scp096.running",
+        "open_jaw": "animation.dt_scp096.openjaw",
+		
+        "anim_cont": "controller.animation.dt_scp096.anim_cont",
+        "move_cont": "controller.animation.dt_scp096.move_cont",
+        "openjaw": "controller.animation.dt_scp096.openjaw",
+        "look_at_target": "animation.common.look_at_target"
+	    },
+      "scripts": {
+        "animate": [
+          "move_cont",
+          "anim_cont",
+          "openjaw"
+          //"look_at_target"
+        ],
+        "pre_animation": [
+          "variable.scp096_running = (query.ground_speed > 3.3) && (query.is_on_ground) && (query.has_target);",
+          "variable.scp096_walking = query.modified_move_speed;"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.scpdt_scp096"
+      ],
+      "spawn_egg": {
+        "base_color": "#D7CCCC",
+        "overlay_color": "#5B1A1A"
+      }
+    }
+  }
+}

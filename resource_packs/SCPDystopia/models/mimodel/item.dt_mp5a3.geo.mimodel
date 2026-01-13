@@ -1,0 +1,1537 @@
+{
+	"name": "item.dt_mp5a3",
+	"texture": "dt_mp5a3.png",
+	"texture_size": [64, 64],
+	"parts": [
+		{
+			"name": "root",
+			"position": [0, 0, 0],
+			"parts": [
+				{
+					"name": "waist",
+					"position": [0, 12, 0],
+					"parts": [
+						{
+							"name": "body",
+							"position": [0, 12, 0],
+							"parts": [
+								{
+									"name": "leftArm",
+									"position": [5, -2, 0],
+									"parts": [
+										{
+											"name": "leftItem",
+											"position": [1, -7, -1]
+										}
+									]
+								},
+								{
+									"name": "rightArm",
+									"position": [-5, -2, 0],
+									"parts": [
+										{
+											"name": "rightItem",
+											"position": [-1, -7, -1],
+											"parts": [
+												{
+													"name": "mp5_ra",
+													"position": [2, -4, 5],
+													"rotation": [90, 0, -180],
+													"parts": [
+														{
+															"name": "mp5a3_ra2",
+															"position": [1, -7, 3],
+															"parts": [
+																{
+																	"name": "mb3",
+																	"position": [0, 5, 0],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-3, 9, 3],
+																			"to": [-2, 11, 9],
+																			"uv": [29, 6],
+																			"texture_mirror": true,
+																			"position": [3, -9, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 9.7, 8.7],
+																			"to": [-2, 11.7, 10.7],
+																			"uv": [24, 28],
+																			"texture_mirror": true,
+																			"position": [3, -9, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 9.7, 10],
+																			"to": [-2, 11.7, 11],
+																			"inflate": 0.1,
+																			"uv": [5, 31],
+																			"texture_mirror": true,
+																			"position": [3, -9, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 9, 4],
+																			"to": [-2, 11, 9],
+																			"inflate": 0.1,
+																			"uv": [28, 13],
+																			"texture_mirror": true,
+																			"position": [3, -9, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 9, 3],
+																			"to": [-2, 10, 4],
+																			"inflate": 0.05,
+																			"uv": [34, 16],
+																			"texture_mirror": true,
+																			"position": [3, -9, -7]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "mr2",
+																			"position": [0.5, 0, -3.5],
+																			"rotation": [-10, 0, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3, 8.1, 3.5],
+																					"to": [-2, 9.1, 3.5],
+																					"inflate": -0.1,
+																					"uv": [0, 0],
+																					"texture_mirror": true,
+																					"invert": true,
+																					"position": [2.5, -9, -3.5]
+																				}
+																			]
+																		},
+																		{
+																			"name": "mb4",
+																			"position": [0, 0, -4.7],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3, 9, 1.3],
+																					"to": [-2, 11, 3.3],
+																					"inflate": 0.1,
+																					"uv": [25, 2],
+																					"texture_mirror": true,
+																					"position": [3, -9, -2.3]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "mag2",
+																					"position": [1, -0.7, -0.5],
+																					"rotation": [12, 0, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-0.9, -2.9, -1.9],
+																							"to": [0.1, 0.1, 0.1],
+																							"inflate": -0.1,
+																							"uv": [11, 24],
+																							"texture_mirror": true,
+																							"position": [-0.1, -3.0563, 1.31582],
+																							"rotation": [4, 0, 0]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 5.1437, 1.21582],
+																							"to": [-2, 8.1437, 3.21582],
+																							"inflate": -0.1,
+																							"uv": [2, 24],
+																							"texture_mirror": true,
+																							"position": [2, -8.3, -1.8]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-0.9, -0.1, -1.9],
+																							"to": [0.1, 1.9, 0.1],
+																							"inflate": -0.1,
+																							"uv": [24, 24],
+																							"texture_mirror": true,
+																							"position": [-0.1, -0.2563, 1.31582],
+																							"rotation": [-4, 0, 0]
+																						}
+																					]
+																				}
+																			]
+																		},
+																		{
+																			"name": "f2",
+																			"position": [0.5, -1.3, -0.8],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3.2, 7.4, 5.2],
+																					"to": [-2.2, 8.4, 8.2],
+																					"inflate": -0.3,
+																					"uv": [14, 18],
+																					"texture_mirror": true,
+																					"position": [2.5, -7.7, -6.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-2.8, 7.4, 5.2],
+																					"to": [-1.8, 8.4, 8.2],
+																					"inflate": -0.3,
+																					"uv": [14, 8],
+																					"texture_mirror": true,
+																					"position": [2.5, -7.7, -6.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3.2, 7.4, 4.8],
+																					"to": [-2.2, 8.4, 5.8],
+																					"inflate": -0.3,
+																					"uv": [15, 34],
+																					"texture_mirror": true,
+																					"position": [2.5, -7.7, -6.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-2.8, 7.4, 4.8],
+																					"to": [-1.8, 8.4, 5.8],
+																					"inflate": -0.3,
+																					"uv": [34, 12],
+																					"texture_mirror": true,
+																					"position": [2.5, -7.7, -6.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-0.6, -0.3, -1.7],
+																					"to": [0.4, 0.7, 0.3],
+																					"inflate": -0.3,
+																					"uv": [28, 30],
+																					"texture_mirror": true,
+																					"position": [0.3, 0, -1.1],
+																					"rotation": [59, 0, 0]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-1, -0.3, -1.7],
+																					"to": [0, 0.7, 0.3],
+																					"inflate": -0.3,
+																					"uv": [28, 26],
+																					"texture_mirror": true,
+																					"position": [0.3, 0, -1.1],
+																					"rotation": [59, 0, 0]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "tr2",
+																					"position": [-0.1, 1.2, 0],
+																					"rotation": [20, 0, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-2.85, 7.87245, 5.7109],
+																							"to": [-1.85, 9.87245, 6.7109],
+																							"inflate": -0.35,
+																							"uv": [1, 31],
+																							"texture_mirror": true,
+																							"position": [2.6, -8.9, -6.2]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3.15, 7.87245, 5.7109],
+																							"to": [-2.15, 9.87245, 6.7109],
+																							"inflate": -0.35,
+																							"uv": [30, 16],
+																							"texture_mirror": true,
+																							"position": [2.6, -8.9, -6.2]
+																						}
+																					]
+																				}
+																			]
+																		},
+																		{
+																			"name": "grip2",
+																			"position": [0, 0.3, 0.7],
+																			"rotation": [-12.5, 0, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3, 5.3, 6.7],
+																					"to": [-2, 9.3, 8.7],
+																					"inflate": -0.08,
+																					"uv": [2, 12],
+																					"texture_mirror": true,
+																					"position": [3, -9.3, -7.7]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3, 5.3, 6.6],
+																					"to": [-2, 5.3, 8.6],
+																					"inflate": 0.1,
+																					"uv": [5, 2],
+																					"texture_mirror": true,
+																					"position": [3, -9.3, -7.7]
+																				}
+																			]
+																		},
+																		{
+																			"name": "c3",
+																			"position": [1.4, 0.6, 0.1],
+																			"rotation": [21, 0, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3.5, 9.1, 6.6],
+																					"to": [-1.5, 10.1, 7.6],
+																					"inflate": -0.1,
+																					"uv": [27, 23],
+																					"texture_mirror": true,
+																					"position": [1.6, -9.6, -7.1]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3.5, 9.1, 7.3],
+																					"to": [-1.5, 10.1, 8.3],
+																					"inflate": -0.2,
+																					"uv": [24, 5],
+																					"texture_mirror": true,
+																					"position": [1.6, -9.6, -7.1]
+																				}
+																			]
+																		},
+																		{
+																			"name": "c4",
+																			"position": [0, 0, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3.3, 8.6, 4],
+																					"to": [-1.3, 10.6, 7],
+																					"inflate": -0.5,
+																					"uv": [14, 13],
+																					"texture_mirror": true,
+																					"position": [3, -9, -7]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3.7, 8.6, 4],
+																					"to": [-1.7, 10.6, 7],
+																					"inflate": -0.5,
+																					"uv": [14, 3],
+																					"texture_mirror": true,
+																					"position": [3, -9, -7]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "mbu3",
+																	"position": [0, 7, 0],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-3, 10.5, 10],
+																			"to": [-2, 11.5, 11],
+																			"inflate": 0.45,
+																			"uv": [34, 10],
+																			"texture_mirror": true,
+																			"position": [3, -11, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-1.2, -1.2, -0.9],
+																			"to": [-0.2, -0.2, 0.1],
+																			"inflate": 0.2,
+																			"uv": [5, 34],
+																			"texture_mirror": true,
+																			"position": [1.3, 1.8, 4],
+																			"rotation": [0, 0, 6]
+																		},
+																		{
+																			"type": "block",
+																			"from": [0.2, -1.2, -0.9],
+																			"to": [1.2, -0.2, 0.1],
+																			"inflate": 0.2,
+																			"uv": [1, 34],
+																			"texture_mirror": true,
+																			"position": [-0.3, 1.8, 4],
+																			"rotation": [0, 0, -6]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 11.5, 10.1],
+																			"to": [-2, 12.5, 11.1],
+																			"inflate": 0.29,
+																			"uv": [12, 33],
+																			"texture_mirror": true,
+																			"position": [3, -11, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 10.6, 1],
+																			"to": [-2, 11.6, 11],
+																			"inflate": 0.3,
+																			"uv": [44, 30],
+																			"texture_mirror": true,
+																			"position": [3, -11, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 11.5, -10],
+																			"to": [-2, 12.5, 11],
+																			"inflate": 0.15,
+																			"uv": [21, 21],
+																			"texture_mirror": true,
+																			"position": [3, -11, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 11.5, -8],
+																			"to": [-2, 12.5, -1],
+																			"inflate": 0.25,
+																			"uv": [7, 29],
+																			"texture_mirror": true,
+																			"position": [3, -11, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 11.5, -10],
+																			"to": [-2, 12.5, -9],
+																			"inflate": 0.2,
+																			"uv": [8, 33],
+																			"texture_mirror": true,
+																			"position": [3, -11, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 11.5, -10.3],
+																			"to": [-2, 12.5, -9.3],
+																			"inflate": 0.05,
+																			"uv": [32, 5],
+																			"texture_mirror": true,
+																			"position": [3, -11, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 10.6, 11.1],
+																			"to": [-2, 11.6, 12.1],
+																			"uv": [32, 3],
+																			"texture_mirror": true,
+																			"position": [3, -11, -7]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-2.5, 10.2, 10.9],
+																			"to": [-2.5, 11.2, 11.9],
+																			"inflate": 0.1,
+																			"uv": [1, 4],
+																			"texture_mirror": true,
+																			"invert": true,
+																			"position": [3, -11, -7]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "mbu4",
+																			"position": [-0.2, 0.5, 3.2],
+																			"rotation": [0, 0, -10],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-4.2, 11.1, 9.8],
+																					"to": [-3.2, 12.1, 10.8],
+																					"inflate": -0.4,
+																					"uv": [32, 1],
+																					"texture_mirror": true,
+																					"position": [3.2, -11.5, -10.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3.8, 11.1, 9.8],
+																					"to": [-2.8, 12.1, 10.8],
+																					"inflate": -0.4,
+																					"uv": [23, 31],
+																					"texture_mirror": true,
+																					"position": [3.2, -11.5, -10.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-4, 11.1, 9.8],
+																					"to": [-3, 12.1, 10.8],
+																					"inflate": -0.4,
+																					"uv": [13, 31],
+																					"texture_mirror": true,
+																					"position": [3.2, -11.5, -10.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3.8, 12.1, 9.8],
+																					"to": [-2.8, 13.1, 10.8],
+																					"inflate": -0.4,
+																					"uv": [31, 11],
+																					"texture_mirror": true,
+																					"position": [3.2, -11.5, -10.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-4, 12.1, 9.8],
+																					"to": [-3, 13.1, 10.8],
+																					"inflate": -0.4,
+																					"uv": [31, 9],
+																					"texture_mirror": true,
+																					"position": [3.2, -11.5, -10.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-4.2, 12.1, 9.8],
+																					"to": [-3.2, 13.1, 10.8],
+																					"inflate": -0.4,
+																					"uv": [9, 31],
+																					"texture_mirror": true,
+																					"position": [3.2, -11.5, -10.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-4.4, 11.1, 9.8],
+																					"to": [-3.4, 13.1, 10.8],
+																					"inflate": -0.4,
+																					"uv": [15, 27],
+																					"texture_mirror": true,
+																					"position": [3.2, -11.5, -10.2]
+																				}
+																			]
+																		},
+																		{
+																			"name": "stock2",
+																			"position": [0, -0.4, 3.3],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3, 10.6, 10.3],
+																					"to": [-2, 11.6, 20.3],
+																					"inflate": -0.1,
+																					"uv": [40, 43],
+																					"texture_mirror": true,
+																					"position": [3, -10.6, -10.3]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3, 9.8, 20.1],
+																					"to": [-2, 11.8, 21.1],
+																					"uv": [24, 9],
+																					"texture_mirror": true,
+																					"position": [3, -10.6, -10.3]
+																				},
+																				{
+																					"type": "block",
+																					"from": [0, -2, 0],
+																					"to": [1, 0, 1],
+																					"uv": [17, 16],
+																					"texture_mirror": true,
+																					"position": [0, -0.8, 9.8],
+																					"rotation": [-5, 0, 0]
+																				}
+																			]
+																		},
+																		{
+																			"name": "rsight2",
+																			"position": [0, 2, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3, 12.1, 7],
+																					"to": [-2, 13.1, 9],
+																					"inflate": 0.1,
+																					"uv": [25, 17],
+																					"texture_mirror": true,
+																					"position": [3, -13, -7]
+																				},
+																				{
+																					"type": "block",
+																					"from": [0, -1, -0.7],
+																					"to": [1, 1, 0.3],
+																					"inflate": -0.1,
+																					"uv": [17, 6],
+																					"texture_mirror": true,
+																					"position": [0, 0, 0.8],
+																					"rotation": [-13, 0, 0]
+																				},
+																				{
+																					"type": "block",
+																					"from": [0.9, -0.4, 0.1],
+																					"to": [0.9, 0.6, 1.1],
+																					"inflate": 0.1,
+																					"uv": [1, 2],
+																					"texture_mirror": true,
+																					"invert": true,
+																					"position": [0, 0.3, 0.8],
+																					"rotation": [9, 0, 0]
+																				},
+																				{
+																					"type": "block",
+																					"from": [0.1, -0.4, 0.1],
+																					"to": [0.1, 0.6, 1.1],
+																					"inflate": 0.1,
+																					"uv": [1, 1],
+																					"texture_mirror": true,
+																					"invert": true,
+																					"position": [0, 0.3, 0.8],
+																					"rotation": [9, 0, 0]
+																				}
+																			]
+																		},
+																		{
+																			"name": "frsight2",
+																			"position": [0, 2, -16.2],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3.5, 12.5, -10.7],
+																					"to": [-1.5, 14.5, -8.7],
+																					"inflate": -0.5,
+																					"uv": [2, 6],
+																					"texture_mirror": true,
+																					"position": [3, -13, 9.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3, 12.1, -10.2],
+																					"to": [-2, 13.1, -9.2],
+																					"inflate": -0.1,
+																					"uv": [10, 28],
+																					"texture_mirror": true,
+																					"position": [3, -13, 9.2]
+																				}
+																			]
+																		},
+																		{
+																			"name": "e2",
+																			"position": [-0.1, 0.9, -13.2],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3.9, 11.7, -7],
+																					"to": [-2.9, 12.7, -6],
+																					"inflate": -0.25,
+																					"uv": [1, 28],
+																					"texture_mirror": true,
+																					"position": [3.1, -11.9, 6.2]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-4.5, 11.7, -7],
+																					"to": [-3.5, 12.7, -6],
+																					"inflate": -0.1,
+																					"uv": [24, 12],
+																					"texture_mirror": true,
+																					"position": [3.1, -11.9, 6.2]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "mbb2",
+																	"position": [0, 7, -6],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-3, 10.6, -8.6],
+																			"to": [-2, 11.6, 1.4],
+																			"inflate": 0.15,
+																			"uv": [32, 32],
+																			"texture_mirror": true,
+																			"position": [3, -11, -1]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "cov2",
+																			"position": [0, 0, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3, 10.6, -8.4],
+																					"to": [-2, 11.6, 0.6],
+																					"inflate": 0.31,
+																					"uv": [9, 19],
+																					"texture_mirror": true,
+																					"position": [3, -11, -1]
+																				},
+																				{
+																					"type": "block",
+																					"from": [0, -0.4, -9.3],
+																					"to": [1, 0.6, -0.3],
+																					"inflate": 0.3,
+																					"uv": [9, 9],
+																					"texture_mirror": true,
+																					"position": [0, -0.7, -0.1],
+																					"rotation": [4, 0, 0]
+																				}
+																			]
+																		},
+																		{
+																			"name": "br2",
+																			"position": [1, -0.7, -11.3],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-3, 10.3, -11.3],
+																					"to": [-2, 11.3, -10.3],
+																					"uv": [14, 23],
+																					"texture_mirror": true,
+																					"position": [2, -10.3, 10.3]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3, 10.3, -10.2],
+																					"to": [-2, 11.3, -9.2],
+																					"inflate": -0.12,
+																					"uv": [5, 11],
+																					"texture_mirror": true,
+																					"position": [2, -10.3, 10.3]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3, 10.3, -10.2],
+																					"to": [-2, 12.3, -9.2],
+																					"inflate": -0.2,
+																					"uv": [6, 16],
+																					"texture_mirror": true,
+																					"position": [2, -10.3, 10.3]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3, 10.3, -13.1],
+																					"to": [-2, 11.3, -11.1],
+																					"inflate": -0.1,
+																					"uv": [2, 18],
+																					"texture_mirror": true,
+																					"position": [2, -10.3, 10.3]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-3, 10.3, -10.5],
+																					"to": [-2, 11.3, -7.5],
+																					"inflate": -0.18,
+																					"uv": [3, 3],
+																					"texture_mirror": true,
+																					"position": [2, -10.3, 10.3]
+																				}
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "head",
+									"position": [0, 0, 0],
+									"parts": [
+										{
+											"name": "mp5_gp",
+											"position": [0, 0, 0],
+											"parts": [
+												{
+													"name": "mp5_groups",
+													"position": [-6, 1, 9],
+													"parts": [
+														{
+															"name": "arm1",
+															"position": [4, -2, -8],
+															"shapes": [
+																{
+																	"type": "block",
+																	"from": [-3, 22, 1],
+																	"to": [-1, 24, 19],
+																	"inflate": 0.6,
+																	"uv": [42, 62],
+																	"texture_mirror": true,
+																	"position": [2, -23, -1]
+																}
+															],
+															"parts": [
+																{
+																	"name": "mag4",
+																	"position": [0, 4.3, 18.8],
+																	"rotation": [-174.5, 0, -180],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-0.9, -2.9, -1.9],
+																			"to": [0.1, 0.1, 0.1],
+																			"inflate": -0.1,
+																			"uv": [11, 24],
+																			"texture_mirror": true,
+																			"position": [-0.1, -3.0563, 1.31582],
+																			"rotation": [4, 0, 0]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-3, 24.1437, 19.21582],
+																			"to": [-2, 27.1437, 21.21582],
+																			"inflate": -0.1,
+																			"uv": [2, 24],
+																			"texture_mirror": true,
+																			"position": [2, -27.3, -19.8]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-0.9, -0.1, -1.9],
+																			"to": [0.1, 1.9, 0.1],
+																			"inflate": -0.1,
+																			"uv": [24, 24],
+																			"texture_mirror": true,
+																			"position": [-0.1, -0.2563, 1.31582],
+																			"rotation": [-4, 0, 0]
+																		}
+																	]
+																}
+															]
+														},
+														{
+															"name": "arm2_g",
+															"position": [-4, -3, -19],
+															"parts": [
+																{
+																	"name": "arm2",
+																	"position": [0, 0, 0],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-11, 21, -10],
+																			"to": [-9, 23, 8],
+																			"inflate": 0.6,
+																			"uv": [42, 62],
+																			"texture_mirror": true,
+																			"position": [10, -22, 10]
+																		}
+																	]
+																},
+																{
+																	"name": "mp5",
+																	"position": [6, 3, 19],
+																	"rotation": [-180, 0, -180],
+																	"parts": [
+																		{
+																			"name": "mp5a3_fp",
+																			"position": [1, -6, 2],
+																			"parts": [
+																				{
+																					"name": "mb",
+																					"position": [0, 5, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-3, 24, 7],
+																							"to": [-2, 26, 13],
+																							"uv": [29, 6],
+																							"texture_mirror": true,
+																							"position": [3, -24, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 24.7, 12.7],
+																							"to": [-2, 26.7, 14.7],
+																							"uv": [24, 28],
+																							"texture_mirror": true,
+																							"position": [3, -24, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 24.7, 14],
+																							"to": [-2, 26.7, 15],
+																							"inflate": 0.1,
+																							"uv": [5, 31],
+																							"texture_mirror": true,
+																							"position": [3, -24, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 24, 8],
+																							"to": [-2, 26, 13],
+																							"inflate": 0.1,
+																							"uv": [28, 13],
+																							"texture_mirror": true,
+																							"position": [3, -24, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 24, 7],
+																							"to": [-2, 25, 8],
+																							"inflate": 0.05,
+																							"uv": [34, 16],
+																							"texture_mirror": true,
+																							"position": [3, -24, -11]
+																						}
+																					],
+																					"parts": [
+																						{
+																							"name": "mr",
+																							"position": [0.5, 0, -2.9],
+																							"rotation": [-10, 0, 0],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3, 23.1, 8.1],
+																									"to": [-2, 24.1, 8.1],
+																									"inflate": -0.1,
+																									"uv": [0, 0],
+																									"texture_mirror": true,
+																									"invert": true,
+																									"position": [2.5, -24, -8.1]
+																								}
+																							]
+																						},
+																						{
+																							"name": "mb2",
+																							"position": [0, 0, -4.7],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3, 24, 5.3],
+																									"to": [-2, 26, 7.3],
+																									"inflate": 0.1,
+																									"uv": [25, 2],
+																									"texture_mirror": true,
+																									"position": [3, -24, -6.3]
+																								}
+																							],
+																							"parts": [
+																								{
+																									"name": "mag3",
+																									"position": [1, -0.7, -0.5],
+																									"rotation": [12, 0, 0],
+																									"shapes": [
+																										{
+																											"type": "block",
+																											"from": [-0.9, -2.9, -1.9],
+																											"to": [0.1, 0.1, 0.1],
+																											"inflate": -0.1,
+																											"uv": [11, 24],
+																											"texture_mirror": true,
+																											"position": [-0.1, -3.0563, 1.31582],
+																											"rotation": [4, 0, 0]
+																										},
+																										{
+																											"type": "block",
+																											"from": [-3, 20.1437, 5.21582],
+																											"to": [-2, 23.1437, 7.21582],
+																											"inflate": -0.1,
+																											"uv": [2, 24],
+																											"texture_mirror": true,
+																											"position": [2, -23.3, -5.8]
+																										},
+																										{
+																											"type": "block",
+																											"from": [-0.9, -0.1, -1.9],
+																											"to": [0.1, 1.9, 0.1],
+																											"inflate": -0.1,
+																											"uv": [24, 24],
+																											"texture_mirror": true,
+																											"position": [-0.1, -0.2563, 1.31582],
+																											"rotation": [-4, 0, 0]
+																										}
+																									]
+																								}
+																							]
+																						},
+																						{
+																							"name": "f",
+																							"position": [0.5, -1.3, -0.8],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3.2, 22.4, 9.2],
+																									"to": [-2.2, 23.4, 12.2],
+																									"inflate": -0.3,
+																									"uv": [14, 18],
+																									"texture_mirror": true,
+																									"position": [2.5, -22.7, -10.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-2.8, 22.4, 9.2],
+																									"to": [-1.8, 23.4, 12.2],
+																									"inflate": -0.3,
+																									"uv": [14, 8],
+																									"texture_mirror": true,
+																									"position": [2.5, -22.7, -10.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3.2, 22.4, 8.8],
+																									"to": [-2.2, 23.4, 9.8],
+																									"inflate": -0.3,
+																									"uv": [15, 34],
+																									"texture_mirror": true,
+																									"position": [2.5, -22.7, -10.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-2.8, 22.4, 8.8],
+																									"to": [-1.8, 23.4, 9.8],
+																									"inflate": -0.3,
+																									"uv": [34, 12],
+																									"texture_mirror": true,
+																									"position": [2.5, -22.7, -10.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-0.6, -0.3, -1.7],
+																									"to": [0.4, 0.7, 0.3],
+																									"inflate": -0.3,
+																									"uv": [28, 30],
+																									"texture_mirror": true,
+																									"position": [0.3, 0, -1.1],
+																									"rotation": [59, 0, 0]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-1, -0.3, -1.7],
+																									"to": [0, 0.7, 0.3],
+																									"inflate": -0.3,
+																									"uv": [28, 26],
+																									"texture_mirror": true,
+																									"position": [0.3, 0, -1.1],
+																									"rotation": [59, 0, 0]
+																								}
+																							],
+																							"parts": [
+																								{
+																									"name": "tr3",
+																									"position": [-0.1, 1.2, 0],
+																									"rotation": [20, 0, 0],
+																									"shapes": [
+																										{
+																											"type": "block",
+																											"from": [-2.85, 22.87245, 9.7109],
+																											"to": [-1.85, 24.87245, 10.7109],
+																											"inflate": -0.35,
+																											"uv": [1, 31],
+																											"texture_mirror": true,
+																											"position": [2.6, -23.9, -10.2]
+																										},
+																										{
+																											"type": "block",
+																											"from": [-3.15, 22.87245, 9.7109],
+																											"to": [-2.15, 24.87245, 10.7109],
+																											"inflate": -0.35,
+																											"uv": [30, 16],
+																											"texture_mirror": true,
+																											"position": [2.6, -23.9, -10.2]
+																										}
+																									]
+																								}
+																							]
+																						},
+																						{
+																							"name": "grip3",
+																							"position": [0, 0.3, 0.7],
+																							"rotation": [-12.5, 0, 0],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3, 20.3, 10.7],
+																									"to": [-2, 24.3, 12.7],
+																									"inflate": -0.08,
+																									"uv": [2, 12],
+																									"texture_mirror": true,
+																									"position": [3, -24.3, -11.7]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3, 20.3, 10.6],
+																									"to": [-2, 20.3, 12.6],
+																									"inflate": 0.1,
+																									"uv": [5, 2],
+																									"texture_mirror": true,
+																									"position": [3, -24.3, -11.7]
+																								}
+																							]
+																						},
+																						{
+																							"name": "c",
+																							"position": [1.4, 0.6, 0.1],
+																							"rotation": [21, 0, 0],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3.5, 24.1, 10.6],
+																									"to": [-1.5, 25.1, 11.6],
+																									"inflate": -0.1,
+																									"uv": [27, 23],
+																									"texture_mirror": true,
+																									"position": [1.6, -24.6, -11.1]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3.5, 24.1, 11.3],
+																									"to": [-1.5, 25.1, 12.3],
+																									"inflate": -0.2,
+																									"uv": [24, 5],
+																									"texture_mirror": true,
+																									"position": [1.6, -24.6, -11.1]
+																								}
+																							]
+																						},
+																						{
+																							"name": "c2",
+																							"position": [0, 0, 0],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3.3, 23.6, 8],
+																									"to": [-1.3, 25.6, 11],
+																									"inflate": -0.5,
+																									"uv": [14, 13],
+																									"texture_mirror": true,
+																									"position": [3, -24, -11]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3.7, 23.6, 8],
+																									"to": [-1.7, 25.6, 11],
+																									"inflate": -0.5,
+																									"uv": [14, 3],
+																									"texture_mirror": true,
+																									"position": [3, -24, -11]
+																								}
+																							]
+																						}
+																					]
+																				},
+																				{
+																					"name": "mbu",
+																					"position": [0, 7, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-3, 25.5, 14],
+																							"to": [-2, 26.5, 15],
+																							"inflate": 0.45,
+																							"uv": [34, 10],
+																							"texture_mirror": true,
+																							"position": [3, -26, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-1.2, -1.2, -0.9],
+																							"to": [-0.2, -0.2, 0.1],
+																							"inflate": 0.2,
+																							"uv": [5, 34],
+																							"texture_mirror": true,
+																							"position": [1.3, 1.8, 4],
+																							"rotation": [0, 0, 6]
+																						},
+																						{
+																							"type": "block",
+																							"from": [0.2, -1.2, -0.9],
+																							"to": [1.2, -0.2, 0.1],
+																							"inflate": 0.2,
+																							"uv": [1, 34],
+																							"texture_mirror": true,
+																							"position": [-0.3, 1.8, 4],
+																							"rotation": [0, 0, -6]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 26.5, 14.1],
+																							"to": [-2, 27.5, 15.1],
+																							"inflate": 0.29,
+																							"uv": [12, 33],
+																							"texture_mirror": true,
+																							"position": [3, -26, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 25.6, 5],
+																							"to": [-2, 26.6, 15],
+																							"inflate": 0.3,
+																							"uv": [44, 30],
+																							"texture_mirror": true,
+																							"position": [3, -26, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 26.5, -6],
+																							"to": [-2, 27.5, 15],
+																							"inflate": 0.15,
+																							"uv": [21, 21],
+																							"texture_mirror": true,
+																							"position": [3, -26, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 26.5, -4],
+																							"to": [-2, 27.5, 3],
+																							"inflate": 0.25,
+																							"uv": [7, 29],
+																							"texture_mirror": true,
+																							"position": [3, -26, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 26.5, -6],
+																							"to": [-2, 27.5, -5],
+																							"inflate": 0.2,
+																							"uv": [8, 33],
+																							"texture_mirror": true,
+																							"position": [3, -26, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 26.5, -6.3],
+																							"to": [-2, 27.5, -5.3],
+																							"inflate": 0.05,
+																							"uv": [32, 5],
+																							"texture_mirror": true,
+																							"position": [3, -26, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-3, 25.6, 15.1],
+																							"to": [-2, 26.6, 16.1],
+																							"uv": [32, 3],
+																							"texture_mirror": true,
+																							"position": [3, -26, -11]
+																						},
+																						{
+																							"type": "block",
+																							"from": [-2.5, 25.2, 14.9],
+																							"to": [-2.5, 26.2, 15.9],
+																							"inflate": 0.1,
+																							"uv": [1, 4],
+																							"texture_mirror": true,
+																							"invert": true,
+																							"position": [3, -26, -11]
+																						}
+																					],
+																					"parts": [
+																						{
+																							"name": "mbu2",
+																							"position": [-0.2, 0.5, 3.2],
+																							"rotation": [0, 0, -10],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-4.2, 26.1, 13.8],
+																									"to": [-3.2, 27.1, 14.8],
+																									"inflate": -0.4,
+																									"uv": [32, 1],
+																									"texture_mirror": true,
+																									"position": [3.2, -26.5, -14.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3.8, 26.1, 13.8],
+																									"to": [-2.8, 27.1, 14.8],
+																									"inflate": -0.4,
+																									"uv": [23, 31],
+																									"texture_mirror": true,
+																									"position": [3.2, -26.5, -14.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-4, 26.1, 13.8],
+																									"to": [-3, 27.1, 14.8],
+																									"inflate": -0.4,
+																									"uv": [13, 31],
+																									"texture_mirror": true,
+																									"position": [3.2, -26.5, -14.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3.8, 27.1, 13.8],
+																									"to": [-2.8, 28.1, 14.8],
+																									"inflate": -0.4,
+																									"uv": [31, 11],
+																									"texture_mirror": true,
+																									"position": [3.2, -26.5, -14.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-4, 27.1, 13.8],
+																									"to": [-3, 28.1, 14.8],
+																									"inflate": -0.4,
+																									"uv": [31, 9],
+																									"texture_mirror": true,
+																									"position": [3.2, -26.5, -14.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-4.2, 27.1, 13.8],
+																									"to": [-3.2, 28.1, 14.8],
+																									"inflate": -0.4,
+																									"uv": [9, 31],
+																									"texture_mirror": true,
+																									"position": [3.2, -26.5, -14.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-4.4, 26.1, 13.8],
+																									"to": [-3.4, 28.1, 14.8],
+																									"inflate": -0.4,
+																									"uv": [15, 27],
+																									"texture_mirror": true,
+																									"position": [3.2, -26.5, -14.2]
+																								}
+																							]
+																						},
+																						{
+																							"name": "stock3",
+																							"position": [0, -0.4, 3.3],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3, 25.6, 14.3],
+																									"to": [-2, 26.6, 24.3],
+																									"inflate": -0.1,
+																									"uv": [40, 43],
+																									"texture_mirror": true,
+																									"position": [3, -25.6, -14.3]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3, 24.8, 24.1],
+																									"to": [-2, 26.8, 25.1],
+																									"uv": [24, 9],
+																									"texture_mirror": true,
+																									"position": [3, -25.6, -14.3]
+																								},
+																								{
+																									"type": "block",
+																									"from": [0, -2, 0],
+																									"to": [1, 0, 1],
+																									"uv": [17, 16],
+																									"texture_mirror": true,
+																									"position": [0, -0.8, 9.8],
+																									"rotation": [-5, 0, 0]
+																								}
+																							]
+																						},
+																						{
+																							"name": "rsight",
+																							"position": [0, 2, 0],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3, 27.1, 11],
+																									"to": [-2, 28.1, 13],
+																									"inflate": 0.1,
+																									"uv": [25, 17],
+																									"texture_mirror": true,
+																									"position": [3, -28, -11]
+																								},
+																								{
+																									"type": "block",
+																									"from": [0, -1, -0.7],
+																									"to": [1, 1, 0.3],
+																									"inflate": -0.1,
+																									"uv": [17, 6],
+																									"texture_mirror": true,
+																									"position": [0, 0, 0.8],
+																									"rotation": [-13, 0, 0]
+																								},
+																								{
+																									"type": "block",
+																									"from": [0.9, -0.4, 0.1],
+																									"to": [0.9, 0.6, 1.1],
+																									"inflate": 0.1,
+																									"uv": [1, 2],
+																									"texture_mirror": true,
+																									"invert": true,
+																									"position": [0, 0.3, 0.8],
+																									"rotation": [9, 0, 0]
+																								},
+																								{
+																									"type": "block",
+																									"from": [0.1, -0.4, 0.1],
+																									"to": [0.1, 0.6, 1.1],
+																									"inflate": 0.1,
+																									"uv": [1, 1],
+																									"texture_mirror": true,
+																									"invert": true,
+																									"position": [0, 0.3, 0.8],
+																									"rotation": [9, 0, 0]
+																								}
+																							]
+																						},
+																						{
+																							"name": "frsight",
+																							"position": [0, 2, -16.2],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3.5, 27.51, -6.7],
+																									"to": [-1.5, 29.51, -4.7],
+																									"inflate": -0.5,
+																									"uv": [2, 6],
+																									"texture_mirror": true,
+																									"position": [3, -28, 5.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3, 27.1, -6.2],
+																									"to": [-2, 28.1, -5.2],
+																									"inflate": -0.1,
+																									"uv": [10, 28],
+																									"texture_mirror": true,
+																									"position": [3, -28, 5.2]
+																								}
+																							]
+																						},
+																						{
+																							"name": "e",
+																							"position": [-0.1, 0.9, -13.2],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3.9, 26.7, -3],
+																									"to": [-2.9, 27.7, -2],
+																									"inflate": -0.25,
+																									"uv": [1, 28],
+																									"texture_mirror": true,
+																									"position": [3.1, -26.9, 2.2]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-4.5, 26.7, -3],
+																									"to": [-3.5, 27.7, -2],
+																									"inflate": -0.1,
+																									"uv": [24, 12],
+																									"texture_mirror": true,
+																									"position": [3.1, -26.9, 2.2]
+																								}
+																							]
+																						}
+																					]
+																				},
+																				{
+																					"name": "mbb",
+																					"position": [0, 7, -6],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-3, 25.6, -4.6],
+																							"to": [-2, 26.6, 5.4],
+																							"inflate": 0.15,
+																							"uv": [32, 32],
+																							"texture_mirror": true,
+																							"position": [3, -26, -5]
+																						}
+																					],
+																					"parts": [
+																						{
+																							"name": "cov",
+																							"position": [0, 0, 0],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3, 25.6, -4.4],
+																									"to": [-2, 26.6, 4.6],
+																									"inflate": 0.31,
+																									"uv": [9, 19],
+																									"texture_mirror": true,
+																									"position": [3, -26, -5]
+																								},
+																								{
+																									"type": "block",
+																									"from": [0, -0.4, -9.3],
+																									"to": [1, 0.6, -0.3],
+																									"inflate": 0.3,
+																									"uv": [9, 9],
+																									"texture_mirror": true,
+																									"position": [0, -0.7, -0.1],
+																									"rotation": [4, 0, 0]
+																								}
+																							]
+																						},
+																						{
+																							"name": "br",
+																							"position": [1, -0.7, -11.3],
+																							"shapes": [
+																								{
+																									"type": "block",
+																									"from": [-3, 25.3, -7.3],
+																									"to": [-2, 26.3, -6.3],
+																									"uv": [14, 23],
+																									"texture_mirror": true,
+																									"position": [2, -25.3, 6.3]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3, 25.3, -6.2],
+																									"to": [-2, 26.3, -5.2],
+																									"inflate": -0.12,
+																									"uv": [5, 11],
+																									"texture_mirror": true,
+																									"position": [2, -25.3, 6.3]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3, 25.3, -6.2],
+																									"to": [-2, 27.3, -5.2],
+																									"inflate": -0.2,
+																									"uv": [6, 16],
+																									"texture_mirror": true,
+																									"position": [2, -25.3, 6.3]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3, 25.3, -9.1],
+																									"to": [-2, 26.3, -7.1],
+																									"inflate": -0.1,
+																									"uv": [2, 18],
+																									"texture_mirror": true,
+																									"position": [2, -25.3, 6.3]
+																								},
+																								{
+																									"type": "block",
+																									"from": [-3, 25.3, -6.5],
+																									"to": [-2, 26.3, -3.5],
+																									"inflate": -0.18,
+																									"uv": [3, 3],
+																									"texture_mirror": true,
+																									"position": [2, -25.3, 6.3]
+																								}
+																							]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "leftLeg",
+					"position": [1.9, 12, 0]
+				},
+				{
+					"name": "rightLeg",
+					"position": [-1.9, 12, 0]
+				}
+			]
+		}
+	]
+}

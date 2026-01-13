@@ -1,0 +1,16 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_m249_turret.general": {
+			"loop": true,
+			"bones": {
+				"stand3": {
+					"rotation": ["query.target_x_rotation", 0, 0]
+				},
+				"nu7": {
+					"rotation": [0, "query.target_y_rotation", 0]
+				}
+			}
+		}
+	}
+}

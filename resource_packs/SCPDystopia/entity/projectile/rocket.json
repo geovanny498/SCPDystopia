@@ -1,0 +1,32 @@
+{
+    "format_version": "1.10.0",
+    "minecraft:client_entity": {
+      "description": {
+        "identifier": "lc:dt_rpg_rocket",
+        "materials": {
+          "default": "arrow"
+        },
+        "textures": {
+          "default": "textures/attachment/dt_rocket_launcher"
+        },
+        "geometry": {
+          "default": "geometry.dt_rocket"
+        },
+        "animations": {
+          "move": "animation.dt_rocket.fly",
+          "anim_cont": "controller.animation.dt_rpg_rocket.anim_cont"
+        },
+        "particle_effects": {
+          "charged_flames": "minecraft:mobflame_emitter"
+        },
+        "scripts": {
+          "animate": [
+            "move",
+            "anim_cont"
+          ]
+        },
+        "render_controllers": [ "controller.render.scp_dystopia" ]
+      }
+    }
+  }
+  

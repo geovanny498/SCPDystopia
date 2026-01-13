@@ -1,0 +1,32 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_lamp_cover",
+				"texture_width": 80,
+				"texture_height": 80,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "lamp_cover",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [5, 15, -8], "size": [3, 1, 16], "uv": [0, 17]},
+						{"origin": [-8, 15, -8], "size": [3, 1, 16], "uv": [0, 0]},
+						{"origin": [-5, 15, -8], "size": [10, 1, 2], "uv": [38, 19]},
+						{"origin": [-5, 15, 6], "size": [10, 1, 2], "uv": [38, 16]},
+						{"origin": [3.5, 15, -6], "size": [1, 1, 12], "uv": [54, 61]},
+						{"origin": [1.5, 15, -6], "size": [1, 1, 12], "uv": [54, 61]},
+						{"origin": [-0.5, 15, -6], "size": [1, 1, 12], "uv": [54, 61]},
+						{"origin": [-2.5, 15, -6], "size": [1, 1, 12], "uv": [54, 61]},
+						{"origin": [-4.5, 15, -6], "size": [1, 1, 12], "uv": [54, 61]}
+					]
+				}
+			]
+		}
+	]
+}

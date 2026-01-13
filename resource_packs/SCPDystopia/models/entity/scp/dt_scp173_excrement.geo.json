@@ -1,0 +1,45 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_scp173_excrement",
+				"texture_width": 160,
+				"texture_height": 160,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "shit",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "layer1",
+					"parent": "shit",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-19, -0.9, -19], "size": [38, 1, 38], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "layer2",
+					"parent": "shit",
+					"pivot": [0, 0.1, 0],
+					"cubes": [
+						{"origin": [-19, -0.8, -19], "size": [38, 1, 38], "uv": [0, 39]}
+					]
+				},
+				{
+					"name": "layer3",
+					"parent": "shit",
+					"pivot": [0, 0.2, 0],
+					"cubes": [
+						{"origin": [-19, -0.7, -19], "size": [38, 1, 38], "uv": [0, 78]}
+					]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,18 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+		"controller.render.scpdt_scp610": {
+			"arrays": {
+				"geometries": {
+					"Array.geos": ["Geometry.type1", "Geometry.type2", "Geometry.type3", "Geometry.type4"]
+				},
+				"textures": {
+					"Array.skins": ["Texture.type1", "Texture.type2", "Texture.type3", "Texture.type4"]
+				}
+			},
+			"geometry": "Array.geos[query.variant]",
+			"materials": [{ "*": "Material.default" }],
+			"textures": ["Array.skins[query.variant]"]
+		}
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_scp096_picture",
+			"menu_category": {
+				"category": "items"
+			}
+		},
+		"components": {
+			"scpdt:scp096_picture": {},
+			"minecraft:use_modifiers": {
+				"movement_modifier": 1.0,
+				"use_duration": 0.01
+			},
+			"minecraft:max_stack_size": 1,
+			"minecraft:hand_equipped": true,
+			"minecraft:icon": "dt_scp096_pictures",
+			"minecraft:display_name": {
+				"value": "dt.nameslot.scp096_picture"
+			},
+			"minecraft:cooldown": {
+				"duration": 21.8,
+				"category": "dt_scp096_picture_opening"
+			}
+		}
+	}
+}

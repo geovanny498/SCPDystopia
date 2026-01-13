@@ -1,0 +1,46 @@
+{
+	"format_version": "1.10",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_glock_empty",
+			"materials": {
+				"default": "entity_emissive_alpha",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/attachment/dt_glock",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.item.dt_glock"
+			},
+			"animations": {
+				"controller": "controller.animation.item.dt_glock_empty.hold",
+				"holding": "animation.item.dt_glock.hold",
+				"sneaking": "animation.item.dt_glock.sneak_trans",
+				"holding_sneak": "animation.item.dt_glock.hold_sneak",
+				"sneak_leaving": "animation.item.dt_glock.sneak_leave",
+				"shooting": "animation.item.dt_glock.shoot",
+				"shooting_sneak": "animation.item.dt_glock.shoot_sneak",
+				"hide_ra": "animation.item.dt_glock.hide_ra",
+				"hide_head": "animation.item.dt_glock.hide_head",
+				"hide_flash": "animation.item.dt_glock.muzzleflash_hide",
+				"pickup": "animation.item.dt_glock.pick",
+				"reloading": "animation.item.dt_glock.reload"
+			},
+			"scripts": {
+				"animate": [
+					"controller",
+					{
+						"hide_ra": "c.is_first_person"
+					},
+					{
+						"hide_head": "!c.is_first_person"
+					},
+					"hide_flash"
+				]
+			},
+			"render_controllers": ["controller.render.item_default"]
+		}
+	}
+}

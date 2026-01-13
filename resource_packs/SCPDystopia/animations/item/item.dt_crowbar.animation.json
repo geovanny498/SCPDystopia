@@ -1,0 +1,41 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.item.dt_crowbar.hide_ra": {
+			"loop": true,
+			"bones": {
+				"crowbar_ra": {
+					"scale": 0
+				}
+			}
+		},
+		"animation.item.dt_crowbar.hide_head": {
+			"loop": true,
+			"bones": {
+				"crowbar_groups": {
+					"scale": 0
+				}
+			}
+		},
+		"animation.item.dt_crowbar.attack": {
+			"animation_length": 0.4,
+			"bones": {
+				"crowbar": {
+					"rotation": ["variable.attack * 1", 0, 0]
+				},
+				"crowbar_ra": {
+					"scale": 0
+				}
+			}
+		},
+		"animation.item.dt_crowbar.hold_first_person": {
+			"loop": true,
+			"start_delay": "1",
+			"bones": {
+				"crowbar_ra": {
+					"rotation": [0, 0, -70]
+				}
+			}
+		}
+	}
+}

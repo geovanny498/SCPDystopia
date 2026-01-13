@@ -1,0 +1,43 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_scp143_sapling",
+			"menu_category": {
+				"category": "none"
+			},
+			"states": {
+				"lc:growing": [0, 1, 2]
+			}
+		},
+		"components": {
+			"scpdt:scp143_sapling": {},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_scp143_sapling",
+					"render_method": "alpha_test",
+					"face_dimming": false,
+					"ambient_occlusion": false
+				}
+			},
+			"minecraft:selection_box": {
+				"origin": [-6, 0, -6],
+				"size": [12, 13, 12]
+			},
+			"minecraft:loot": "loot_tables/blocks/scpdt/scp143/scp143_sapling.json",
+			"minecraft:geometry": "geometry.dt_scp143_sapling",
+			"minecraft:destructible_by_mining": true,
+			"minecraft:destructible_by_explosion": true,
+			"minecraft:collision_box": false,
+			"minecraft:placement_filter": {
+				"conditions": [
+					{
+						"block_filter": ["minecraft:dirt", "minecraft:grass", "minecraft:podzol"],
+						"allowed_faces": ["up"]
+					}
+				]
+			},
+			"tag:wood": {}
+		}
+	}
+}

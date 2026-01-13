@@ -1,0 +1,39 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp131",
+			"materials": {
+				"default": "entity_emissive_alpha"
+			},
+			"textures": {
+				"orange": "textures/entity/scp131/dt_scp131_orange",
+				"yellow": "textures/entity/scp131/dt_scp131_yellow",
+				"lime": "textures/entity/scp131/dt_scp131_lime",
+				"blue": "textures/entity/scp131/dt_scp131_blue",
+				"pink": "textures/entity/scp131/dt_scp131_pink",
+				"white": "textures/entity/scp131/dt_scp131_white",
+				"darkside": "textures/entity/scp131/dt_scp131_darkside"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp131"
+			},
+			"animations": {
+				"general": "animation.dt_scp131.general",
+				"spinning": "animation.dt_scp131.spin",
+
+				"anim_cont": "controller.animation.dt_scp131.anim_cont",
+				"spin": "controller.animation.dt_scp131.spin"
+			},
+			"scripts": {
+				"animate": ["general", "anim_cont", "spin"],
+				"pre_animation": ["variable.spin = query.ground_speed > 1;"]
+			},
+			"render_controllers": ["controller.render.scpdt_scp131"],
+			"spawn_egg": {
+				"base_color": "#C65700",
+				"overlay_color": "#DED321"
+			}
+		}
+	}
+}

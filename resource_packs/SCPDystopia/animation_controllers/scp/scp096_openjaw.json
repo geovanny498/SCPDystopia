@@ -1,0 +1,27 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp096.openjaw": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"rage": "query.has_target"
+						}
+					],
+					"blend_transition": 1
+				},
+				"rage": {
+					"animations": ["open_jaw"],
+					"transitions": [
+						{
+							"default": "!query.has_target"
+						}
+					],
+					"blend_transition": 1
+				}
+			}
+		}
+	}
+}

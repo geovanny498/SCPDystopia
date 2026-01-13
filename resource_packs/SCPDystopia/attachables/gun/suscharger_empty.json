@@ -1,0 +1,42 @@
+{
+	"format_version": "1.10",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_suscharger_empty",
+			"materials": {
+				"default": "entity_alphatest",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/attachment/dt_suscharger",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.item.dt_suscharger"
+			},
+			"animations": {
+				"hold": "controller.animation.item.dt_suscharger.hold",
+				"reload": "controller.animation.item.dt_suscharger.reload",
+				"hold_first_person": "animation.item.dt_suscharger.hold_first_person",
+				"hold_first_person_sneak": "animation.item.dt_suscharger.hold_first_person_sneak",
+				"hide_ra": "animation.item.dt_suscharger.hide_ra",
+				"hide_head": "animation.item.dt_suscharger.hide_head",
+				"reloading": "animation.item.dt_suscharger.reload",
+				"pickup": "animation.item.dt_suscharger.pick"
+			},
+			"scripts": {
+				"animate": [
+					"hold",
+					"reload",
+					{
+						"hide_ra": "c.is_first_person"
+					},
+					{
+						"hide_head": "!c.is_first_person"
+					}
+				]
+			},
+			"render_controllers": ["controller.render.item_default"]
+		}
+	}
+}

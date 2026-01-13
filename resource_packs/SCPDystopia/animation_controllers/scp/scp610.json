@@ -1,0 +1,41 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp610.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				//No type selected
+				"default": {
+					"transitions": [
+						{
+							"type1": "query.variant == 0"
+						},
+						{
+							"type2": "query.variant == 1"
+						},
+						{
+							"type3": "query.variant == 2"
+						},
+						{
+							"type4": "query.variant == 3"
+						}
+					],
+					"blend_transition": 0.0
+				},
+				//Type 1
+				"type1": {
+					"animations": ["type1_general", "type1_walking"]
+				},
+				"type2": {
+					"animations": ["type2_general", "type2_walking"]
+				},
+				"type3": {
+					"animations": ["type3_general", "type3_walking"]
+				},
+				"type4": {
+					"animations": ["type4_general", "type4_walking"]
+				}
+			}
+		}
+	}
+}

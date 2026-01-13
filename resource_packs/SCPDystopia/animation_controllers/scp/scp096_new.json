@@ -1,0 +1,171 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp096.animation_controller1": {
+			"initial_state": "calm",
+			"states": {
+				"calm": {
+					"animations": ["calm", "move_legs2"],
+					"transitions": [
+						{
+							"triggered": "query.mark_variant == 1"
+						},
+						{
+							"angry": "query.mark_variant == 2"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"triggered": {
+					"animations": ["triggered", "move_legs"],
+					"transitions": [
+						{
+							"angry": "query.mark_variant == 2"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"angry": {
+					"animations": [
+						"angry",
+						"move_legs",
+						"move_arms",
+						{
+							"chase_tilt": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"angry_end": "query.mark_variant == 0"
+						},
+						{
+							"attack": "query.is_delayed_attacking == 1"
+						},
+						{
+							"climbing": "query.is_wall_climbing == 1.0"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"attack": {
+					"animations": ["attack", "move_legs"],
+					"transitions": [
+						{
+							"angry": "query.all_animations_finished"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"angry_end": {
+					"animations": ["angry_end", "move_legs"],
+					"transitions": [
+						{
+							"calm": "query.all_animations_finished"
+						}
+					],
+					"blend_transition": 2
+				},
+				"climbing": {
+					"animations": ["climb"],
+					"transitions": [
+						{
+							"angry": "query.is_wall_climbing == 0.0"
+						},
+						{
+							"angry_end": "query.mark_variant == 0"
+						},
+						{
+							"attack": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.3
+				}
+			}
+		},
+		"controller.animation.dt_scp096_legacy.animation_controller1": {
+			"initial_state": "calm",
+			"states": {
+				"calm": {
+					"animations": ["calm", "move_legs2"],
+					"transitions": [
+						{
+							"triggered": "query.mark_variant == 1"
+						},
+						{
+							"angry": "query.mark_variant == 2"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"triggered": {
+					"animations": ["triggered", "move_legs"],
+					"transitions": [
+						{
+							"angry": "query.mark_variant == 2"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"angry": {
+					"animations": [
+						"angry",
+						"move_legs",
+						"move_arms",
+						{
+							"chase_tilt": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"angry_end": "query.mark_variant == 0"
+						},
+						{
+							"attack": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"attack": {
+					"animations": ["attack", "move_legs"],
+					"transitions": [
+						{
+							"angry": "query.all_animations_finished"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"angry_end": {
+					"animations": ["angry_end", "move_legs"],
+					"transitions": [
+						{
+							"calm": "query.all_animations_finished"
+						}
+					],
+					"blend_transition": 2
+				}
+			}
+		},
+		"controller.animation.dt_scp096.animation_controller2": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"attack": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"attack": {
+					"animations": ["attack"],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					],
+					"blend_transition": 0.2
+				}
+			}
+		}
+	}
+}

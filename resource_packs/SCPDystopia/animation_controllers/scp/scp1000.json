@@ -1,0 +1,61 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp1000.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general", "move_arms", "move_legs"],
+					"transitions": [
+						{
+							"become_angry": "variable.scp1000_becoming_angry"
+						},
+						{
+							"anger": "variable.scp1000_angry"
+						},
+						{
+							"attacking": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"become_angry": {
+					"animations": ["becoming_angry", "move_legs"],
+					"transitions": [
+						{
+							"anger": "query.all_animations_finished"
+						},
+						{
+							"default": "!query.has_target || variable.scp1000_normal"
+						},
+						{
+							"attacking": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"anger": {
+					"animations": ["general", "move_arms", "move_legs"],
+					"transitions": [
+						{
+							"default": "!query.has_target"
+						},
+						{
+							"attacking": "query.is_delayed_attacking == 1"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"attacking": {
+					"animations": ["attack", "move_legs"],
+					"transitions": [
+						{
+							"anger": "query.all_animations_finished"
+						}
+					],
+					"blend_transition": 0.1
+				}
+			}
+		}
+	}
+}

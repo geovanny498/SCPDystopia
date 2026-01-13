@@ -1,0 +1,713 @@
+{
+	"name": "dt_scp5167_boss",
+	"texture": "dt_scp5167_boss.png",
+	"texture_size": [128, 128],
+	"parts": [
+		{
+			"name": "scp5167_boss",
+			"position": [0, 0, 0],
+			"parts": [
+				{
+					"name": "waist",
+					"position": [0, 20, 0],
+					"parts": [
+						{
+							"name": "rightLeg",
+							"position": [-4, 0, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-7, 10, -3],
+									"to": [-1, 20, 3],
+									"uv": [60, 84],
+									"position": [4, -20, 0]
+								}
+							],
+							"parts": [
+								{
+									"name": "rightLeg2",
+									"position": [0, -10, 2],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-7, 0, -3],
+											"to": [-1, 10, 3],
+											"uv": [35, 84],
+											"position": [4, -10, -2]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "leftLeg",
+							"position": [4, 0, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [1, 10, -3],
+									"to": [7, 20, 3],
+									"uv": [85, 84],
+									"position": [-4, -20, 0]
+								}
+							],
+							"parts": [
+								{
+									"name": "leftLeg2",
+									"position": [0, -10, 2],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [1, 0, -3],
+											"to": [7, 10, 3],
+											"uv": [6, 86],
+											"position": [-4, -10, -2]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "chest",
+							"position": [0, 0, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-8, 20, -5],
+									"to": [8, 32, 5],
+									"uv": [55, 65],
+									"position": [0, -20, 0]
+								}
+							],
+							"parts": [
+								{
+									"name": "chest2",
+									"position": [0, 12, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-8, 32, -5],
+											"to": [8, 44, 5],
+											"uv": [39, 42],
+											"position": [0, -32, 0]
+										},
+										{
+											"type": "block",
+											"from": [-6, 26, -10],
+											"to": [6, 42, -5],
+											"uv": [5, 63],
+											"position": [0, -32, 0]
+										},
+										{
+											"type": "block",
+											"from": [-6, 33, 5],
+											"to": [6, 41, 7],
+											"uv": [83, 19],
+											"position": [0, -32, 0]
+										}
+									],
+									"parts": [
+										{
+											"name": "leftArm",
+											"position": [11, 5, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [8, 25, -3],
+													"to": [14, 37, 3],
+													"uv": [64, 6],
+													"position": [-11, -37, 0]
+												}
+											],
+											"parts": [
+												{
+													"name": "leftArm2",
+													"position": [2, -12, 0],
+													"shapes": [
+														{
+															"type": "block",
+															"from": [8, 13, -3],
+															"to": [14, 25, 3],
+															"uv": [35, 6],
+															"position": [-13, -25, 0]
+														}
+													],
+													"parts": [
+														{
+															"name": "hand2",
+															"position": [0, -12, -0.5],
+															"shapes": [
+																{
+																	"type": "block",
+																	"from": [12, 8, -2.5],
+																	"to": [13, 13, 1.5],
+																	"uv": [63, 114],
+																	"position": [-13, -13, 0.5]
+																}
+															],
+															"parts": [
+																{
+																	"name": "finger16",
+																	"position": [0, 0, 2],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [12, 10, 1.5],
+																			"to": [13, 13, 2.5],
+																			"uv": [101, 109],
+																			"position": [-13, -13, -1.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger17",
+																			"position": [0, -3, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [12, 7, 1.5],
+																					"to": [13, 10, 2.5],
+																					"uv": [101, 109],
+																					"position": [-13, -10, -1.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger18",
+																					"position": [0, -3, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [12, 5, 1.5],
+																							"to": [13, 7, 2.5],
+																							"uv": [101, 109],
+																							"position": [-13, -7, -1.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "finger19",
+																	"position": [0, -5, 1],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [12, 5, 0.5],
+																			"to": [13, 8, 1.5],
+																			"uv": [101, 109],
+																			"position": [-13, -8, -0.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger20",
+																			"position": [0, -3, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [12, 2, 0.5],
+																					"to": [13, 5, 1.5],
+																					"uv": [101, 109],
+																					"position": [-13, -5, -0.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger21",
+																					"position": [0, -3, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [12, 0, 0.5],
+																							"to": [13, 2, 1.5],
+																							"uv": [101, 109],
+																							"position": [-13, -2, -0.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "finger22",
+																	"position": [0, -5, 0],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [12, 5, -0.5],
+																			"to": [13, 8, 0.5],
+																			"uv": [101, 109],
+																			"position": [-13, -8, 0.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger23",
+																			"position": [0, -3, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [12, 2, -0.5],
+																					"to": [13, 5, 0.5],
+																					"uv": [101, 109],
+																					"position": [-13, -5, 0.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger24",
+																					"position": [0, -3, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [12, -1, -0.5],
+																							"to": [13, 2, 0.5],
+																							"uv": [101, 109],
+																							"position": [-13, -2, 0.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "finger25",
+																	"position": [0, -5, -1],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [12, 5, -1.5],
+																			"to": [13, 8, -0.5],
+																			"uv": [101, 109],
+																			"position": [-13, -8, 1.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger26",
+																			"position": [0, -3, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [12, 3, -1.5],
+																					"to": [13, 5, -0.5],
+																					"uv": [101, 109],
+																					"position": [-13, -5, 1.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger27",
+																					"position": [0, -2, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [12, 1, -1.5],
+																							"to": [13, 3, -0.5],
+																							"uv": [101, 109],
+																							"position": [-13, -3, 1.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "finger28",
+																	"position": [0, -5, -2],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [12, 6, -2.5],
+																			"to": [13, 8, -1.5],
+																			"uv": [101, 109],
+																			"position": [-13, -8, 2.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger29",
+																			"position": [0, -2, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [12, 4, -2.5],
+																					"to": [13, 6, -1.5],
+																					"uv": [101, 109],
+																					"position": [-13, -6, 2.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger30",
+																					"position": [0, -2, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [12, 2, -2.5],
+																							"to": [13, 4, -1.5],
+																							"uv": [101, 109],
+																							"position": [-13, -4, 2.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										},
+										{
+											"name": "rightArm",
+											"position": [-11, 5, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [-14, 25, -3],
+													"to": [-8, 37, 3],
+													"uv": [6, 35],
+													"position": [11, -37, 0]
+												}
+											],
+											"parts": [
+												{
+													"name": "rightArm2",
+													"position": [-2, -12, 0],
+													"shapes": [
+														{
+															"type": "block",
+															"from": [-14, 13, -3],
+															"to": [-8, 25, 3],
+															"uv": [6, 6],
+															"position": [13, -25, 0]
+														}
+													],
+													"parts": [
+														{
+															"name": "hand1",
+															"position": [0, -12, -0.5],
+															"shapes": [
+																{
+																	"type": "block",
+																	"from": [-13, 8, -2.5],
+																	"to": [-12, 13, 1.5],
+																	"uv": [63, 114],
+																	"position": [13, -13, 0.5]
+																}
+															],
+															"parts": [
+																{
+																	"name": "blade",
+																	"position": [2, -4, 0.5],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-12, 8, -4],
+																			"to": [-10, 10, 5],
+																			"uv": [84, 37],
+																			"position": [11, -9, 0]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-13, 7, -8],
+																			"to": [-9, 11, -4],
+																			"uv": [62, 23],
+																			"position": [11, -9, 0]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-12.5, 6, 5],
+																			"to": [-9.5, 12, 6.5],
+																			"uv": [30.5, 33.5],
+																			"position": [11, -9, 0]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-1.5, 0, 0],
+																			"to": [1.5, 4, 1.5],
+																			"uv": [10.5, 20.5],
+																			"position": [0, 3, 5],
+																			"rotation": [35, 0, 0]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-1.5, -4, 0],
+																			"to": [1.5, 0, 1.5],
+																			"uv": [1.5, 20.5],
+																			"position": [0, -3, 5],
+																			"rotation": [-35, 0, 0]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "blade2",
+																			"position": [0.5, 0, 6],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-11.5, 8, 6],
+																					"to": [-10.5, 10, 32.1],
+																					"uv": [55.1, 29.1],
+																					"position": [10.5, -9, -6]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-1, 0, 0],
+																					"to": [0, 2, 26],
+																					"uv": [26, 55],
+																					"position": [0, 1, 0],
+																					"rotation": [4, 0, 0]
+																				},
+																				{
+																					"type": "block",
+																					"from": [-1, -2, 0],
+																					"to": [0, 0, 26],
+																					"uv": [26, 26],
+																					"position": [0, -1, 0],
+																					"rotation": [-4, 0, 0]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "finger1",
+																	"position": [0, 0, 2],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-13, 10, 1.5],
+																			"to": [-12, 13, 2.5],
+																			"uv": [101, 109],
+																			"position": [13, -13, -1.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger2",
+																			"position": [0, -3, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-13, 7, 1.5],
+																					"to": [-12, 10, 2.5],
+																					"uv": [101, 109],
+																					"position": [13, -10, -1.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger3",
+																					"position": [0, -3, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-13, 5, 1.5],
+																							"to": [-12, 7, 2.5],
+																							"uv": [101, 109],
+																							"position": [13, -7, -1.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "finger4",
+																	"position": [0, -5, 1],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-13, 5, 0.5],
+																			"to": [-12, 8, 1.5],
+																			"uv": [101, 109],
+																			"position": [13, -8, -0.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger5",
+																			"position": [0, -3, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-13, 2, 0.5],
+																					"to": [-12, 5, 1.5],
+																					"uv": [101, 109],
+																					"position": [13, -5, -0.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger6",
+																					"position": [0, -3, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-13, 0, 0.5],
+																							"to": [-12, 2, 1.5],
+																							"uv": [101, 109],
+																							"position": [13, -2, -0.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "finger7",
+																	"position": [0, -5, 0],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-13, 5, -0.5],
+																			"to": [-12, 8, 0.5],
+																			"uv": [101, 109],
+																			"position": [13, -8, 0.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger8",
+																			"position": [0, -3, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-13, 2, -0.5],
+																					"to": [-12, 5, 0.5],
+																					"uv": [101, 109],
+																					"position": [13, -5, 0.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger9",
+																					"position": [0, -3, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-13, -1, -0.5],
+																							"to": [-12, 2, 0.5],
+																							"uv": [101, 109],
+																							"position": [13, -2, 0.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "finger10",
+																	"position": [0, -5, -1],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-13, 5, -1.5],
+																			"to": [-12, 8, -0.5],
+																			"uv": [101, 109],
+																			"position": [13, -8, 1.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger11",
+																			"position": [0, -3, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-13, 3, -1.5],
+																					"to": [-12, 5, -0.5],
+																					"uv": [101, 109],
+																					"position": [13, -5, 1.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger12",
+																					"position": [0, -2, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-13, 1, -1.5],
+																							"to": [-12, 3, -0.5],
+																							"uv": [101, 109],
+																							"position": [13, -3, 1.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "finger13",
+																	"position": [0, -5, -2],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-13, 6, -2.5],
+																			"to": [-12, 8, -1.5],
+																			"uv": [101, 109],
+																			"position": [13, -8, 2.5]
+																		}
+																	],
+																	"parts": [
+																		{
+																			"name": "finger14",
+																			"position": [0, -2, 0],
+																			"shapes": [
+																				{
+																					"type": "block",
+																					"from": [-13, 4, -2.5],
+																					"to": [-12, 6, -1.5],
+																					"uv": [101, 109],
+																					"position": [13, -6, 2.5]
+																				}
+																			],
+																			"parts": [
+																				{
+																					"name": "finger15",
+																					"position": [0, -2, 0],
+																					"shapes": [
+																						{
+																							"type": "block",
+																							"from": [-13, 2, -2.5],
+																							"to": [-12, 4, -1.5],
+																							"uv": [101, 109],
+																							"position": [13, -4, 2.5]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

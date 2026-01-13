@@ -1,0 +1,2 @@
+exiting almost gun addons has no compatibility with other gun addons.
+but this addon is not. scp dystopia will work with any addons. except for shaders or some resource pack

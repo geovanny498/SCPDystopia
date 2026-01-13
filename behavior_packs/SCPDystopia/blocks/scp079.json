@@ -1,0 +1,98 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_scp079",
+			"menu_category": {
+				"category": "items"
+			},
+			"states": {
+				"facing:direction": [2, 3, 4, 5],
+				"scp079:states": [1, 2, 3]
+			}
+		},
+		"components": {
+			"scpdt:legacy_placement_state": {
+				"facingDirectionState": "facing:direction",
+				"facingDirectionReverse": true
+			},
+			"scpdt:scp079": {},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_scp079_off",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:selection_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 13, 14]
+			},
+			"minecraft:collision_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 13, 14]
+			},
+			"minecraft:geometry": "geometry.dt_scp079",
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.8
+			},
+			"minecraft:light_dampening": 4,
+			"tag:lc:dystopiablock": {}
+		},
+		"permutations": [
+			{
+				"condition": "query.block_state('scp079:states') == 2",
+				"components": {
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "dt_scp079_booting",
+							"render_method": "opaque"
+						}
+					},
+					"minecraft:tick": {
+						"looping": false,
+						"interval_range": [120, 120]
+					}
+				}
+			},
+			{
+				"condition": "query.block_state('scp079:states') == 3",
+				"components": {
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "dt_scp079_on",
+							"render_method": "opaque"
+						}
+					},
+					"minecraft:tick": {
+						"looping": true,
+						"interval_range": [700, 1000]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 2",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 0, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 3",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 180, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 4",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 90, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 5",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 270, 0] }
+				}
+			}
+		]
+	}
+}

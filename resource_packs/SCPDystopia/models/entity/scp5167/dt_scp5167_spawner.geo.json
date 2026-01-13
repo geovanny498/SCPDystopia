@@ -1,0 +1,70 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_scp5167_boss_spawner",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 5,
+				"visible_bounds_height": 5.5,
+				"visible_bounds_offset": [0, 2.25, 0]
+			},
+			"bones": [
+				{
+					"name": "spawner",
+					"pivot": [0, 9, 0]
+				},
+				{
+					"name": "amogus",
+					"parent": "spawner",
+					"pivot": [0, 1, 0],
+					"cubes": [
+						{"origin": [1, 1, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [31, 29]},
+						{"origin": [-4, 1, -1.5], "size": [3, 4, 3], "inflate": 0.2, "uv": [0, 31]},
+						{"origin": [-5, 4, -3], "size": [10, 13, 6], "uv": [0, 0]},
+						{"origin": [-4, 6, 3], "size": [8, 10, 2], "uv": [0, 19]},
+						{"origin": [-4, 10, -4], "size": [8, 5, 1], "uv": [20, 19]}
+					]
+				},
+				{
+					"name": "effects",
+					"parent": "spawner",
+					"pivot": [0, 9, 0]
+				},
+				{
+					"name": "effect1",
+					"parent": "effects",
+					"pivot": [5, 1, -8],
+					"cubes": [
+						{"origin": [2, -2, -9], "size": [6, 6, 1], "uv": [20, 25]}
+					]
+				},
+				{
+					"name": "effect2",
+					"parent": "effects",
+					"pivot": [-5, 1, 8],
+					"cubes": [
+						{"origin": [-8, -2, 7], "size": [6, 6, 1], "pivot": [-5, 1, 8], "rotation": [0, 180, 0], "uv": [20, 25]}
+					]
+				},
+				{
+					"name": "effect3",
+					"parent": "effects",
+					"pivot": [5, 15, 8],
+					"cubes": [
+						{"origin": [2, 12, 7], "size": [6, 6, 1], "pivot": [5, 15, 8], "rotation": [0, 180, 0], "uv": [20, 25]}
+					]
+				},
+				{
+					"name": "effect4",
+					"parent": "effects",
+					"pivot": [-5, 15, -8],
+					"cubes": [
+						{"origin": [-8, 12, -9], "size": [6, 6, 1], "uv": [20, 25]}
+					]
+				}
+			]
+		}
+	]
+}

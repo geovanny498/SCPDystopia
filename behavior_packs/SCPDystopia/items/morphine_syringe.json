@@ -1,0 +1,29 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_morphine_syringe",
+			"menu_category": {
+				"category": "equipment"
+			}
+		},
+		"components": {
+			"scpdt:morphine_syringe": {},
+			"minecraft:hand_equipped": true,
+			"minecraft:max_stack_size": 8,
+			"minecraft:icon": "dt_morphine_syringe",
+			"minecraft:display_name": {
+				"value": "Morphine Syringe"
+			},
+			"minecraft:cooldown": {
+				"duration": 1.0,
+				"category": "morphine"
+			},
+			"minecraft:use_modifiers": {
+				"movement_modifier": 1.0,
+				"use_duration": 0.01
+			},
+			"minecraft:interact_button": true
+		}
+	}
+}

@@ -1,0 +1,100 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_cafeteria_chair",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "cafeteria_chair",
+					"pivot": [0, 0, -1],
+					"rotation": [0, 180, 0]
+				},
+				{
+					"name": "ir1",
+					"parent": "cafeteria_chair",
+					"pivot": [0, 9, -6],
+					"cubes": [
+						{"origin": [-4, 9, -6], "size": [8, 1, 1], "uv": [0, 31]}
+					]
+				},
+				{
+					"name": "irla1",
+					"parent": "ir1",
+					"pivot": [-4, 10, -6],
+					"rotation": [0, 0, -77.5],
+					"cubes": [
+						{"origin": [-14, 9, -6], "size": [10, 1, 1], "uv": [30, 24]}
+					]
+				},
+				{
+					"name": "irla2",
+					"parent": "ir1",
+					"pivot": [4, 10, -6],
+					"rotation": [0, 0, 77.5],
+					"cubes": [
+						{"origin": [4, 9, -6], "size": [10, 1, 1], "uv": [30, 22]}
+					]
+				},
+				{
+					"name": "ir2",
+					"parent": "cafeteria_chair",
+					"pivot": [0, 9, 3],
+					"cubes": [
+						{"origin": [-4, 9, 3], "size": [8, 1, 1], "uv": [30, 26]}
+					]
+				},
+				{
+					"name": "irla3",
+					"parent": "ir2",
+					"pivot": [-4, 10, 3],
+					"rotation": [0, 0, -77.5],
+					"cubes": [
+						{"origin": [-14, 9, 3], "size": [10, 1, 1], "uv": [30, 24]}
+					]
+				},
+				{
+					"name": "irla4",
+					"parent": "ir2",
+					"pivot": [4, 10, 3],
+					"rotation": [0, 0, 77.5],
+					"cubes": [
+						{"origin": [4, 9, 3], "size": [10, 1, 1], "uv": [30, 22]}
+					]
+				},
+				{
+					"name": "ch",
+					"parent": "cafeteria_chair",
+					"pivot": [0, 10, 0],
+					"cubes": [
+						{"origin": [-6, 10, -7], "size": [12, 1, 12], "inflate": 0.01, "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "ch2",
+					"parent": "ch",
+					"pivot": [0, 10, 5],
+					"rotation": [85, 0, 0],
+					"cubes": [
+						{"origin": [-6, 10, 5], "size": [12, 1, 8], "uv": [0, 13]}
+					]
+				},
+				{
+					"name": "ch3",
+					"parent": "ch2",
+					"pivot": [0, 11, 13],
+					"rotation": [-5, 0, 0],
+					"cubes": [
+						{"origin": [-6, 10, 13], "size": [12, 1, 6], "uv": [0, 22]}
+					]
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,152 @@
+{
+	"name": "dt_scp5167",
+	"texture": "dt_scp5167.png",
+	"texture_size": [64, 64],
+	"parts": [
+		{
+			"name": "scp5167",
+			"position": [0, 0, 0],
+			"parts": [
+				{
+					"name": "waist",
+					"position": [0, 10, 0],
+					"parts": [
+						{
+							"name": "leftLeg",
+							"position": [3, 0, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [1, 0, -2],
+									"to": [5, 10, 2],
+									"uv": [41, 4],
+									"position": [-3, -10, 0]
+								}
+							]
+						},
+						{
+							"name": "rightLeg",
+							"position": [-3, 0, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-5, 0, -2],
+									"to": [-1, 10, 2],
+									"uv": [25, 39],
+									"position": [3, -10, 0]
+								}
+							]
+						},
+						{
+							"name": "chest",
+							"position": [0, -1, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-4, 11, -7],
+									"to": [4, 23, -3],
+									"uv": [4, 26],
+									"position": [0, -9, 0]
+								},
+								{
+									"type": "block",
+									"from": [-4, 17, 3],
+									"to": [4, 22, 4],
+									"uv": [38, 16],
+									"position": [0, -9, 0]
+								},
+								{
+									"type": "block",
+									"from": [-6, 9, -3],
+									"to": [6, 24, 3],
+									"uv": [6, 6],
+									"position": [0, -9, 0]
+								}
+							],
+							"parts": [
+								{
+									"name": "leftArm",
+									"position": [8, 11, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [7, 11, -1],
+											"to": [10, 14, 2],
+											"uv": [41, 47],
+											"position": [-8, -20, 0]
+										}
+									]
+								},
+								{
+									"name": "rightArm",
+									"position": [-8, 11, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-10, 11, -1],
+											"to": [-7, 14, 2],
+											"uv": [42, 25],
+											"position": [8, -20, 0]
+										}
+									],
+									"parts": [
+										{
+											"name": "knife",
+											"position": [0, -8, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [-9, 12, 0],
+													"to": [-8, 13, 3],
+													"uv": [28, 25],
+													"position": [8, -12, 0]
+												},
+												{
+													"type": "block",
+													"from": [-9, 11, 3],
+													"to": [-8, 13, 9],
+													"uv": [44, 41],
+													"position": [8, -12, 0]
+												},
+												{
+													"type": "block",
+													"from": [-9, 11.1, 9],
+													"to": [-8, 13, 10],
+													"uv": [1, 1],
+													"position": [8, -12, 0]
+												},
+												{
+													"type": "block",
+													"from": [-9, 12, 10],
+													"to": [-8, 13, 15],
+													"uv": [5, 44],
+													"position": [8, -12, 0]
+												},
+												{
+													"type": "block",
+													"from": [-9, 10, 3],
+													"to": [-8, 11, 4],
+													"uv": [1, 4],
+													"position": [8, -12, 0]
+												},
+												{
+													"type": "block",
+													"from": [-1, 0, 0],
+													"to": [0, 1, 11.1],
+													"inflate": -0.01,
+													"uv": [36.1, 33.1],
+													"position": [0, -2, 4],
+													"rotation": [-10, 0, 0]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

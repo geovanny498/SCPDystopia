@@ -1,0 +1,40 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.item.dt_scp5167_cannon.hold": {
+			"initial_state": "pick",
+			"states": {
+				"pick": {
+					"animations": ["pickup"],
+					"transitions": [
+						{
+							"first_person": "query.all_animations_finished && c.is_first_person"
+						},
+						{
+							"third_person": "query.all_animations_finished && !c.is_first_person"
+						}
+					]
+				},
+				"first_person": {
+					"animations": ["hold_first_person"],
+					"transitions": [
+						{
+							"third_person": "!c.is_first_person"
+						},
+						{
+							"pick": "(query.get_equipped_item_name != 'dt_scp5167_cannon')"
+						}
+					]
+				},
+				"third_person": {
+					"animations": ["hold_third_person"],
+					"transitions": [
+						{
+							"first_person": "c.is_first_person"
+						}
+					]
+				}
+			}
+		}
+	}
+}

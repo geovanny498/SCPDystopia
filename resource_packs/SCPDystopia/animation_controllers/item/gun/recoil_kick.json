@@ -1,0 +1,27 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.item.dt_ak.recoil_kick": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"recoil": "q.cooldown_time_remaining('dt_ak_shooting') != 0.0"
+						}
+					],
+					"blend_transition": 0.08
+				},
+				"recoil": {
+					"animations": ["recoil_kick"],
+					"transitions": [
+						{
+							"default": "q.cooldown_time_remaining('dt_ak_shooting') == 0.0"
+						}
+					],
+					"blend_transition": 0.4
+				}
+			}
+		}
+	}
+}

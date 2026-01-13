@@ -1,0 +1,38 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_toilet",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "toilet",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-4, 1, -4], "size": [8, 7, 10], "uv": [0, 0]},
+						{"origin": [-5, 0, -7], "size": [10, 11, 4], "uv": [34, 35]},
+						{"origin": [-5, 11, -7.5], "size": [10, 10, 5], "inflate": 0.2, "uv": [31, 12]},
+						{"origin": [-5, 20, -7.5], "size": [10, 1, 5], "inflate": 0.5, "uv": [29, 28]},
+						{"origin": [-5, 0, -3], "size": [10, 1, 10], "uv": [0, 17]},
+						{"origin": [5.2, 16.5, -6], "size": [1, 2, 2], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "t2",
+					"parent": "toilet",
+					"pivot": [0, 8, -2],
+					"cubes": [
+						{"origin": [-5, 8, -2], "size": [10, 2, 9], "uv": [0, 28]},
+						{"origin": [-4.5, 9.3, -1.5], "size": [9, 1, 8], "uv": [26, 0]}
+					]
+				}
+			]
+		}
+	]
+}

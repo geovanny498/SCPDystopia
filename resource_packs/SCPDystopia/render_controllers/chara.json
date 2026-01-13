@@ -1,0 +1,20 @@
+{
+    "format_version": "1.8.0",
+    "render_controllers": {
+        "controller.render.chara": {
+            "arrays": {
+                "textures": {
+                    "Array.skins": [
+                        "Texture.chara",
+                        "Texture.chara1",
+                        "Texture.chara2",
+                        "Texture.chara3"
+                    ]
+                }
+            },
+            "geometry": "Geometry.default",
+            "materials": [ { "*": "Material.default" } ],
+            "textures": [ "Array.skins[query.variant]" ]
+        }
+    }
+}

@@ -1,0 +1,1 @@
+kill @e[family=mtf]

@@ -1,0 +1,22 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp999.general": {
+			"loop": true,
+			"bones": {
+				"arm1": {
+					"rotation": [0, 0, "-42.5+math.sin(query.life_time * 110) * 12"]
+				},
+				"arm2": {
+					"rotation": [0, 0, "42.5+math.sin(query.life_time * -110) * 12"]
+				},
+				"lower": {
+					"scale": ["1+math.sin(query.life_time * -100) * 0.05", 1, "1+math.sin(query.life_time * -200) * 0.05"]
+				},
+				"uuper": {
+					"position": [0, "0.3+math.sin(query.life_time * -130) * 0.2", 0]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_tro_s.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general"],
+					"transitions": [
+						{
+							"aim": "query.has_target"
+						}
+					],
+					"blend_transition": 0.5
+				},
+				"aim": {
+					"animations": ["hold_gun"],
+					"transitions": [
+						{
+							"default": "!query.has_target"
+						}
+					],
+					"blend_transition": 0.4
+				}
+			}
+		}
+	}
+}

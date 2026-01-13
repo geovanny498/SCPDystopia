@@ -1,0 +1,52 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_weapon_crate",
+				"texture_width": 80,
+				"texture_height": 80,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "weapon_crate",
+					"pivot": [0, 0, 0],
+					"rotation": [0, 180, 0],
+					"cubes": [
+						{"origin": [-11, 0, -6], "size": [22, 6, 12], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "w1",
+					"parent": "weapon_crate",
+					"pivot": [0, 6, 0],
+					"cubes": [
+						{"origin": [-11, 6, -6], "size": [22, 1, 12], "uv": [0, 18]},
+						{"origin": [-11, 7, -5], "size": [22, 1, 10], "uv": [0, 31]}
+					]
+				},
+				{
+					"name": "w1_1",
+					"parent": "w1",
+					"pivot": [0, 7, -6],
+					"rotation": [-45, 0, 0],
+					"cubes": [
+						{"origin": [-11, 7, -6], "size": [22, 1.41421, 1], "uv": [0, 44]}
+					]
+				},
+				{
+					"name": "w1_2",
+					"parent": "w1",
+					"pivot": [0, 7, 6],
+					"rotation": [45, 0, 0],
+					"cubes": [
+						{"origin": [-11, 7, 5], "size": [22, 1.41421, 1], "uv": [0, 42]}
+					]
+				}
+			]
+		}
+	]
+}

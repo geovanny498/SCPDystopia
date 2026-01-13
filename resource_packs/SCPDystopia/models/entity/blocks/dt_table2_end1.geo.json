@@ -1,0 +1,36 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_table2_end1",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "table2",
+					"pivot": [0, 0, 0],
+					"rotation": [0, 180, 0],
+					"cubes": [
+						{"origin": [-6, 15, -6], "size": [14, 1, 14], "uv": [0, 6]},
+						{"origin": [-8, 15, -6], "size": [2, 1, 14], "uv": [0, 6]},
+						{"origin": [-6, 15, -8], "size": [14, 1, 2], "uv": [0, 6]}
+					]
+				},
+				{
+					"name": "tb1",
+					"parent": "table2",
+					"pivot": [-6, 16, -6],
+					"rotation": [0, 45, 0],
+					"cubes": [
+						{"origin": [-7.41421, 15, -7.41421], "size": [2.82843, 1, 2], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

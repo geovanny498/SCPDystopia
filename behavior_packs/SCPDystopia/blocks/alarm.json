@@ -1,0 +1,69 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_alarm",
+			"menu_category": {
+				"category": "construction"
+			},
+			"states": {
+				"alarm:states": [1, 2],
+				"alarm:sound_repeat": [true, false]
+			}
+		},
+		"components": {
+			"scpdt:alarm": {},
+			"minecraft:collision_box": {
+				"origin": [-5, 0, -5],
+				"size": [10, 16, 10]
+			},
+			"minecraft:selection_box": {
+				"origin": [-5, 0, -5],
+				"size": [10, 16, 10]
+			},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_alarm_off",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:geometry": {
+				"identifier": "geometry.dt_alarm"
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.1
+			},
+			"minecraft:light_dampening": 0.2,
+			"tag:lc:dystopiablock": {}
+		},
+		"permutations": [
+			{
+				"condition": "query.block_state('alarm:states') == 1",
+				"components": {
+					"minecraft:light_emission": 0
+				}
+			},
+			{
+				"condition": "query.block_state('alarm:states') == 2",
+				"components": {
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "dt_alarm_on",
+							"render_method": "opaque"
+						}
+					},
+					"minecraft:light_emission": 3
+				}
+			},
+			{
+				"condition": "query.block_state('alarm:sound_repeat') == true",
+				"components": {
+					"minecraft:tick": {
+						"looping": true,
+						"interval_range": [56, 56]
+					}
+				}
+			}
+		]
+	}
+}

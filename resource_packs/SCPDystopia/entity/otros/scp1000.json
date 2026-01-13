@@ -1,0 +1,43 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp1000",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp1000"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp1000"
+			},
+			"animations": {
+				"general": "animation.dt_scp1000.general",
+				"becoming_angry": "animation.dt_scp1000.becoming_angry",
+				"attack": "animation.dt_scp1000.attack",
+
+				"move_arms": "animation.dt_scp1000.move_arms",
+				"move_legs": "animation.dt_scp1000.move_legs",
+
+				"resize": "animation.dt_scp1000.resize",
+
+				"anim_cont": "controller.animation.dt_scp1000.anim_cont"
+			},
+			"scripts": {
+				"animate": ["anim_cont", "resize"],
+				"pre_animation": [
+					"variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;",
+					"variable.scp1000_normal = q.mark_variant == 0;",
+					"variable.scp1000_becoming_angry = q.mark_variant == 1;",
+					"variable.scp1000_angry = q.mark_variant == 2;"
+				]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#341E12",
+				"overlay_color": "#45494B"
+			}
+		}
+	}
+}

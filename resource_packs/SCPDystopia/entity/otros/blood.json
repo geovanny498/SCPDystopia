@@ -1,0 +1,30 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_blood",
+			"materials": {
+				"default": "entity_emissive_alpha"
+			},
+			"textures": {
+				"default": "textures/entity/misc/dt_blood"
+			},
+			"geometry": {
+				"r1": "geometry.dt_blood_r1",
+				"r2": "geometry.dt_blood_r2",
+				"r3": "geometry.dt_blood_r3"
+			},
+			"animations": {
+				"general": "animation.dt_blood.general"
+			},
+			"scripts": {
+				"animate": ["general"]
+			},
+			"render_controllers": ["controller.render.scpdt_blood"],
+			"spawn_egg": {
+				"base_color": "#464646",
+				"overlay_color": "#284315"
+			}
+		}
+	}
+}

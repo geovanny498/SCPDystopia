@@ -1,0 +1,39 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_nightstick",
+			"menu_category": {
+				"category": "equipment"
+			}
+		},
+		"components": {
+			"minecraft:durability": {
+				"max_durability": 150,
+				"damage_chance": {
+					"min": 0,
+					"max": 100
+				}
+			},
+			"minecraft:damage": 4,
+			"minecraft:enchantable": {
+				"value": 10,
+				"slot": "sword"
+			},
+			"minecraft:repairable": {
+				"repair_items": [
+					{
+						"items": ["minecraft:stick"],
+						"repair_amount": 38
+					}
+				]
+			},
+			"minecraft:hand_equipped": true,
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dt_nightstick",
+			"minecraft:display_name": {
+				"value": "Nightstick"
+			}
+		}
+	}
+}

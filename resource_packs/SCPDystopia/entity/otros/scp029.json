@@ -1,0 +1,36 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp029",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp029"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp029"
+			},
+			"animations": {
+				"general": "animation.dt_scp029.general",
+				"cry": "animation.dt_scp029.crying",
+				"move_legs": "animation.dt_scp029.walking_legs",
+				"move_arms": "animation.dt_scp029.walking_arms",
+
+				"anim_cont": "controller.animation.dt_scp029.anim_cont"
+			},
+			"scripts": {
+				"animate": ["anim_cont"],
+				"pre_animation": [
+					"variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
+				]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#FFFFFF",
+				"overlay_color": "#000000"
+			}
+		}
+	}
+}

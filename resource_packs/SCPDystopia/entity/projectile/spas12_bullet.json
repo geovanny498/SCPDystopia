@@ -1,0 +1,33 @@
+{
+    "format_version": "1.10.0",
+    "minecraft:client_entity": {
+        "description": {
+            "identifier": "lc:dt_spas12_bullet",
+            "materials": {
+                "default": "arrow"
+            },
+            "textures": {
+                "default": "textures/entity/bullet"
+            },
+            "geometry": {
+                "default": "geometry.dt_shotgun_bullet"
+            },
+            "animations": {
+                "general": "animation.dt_bullet_shotgun.general",
+                "particle": "controller.animation.dt_flame.anim_cont",
+                "anim_cont": "controller.animation.dt_bullet_shotgun.anim_cont"
+            },
+            "particle_effects": {
+                "charged_flames": "lc:dt_muzzleflash_emitter"
+            },
+            "scripts": {
+                "animate": [
+                    "anim_cont",
+                    "particle",
+                    "general"
+                ]
+            },
+            "render_controllers": [ "controller.render.scpdt_de.standard" ]
+        }
+    }
+}

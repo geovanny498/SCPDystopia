@@ -1,0 +1,415 @@
+{
+	"resource_pack_name": "SCP: Dystopia",
+	"texture_name": "atlas.items",
+	"texture_data": {
+		//Guns
+		"dt_mp5k_icon": {
+			"textures": "textures/items/gun_icon/dt_mp5k_icon"
+		},
+		"dt_mp5k_ammo": {
+			"textures": "textures/items/ammo/dt_mp5k_ammo"
+		},
+		"dt_mp5k_mag": {
+			"textures": "textures/items/ammo/dt_mp5k_mag"
+		},
+		"dt_mp5k_mag_empty": {
+			"textures": "textures/items/ammo/dt_mp5k_mag_empty"
+		},
+		"dt_m16_icon": {
+			"textures": "textures/items/gun_icon/dt_m16_icon"
+		},
+		"dt_m16_ammo": {
+			"textures": "textures/items/ammo/dt_m16_ammo"
+		},
+		"dt_m16_mag": {
+			"textures": "textures/items/ammo/dt_m16_mag"
+		},
+		"dt_m16_mag_empty": {
+			"textures": "textures/items/ammo/dt_m16_mag_empty"
+		},
+		"dt_spas12_icon": {
+			"textures": "textures/items/gun_icon/dt_spas12_icon"
+		},
+		"dt_spas12_shell": {
+			"textures": "textures/items/ammo/dt_spas12_shell"
+		},
+		"dt_spas12_shellbox": {
+			"textures": "textures/items/ammo/dt_spas12_shellbox"
+		},
+		"dt_spas12_shellbox_empty": {
+			"textures": "textures/items/ammo/dt_spas12_shellbox_empty"
+		},
+		"dt_glock_icon": {
+			"textures": "textures/items/gun_icon/dt_glock_icon"
+		},
+		"dt_glock_mag": {
+			"textures": "textures/items/ammo/dt_glock_mag"
+		},
+		"dt_glock_mag_empty": {
+			"textures": "textures/items/ammo/dt_glock_mag_empty"
+		},
+		"dt_glock_ammo": {
+			"textures": "textures/items/ammo/dt_glock_ammo"
+		},
+		"dt_p90_icon": {
+			"textures": "textures/items/gun_icon/dt_p90_icon"
+		},
+		"dt_p90_mag": {
+			"textures": "textures/items/ammo/dt_p90_mag"
+		},
+		"dt_p90_mag_empty": {
+			"textures": "textures/items/ammo/dt_p90_mag_empty"
+		},
+		"dt_p90_ammo": {
+			"textures": "textures/items/ammo/dt_p90_ammo"
+		},
+		"dt_dtrifle_icon": {
+			"textures": "textures/items/gun_icon/dt_dtrifle_icon"
+		},
+		"dt_dtrifle_ammo": {
+			"textures": "textures/items/ammo/dt_dtrifle_ammo"
+		},
+		"dt_dtrifle_ammo_empty": {
+			"textures": "textures/items/ammo/dt_dtrifle_ammo_empty"
+		},
+		"dt_scp5167_cannon_icon": {
+			"textures": "textures/items/gun_icon/dt_scp5167_cannon"
+		},
+		"dt_mp5a3_icon": {
+			"textures": "textures/items/gun_icon/dt_mp5a3_icon"
+		},
+		"dt_hig_icon": {
+			"textures": "textures/items/gun_icon/dt_hig_icon"
+		},
+		"dt_hig_mag": {
+			"textures": "textures/items/ammo/dt_hig_mag"
+		},
+		"dt_hig_mag_empty": {
+			"textures": "textures/items/ammo/dt_hig_mag_empty"
+		},
+		"dt_scar_icon": {
+			"textures": "textures/items/gun_icon/dt_scar_icon"
+		},
+		"dt_scar_mag": {
+			"textures": "textures/items/ammo/dt_scar_mag"
+		},
+		"dt_scar_mag_empty": {
+			"textures": "textures/items/ammo/dt_scar_mag_empty"
+		},
+		"dt_mp7a1_icon": {
+			"textures": "textures/items/gun_icon/dt_mp7a1_icon"
+		},
+		"dt_mp7a1_mag": {
+			"textures": "textures/items/ammo/dt_mp7a1_mag"
+		},
+		"dt_mp7a1_mag_empty": {
+			"textures": "textures/items/ammo/dt_mp7a1_mag_empty"
+		},
+		"dt_suscharger_icon": {
+			"textures": "textures/items/gun_icon/dt_suscharger_icon"
+		},
+		"dt_suscharger_battery": {
+			"textures": "textures/items/ammo/dt_suscharger_battery"
+		},
+		"dt_suscharger_battery_empty": {
+			"textures": "textures/items/ammo/dt_suscharger_battery_empty"
+		},
+		"dt_m4a1_icon": {
+			"textures": "textures/items/gun_icon/dt_m4a1_icon"
+		},
+		"dt_m4a1_empty_icon": {
+			"textures": "textures/items/gun_icon/dt_m4a1_empty_icon"
+		},
+		"dt_rpg_icon": {
+			"textures": "textures/items/gun_icon/dt_rpg_icon"
+		},
+		"dt_rpg_rocket": {
+			"textures": "textures/items/ammo/dt_rpg_rocket"
+		},
+		"dt_flamethrower_icon": {
+			"textures": "textures/items/gun_icon/dt_flamethrower_icon"
+		},
+		"dt_flamethrower_fuel": {
+			"textures": "textures/items/ammo/dt_flamethrower_fuel"
+		},
+		"dt_ak_icon": {
+			"textures": "textures/items/gun_icon/dt_ak_icon"
+		},
+		"dt_ak_mag": {
+			"textures": "textures/items/ammo/dt_ak_mag"
+		},
+		//Documents
+		"dt_scp173_doc": {
+			"textures": "textures/items/docs/dt_scp173_doc"
+		},
+		"dt_scp096_doc": {
+			"textures": "textures/items/docs/dt_scp096_doc"
+		},
+		"dt_scp939_doc": {
+			"textures": "textures/items/docs/dt_scp939_doc"
+		},
+		"dt_scp049_doc": {
+			"textures": "textures/items/docs/dt_scp049_doc"
+		},
+		//SCP-294 cup
+		"dt_empty_cup": {
+			"textures": "textures/items/scp294_cup/empty"
+		},
+		"dt_cup_water": {
+			"textures": "textures/items/scp294_cup/water"
+		},
+		"dt_cup_coffee": {
+			"textures": "textures/items/scp294_cup/coffee"
+		},
+		"dt_cup_orange_juice": {
+			"textures": "textures/items/scp294_cup/orange_juice"
+		},
+		"dt_cup_cola": {
+			"textures": "textures/items/scp294_cup/cola"
+		},
+		"dt_cup_dark_red": {
+			"textures": "textures/items/scp294_cup/dark_red"
+		},
+		"dt_cup_blue": {
+			"textures": "textures/items/scp294_cup/blue"
+		},
+		"dt_cup_red": {
+			"textures": "textures/items/scp294_cup/red"
+		},
+		"dt_cup_pink": {
+			"textures": "textures/items/scp294_cup/pink"
+		},
+		"dt_cup_white": {
+			"textures": "textures/items/scp294_cup/white"
+		},
+		"dt_cup_gold": {
+			"textures": "textures/items/scp294_cup/gold"
+		},
+		//Items
+		"dt_scp1023_arc": {
+			"textures": "textures/items/dt_scp1023_arc"
+		},
+		"dt_scp500": {
+			"textures": "textures/items/dt_scp500"
+		},
+		"dt_keycard1": {
+			"textures": "textures/items/keycards/keycard1"
+		},
+		"dt_keycard2": {
+			"textures": "textures/items/keycards/keycard2"
+		},
+		"dt_keycard3": {
+			"textures": "textures/items/keycards/keycard3"
+		},
+		"dt_keycard4": {
+			"textures": "textures/items/keycards/keycard4"
+		},
+		"dt_keycard5": {
+			"textures": "textures/items/keycards/keycard5"
+		},
+		"dt_keycard_omni": {
+			"textures": "textures/items/keycards/keycard_omni"
+		},
+		"dt_keycard_o5": {
+			"textures": "textures/items/keycards/keycard_o5"
+		},
+		"dt_commander": {
+			"textures": "textures/items/dt_commander"
+		},
+		"dt_scp058_body_scrap": {
+			"textures": "textures/items/dt_scp058_body_scrap"
+		},
+		"dt_scp939_tooth": {
+			"textures": "textures/items/dt_scp939_tooth"
+		},
+		"dt_empty_mug": {
+			"textures": "textures/items/dt_empty_mug"
+		},
+		"dt_coffee_mug": {
+			"textures": "textures/items/dt_coffee_mug"
+		},
+		"dt_wrench": {
+			"textures": "textures/items/dt_wrench"
+		},
+		"dt_scp1025": {
+			"textures": "textures/items/dt_scp1025"
+		},
+		"dt_scp5167_sword": {
+			"textures": "textures/items/dt_scp5167_sword"
+		},
+		"dt_scp939_flesh": {
+			"textures": "textures/items/dt_scp939_flesh"
+		},
+		"dt_scp939_flesh_cooked": {
+			"textures": "textures/items/dt_scp939_flesh_cooked"
+		},
+		"dt_pizza": {
+			"textures": "textures/items/dt_pizza"
+		},
+		"dt_medkit": {
+			"textures": "textures/items/dt_medkit"
+		},
+		"dt_nightstick": {
+			"textures": "textures/items/dt_nightstick"
+		},
+		"dt_scpdystopia_orb": {
+			"textures": "textures/items/dt_scpdystopia_orb"
+		},
+		"dt_enhanced_scpdystopia_orb": {
+			"textures": "textures/items/dt_enhanced_scpdystopia_orb"
+		},
+		"dt_imposter_totem": {
+			"textures": "textures/items/dt_imposter_totem"
+		},
+		"dt_dystopia_pickaxe": {
+			"textures": "textures/items/dt_dystopia_pickaxe"
+		},
+		"dt_painkillers": {
+			"textures": "textures/items/dt_painkillers"
+		},
+		"dt_tro_helmet_icon": {
+			"textures": "textures/items/dt_tro_helmet"
+		},
+		"dt_tro_boots_icon": {
+			"textures": "textures/items/dt_tro_boots"
+		},
+		"dt_ballistic_vest_icon": {
+			"textures": "textures/items/dt_ballistic_vest"
+		},
+		"dt_classd_shirt_icon": {
+			"textures": "textures/items/dt_classd_shirt"
+		},
+		"dt_classd_pants_icon": {
+			"textures": "textures/items/dt_classd_pants"
+		},
+		"dt_scientist_coat_icon": {
+			"textures": "textures/items/dt_scientist_coat"
+		},
+		"dt_scientist_pants_icon": {
+			"textures": "textures/items/dt_scientist_pants"
+		},
+		"dt_ci_helmet_icon": {
+			"textures": "textures/items/dt_ci_helmet"
+		},
+		"dt_ci_chestplate_icon": {
+			"textures": "textures/items/dt_ci_chestplate"
+		},
+		"dt_ci_leggings_icon": {
+			"textures": "textures/items/dt_ci_leggings"
+		},
+		"dt_scp5167_mask_icon": {
+			"textures": "textures/items/dt_scp5167_mask"
+		},
+		"dt_mtf_leggings_icon": {
+			"textures": "textures/items/mtf/dt_mtf_leggings"
+		},
+		"dt_eta10_chestplate_icon": {
+			"textures": "textures/items/mtf/dt_eta10_chestplate"
+		},
+		"dt_epsilon11_chestplate_icon": {
+			"textures": "textures/items/mtf/dt_epsilon11_chestplate"
+		},
+		"dt_eta10_helmet_icon": {
+			"textures": "textures/items/mtf/dt_eta10_helmet"
+		},
+		"dt_epsilon11_helmet_icon": {
+			"textures": "textures/items/mtf/dt_epsilon11_helmet"
+		},
+		"dt_scp914_scrap": {
+			"textures": "textures/items/dt_scp914_scrap"
+		},
+		"dt_scp914_gear": {
+			"textures": "textures/items/dt_scp914_gear"
+		},
+		"dt_scp420j": {
+			"textures": "textures/items/dt_scp420j"
+		},
+		"dt_morphine_syringe": {
+			"textures": "textures/items/dt_morphine_syringe"
+		},
+		"dt_coin": {
+			"textures": "textures/items/dt_coin"
+		},
+		"dt_ci_currency": {
+			"textures": "textures/items/dt_ci_currency"
+		},
+		"dt_candy1": {
+			"textures": "textures/items/candy/dt_candy1"
+		},
+		"dt_candy2": {
+			"textures": "textures/items/candy/dt_candy2"
+		},
+		"dt_candy3": {
+			"textures": "textures/items/candy/dt_candy3"
+		},
+		"dt_sheaf_of_papers": {
+			"textures": "textures/items/dt_sheaf_of_papers"
+		},
+		"dt_scp096_bag": {
+			"textures": "textures/items/dt_scp096_bag"
+		},
+		"dt_scp143_sapling_placer": {
+			"textures": "textures/blocks/scp143/dt_scp143_sapling"
+		},
+		"dt_skirt_icon": {
+			"textures": "textures/items/dt_skirt"
+		},
+		"dt_gasmask_icon": {
+			"textures": "textures/items/dt_gasmask"
+		},
+		"dt_fire_axe": {
+			"textures": "textures/items/dt_fire_axe"
+		},
+		"dt_combat_knife": {
+			"textures": "textures/items/dt_combat_knife"
+		},
+		"dt_crowbar": {
+			"textures": "textures/items/dt_crowbar"
+		},
+		"dt_beenie_icon": {
+			"textures": "textures/items/new_armors/dt_beenie"
+		},
+		"dt_nvg_icon": {
+			"textures": "textures/items/new_armors/dt_nvg"
+		},
+		"dt_scramble_icon": {
+			"textures": "textures/items/new_armors/dt_scramble"
+		},
+		"dt_scp005": {
+			"textures": "textures/items/dt_scp005"
+		},
+		"dt_scp207": {
+			"textures": "textures/items/dt_scp207"
+		},
+		"dt_scp063": {
+			"textures": "textures/items/dt_scp063"
+		},
+		"dt_scp714": {
+			"textures": "textures/items/dt_scp714"
+		},
+		"dt_scp268": {
+			"textures": "textures/items/dt_scp268"
+		},
+		"dt_scp096_pictures": {
+			"textures": "textures/items/dt_scp096_pictures"
+		},
+		"dt_scp3199_egg": {
+			"textures": "textures/items/dt_scp3199_egg"
+		},
+		"dt_mystery_syringe": {
+			"textures": "textures/items/dt_mystery_syringe"
+		},
+		"dt_confidential_file": {
+			"textures": "textures/items/dt_confidential_file"
+		},
+		"scpdy_killer_sword_icon": {
+			"textures": "textures/items/killer_sword_icon"
+		},
+		"scpdy_pain_sword_icon": {
+			"textures": "textures/items/pain_sword_icon"
+		},
+		"scpdy_void_sword_icon": {
+			"textures": "textures/items/void_sword_icon"
+		}
+	}
+}

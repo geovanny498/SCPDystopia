@@ -1,0 +1,104 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp4959.general": {
+			"loop": true,
+			"bones": {
+				"leftLeg": {
+					"rotation": [-27.5, -7.5, 0],
+					"position": [0, -2, 0]
+				},
+				"leftLeg2": {
+					"rotation": [50, 0, 0]
+				},
+				"leftFoot": {
+					"rotation": [-20, 0, 0]
+				},
+				"rightLeg": {
+					"rotation": [-27.5, 7.5, 0],
+					"position": [0, -2, 0]
+				},
+				"rightLeg2": {
+					"rotation": [50, 0, 0]
+				},
+				"rightFoot": {
+					"rotation": [-20, 0, 0]
+				},
+				"waist": {
+					"rotation": [2.5, 0, 0],
+					"position": [0, "-2+math.sin(query.life_time * 60) * 0.6", 0]
+				},
+				"spine": {
+					"rotation": ["20+math.sin(query.life_time * 60) * 3", 0, 0],
+					"position": [0, -1, 0]
+				},
+				"spine2": {
+					"rotation": ["-10+math.sin(query.life_time * 60) * 3", 0, 0]
+				},
+				"chest": {
+					"rotation": [22.5, 0, 0]
+				},
+				"neck": {
+					"rotation": ["7.5+math.sin(query.life_time * 60) * 1.5", 0, 0]
+				},
+				"neck2": {
+					"rotation": [7.5, 0, 0]
+				},
+				"head": {
+					"rotation": ["2.5+query.target_x_rotation", "query.target_y_rotation", 0],
+					"scale": 0.84
+				},
+				"leftArm": {
+					"rotation": [62.5, -10, "-7.5+math.sin(query.life_time * -100) * 3"]
+				},
+				"leftArm2": {
+					"rotation": ["-115+math.sin(query.life_time * -60) * 2", 0, 0]
+				},
+				"leftArm3": {
+					"rotation": [5, 0, 0]
+				},
+				"rightArm": {
+					"rotation": [62.5, 10, "7.5+math.sin(query.life_time * 100) * 3"]
+				},
+				"rightArm2": {
+					"rotation": ["-115+math.sin(query.life_time * -60) * 2", 0, 0]
+				},
+				"rightArm3": {
+					"rotation": [5, 0, 0]
+				},
+				"scp4959": {
+					"scale": 0.75
+				}
+			}
+		},
+		"animation.dt_scp4959.walking": {
+			"loop": true,
+			"bones": {
+				"leftLeg": {
+					"rotation": ["math.sin(query.life_time * -430) * 25", 0, 0]
+				},
+				"rightLeg": {
+					"rotation": ["math.sin(query.life_time * 430) * 25", 0, 0]
+				},
+				"waist": {
+					"rotation": ["math.sin(query.life_time * 430) * 3", 0, 0]
+				},
+				"neck": {
+					"rotation": [15, 0, 0]
+				},
+				"head": {
+					"rotation": [5, 0, 0]
+				},
+				"jaw": {
+					"rotation": [7.5, 0, 0]
+				},
+				"leftArm": {
+					"rotation": [-7.5, 0, 0]
+				},
+				"rightArm": {
+					"rotation": [-7.5, 0, 0]
+				}
+			}
+		}
+	}
+}

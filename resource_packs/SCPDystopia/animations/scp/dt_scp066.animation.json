@@ -1,0 +1,48 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp066.rolling": {
+			"loop": true,
+			"animation_length": 1.56,
+			"bones": {
+				"scp066": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"1.56": [360, 0, 0]
+					},
+					"position": {
+						"0.0": [0, 0, 0],
+						"0.36": [0, 5.16, 6],
+						"0.6": [0, 10.86, 3.4],
+						"0.76": [0, 13, 0],
+						"0.92": [0, 12.04, -1.82],
+						"1.2": [0, 4.85, -5],
+						"1.36": [0, 2.69, -1.78],
+						"1.56": [0, 0, 0]
+					}
+				}
+			}
+		},
+		"animation.dt_scp066.loud": {
+			"loop": true,
+			"bones": {
+				"scp066": {
+					"scale": ["1+math.sin(query.life_time * 4115) * 0.07", "1+math.sin(query.life_time * 2115) * 0.07", "1+math.sin(query.life_time * 3115) * 0.07"]
+				}
+			}
+		},
+		"animation.dt_scp066.general": {
+			"loop": true,
+			"animation_length": 2.08,
+			"bones": {
+				"scp066": {
+					"scale": {
+						"0.0": [1, 1, 1],
+						"1.04": [1.07, 1.07, 1.07],
+						"2.08": [1, 1, 1]
+					}
+				}
+			}
+		}
+	}
+}

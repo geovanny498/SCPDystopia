@@ -1,0 +1,67 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_table2_corner1",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "table2",
+					"pivot": [0, 0, 0],
+					"rotation": [0, 180, 0],
+					"cubes": [
+						{"origin": [-6, 15, -6], "size": [14, 1, 14], "uv": [0, 6]},
+						{"origin": [-8, 15, -6], "size": [2, 1, 14], "uv": [0, 6]},
+						{"origin": [-6, 15, -8], "size": [14, 1, 2], "uv": [0, 6]}
+					]
+				},
+				{
+					"name": "tb4",
+					"parent": "table2",
+					"pivot": [-6, 16, -6],
+					"rotation": [0, 45, 0],
+					"cubes": [
+						{"origin": [-7.41421, 15, -7.41421], "size": [2.82843, 1, 2], "uv": [25, 10]}
+					]
+				},
+				{
+					"name": "t",
+					"parent": "table2",
+					"pivot": [2, 15, 2],
+					"rotation": [0, 45, 0]
+				},
+				{
+					"name": "t3",
+					"parent": "t",
+					"pivot": [2, 15, 3],
+					"cubes": [
+						{"origin": [0, 14, 1.5], "size": [4, 1, 4], "uv": [9, 42]}
+					]
+				},
+				{
+					"name": "t1",
+					"parent": "t",
+					"pivot": [2, 8, 10],
+					"cubes": [
+						{"origin": [0, 6.5, 9], "size": [4, 4, 2], "uv": [15, 43]}
+					]
+				},
+				{
+					"name": "t2",
+					"parent": "t1",
+					"pivot": [2, 7, 9],
+					"rotation": [-45, 0, 0],
+					"cubes": [
+						{"origin": [1, 7, -1], "size": [2, 2, 10], "uv": [37, 43]}
+					]
+				}
+			]
+		}
+	]
+}

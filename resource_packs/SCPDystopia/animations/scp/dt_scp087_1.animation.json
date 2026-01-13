@@ -1,0 +1,36 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp087_1.general": {
+			"loop": true,
+			"bones": {
+				"scp087_1": {
+					"rotation": [1, 0, 0],
+					"position": [0, "math.sin(query.life_time * 80) * 0.7", 0],
+					"scale": 1.1
+				},
+				"rightArm": {
+					"rotation": [-25, -17.5, "math.sin(query.life_time * -80) * 3"]
+				},
+				"rightArm2": {
+					"rotation": ["-35+math.sin(query.life_time * 80) * 5", 0, 0]
+				},
+				"hand": {
+					"rotation": [-67.5, "math.sin(query.life_time * -80) * 7", 25]
+				},
+				"rightArm3": {
+					"rotation": [10, 35, "15+math.sin(query.life_time * 80) * 3"]
+				},
+				"rightArm4": {
+					"rotation": [-32.5, 0, 0]
+				},
+				"head": {
+					"rotation": ["12.5+math.sin(query.life_time * 80) * 2", 0, 5]
+				},
+				"body": {
+					"rotation": ["math.sin(query.life_time * 80) * 1", "math.sin(query.life_time * 160) * 1", "math.sin(query.life_time * 120) * 1"]
+				}
+			}
+		}
+	}
+}

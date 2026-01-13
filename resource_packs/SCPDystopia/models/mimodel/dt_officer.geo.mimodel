@@ -1,0 +1,218 @@
+{
+	"name": "dt_officer",
+	"texture": "dt_officer.png",
+	"texture_size": [128, 128],
+	"parts": [
+		{
+			"name": "officer",
+			"position": [0, 0, 0],
+			"parts": [
+				{
+					"name": "waist",
+					"position": [0, 12, 0],
+					"parts": [
+						{
+							"name": "body",
+							"position": [0, 12, 0],
+							"parts": [
+								{
+									"name": "chest",
+									"position": [0, -12, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-4, 12, -2],
+											"to": [4, 24, 2],
+											"uv": [37, 4],
+											"position": [0, -12, 0]
+										},
+										{
+											"type": "block",
+											"from": [-4, 12, -2],
+											"to": [4, 24, 2],
+											"inflate": 0.25,
+											"uv": [33, 34],
+											"position": [0, -12, 0]
+										}
+									],
+									"parts": [
+										{
+											"name": "head",
+											"position": [0, 12, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [-4, 23.6, -4],
+													"to": [4, 31.6, 4],
+													"uv": [8, 25],
+													"position": [0, -24, 0]
+												},
+												{
+													"type": "block",
+													"from": [-4, 23.6, -4],
+													"to": [4, 31.6, 4],
+													"inflate": 0.5,
+													"uv": [8, 8],
+													"position": [0, -24, 0]
+												}
+											]
+										},
+										{
+											"name": "leftArm",
+											"position": [5, 10, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [4, 12, -2],
+													"to": [8, 24, 2],
+													"uv": [64, 38],
+													"position": [-5, -22, 0]
+												},
+												{
+													"type": "block",
+													"from": [4, 12, -2],
+													"to": [8, 24, 2],
+													"inflate": 0.25,
+													"uv": [4, 64],
+													"position": [-5, -22, 0]
+												}
+											],
+											"parts": [
+												{
+													"name": "leftItem",
+													"position": [1, -7, -1]
+												}
+											]
+										},
+										{
+											"name": "rightArm",
+											"position": [-5, 10, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [-8, 12, -2],
+													"to": [-4, 24, 2],
+													"uv": [62, 4],
+													"position": [5, -22, 0]
+												},
+												{
+													"type": "block",
+													"from": [-8, 12, -2],
+													"to": [-4, 24, 2],
+													"inflate": 0.25,
+													"uv": [54, 21],
+													"position": [5, -22, 0]
+												}
+											],
+											"parts": [
+												{
+													"name": "rightItem",
+													"position": [-1, -7, -1],
+													"parts": [
+														{
+															"name": "usp",
+															"position": [1, 0, 1.5],
+															"shapes": [
+																{
+																	"type": "block",
+																	"from": [-7, 13.5, 0.5],
+																	"to": [-5, 15.5, 3.5],
+																	"uv": [20, 37],
+																	"position": [5, -15, -0.5]
+																},
+																{
+																	"type": "block",
+																	"from": [-6.7, 12.5, 2.5],
+																	"to": [-5.3, 13.5, 3.5],
+																	"uv": [1, 1],
+																	"position": [5, -15, -0.5]
+																},
+																{
+																	"type": "block",
+																	"from": [-7, 9, 3.5],
+																	"to": [-5, 16, 5.5],
+																	"uv": [35, 19],
+																	"position": [5, -15, -0.5]
+																},
+																{
+																	"type": "block",
+																	"from": [-5.9, 15.1, 5.3],
+																	"to": [-4.9, 16.1, 6.3],
+																	"inflate": -0.2,
+																	"uv": [1, 18],
+																	"position": [5, -15, -0.5]
+																},
+																{
+																	"type": "block",
+																	"from": [-7.1, 15.1, 5.3],
+																	"to": [-6.1, 16.1, 6.3],
+																	"inflate": -0.2,
+																	"uv": [1, 4],
+																	"position": [5, -15, -0.5]
+																},
+																{
+																	"type": "block",
+																	"from": [-7, 9.5, 3.5],
+																	"to": [-5, 11.5, 5.5],
+																	"inflate": 0.08,
+																	"uv": [19, 42],
+																	"position": [5, -15, -0.5]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "rightLeg",
+									"position": [-1.9, -12, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-3.9, 0, -2],
+											"to": [0.1, 12, 2],
+											"uv": [51, 51],
+											"position": [1.9, -12, 0]
+										},
+										{
+											"type": "block",
+											"from": [-3.9, 0, -2],
+											"to": [0.1, 12, 2],
+											"inflate": 0.25,
+											"uv": [34, 51],
+											"position": [1.9, -12, 0]
+										}
+									]
+								},
+								{
+									"name": "leftLeg",
+									"position": [1.9, -12, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-0.1, 0, -2],
+											"to": [3.9, 12, 2],
+											"uv": [17, 51],
+											"position": [-1.9, -12, 0]
+										},
+										{
+											"type": "block",
+											"from": [-0.1, 0, -2],
+											"to": [3.9, 12, 2],
+											"inflate": 0.25,
+											"uv": [4, 38],
+											"position": [-1.9, -12, 0]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

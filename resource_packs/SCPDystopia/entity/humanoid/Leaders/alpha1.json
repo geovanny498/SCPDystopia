@@ -1,0 +1,57 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lc:dt_alpha1",
+      "materials": {
+        "default": "npc"
+      },
+      "textures": {
+        "alpha1": "textures/entity/humanoid/alpha1",
+        "alpha2": "textures/entity/humanoid/alpha2",
+        "alpha3": "textures/entity/humanoid/alpha3",
+        "alpha1f": "textures/entity/humanoid/alpha1f",
+        "alpha2f": "textures/entity/humanoid/alpha2f",
+        "alpha3f": "textures/entity/humanoid/alpha3f"        
+      },
+      "geometry": {
+        "alpha1": "geometry.alpha1",
+        "alpha2": "geometry.alpha1",
+        "alpha3": "geometry.alpha1",
+        "alpha1f": "geometry.alpha1f",
+        "alpha2f": "geometry.alpha1f",
+        "alpha3f": "geometry.alpha1f"
+      },
+      "animations": {
+        "general": "animation.dt_chara.general",
+        "move": "animation.dt_chara.walking",
+        "aim": "animation.dt_chara.aim",
+        // "shoot": "animation.dt_chara.shooting",
+        "melee_attack": "animation.dt_chara.melee_attacking_gun",
+        "looking_at_target": "animation.dt_chara.looking_at_target",
+        "gun_resize": "animation.dt_chara.gun_resize",
+        "anim_cont": "controller.animation.dt_chara.anim_cont",
+        "reloading_gun": "animation.dt_chara.reloading_gun",
+        "melee_attacking_gun": "animation.dt_chara.melee_attacking_gun"
+      },
+      "scripts": {
+        "scale": "0.9375",
+        "animate": [
+          "anim_cont",
+          "move",
+          "gun_resize"
+        ],
+        "pre_animation": [
+          "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
+        ]
+      },
+      "render_controllers": [
+        "controller.render.alpha1"
+      ],
+      "spawn_egg": {
+        "base_color": "#d41b1b",
+        "overlay_color": "#281f1d"
+      }
+    }
+  }
+}

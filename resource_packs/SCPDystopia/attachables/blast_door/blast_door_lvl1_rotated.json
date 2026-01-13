@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_blast_door_lvl1_rotated",
+			"materials": {
+				"default": "entity_alphatest",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/attachment/dt_blast_door_lvl1",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.item.dt_blast_door"
+			},
+			"animations": {
+				"hold": "controller.animation.item.dt_blast_door.hold",
+				"hold_first_person": "animation.item.dt_blast_door.hold_first_person",
+				"hold_third_person": "animation.item.dt_blast_door.hold_third_person"
+			},
+			"scripts": {
+				"animate": ["hold"]
+			},
+			"render_controllers": ["controller.render.item_default"]
+		}
+	}
+}

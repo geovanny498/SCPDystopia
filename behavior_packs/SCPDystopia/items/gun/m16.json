@@ -1,0 +1,41 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_m16",
+			"menu_category": {
+				"category": "equipment"
+			}
+		},
+		"components": {
+			"scpdt:dont_damage_durability_on_hit": {},
+			"scpdt:m16": {},
+			"minecraft:use_modifiers": {
+				"movement_modifier": 0.5,
+				"use_duration": 0.01
+			},
+			"minecraft:damage": 4,
+			"minecraft:can_destroy_in_creative": false,
+			"minecraft:durability": {
+				"max_durability": 26,
+				"damage_chance": {
+					"min": 0,
+					"max": 0
+				}
+			},
+			"minecraft:hand_equipped": true,
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dt_m16_icon",
+			"minecraft:display_name": {
+				"value": "M16 Assault Rifle"
+			},
+			"minecraft:cooldown": {
+				"duration": 0.1,
+				"category": "m16"
+			},
+			"minecraft:tags": {
+				"tags": ["lc:class_d_can_equip"]
+			}
+		}
+	}
+}

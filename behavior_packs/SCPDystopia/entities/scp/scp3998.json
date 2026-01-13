@@ -1,0 +1,100 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:entity": {
+		"description": {
+			"identifier": "lc:dt_scp3998",
+			"is_spawnable": true,
+			"is_summonable": true
+		},
+
+		"components": {
+			"minecraft:knockback_resistance": {
+				"value": 1.0
+			},
+			"minecraft:type_family": {
+				"family": ["inanimate", "scp3998"]
+			},
+			"minecraft:health": {
+				"value": 50,
+				"max": 50
+			},
+			"minecraft:fire_immune": {},
+			"minecraft:pushable": {
+				"is_pushable": false,
+				"is_pushable_by_piston": true
+			},
+			"minecraft:collision_box": {
+				"width": 0.5,
+				"height": 1.9
+			},
+			"minecraft:physics": {},
+			"minecraft:nameable": {},
+			"minecraft:conditional_bandwidth_optimization": {}
+		},
+
+		"component_groups": {
+			"daytime": {
+				"minecraft:environment_sensor": {
+					"triggers": [
+						{
+							"filters": {
+								"test": "is_daytime",
+								"value": false
+							},
+							"event": "scp3998:to_night"
+						}
+					]
+				}
+			},
+			"night": {
+				"minecraft:environment_sensor": {
+					"triggers": [
+						{
+							"filters": {
+								"test": "is_daytime",
+								"value": true
+							},
+							"event": "scp3998:to_day"
+						}
+					]
+				},
+				"minecraft:timer": {
+					"looping": true,
+					"time": 3,
+					"time_down_event": {
+						"event": "scp3998:burn"
+					}
+				}
+			}
+		},
+
+		"events": {
+			"minecraft:entity_spawned": {
+				"add": {
+					"component_groups": ["daytime"]
+				}
+			},
+			"scp3998:to_day": {
+				"add": {
+					"component_groups": ["daytime"]
+				},
+				"remove": {
+					"component_groups": ["night"]
+				}
+			},
+			"scp3998:to_night": {
+				"add": {
+					"component_groups": ["night"]
+				},
+				"remove": {
+					"component_groups": ["daytime"]
+				}
+			},
+			"scp3998:burn": {
+				"queue_command": {
+					"command": "fill ~3 ~0 ~3 ~-3 ~0 ~-3 fire keep"
+				}
+			}
+		}
+	}
+}

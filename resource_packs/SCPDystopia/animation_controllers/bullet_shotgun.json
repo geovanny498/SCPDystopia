@@ -1,0 +1,13 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_bullet_shotgun.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general"]
+				}
+			}
+		}
+	}
+}

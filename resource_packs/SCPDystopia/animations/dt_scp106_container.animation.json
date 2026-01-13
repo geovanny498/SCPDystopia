@@ -1,0 +1,42 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp106_container.contained": {
+			"loop": true,
+			"bones": {
+				"s1": {
+					"rotation": {
+						"0.0": {
+							"post": [-82.5, 0, 0],
+							"lerp_mode": "catmullrom"
+						}
+					}
+				},
+				"s2": {
+					"rotation": {
+						"0.0": {
+							"post": [82.5, 0, 0],
+							"lerp_mode": "catmullrom"
+						}
+					}
+				},
+				"s3": {
+					"rotation": {
+						"0.0": {
+							"post": [0, 0, 82.5],
+							"lerp_mode": "catmullrom"
+						}
+					}
+				},
+				"s4": {
+					"rotation": {
+						"0.0": {
+							"post": [0, 0, -82.5],
+							"lerp_mode": "catmullrom"
+						}
+					}
+				}
+			}
+		}
+	}
+}

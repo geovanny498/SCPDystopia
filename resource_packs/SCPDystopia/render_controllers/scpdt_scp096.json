@@ -1,0 +1,18 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+		"controller.render.scpdt_scp096": {
+			"arrays": {
+				"geometries": {
+					"Array.geos": ["Geometry.default", "Geometry.with_bag"]
+				},
+				"materials": {
+					"Array.materials": ["Material.default", "Material.with_bag"]
+				}
+			},
+			"geometry": "Array.geos[query.variant]",
+			"materials": [{ "*": "Array.materials[query.variant]" }],
+			"textures": ["Texture.default"]
+		}
+	}
+}

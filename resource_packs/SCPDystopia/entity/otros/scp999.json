@@ -1,0 +1,30 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp999",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp999_new"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp999_new"
+			},
+			"animations": {
+				"general": "animation.dt_scp999_new.general",
+
+				"anim_cont": "controller.animation.dt_scp999.anim_cont"
+			},
+			"scripts": {
+				"animate": ["anim_cont"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#FA9307",
+				"overlay_color": "#D6800A"
+			}
+		}
+	}
+}

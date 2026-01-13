@@ -1,0 +1,19 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.scp173.blink_timer.enter": {
+			"animation_length": 11,
+			"loop": true,
+			"timeline": {
+				"10": ["/event entity @s scp173:enter_blink_phase"]
+			}
+		},
+		"animation.scp173.blink_timer.exit": {
+			"animation_length": 2,
+			"loop": true,
+			"timeline": {
+				"0.72": ["/event entity @s scp173:exit_blink_phase"]
+			}
+		}
+	}
+}

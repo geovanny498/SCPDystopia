@@ -1,0 +1,52 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_tesla_shock_block",
+			"menu_category": {
+				"category": "construction"
+			},
+			"states": {
+				"tesla:state": [0, 1, 2]
+			}
+		},
+		"components": {
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_tesla_shock_block",
+					"render_method": "opaque"
+				}
+			},
+			"scpdt:tesla_shock_block": {},
+			"minecraft:geometry": "minecraft:geometry.full_block",
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.6
+			},
+			"minecraft:destructible_by_explosion": {
+				"explosion_resistance": 30
+			},
+			"minecraft:light_dampening": 15,
+			"tag:lc:dystopiablock": {}
+		},
+		"permutations": [
+			{
+				"condition": "query.block_state('tesla:state') == 1",
+				"components": {
+					"minecraft:tick": {
+						"looping": false,
+						"interval_range": [10, 10]
+					}
+				}
+			},
+			{
+				"condition": "query.block_state('tesla:state') == 2",
+				"components": {
+					"minecraft:tick": {
+						"looping": false,
+						"interval_range": [20, 20]
+					}
+				}
+			}
+		]
+	}
+}

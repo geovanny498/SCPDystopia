@@ -1,0 +1,39 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_blast_door_e",
+			"materials": {
+				"default": "entity"
+			},
+			"textures": {
+				"default": "textures/blocks/doors/dt_blast_door",
+				"lvl1": "textures/blocks/doors/dt_blast_door_lvl1",
+				"lvl2": "textures/blocks/doors/dt_blast_door_lvl2",
+				"lvl3": "textures/blocks/doors/dt_blast_door_lvl3",
+				"lvl4": "textures/blocks/doors/dt_blast_door_lvl4",
+				"lvl5": "textures/blocks/doors/dt_blast_door_lvl5"
+			},
+			"geometry": {
+				"default": "geometry.dt_blast_door_e"
+			},
+			"animations": {
+				"ctrl": "controller.animation.dt_blast_door_e",
+				"anim.closed": "animation.dt_blast_door_e.closed",
+				"anim.closing": "animation.dt_blast_door_e.closing",
+				"anim.opened": "animation.dt_blast_door_e.opened",
+				"anim.opening": "animation.dt_blast_door_e.opening",
+				"anim.rotated": "animation.dt_blast_door_e.rotated"
+			},
+			"scripts": {
+				"animate": ["ctrl", { "anim.rotated": "v.is_rotated" }],
+				"pre_animation": [
+					"v.door_state = q.property('scpdt:door_state');",
+					"v.is_rotated = q.property('scpdt:is_rotated');",
+					"v.lvl = q.property('scpdt:clearance_level');"
+				]
+			},
+			"render_controllers": ["controller.render.scpdt_blast_door_e"]
+		}
+	}
+}

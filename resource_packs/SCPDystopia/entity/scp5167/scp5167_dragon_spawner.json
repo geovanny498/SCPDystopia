@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp5167_dragon_spawner",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp5167_dragon_spawner"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp5167_dragon_spawner"
+			},
+			"animations": {
+				"general": "animation.dt_scp5167_dragon_spawner.spawn"
+			},
+			"scripts": {
+				"animate": ["general"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#B60F0F",
+				"overlay_color": "#8E4343"
+			}
+		}
+	}
+}

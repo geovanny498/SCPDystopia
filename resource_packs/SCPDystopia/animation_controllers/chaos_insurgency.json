@@ -1,0 +1,64 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_chaos_insurgency.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general"],
+					"transitions": [
+						{
+							"aim": "query.has_target"
+						},
+						{
+							"shooting": "query.has_target && query.facing_target_to_range_attack"
+						},
+						{
+							"escaping": "query.mark_variant == 1"
+						}
+					],
+					"blend_transition": 0.5
+				},
+				"aim": {
+					"animations": ["aim"],
+					"transitions": [
+						{
+							"default": "!query.has_target"
+						},
+						{
+							"shooting": "query.facing_target_to_range_attack"
+						},
+						{
+							"escaping": "query.mark_variant == 1"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"shooting": {
+					"animations": ["shoot"],
+					"transitions": [
+						{
+							"default": "!query.has_target || !query.facing_target_to_range_attack"
+						},
+						{
+							"aim": "!query.facing_target_to_range_attack"
+						},
+						{
+							"escaping": "query.mark_variant == 1"
+						}
+					],
+					"blend_transition": 0.4
+				},
+				"escaping": {
+					"animations": ["retreat"],
+					"transitions": [
+						{
+							"default": "query.mark_variant == 0"
+						}
+					],
+					"blend_transition": 1
+				}
+			}
+		}
+	}
+}

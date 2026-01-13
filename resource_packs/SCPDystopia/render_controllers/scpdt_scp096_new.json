@@ -1,0 +1,15 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+		"controller.render.scpdt_scp096_new": {
+			"arrays": {
+				"textures": {
+					"Array.skins": ["Texture.without_bag", "Texture.with_bag"]
+				}
+			},
+			"geometry": "Geometry.default",
+			"materials": [{ "*": "Material.default" }],
+			"textures": ["Array.skins[query.variant]"]
+		}
+	}
+}

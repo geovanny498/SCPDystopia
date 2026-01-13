@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp610_dead",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/scp610/dt_scp610_dead"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp610_dead"
+			},
+			"animations": {
+				"general": "animation.dt_scp610_dead.general"
+			},
+			"scripts": {
+				"animate": ["general"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#BB1A1A",
+				"overlay_color": "#D1E8EF"
+			}
+		}
+	}
+}

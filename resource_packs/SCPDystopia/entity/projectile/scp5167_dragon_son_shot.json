@@ -1,0 +1,35 @@
+{
+  "format_version": "1.10.0",
+  "minecraft:client_entity": {
+    "description": {
+      "identifier": "lc:dt_scp5167_dragon_son_shot",
+      "materials": {
+        "default": "arrow"
+      },
+      "textures": {
+        "default": "textures/entity/dt_scp5167_dragon_son_shot"
+      },
+      "geometry": {
+        "default": "geometry.dt_scp5167_dragon_shot"
+      },
+      "animations": {
+        "move": "animation.arrow.move",
+        "shake": "animation.sus.shake"
+      },
+      "particle_effects": {
+        "charged_flames": "minecraft:mobflame_emitter"
+      },
+      "scripts": {
+        "pre_animation": [
+          "variable.shake = query.shake_time - query.frame_alpha;",
+          "variable.shake_power = variable.shake > 0.0 ? -Math.sin(variable.shake * 200.0) * variable.shake : 0.0;"
+        ],
+        "animate": [
+          "move",
+          "shake"
+        ]
+      },
+      "render_controllers": [ "controller.render.arrow" ]
+    }
+  }
+}

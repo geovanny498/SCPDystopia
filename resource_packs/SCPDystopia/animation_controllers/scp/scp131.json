@@ -1,0 +1,35 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp131.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general"]
+				}
+			}
+		},
+		"controller.animation.dt_scp131.spin": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"spinning": "variable.spin"
+						}
+					],
+					"blend_transition": 0.34
+				},
+				"spinning": {
+					"animations": ["spinning"],
+					"transitions": [
+						{
+							"default": "!variable.spin"
+						}
+					],
+					"blend_transition": 0.34
+				}
+			}
+		}
+	}
+}

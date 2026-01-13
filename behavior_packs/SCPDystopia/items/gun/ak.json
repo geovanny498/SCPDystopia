@@ -1,0 +1,43 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_ak",
+			"menu_category": {
+				"category": "equipment"
+			}
+		},
+		"components": {
+			"scpdt:dont_damage_durability_on_hit": {},
+			"scpdt:ak": {},
+			"minecraft:use_modifiers": {
+				"movement_modifier": 0.5,
+				"use_duration": 0.01
+			},
+			"minecraft:use_animation": "none",
+			"minecraft:damage": 4,
+						"minecraft:can_destroy_in_creative": false,
+			"minecraft:can_destroy_in_creative": false,
+			"minecraft:durability": {
+				"max_durability": 31,
+				"damage_chance": {
+					"min": 0,
+					"max": 0
+				}
+			},
+			"minecraft:hand_equipped": true,
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dt_ak_icon",
+			"minecraft:display_name": {
+				"value": "dt.nameslot.ak"
+			},
+			"minecraft:cooldown": {
+				"duration": 0.1,
+				"category": "dt_ak_shooting"
+			},
+			"minecraft:tags": {
+				"tags": ["lc:class_d_can_equip", "lc:ak"]
+			}
+		}
+	}
+}

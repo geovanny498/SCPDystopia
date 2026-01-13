@@ -1,0 +1,15 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "blockceptionltd.blockceptionvscodeminecraftbedrockdevelopmentextension",
+    "mojang-studios.minecraft-debugger",
+    "destruc7i0n.vscode-bedrock-definitions",
+    "usernamehw.errorlens",
+    "pkief.material-icon-theme",
+    "enkia.tokyo-night",
+    "oderwat.indent-rainbow",
+    "ms-ceintl.vscode-language-pack-es",
+    "github.copilot",
+    "github.copilot-chat"
+  ]
+}

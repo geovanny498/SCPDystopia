@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp173_cage",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp173_cage"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp173_cage"
+			},
+			"animations": {
+				"general": "animation.dt_scp173_cage.flying"
+			},
+			"scripts": {
+				"animate": ["general"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#504C4C",
+				"overlay_color": "#BF1F1F"
+			}
+		}
+	}
+}

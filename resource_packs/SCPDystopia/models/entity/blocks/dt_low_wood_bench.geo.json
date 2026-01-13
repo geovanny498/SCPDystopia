@@ -1,0 +1,59 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_low_wood_bench",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 1.5,
+				"visible_bounds_offset": [0, 0.25, 0]
+			},
+			"bones": [
+				{
+					"name": "low_wood_bench",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{
+							"origin": [10, 0, -4],
+							"size": [2, 4, 8],
+							"uv": {
+								"north": {"uv": [20, 26], "uv_size": [2, 4]},
+								"east": {"uv": [12, 26], "uv_size": [8, 4]},
+								"south": {"uv": [30, 26], "uv_size": [2, 4]},
+								"west": {"uv": [22, 26], "uv_size": [8, 4]},
+								"up": {"uv": [20, 18], "uv_size": [2, 8]},
+								"down": {"uv": [22, 26], "uv_size": [2, -8]}
+							}
+						},
+						{
+							"origin": [-12, 0, -4],
+							"size": [2, 4, 8],
+							"uv": {
+								"north": {"uv": [8, 22], "uv_size": [2, 4]},
+								"east": {"uv": [0, 22], "uv_size": [8, 4]},
+								"south": {"uv": [18, 22], "uv_size": [2, 4]},
+								"west": {"uv": [10, 22], "uv_size": [8, 4]},
+								"up": {"uv": [8, 14], "uv_size": [2, 8]},
+								"down": {"uv": [10, 22], "uv_size": [2, -8]}
+							}
+						},
+						{
+							"origin": [-15, 4, -6],
+							"size": [30, 2, 12],
+							"uv": {
+								"north": {"uv": [12, 12], "uv_size": [40, 2]},
+								"east": {"uv": [0, 12], "uv_size": [12, 2]},
+								"south": {"uv": [64, 12], "uv_size": [40, 2]},
+								"west": {"uv": [52, 12], "uv_size": [12, 2]},
+								"up": {"uv": [12, 0], "uv_size": [40, 12]},
+								"down": {"uv": [52, 12], "uv_size": [40, -12]}
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}

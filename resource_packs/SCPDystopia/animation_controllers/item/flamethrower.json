@@ -1,0 +1,70 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.item.dt_flamethrower.hold": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"pick": "q.cooldown_time_remaining('dt_ft_reloading') == 0.0"
+						},
+						{
+							"first_person": "q.cooldown_time_remaining('dt_ft_reloading') != 0.0 || q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:flamethrower_empty')"
+						}
+					]
+				},
+				"pick": {
+					"animations": ["pickup"],
+					"transitions": [
+						{
+							"first_person": "q.all_animations_finished"
+						},
+						{
+							"shoot": "q.cooldown_time_remaining('dt_ft_shooting') != 0.0"
+						}
+					]
+				},
+				"first_person": {
+					"animations": ["holding"],
+					"transitions": [
+						{
+							"shoot": "q.cooldown_time_remaining('dt_ft_shooting') != 0.0"
+						}
+					],
+					"blend_transition": 0.1
+				},
+				"shoot": {
+					"animations": ["shoot"],
+					"transitions": [
+						{
+							"first_person": "query.cooldown_time_remaining('dt_ft_shooting') == 0.0"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_flamethrower_empty.hold": {
+			"initial_state": "first_person",
+			"states": {
+				"first_person": {
+					"animations": ["holding"],
+					"transitions": [
+						{
+							"reloading": "q.cooldown_time_remaining('dt_ft_reloading') != 0.0"
+						}
+					],
+					"blend_transition": 0.1
+				},
+				"reloading": {
+					"animations": ["reload"],
+					"transitions": [
+						{
+							"first_person": "query.cooldown_time_remaining('dt_ft_reloading') == 0.0"
+						}
+					]
+				}
+			}
+		}
+	}
+}

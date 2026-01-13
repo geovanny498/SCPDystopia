@@ -1,0 +1,434 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.item.dt_mp5k.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_mp5_mag')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_mp5_mag_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_mp5_mag')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_mp5a3.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_mp5_mag')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_mp5_mag_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_mp5_mag')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_m16.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_m16_mag')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_m16_mag_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_m16_mag')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_glock.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_glock_mag')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_glock_mag_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_glock_mag')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_p90.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_p90_mag')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_p90_mag_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_p90_mag')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_spas12.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_spas12_shellbox')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_spas12_shellbox_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_spas12_shellbox')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_high_intensity_gun.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_hig_mag')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_hig_mag_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_hig_mag')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_scar.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_scar_mag')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_scar_mag_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_scar_mag')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_mp7a1.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_mp7a1_mag')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_mp7a1_mag_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_mp7a1_mag')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_suscharger.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_suscharger_battery')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_suscharger_battery_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_suscharger_battery')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_m4a1.reload": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"empty": "(query.get_equipped_item_name(1) == 'dt_m16_mag')"
+						}
+					]
+				},
+				"empty": {
+					"animations": [
+						{
+							"empty": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"with_ammo": "(query.get_equipped_item_name(1) == 'dt_m16_mag_empty')"
+						},
+						{
+							"default": "(query.get_equipped_item_name(1) != 'dt_m16_mag')"
+						}
+					]
+				},
+				"with_ammo": {
+					"animations": [
+						{
+							"reloading": "c.is_first_person"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.all_animations_finished"
+						}
+					]
+				}
+			}
+		}
+	}
+}

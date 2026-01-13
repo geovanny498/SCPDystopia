@@ -1,0 +1,40 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_hand_dryer",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "hand_dryer",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-5, 3, -8], "size": [10, 9, 7], "uv": [0, 0]},
+						{"origin": [-5, 12, -8], "size": [10, 1, 2], "uv": [28, 0]},
+						{"origin": [-5, 12, -3], "size": [10, 1, 2], "uv": [23, 27]},
+						{"origin": [4, 12, -6], "size": [1, 1, 3], "uv": [9, 34]},
+						{"origin": [-5, 12, -6], "size": [1, 1, 3], "uv": [0, 34]},
+						{"origin": [-5, 13, -8], "size": [10, 9, 2], "uv": [0, 17]},
+						{"origin": [-4, 18, -7.9], "size": [8, 2, 2], "inflate": 0.1, "uv": [21, 31]},
+						{"origin": [-4, 14, -7.9], "size": [8, 2, 2], "inflate": 0.1, "uv": [0, 29]}
+					]
+				},
+				{
+					"name": "h2",
+					"parent": "hand_dryer",
+					"pivot": [0, 13, -3],
+					"rotation": [-7.5, 0, 0],
+					"cubes": [
+						{"origin": [-5, 13, -3], "size": [10, 7, 2], "uv": [25, 17]}
+					]
+				}
+			]
+		}
+	]
+}

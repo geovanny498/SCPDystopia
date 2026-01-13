@@ -1,0 +1,36 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_scp268",
+			"menu_category": {
+				"category": "equipment"
+			}
+		},
+		"components": {
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dt_scp268",
+			"minecraft:durability": {
+				"max_durability": 200,
+				"damage_chance": {
+					"min": 0,
+					"max": 100
+				}
+			},
+			"minecraft:enchantable": {
+				"slot": "armor_head",
+				"value": 10
+			},
+			"minecraft:wearable": {
+				"slot": "slot.armor.head",
+				"protection": 4
+			},
+			"minecraft:display_name": {
+				"value": "SCP-268 \"Cap of Neglect\""
+			},
+			"minecraft:tags": {
+				"tags": ["lc:scp268"]
+			}
+		}
+	}
+}

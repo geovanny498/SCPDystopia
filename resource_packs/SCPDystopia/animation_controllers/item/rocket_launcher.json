@@ -1,0 +1,122 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.item.dt_rocket_launcher.hold": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"hold": "query.cooldown_time_remaining('dt_rpg_reload') != 0.0"
+						},
+						{
+							"pick": "query.cooldown_time_remaining('dt_rpg_shoot') == 0.0 && query.cooldown_time_remaining('dt_rpg_reload') == 0.0"
+						},
+						{
+							"shoot": "query.cooldown_time_remaining('dt_rpg_shoot') != 0.0"
+						}
+					]
+				},
+				"pick": {
+					"animations": ["picking"],
+					"transitions": [
+						{
+							"hold": "query.all_animations_finished"
+						},
+						{
+							"shoot": "query.cooldown_time_remaining('dt_rpg_shoot') != 0.0"
+						}
+					]
+				},
+				"hold": {
+					"animations": ["holding"],
+					"transitions": [
+						{
+							"shoot": "query.cooldown_time_remaining('dt_rpg_shoot') != 0.0"
+						},
+						{
+							"third_person": "!c.is_first_person"
+						}
+					]
+				},
+				"third_person": {
+					"transitions": [
+						{
+							"pick": "c.is_first_person"
+						}
+					]
+				},
+				"shoot": {
+					"animations": ["shoot", "empty"],
+					"transitions": [
+						{
+							"hold": "query.cooldown_time_remaining('dt_rpg_shoot') == 0.0"
+						}
+					]
+				}
+			}
+		},
+		"controller.animation.item.dt_rocket_launcher_empty.hold": {
+			"initial_state": "pick",
+			"states": {
+				"pick": {
+					"transitions": [
+						{
+							"hold": "query.cooldown_time_remaining('dt_rpg_shoot') == 0.0 && query.cooldown_time_remaining('dt_rpg_reload') == 0.0"
+						},
+						{
+							"reload": "query.cooldown_time_remaining('dt_rpg_reload') != 0.0"
+						},
+						{
+							"shoot": "query.cooldown_time_remaining('dt_rpg_shoot') != 0.0"
+						}
+					]
+				},
+				"hold": {
+					"animations": ["holding", "empty"],
+					"transitions": [
+						{
+							"shoot": "query.cooldown_time_remaining('dt_rpg_shoot') != 0.0"
+						},
+						{
+							"reload": "query.cooldown_time_remaining('dt_rpg_reload') != 0.0"
+						},
+						{
+							"third_person": "!c.is_first_person"
+						}
+					]
+				},
+				"third_person": {
+					"transitions": [
+						{
+							"pick": "c.is_first_person"
+						}
+					]
+				},
+				"shoot": {
+					"animations": ["shoot", "empty"],
+					"transitions": [
+						{
+							"hold": "query.cooldown_time_remaining('dt_rpg_shoot') == 0.0"
+						}
+					]
+				},
+				"reload": {
+					"animations": ["reload"]
+				}
+			}
+		},
+		"controller.animation.dt_rpg_rocket.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"particle_effects": [
+						{
+							"effect": "charged_flames"
+						}
+					]
+				}
+			}
+		}
+	}
+}

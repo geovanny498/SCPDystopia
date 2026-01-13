@@ -1,0 +1,63 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp5535.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						{
+							"move_arms": "query.modified_move_speed"
+						},
+						{
+							"move_legs": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"vibe": "query.mark_variant == 1"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"vibe": {
+					"animations": [
+						"vibe_leftarm",
+						{
+							"move_legs": "query.modified_move_speed"
+						}
+					],
+					"transitions": [
+						{
+							"default": "query.mark_variant == 0"
+						}
+					],
+					"blend_transition": 1
+				}
+			}
+		},
+		"controller.animation.dt_scp5535.has_target": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"has_target": "query.has_target"
+						}
+					],
+					"blend_transition": 0.6
+				},
+				"has_target": {
+					"animations": ["found_target"],
+					"transitions": [
+						{
+							"default": "!query.has_target"
+						}
+					],
+					"blend_transition": 0.8
+				}
+			}
+		}
+	}
+}

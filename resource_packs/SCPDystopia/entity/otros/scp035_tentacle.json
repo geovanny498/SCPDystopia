@@ -1,0 +1,32 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp035_tentacle",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp035_tentacle"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp035_tentacle"
+			},
+			"animations": {
+				"general": "animation.dt_scp035_tentacle.general",
+				"attack": "animation.dt_scp035_tentacle.attack",
+
+				"anim_cont": "controller.animation.dt_scp035_tentacle.anim_cont",
+				"look_at_target": "animation.common.look_at_target"
+			},
+			"scripts": {
+				"animate": ["anim_cont", "look_at_target"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#580000",
+				"overlay_color": "#6A0000"
+			}
+		}
+	}
+}

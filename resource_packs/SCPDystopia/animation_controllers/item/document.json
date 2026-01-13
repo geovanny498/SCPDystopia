@@ -1,0 +1,20 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.item.dt_document.hold": {
+			"initial_state": "first_person",
+			"states": {
+				"first_person": {
+					"animations": [
+						{
+							"hold_first_person": "c.is_first_person"
+						},
+						{
+							"hold_third_person": "!c.is_first_person"
+						}
+					]
+				}
+			}
+		}
+	}
+}

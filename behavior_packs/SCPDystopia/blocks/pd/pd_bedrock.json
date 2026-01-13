@@ -1,0 +1,24 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_pd_bedrock",
+			"menu_category": {
+				"category": "construction"
+			}
+		},
+		"components": {
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_pd_bedrock",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:geometry": "minecraft:geometry.full_block",
+			"minecraft:map_color": "#353f3d",
+			"minecraft:destructible_by_mining": false,
+			"minecraft:destructible_by_explosion": false,
+			"tag:lc:dystopiablock": {}
+		}
+	}
+}

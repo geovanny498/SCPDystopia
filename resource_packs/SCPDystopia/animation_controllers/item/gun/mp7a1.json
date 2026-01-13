@@ -1,0 +1,39 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.item.dt_mp7a1.hold": {
+			"initial_state": "pick",
+			"states": {
+				"pick": {
+					"animations": ["pickup"],
+					"transitions": [
+						{
+							"first_person": "query.all_animations_finished && c.is_first_person && !q.is_sneaking"
+						},
+						{
+							"first_person_sneak": "query.all_animations_finished && c.is_first_person && q.is_sneaking"
+						}
+					]
+				},
+				"first_person": {
+					"animations": ["hold_first_person"],
+					"transitions": [
+						{
+							"first_person_sneak": "c.is_first_person && q.is_sneaking"
+						}
+					],
+					"blend_transition": 0.12
+				},
+				"first_person_sneak": {
+					"animations": ["hold_first_person_sneak"],
+					"transitions": [
+						{
+							"first_person": "c.is_first_person && !q.is_sneaking"
+						}
+					],
+					"blend_transition": 0.12
+				}
+			}
+		}
+	}
+}

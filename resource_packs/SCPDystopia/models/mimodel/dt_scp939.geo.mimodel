@@ -1,0 +1,161 @@
+{
+	"name": "dt_scp939",
+	"texture": "dt_scp939.png",
+	"texture_size": [64, 64],
+	"parts": [
+		{
+			"name": "scp939",
+			"position": [0, -2, 0],
+			"parts": [
+				{
+					"name": "body",
+					"position": [0, 0, 0],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-4, 0, -6],
+							"to": [4, 4, 6],
+							"uv": [12, 12],
+							"position": [0, 2, 0]
+						},
+						{
+							"type": "block",
+							"from": [-0.5, 0, -1],
+							"to": [0.5, 5, 0],
+							"uv": [22, 4],
+							"position": [0, 6, 5],
+							"rotation": [-5, 0, 0]
+						},
+						{
+							"type": "block",
+							"from": [-0.5, 0, -1],
+							"to": [0.5, 6, 0],
+							"uv": [22, 4],
+							"position": [0, 6, 3],
+							"rotation": [-5, 0, 0]
+						},
+						{
+							"type": "block",
+							"from": [-0.5, 0, -1],
+							"to": [0.5, 7, 0],
+							"uv": [22, 4],
+							"position": [0, 6, 1],
+							"rotation": [-5, 0, 0]
+						},
+						{
+							"type": "block",
+							"from": [-0.5, 0, -1],
+							"to": [0.5, 7, 0],
+							"uv": [22, 4],
+							"position": [0, 6, -1],
+							"rotation": [-7.5, 0, 0]
+						},
+						{
+							"type": "block",
+							"from": [-0.5, 0, -1],
+							"to": [0.5, 7, 0],
+							"uv": [22, 4],
+							"position": [0, 6, -3],
+							"rotation": [-15, 0, 0]
+						},
+						{
+							"type": "block",
+							"from": [-0.5, 0, -1],
+							"to": [0.5, 7, 0],
+							"uv": [22, 4],
+							"position": [0, 6, -5],
+							"rotation": [-22.5, 0, 0]
+						}
+					],
+					"parts": [
+						{
+							"name": "tail",
+							"position": [0, 5, -6],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-1, 1, -16],
+									"to": [1, 3, -6],
+									"uv": [10, 62],
+									"position": [0, -3, 6]
+								},
+								{
+									"type": "block",
+									"from": [-0.5, 1.5, -26],
+									"to": [0.5, 2.5, -16],
+									"uv": [10, 63],
+									"position": [0, -3, 6]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "leg1",
+					"position": [2, 4, -6],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [0, 0, -18],
+							"to": [4, 4, -6],
+							"uv": [32, 48],
+							"position": [-2, -2, 6]
+						}
+					]
+				},
+				{
+					"name": "leg2",
+					"position": [-2, 4, -6],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-4, 0, -18],
+							"to": [0, 4, -6],
+							"uv": [12, 44],
+							"position": [2, -2, 6]
+						}
+					]
+				},
+				{
+					"name": "arm1",
+					"position": [5, 4, 4],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [4, 0, -6],
+							"to": [8, 4, 6],
+							"uv": [40, 16],
+							"position": [-5, -2, -4]
+						}
+					]
+				},
+				{
+					"name": "arm2",
+					"position": [-5, 4, 4],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-8, 0, -6],
+							"to": [-4, 4, 6],
+							"uv": [32, 32],
+							"position": [5, -2, -4]
+						}
+					]
+				},
+				{
+					"name": "head",
+					"position": [0, 4, 6],
+					"shapes": [
+						{
+							"type": "block",
+							"from": [-4, -2, 6],
+							"to": [4, 6, 14],
+							"uv": [8, 24],
+							"position": [0, -2, -6]
+						}
+					]
+				}
+			]
+		}
+	]
+}

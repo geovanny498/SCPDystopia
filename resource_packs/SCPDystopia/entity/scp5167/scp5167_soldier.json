@@ -1,0 +1,41 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp5167_soldier",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp5167_soldier"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp5167_soldier"
+			},
+			"animations": {
+				"general": "animation.dt_scp5167_soldier.general",
+				"has_target": "animation.dt_scp5167_soldier.has_target",
+				"move": "animation.dt_scp5167_soldier.walking",
+				"run": "animation.dt_scp5167_soldier.running",
+				"swell": "animation.dt_scp5167_soldier.swell",
+
+				"anim_cont": "controller.animation.dt_scp5167_soldier.anim_cont"
+			},
+			"particle_effects": {
+				"charged_flames": "minecraft:mobflame_emitter"
+			},
+			"scripts": {
+				"animate": ["anim_cont"],
+				"pre_animation": [
+					"variable.sus_move = query.modified_move_speed;",
+					"variable.sus_run = (query.ground_speed > 2.6) && (query.has_target);"
+				]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#871010",
+				"overlay_color": "#3E4354"
+			}
+		}
+	}
+}

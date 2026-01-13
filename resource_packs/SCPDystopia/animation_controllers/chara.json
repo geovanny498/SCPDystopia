@@ -1,0 +1,41 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_chara.anim_cont": {
+			"states": {
+				"default": {
+					"animations": ["general", "looking_at_target"],
+					"transitions": [
+						{"aim": "query.has_target"},
+						{"melee_attacking_gun": "q.is_delayed_attacking == 1"}
+					],
+					"blend_transition": 0.2
+				},
+				"aim": {
+					"animations": ["aim", "looking_at_target"],
+					"transitions": [
+						{"default": "!query.has_target"},
+						{"reloading_gun": "q.is_charged"},
+						{"melee_attacking_gun": "q.is_delayed_attacking == 1"}
+					],
+					"blend_transition": 0.2
+				},
+				"reloading_gun": {
+					"animations": ["reloading_gun", "looking_at_target"],
+					"transitions": [
+						{"aim": "!q.is_charged"}
+					],
+					"blend_transition": 0.2
+				},
+				"melee_attacking_gun": {
+					"animations": ["melee_attacking_gun", "looking_at_target"],
+					"transitions": [
+						{"default": "q.all_animations_finished && (!query.has_target || !query.facing_target_to_range_attack)"},
+						{"aim": "q.all_animations_finished && query.has_target && query.facing_target_to_range_attack"}
+					],
+					"blend_transition": 0.2
+				}
+			}
+		}
+	}
+}

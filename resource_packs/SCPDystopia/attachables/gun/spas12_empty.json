@@ -1,0 +1,46 @@
+{
+	"format_version": "1.10",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_spas12_empty",
+			"materials": {
+				"default": "entity_alphatest",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/attachment/dt_spas12",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.item.dt_spas12"
+			},
+			"animations": {
+				"controller": "controller.animation.item.dt_spas12_empty.hold",
+				"holding": "animation.item.dt_spas12.hold",
+				"sneaking": "animation.item.dt_spas12.sneak_trans",
+				"holding_sneak": "animation.item.dt_spas12.hold_sneak",
+				"sneak_leaving": "animation.item.dt_spas12.sneak_leave",
+				"shooting": "animation.item.dt_spas12.shoot",
+				"shooting_sneak": "animation.item.dt_spas12.shoot_sneak",
+				"hide_ra": "animation.item.dt_spas12.hide_ra",
+				"hide_head": "animation.item.dt_spas12.hide_head",
+				"hide_flash": "animation.item.dt_spas12.muzzleflash_hide",
+				"pickup": "animation.item.dt_spas12.pick",
+				"reloading": "animation.item.dt_spas12.reload"
+			},
+			"scripts": {
+				"animate": [
+					"controller",
+					{
+						"hide_ra": "c.is_first_person"
+					},
+					{
+						"hide_head": "!c.is_first_person"
+					},
+					"hide_flash"
+				]
+			},
+			"render_controllers": ["controller.render.item_default"]
+		}
+	}
+}

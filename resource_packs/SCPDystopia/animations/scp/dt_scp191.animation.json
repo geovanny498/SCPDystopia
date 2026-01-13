@@ -1,0 +1,103 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp191.general": {
+			"loop": true,
+			"bones": {
+				"chest": {
+					"rotation": ["math.sin(query.life_time * -80) * 1", 0, 0]
+				},
+				"leftArm": {
+					"rotation": [0, 0, "-2.5+math.sin(query.life_time * -80) * 2"]
+				},
+				"rightArm": {
+					"rotation": [0, 0, "2.5+math.sin(query.life_time * 80) * 2"]
+				},
+				"scp191": {
+					"scale": 0.96
+				}
+			}
+		},
+		"animation.dt_scp191.walking": {
+			"loop": true,
+			"bones": {
+				"leftArm": {
+					"rotation": ["math.sin(query.life_time * 610) * 21", 0, 0]
+				},
+				"leftLeg": {
+					"rotation": ["math.sin(query.life_time * -610) * 21", 0, 0]
+				},
+				"rightArm": {
+					"rotation": ["math.sin(query.life_time * -610) * 21", 0, 0]
+				},
+				"rightLeg": {
+					"rotation": ["math.sin(query.life_time * 610) * 21", 0, 0]
+				}
+			}
+		},
+		"animation.dt_scp191.stay": {
+			"loop": true,
+			"bones": {
+				"waist": {
+					"position": [0, -10, 0]
+				},
+				"chest": {
+					"rotation": [-30, 0, 0]
+				},
+				"head": {
+					"rotation": [27.5, 0, "math.sin(query.life_time * -80) * 3"]
+				},
+				"leftArm": {
+					"rotation": [40, 0, -5],
+					"position": [0, 0, 1]
+				},
+				"leftLeg": {
+					"rotation": ["-91+math.sin(query.life_time * 80) * 1", -7.5, 0]
+				},
+				"rightArm": {
+					"rotation": [40, 0, 5],
+					"position": [0, 0, 1]
+				},
+				"rightLeg": {
+					"rotation": ["-91+math.sin(query.life_time * -80) * 1", 7.5, 0]
+				},
+				"skirt": {
+					"rotation": [-37.5, 0, 0],
+					"position": [0, 1, 1]
+				}
+			}
+		},
+		"animation.dt_scp191.stay_avoid": {
+			"loop": true,
+			"bones": {
+				"waist": {
+					"position": [0, -10, 0]
+				},
+				"chest": {
+					"rotation": [-5, "math.sin(query.life_time * 2500) * 1", 0]
+				},
+				"head": {
+					"rotation": [62.5, 0, 0]
+				},
+				"leftArm": {
+					"rotation": [-115, 5, -5],
+					"position": [0, 0, 1]
+				},
+				"leftLeg": {
+					"rotation": [-91, -7.5, 0]
+				},
+				"rightArm": {
+					"rotation": [-115, -5, 5],
+					"position": [0, 0, 1]
+				},
+				"rightLeg": {
+					"rotation": [-91, 7.5, 0]
+				},
+				"skirt": {
+					"rotation": [-57.5, 0, 0],
+					"position": [0, 1, 1]
+				}
+			}
+		}
+	}
+}

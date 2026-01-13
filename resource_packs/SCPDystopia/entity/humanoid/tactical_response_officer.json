@@ -1,0 +1,41 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_tactical_response_officer",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"tro1": "textures/entity/humanoid/tro/dt_tro1",
+				"tro2": "textures/entity/humanoid/tro/dt_tro2",
+				"tro3": "textures/entity/humanoid/tro/dt_tro3"
+			},
+			"geometry": {
+				"default": "geometry.dt_tactical_response_officer"
+			},
+			"animations": {
+				"general": "animation.dt_tactical_response_officer.general",
+				"move": "animation.dt_tactical_response_officer.walking",
+				"aim": "animation.dt_tactical_response_officer.hold_gun",
+
+				"move_v2": "animation.dt_misc.walking_legs1",
+				"shoot": "animation.dt_misc.mp5k_shooter",
+
+				"anim_cont": "controller.animation.dt_tro.anim_cont"
+			},
+			"scripts": {
+				"scale": "0.9375",
+				"animate": ["anim_cont", "move_v2"],
+				"pre_animation": [
+					"variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
+				]
+			},
+			"render_controllers": ["controller.render.scpdt_tro"],
+			"spawn_egg": {
+				"base_color": "#E4E4E4",
+				"overlay_color": "#6E6E6E"
+			}
+		}
+	}
+}

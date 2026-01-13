@@ -1,0 +1,100 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.scpdt_de.humanoid": {
+			"initial_state": "idle",
+			"states": {
+				"idle": {
+					"animations": ["idling", "moving_legs", "moving_arms", "looking_at_target"],
+					"transitions": [
+						{"melee_attack": "q.is_delayed_attacking == 1.0"},
+						{"define_firearm": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:humanoid_can_equip')"}
+					],
+					"blend_transition": 0.2
+				},
+				"melee_attack": {
+					"animations": ["melee_attacking", "moving_legs", "looking_at_target"],
+					"transitions": [
+						{"idle": "q.all_animations_finished"}
+					],
+					"blend_transition": 0.2
+				},
+				"define_firearm": {
+					"transitions": [
+						{"guard_pistol": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:pistol')"},
+						{"guard_rifle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:rifle_or_smg')"}
+					],
+					"blend_transition": 0.2
+				},
+				"guard_pistol": {
+					"animations": ["guarding_pistol", "moving_legs", "looking_at_target"],
+					"transitions": [
+						{"aim_gun_pistol": "q.has_target"},
+						{"idle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:pistol') == 0"}
+					],
+					"blend_transition": 0.2
+				},
+				"aim_gun_pistol": {
+					"animations": ["aiming_gun_pistol", "moving_legs", "looking_at_target"],
+					"transitions": [
+						{"guard_pistol": "!q.has_target"},
+						{"reload_gun_pistol": "q.is_charged"},
+						{"melee_attack_gun_pistol": "q.is_delayed_attacking == 1.0"},
+						{"idle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:pistol') == 0"}
+					],
+					"blend_transition": 0.2
+				},
+				"reload_gun_pistol": {
+					"animations": ["reloading_gun_pistol", "moving_legs", "looking_at_target"],
+					"transitions": [
+						{"aim_gun_pistol": "!q.is_charged"},
+						{"idle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:pistol') == 0"}
+					],
+					"blend_transition": 0.2
+				},
+				"melee_attack_gun_pistol": {
+					"animations": ["melee_attacking_gun_pistol", "moving_legs", "looking_at_target"],
+					"transitions": [
+						{"aim_gun_pistol": "q.all_animations_finished"},
+						{"idle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:pistol') == 0"}
+					],
+					"blend_transition": 0.2
+				},
+				"guard_rifle": {
+					"animations": ["guarding", "moving_legs", "looking_at_target"],
+					"transitions": [
+						{"aim_gun": "q.has_target"},
+						{"idle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:rifle_or_smg') == 0"}
+					],
+					"blend_transition": 0.2
+				},
+				"aim_gun": {
+					"animations": ["aiming_gun", "moving_legs", "looking_at_target"],
+					"transitions": [
+						{"guard_rifle": "!q.has_target"},
+						{"reload_gun": "q.is_charged"},
+						{"melee_attack_gun": "q.is_delayed_attacking == 1.0"},
+						{"idle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:rifle_or_smg') == 0"}
+					],
+					"blend_transition": 0.2
+				},
+				"reload_gun": {
+					"animations": ["reloading_gun", "moving_legs", "looking_at_target"],
+					"transitions": [
+						{"aim_gun": "!q.is_charged"},
+						{"idle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:rifle_or_smg') == 0"}
+					],
+					"blend_transition": 0.2
+				},
+				"melee_attack_gun": {
+					"animations": ["melee_attacking_gun", "moving_legs", "looking_at_target"],
+					"transitions": [
+						{"aim_gun": "q.all_animations_finished"},
+						{"idle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:rifle_or_smg') == 0"}
+					],
+					"blend_transition": 0.3
+				}
+			}
+		}
+	}
+}

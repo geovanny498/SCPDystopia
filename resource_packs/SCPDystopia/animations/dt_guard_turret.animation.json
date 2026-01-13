@@ -1,0 +1,13 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_guard_turret.resize": {
+			"loop": true,
+			"bones": {
+				"guard_turret": {
+					"scale": 0.8
+				}
+			}
+		}
+	}
+}

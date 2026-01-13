@@ -1,0 +1,41 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_glock",
+			"menu_category": {
+				"category": "equipment"
+			}
+		},
+		"components": {
+			"scpdt:dont_damage_durability_on_hit": {},
+			"scpdt:glock": {},
+			"minecraft:use_modifiers": {
+				"movement_modifier": 0.5,
+				"use_duration": 0.01
+			},
+			"minecraft:damage": 3,
+			"minecraft:can_destroy_in_creative": false,
+			"minecraft:durability": {
+				"max_durability": 18,
+				"damage_chance": {
+					"min": 0,
+					"max": 0
+				}
+			},
+			"minecraft:hand_equipped": true,
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dt_glock_icon",
+			"minecraft:display_name": {
+				"value": "dt.nameslot.glock"
+			},
+			"minecraft:cooldown": {
+				"duration": 0.3,
+				"category": "dt_glock_shooting"
+			},
+			"minecraft:tags": {
+				"tags": ["lc:class_d_can_equip", "lc:glock"]
+			}
+		}
+	}
+}

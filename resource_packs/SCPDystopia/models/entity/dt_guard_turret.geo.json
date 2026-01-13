@@ -1,0 +1,68 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_guard_turret",
+				"texture_width": 48,
+				"texture_height": 48,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 3.5,
+				"visible_bounds_offset": [0, 1.25, 0]
+			},
+			"bones": [
+				{
+					"name": "guard_turret",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-0.5, -3, -0.5], "size": [1, 14, 1], "inflate": 0.1, "pivot": [0, 11, 0], "rotation": [-30, 0, -30], "uv": [20, 22]},
+						{"origin": [-0.5, -4, -0.5], "size": [1, 15, 1], "inflate": 0.1, "pivot": [0, 11, 0], "rotation": [-30, 0, 35], "uv": [16, 22]},
+						{"origin": [-0.5, -2, -0.5], "size": [1, 13, 1], "inflate": 0.1, "pivot": [0, 11, 0], "rotation": [35, 0, 0], "uv": [24, 22]}
+					]
+				},
+				{
+					"name": "body",
+					"parent": "guard_turret",
+					"pivot": [0, 11, 0],
+					"cubes": [
+						{"origin": [-0.5, 6.6, -0.5], "size": [1, 2, 1], "uv": [18, 5]},
+						{"origin": [-1, 8, -1], "size": [2, 1, 2], "uv": [10, 17]},
+						{"origin": [-2, 9, -2], "size": [4, 5, 4], "inflate": 0.1, "uv": [0, 22]},
+						{"origin": [0.7, 14, -1], "size": [1, 5, 2], "uv": [0, 13]},
+						{"origin": [-1.7, 14, -1], "size": [1, 5, 2], "uv": [0, 0]},
+						{"origin": [-1, 14, -1.7], "size": [2, 5, 1], "uv": [30, 10]},
+						{"origin": [-1, 14, 0.7], "size": [2, 5, 1], "uv": [28, 27]},
+						{"origin": [1, 14, -2], "size": [1, 5, 1], "uv": [12, 31]},
+						{"origin": [1, 14, 1], "size": [1, 5, 1], "uv": [8, 31]},
+						{"origin": [-2, 14, 1], "size": [1, 5, 1], "uv": [4, 31]},
+						{"origin": [-2, 14, -2], "size": [1, 5, 1], "uv": [0, 31]},
+						{"origin": [-2, 19, -2], "size": [4, 5, 4], "inflate": 0.2, "uv": [18, 13]},
+						{"origin": [-1.5, 24, -1.5], "size": [3, 2, 3], "uv": [26, 5]}
+					]
+				},
+				{
+					"name": "head",
+					"parent": "body",
+					"pivot": [0, 25, 0],
+					"cubes": [
+						{"origin": [-2.5, 25, -4], "size": [5, 5, 8], "uv": [0, 0]},
+						{"origin": [2.5, 25.5, 0], "size": [5, 4, 1], "uv": [18, 0]},
+						{"origin": [-1, 26.5, -5.3], "size": [2, 2, 2], "inflate": 0.1, "uv": [10, 13]},
+						{"origin": [-0.5, 27, -13], "size": [1, 1, 8], "uv": [0, 13]},
+						{"origin": [-0.5, 27, -12], "size": [1, 1, 1], "inflate": 0.1, "uv": [0, 22]}
+					]
+				},
+				{
+					"name": "cam",
+					"parent": "head",
+					"pivot": [-1.5, 27, 2],
+					"cubes": [
+						{"origin": [-3.5, 27, 2], "size": [2, 1, 1], "uv": [16, 13]},
+						{"origin": [-4.5, 27, -1], "size": [1, 1, 4], "uv": [28, 22]},
+						{"origin": [-4.5, 27, -1], "size": [1, 1, 1], "inflate": 0.1, "uv": [4, 0]}
+					]
+				}
+			]
+		}
+	]
+}

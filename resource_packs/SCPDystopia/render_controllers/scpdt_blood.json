@@ -1,0 +1,15 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+		"controller.render.scpdt_blood": {
+			"arrays": {
+				"geometries": {
+					"Array.geos": ["Geometry.r1", "Geometry.r2", "Geometry.r3"]
+				}
+			},
+			"geometry": "Array.geos[query.variant]",
+			"materials": [{ "*": "Material.default" }],
+			"textures": ["Texture.default"]
+		}
+	}
+}

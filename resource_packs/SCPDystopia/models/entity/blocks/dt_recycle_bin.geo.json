@@ -1,0 +1,33 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_recycle_bin",
+				"texture_width": 48,
+				"texture_height": 48,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "recycle_bin",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-5, 0, -4], "size": [10, 13, 8], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "h",
+					"parent": "recycle_bin",
+					"pivot": [0, 13, 0],
+					"cubes": [
+						{"origin": [-6, 12, -5], "size": [12, 2, 10], "uv": [0, 21]},
+						{"origin": [-1, 13.4, -1], "size": [2, 2, 2], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

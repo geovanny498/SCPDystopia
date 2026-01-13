@@ -1,0 +1,93 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:block": {
+		"description": {
+			"identifier": "lc:dt_air_conditioner",
+			"menu_category": {
+				"category": "construction"
+			},
+			"states": {
+				"facing:direction": [2, 3, 4, 5],
+				"air_conditioner:on": [false, true]
+			}
+		},
+		"components": {
+			"scpdt:legacy_placement_state": {
+				"facingDirectionState": "facing:direction",
+				"facingDirectionReverse": true
+			},
+			"scpdt:air_conditioner": {},
+			"minecraft:collision_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 16, 13]
+			},
+			"minecraft:selection_box": {
+				"origin": [-8, 0, -8],
+				"size": [16, 16, 13]
+			},
+			"minecraft:material_instances": {
+				"*": {
+					"texture": "dt_air_conditioner_off",
+					"render_method": "opaque"
+				}
+			},
+			"minecraft:geometry": {
+				"identifier": "geometry.dt_air_conditioner"
+			},
+			"minecraft:destructible_by_mining": {
+				"seconds_to_destroy": 1.5
+			},
+			"minecraft:map_color": "#3B3D94",
+			"minecraft:light_dampening": 0.7,
+			"tag:lc:dystopiablock": {}
+		},
+		"permutations": [
+			{
+				"condition": "q.block_state('air_conditioner:on') == false",
+				"components": {
+					"minecraft:light_emission": 0
+				}
+			},
+			{
+				"condition": "q.block_state('air_conditioner:on') == true",
+				"components": {
+					"minecraft:light_emission": 1,
+					"minecraft:material_instances": {
+						"*": {
+							"texture": "dt_air_conditioner_on",
+							"render_method": "opaque"
+						}
+					},
+					"minecraft:tick": {
+						"looping": true,
+						"interval_range": [80, 80]
+					}
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 2",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 0, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 3",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 180, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 4",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 90, 0] }
+				}
+			},
+			{
+				"condition": "q.block_state('facing:direction') == 5",
+				"components": {
+					"minecraft:transformation": { "rotation": [0, 270, 0] }
+				}
+			}
+		]
+	}
+}

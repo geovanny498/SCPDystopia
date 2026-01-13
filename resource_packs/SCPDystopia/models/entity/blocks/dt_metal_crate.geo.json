@@ -1,0 +1,72 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_metal_crate",
+				"texture_width": 128,
+				"texture_height": 128,
+				"visible_bounds_width": 2,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "metal_crate",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-7, 1, -7], "size": [14, 14, 14], "uv": [0, 40]},
+						{"origin": [-8, 0, -8], "size": [16, 2, 2], "uv": [52, 75]},
+						{"origin": [-8, 0, 6], "size": [16, 2, 2], "uv": [17, 72]},
+						{"origin": [6, 0, -6], "size": [2, 2, 12], "uv": [0, 69]},
+						{"origin": [-8, 0, -6], "size": [2, 2, 12], "uv": [66, 60]},
+						{"origin": [-8, 2, -8], "size": [2, 12, 2], "uv": [9, 20]},
+						{"origin": [-8, 2, 6], "size": [2, 12, 2], "uv": [0, 20]},
+						{"origin": [6, 2, 6], "size": [2, 12, 2], "uv": [9, 0]},
+						{"origin": [6, 2, -8], "size": [2, 12, 2], "uv": [0, 0]},
+						{"origin": [6, 14, -8], "size": [2, 2, 16], "uv": [62, 37]},
+						{"origin": [-8, 14, -8], "size": [2, 2, 16], "uv": [41, 53]},
+						{"origin": [-6, 14, -8], "size": [12, 2, 2], "uv": [43, 45]},
+						{"origin": [-6, 14, 6], "size": [12, 2, 2], "uv": [43, 40]}
+					]
+				},
+				{
+					"name": "c1",
+					"parent": "metal_crate",
+					"pivot": [5.5, 2, -6.5],
+					"rotation": [0, 0, 45],
+					"cubes": [
+						{"origin": [-11.5, 2, -7.5], "size": [18, 1, 15], "uv": [49, 20]}
+					]
+				},
+				{
+					"name": "c1_2",
+					"parent": "metal_crate",
+					"pivot": [-5.5, 2, -6.5],
+					"rotation": [0, 0, -45],
+					"cubes": [
+						{"origin": [-6.5, 2, -7.5], "size": [18, 1, 15], "uv": [49, 0]}
+					]
+				},
+				{
+					"name": "c2",
+					"parent": "metal_crate",
+					"pivot": [6.6, 2, -5.5],
+					"rotation": [45, 0, 0],
+					"cubes": [
+						{"origin": [-7.4, 2, -6.5], "size": [15, 1, 18], "uv": [0, 20]}
+					]
+				},
+				{
+					"name": "c2_2",
+					"parent": "metal_crate",
+					"pivot": [6.6, 2, 5.5],
+					"rotation": [-45, 0, 0],
+					"cubes": [
+						{"origin": [-7.4, 2, -11.5], "size": [15, 1, 18], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

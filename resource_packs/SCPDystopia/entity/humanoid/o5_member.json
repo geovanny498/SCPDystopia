@@ -1,0 +1,35 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_o5_member",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"o5_1": "textures/entity/humanoid/o5/dt_o5_member1",
+				"o5_2": "textures/entity/humanoid/o5/dt_o5_member2",
+				"o5_3": "textures/entity/humanoid/o5/dt_o5_member3"
+			},
+			"geometry": {
+				"default": "geometry.dt_scientist"
+			},
+			"animations": {
+				"general": "animation.dt_humanoid1.general",
+				"move": "animation.dt_humanoid1.walking",
+
+				"anim_cont": "controller.animation.dt_humanoid1.anim_cont",
+				"look_at_target": "animation.common.look_at_target"
+			},
+			"scripts": {
+				"scale": "0.9375",
+				"animate": ["anim_cont", "look_at_target"]
+			},
+			"render_controllers": ["controller.render.scpdt_o5"],
+			"spawn_egg": {
+				"base_color": "#1E1E1E",
+				"overlay_color": "#B8BDCD"
+			}
+		}
+	}
+}

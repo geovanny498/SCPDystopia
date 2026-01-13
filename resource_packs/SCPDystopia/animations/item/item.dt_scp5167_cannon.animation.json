@@ -1,0 +1,97 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.item.dt_scp5167_cannon.hold_first_person": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 0.2,
+			"bones": {
+				"amogus_group": {
+					"rotation": {
+						"0.0": [0, -10, -5],
+						"0.2": [0, -10, "-5+math.sin(query.life_time * 80) * 2"]
+					},
+					"position": {
+						"0.0": [-13.5, -6, -10],
+						"0.2": [-13.5, "-6+math.sin(query.life_time * 80) * 0.3", -10]
+					},
+					"scale": 0.9
+				},
+				"amogus_head": {
+					"position": ["math.sin(query.life_time * 1000) * 0.07", "math.sin(query.life_time * 2000) * 0.07", "math.sin(query.life_time * 500) * 0.07"]
+				},
+				"arm1": {
+					"rotation": [-17.5, 72.5, 0],
+					"position": [13, -6, -15]
+				},
+				"arm2": {
+					"rotation": [-10, 5, 0],
+					"position": [5, 9, 0]
+				}
+			}
+		},
+		"animation.item.dt_scp5167_cannon.pick": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 0.52,
+			"bones": {
+				"amogus_group": {
+					"rotation": {
+						"0.0": [40.50905, 7.92355, -32.22732],
+						"0.36": [6.23, -7.24, -9.19],
+						"0.52": [0, -10, -5]
+					},
+					"position": {
+						"0.0": [-13.5, -18, -17],
+						"0.36": [-13.5, -7.85, -11.08],
+						"0.52": [-13.5, -6, -10]
+					},
+					"scale": 0.9
+				},
+				"amogus_head": {
+					"position": ["math.sin(query.life_time * 1000) * 0.07", "math.sin(query.life_time * 2000) * 0.07", "math.sin(query.life_time * 500) * 0.07"]
+				},
+				"arm1": {
+					"rotation": [-17.5, 72.5, 0],
+					"position": [13, -6, -15]
+				},
+				"arm2": {
+					"rotation": {
+						"0.0": [-120, 5, 0],
+						"0.4": [-10, 5, 0]
+					},
+					"position": {
+						"0.0": [5, -15, 6],
+						"0.4": [5, 9, 0]
+					}
+				}
+			}
+		},
+		"animation.item.dt_scp5167_cannon.hold_third_person": {
+			"loop": true,
+			"bones": {
+				"amogus": {
+					"position": ["math.sin(query.life_time * 1000) * 0.07", "math.sin(query.life_time * 2000) * 0.07", "2+math.sin(query.life_time * 500) * 0.07"],
+					"scale": 0.8
+				},
+				"amogus_group": {
+					"scale": 0
+				}
+			}
+		},
+		"animation.item.dt_scp5167_cannon.hide_ra": {
+			"loop": true,
+			"bones": {
+				"amogus": {
+					"scale": 0
+				}
+			}
+		},
+		"animation.item.dt_scp5167_cannon.hide_head": {
+			"loop": true,
+			"bones": {
+				"amogus_group": {
+					"scale": 0
+				}
+			}
+		}
+	}
+}

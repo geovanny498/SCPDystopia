@@ -1,0 +1,27 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp106_container.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"contain": "query.has_rider"
+						}
+					],
+					"blend_transition": 1.5
+				},
+				"contain": {
+					"animations": ["contained"],
+					"transitions": [
+						{
+							"default": "!query.has_rider"
+						}
+					],
+					"blend_transition": 1.5
+				}
+			}
+		}
+	}
+}

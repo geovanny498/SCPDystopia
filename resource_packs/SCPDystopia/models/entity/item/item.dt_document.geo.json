@@ -1,0 +1,105 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.item.dt_document",
+				"texture_width": 302,
+				"texture_height": 378,
+				"visible_bounds_width": 7,
+				"visible_bounds_height": 6,
+				"visible_bounds_offset": [0, 0, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "waist",
+					"parent": "root",
+					"pivot": [0, 12, 0]
+				},
+				{
+					"name": "body",
+					"parent": "waist",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "leftArm",
+					"parent": "body",
+					"pivot": [5, 22, 0]
+				},
+				{
+					"name": "leftItem",
+					"parent": "leftArm",
+					"pivot": [6, 15, 1]
+				},
+				{
+					"name": "rightArm",
+					"parent": "body",
+					"pivot": [-5, 22, 0]
+				},
+				{
+					"name": "rightItem",
+					"parent": "rightArm",
+					"pivot": [-6, 15, 1]
+				},
+				{
+					"name": "document2",
+					"parent": "rightItem",
+					"pivot": [-6, 14, -5],
+					"rotation": [70, 0, 0],
+					"cubes": [
+						{
+							"origin": [-10, 9, -5.1],
+							"size": [8, 11, 0.1],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [302, 378]},
+								"east": {"uv": [268, 366], "uv_size": [23.75, 8.96875]},
+								"south": {"uv": [0, 0], "uv_size": [302, 378]},
+								"west": {"uv": [268, 366], "uv_size": [23.75, 8.96875]},
+								"up": {"uv": [291.75, 374.96875], "uv_size": [-23.75, -8.96875]},
+								"down": {"uv": [291.75, 374.96875], "uv_size": [-23.75, -8.96875]}
+							}
+						}
+					]
+				},
+				{
+					"name": "head",
+					"parent": "body",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "document",
+					"parent": "head",
+					"pivot": [-8, 26, -12],
+					"cubes": [
+						{
+							"origin": [-12, 21, -12.1],
+							"size": [8, 11, 0.1],
+							"uv": {
+								"north": {"uv": [0, 0], "uv_size": [302, 378]},
+								"east": {"uv": [268, 366], "uv_size": [23.75, 8.96875]},
+								"south": {"uv": [0, 0], "uv_size": [302, 378]},
+								"west": {"uv": [268, 366], "uv_size": [23.75, 8.96875]},
+								"up": {"uv": [291.75, 374.96875], "uv_size": [-23.75, -8.96875]},
+								"down": {"uv": [291.75, 374.96875], "uv_size": [-23.75, -8.96875]}
+							}
+						}
+					]
+				},
+				{
+					"name": "leftLeg",
+					"parent": "root",
+					"pivot": [1.9, 12, 0]
+				},
+				{
+					"name": "rightLeg",
+					"parent": "root",
+					"pivot": [-1.9, 12, 0]
+				}
+			]
+		}
+	]
+}

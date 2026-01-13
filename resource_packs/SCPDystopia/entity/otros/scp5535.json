@@ -1,0 +1,35 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_scp5535",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"default": "textures/entity/dt_scp5535"
+			},
+			"geometry": {
+				"default": "geometry.dt_scp5535"
+			},
+			"animations": {
+				"general": "animation.dt_scp5535.general",
+				"move_arms": "animation.dt_scp5535.walk_arms",
+				"move_legs": "animation.dt_scp5535.walk_legs",
+				"vibe_leftarm": "animation.dt_scp5535.leftarm_vibe",
+				"found_target": "animation.dt_scp5535.has_target",
+
+				"anim_cont": "controller.animation.dt_scp5535.anim_cont",
+				"has_target": "controller.animation.dt_scp5535.has_target"
+			},
+			"scripts": {
+				"animate": ["anim_cont", "has_target"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#D86C59",
+				"overlay_color": "#DEC184"
+			}
+		}
+	}
+}

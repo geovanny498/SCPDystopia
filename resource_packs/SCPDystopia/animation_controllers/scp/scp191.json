@@ -1,0 +1,33 @@
+{
+	"animation_controllers": {
+		"controller.animation.dt_scp191.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						{
+							"move": "query.modified_move_speed"
+						}
+					],
+					"blend_transition": 1.2,
+					"transitions": [
+						{
+							"sitting": "query.is_sitting"
+						}
+					]
+				},
+				"sitting": {
+					"animations": ["sit"],
+					"blend_transition": 1.2,
+					"transitions": [
+						{
+							"default": "!query.is_sitting"
+						}
+					]
+				}
+			}
+		}
+	},
+	"format_version": "1.10.0"
+}

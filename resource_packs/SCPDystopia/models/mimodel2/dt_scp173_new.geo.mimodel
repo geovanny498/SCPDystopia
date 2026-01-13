@@ -1,0 +1,473 @@
+{
+	"name": "dt_scp173_new",
+	"texture": "dt_scp173_new.png",
+	"texture_size": [128, 128],
+	"parts": [
+		{
+			"name": "scp173",
+			"position": [0, 0, 0],
+			"parts": [
+				{
+					"name": "root",
+					"position": [0, 0, -1],
+					"parts": [
+						{
+							"name": "leg1",
+							"position": [2.8, 16.6, 0],
+							"rotation": [82.5, 0, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-1, -2, -9],
+									"to": [3, 2, 0],
+									"uv": [54, 51],
+									"position": [-1, 0, 8],
+									"rotation": [0, -3, 0]
+								}
+							],
+							"parts": [
+								{
+									"name": "leg1_2",
+									"position": [0, 0, 8],
+									"rotation": [17.5, 0, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [1.3, 15.1, 6],
+											"to": [4.3, 18.1, 13],
+											"uv": [62, 30],
+											"position": [-2.8, -16.6, -7]
+										}
+									],
+									"parts": [
+										{
+											"name": "leg1_3",
+											"position": [0, 0, 6],
+											"rotation": [-10, 0, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [-1.5, -1.4, 0],
+													"to": [1.5, 1.6, 4],
+													"inflate": 0.1,
+													"uv": [4, 65],
+													"position": [0, 0, -1],
+													"rotation": [0, 1, 0]
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "leg2",
+							"position": [-2.8, 16.6, 0],
+							"rotation": [82.5, 0, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-3, -2, -9],
+									"to": [1, 2, 0],
+									"uv": [37, 47],
+									"position": [1, 0, 8],
+									"rotation": [0, 3, 0]
+								}
+							],
+							"parts": [
+								{
+									"name": "leg2_2",
+									"position": [0, 0, 8],
+									"rotation": [17.5, 0, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-4.3, 15.1, 6],
+											"to": [-1.3, 18.1, 13],
+											"uv": [62, 18],
+											"position": [2.8, -16.6, -7]
+										}
+									],
+									"parts": [
+										{
+											"name": "leg2_3",
+											"position": [0, 0, 6],
+											"rotation": [-10, 0, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [-1.5, -1.4, 0],
+													"to": [1.5, 1.6, 4],
+													"inflate": 0.1,
+													"uv": [64, 62],
+													"position": [0, 0, -1],
+													"rotation": [0, -1, 0]
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "waist",
+							"position": [0, 14, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-5, 14, -3],
+									"to": [5, 20, 2],
+									"uv": [35, 24],
+									"position": [0, -14, 1]
+								},
+								{
+									"type": "block",
+									"from": [-4, -1, -3],
+									"to": [4, 5, 1],
+									"uv": [40, 12],
+									"position": [0, 0, 0.5],
+									"rotation": [2.5, 0, 0]
+								},
+								{
+									"type": "block",
+									"from": [-3.5, -5, -1.3],
+									"to": [3.5, 0, 2.7],
+									"uv": [24, 55],
+									"position": [0, 3, -1.5],
+									"rotation": [5, 0, 0]
+								},
+								{
+									"type": "block",
+									"from": [-3, 14.7, 2],
+									"to": [3, 17.7, 3],
+									"uv": [23, 39],
+									"position": [0, -14, 1]
+								},
+								{
+									"type": "block",
+									"from": [-4.5, 17, -2.5],
+									"to": [4.5, 30, 3.5],
+									"uv": [6, 25],
+									"position": [0, -14, 1]
+								}
+							],
+							"parts": [
+								{
+									"name": "arm1",
+									"position": [5.3, 14, 0],
+									"rotation": [10, 4, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [3.86976, 26.32677, -0.98241],
+											"to": [6.86976, 29.32677, 4.01759],
+											"inflate": 0.1,
+											"uv": [36, 65],
+											"position": [-5.3, -28, 1]
+										}
+									],
+									"parts": [
+										{
+											"name": "arm1_2",
+											"position": [0.06976, -0.97323, 6.01759],
+											"rotation": [-22.5, 0, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [-1.5, -1.5, -1],
+													"to": [1.5, 1.5, 5],
+													"uv": [62, 39],
+													"position": [0, 1, 0],
+													"rotation": [0, -7, 2.5]
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "arm2",
+									"position": [-5.3, 14, 0],
+									"rotation": [10, -4, 0],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-6.86976, 26.32677, -0.98241],
+											"to": [-3.86976, 29.32677, 4.01759],
+											"inflate": 0.1,
+											"uv": [20, 65],
+											"position": [5.3, -28, 1]
+										}
+									],
+									"parts": [
+										{
+											"name": "arm2_2",
+											"position": [-0.06976, -0.97323, 6.01759],
+											"rotation": [-22.5, 0, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [-1.5, -1.5, -1],
+													"to": [1.5, 1.5, 5],
+													"uv": [62, 8],
+													"position": [0, 1, 0],
+													"rotation": [0, 7, -2.5]
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "neck",
+									"position": [0, 16, 1.2],
+									"shapes": [
+										{
+											"type": "block",
+											"from": [-4, -3, -3],
+											"to": [4, 3, 3],
+											"uv": [6, 44],
+											"position": [0, 0, 0],
+											"rotation": [-5, 0, 0]
+										}
+									],
+									"parts": [
+										{
+											"name": "head",
+											"position": [0, 2, 0],
+											"rotation": [-2, 0, 0],
+											"shapes": [
+												{
+													"type": "block",
+													"from": [-5, 31.7, -3.8],
+													"to": [5, 42.7, 4.2],
+													"uv": [8, 8],
+													"position": [0, -32, -0.2]
+												},
+												{
+													"type": "block",
+													"from": [-4, 32.8, -4.4],
+													"to": [4, 41.8, -3.4],
+													"uv": [43, 56],
+													"position": [0, -32, -0.2]
+												},
+												{
+													"type": "block",
+													"from": [-4.5, 32.2, 3.9],
+													"to": [4.5, 42.2, 4.9],
+													"uv": [1, 51],
+													"position": [0, -32, -0.2]
+												},
+												{
+													"type": "block",
+													"from": [-4.5, 42.3, -3.3],
+													"to": [4.5, 43.3, 3.7],
+													"uv": [37, 37],
+													"position": [0, -32, -0.2]
+												},
+												{
+													"type": "block",
+													"from": [-4.5, 31, -3.3],
+													"to": [4.5, 32, 3.7],
+													"uv": [35, 7],
+													"position": [0, -32, -0.2]
+												},
+												{
+													"type": "block",
+													"from": [4.5, -1, -1],
+													"to": [5.5, 1, 1],
+													"inflate": 0.2,
+													"uv": [26, 21],
+													"position": [0, 6, 0],
+													"rotation": [-2, 0, 0]
+												},
+												{
+													"type": "block",
+													"from": [-5.5, -1, -1],
+													"to": [-4.5, 1, 1],
+													"inflate": 0.2,
+													"uv": [2, 21],
+													"position": [0, 6, 0],
+													"rotation": [-2, 0, 0]
+												}
+											],
+											"parts": [
+												{
+													"name": "facepolygons",
+													"position": [0, 4, 4.7],
+													"shapes": [
+														{
+															"type": "block",
+															"from": [0.1, 0.3, -0.6],
+															"to": [3.1, 3.3, 0.4],
+															"inflate": -0.2,
+															"uv": [1, 5],
+															"position": [2, -4, 0],
+															"rotation": [0, 0, 3]
+														},
+														{
+															"type": "block",
+															"from": [-3.1, 0.3, -0.6],
+															"to": [-0.1, 3.3, 0.4],
+															"inflate": -0.2,
+															"uv": [1, 1],
+															"position": [-2, -4, 0],
+															"rotation": [0, 0, -3]
+														}
+													],
+													"parts": [
+														{
+															"name": "f_pl1",
+															"position": [0.7, 0, 0],
+															"rotation": [0, 0, -2.5],
+															"shapes": [
+																{
+																	"type": "block",
+																	"from": [0, -4, -0.8],
+																	"to": [1, 0, 0.2],
+																	"uv": [31, 31],
+																	"position": [0, 0, 0],
+																	"rotation": [0, 0, 4]
+																},
+																{
+																	"type": "block",
+																	"from": [1.10872, 35.80019, 4.2],
+																	"to": [4.10872, 36.80019, 5.2],
+																	"uv": [46, 39],
+																	"position": [-0.7, -36, -4.9]
+																}
+															]
+														},
+														{
+															"name": "f_pl2",
+															"position": [-0.7, 0, 0],
+															"rotation": [0, 0, 2.5],
+															"shapes": [
+																{
+																	"type": "block",
+																	"from": [0, -4, -0.8],
+																	"to": [1, 0, 0.2],
+																	"uv": [31, 20],
+																	"position": [-1, 0, 0],
+																	"rotation": [0, 0, -4]
+																},
+																{
+																	"type": "block",
+																	"from": [-4.10872, 35.80019, 4.2],
+																	"to": [-1.10872, 36.80019, 5.2],
+																	"uv": [29, 45],
+																	"position": [0.7, -36, -4.9]
+																}
+															]
+														},
+														{
+															"name": "f_pl3",
+															"position": [0, 1.3, 0],
+															"shapes": [
+																{
+																	"type": "block",
+																	"from": [1.3, 37.3, 4.1],
+																	"to": [2.3, 39.3, 5.1],
+																	"uv": [1, 39],
+																	"position": [0, -37.3, -4.9]
+																},
+																{
+																	"type": "block",
+																	"from": [-2.3, 37.3, 4.1],
+																	"to": [-1.3, 39.3, 5.1],
+																	"uv": [37, 9],
+																	"position": [0, -37.3, -4.9]
+																},
+																{
+																	"type": "block",
+																	"from": [-4, 39.3, 4.1],
+																	"to": [4, 41.3, 5.1],
+																	"uv": [61, 56],
+																	"position": [0, -37.3, -4.9]
+																},
+																{
+																	"type": "block",
+																	"from": [-3, 41.3, 4.1],
+																	"to": [3, 42.3, 5.1],
+																	"uv": [23, 43],
+																	"position": [0, -37.3, -4.9]
+																}
+															]
+														},
+														{
+															"name": "bone",
+															"position": [0, -0.8, 0],
+															"parts": [
+																{
+																	"name": "f_pl4",
+																	"position": [0, -1.3, 0],
+																	"shapes": [
+																		{
+																			"type": "block",
+																			"from": [-1, 33.9, 4.2],
+																			"to": [1, 34.9, 5.2],
+																			"uv": [31, 36],
+																			"position": [0, -33.9, -4.9]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-1, 0.7, -0.5],
+																			"to": [1, 1.7, 0.5],
+																			"inflate": -0.1,
+																			"uv": [25, 24],
+																			"position": [0, 0, 0],
+																			"rotation": [-2.5, 0, 0]
+																		},
+																		{
+																			"type": "block",
+																			"from": [-1, -0.7, -0.5],
+																			"to": [1, 0.3, 0.5],
+																			"inflate": -0.1,
+																			"uv": [1, 24],
+																			"position": [0, 0, 0],
+																			"rotation": [5, 0, 0]
+																		}
+																	]
+																}
+															]
+														},
+														{
+															"name": "eye1",
+															"position": [-2.9, 2.3, 0.1],
+															"shapes": [
+																{
+																	"type": "block",
+																	"from": [-3.9, 37.3, 4.2],
+																	"to": [-1.9, 39.3, 5.2],
+																	"inflate": 0.2,
+																	"uv": [29, 4],
+																	"position": [2.9, -38.3, -5]
+																}
+															]
+														},
+														{
+															"name": "eye2",
+															"position": [2.9, 2.3, 0.1],
+															"shapes": [
+																{
+																	"type": "block",
+																	"from": [1.9, 37.3, 4.2],
+																	"to": [3.9, 39.3, 5.2],
+																	"inflate": 0.2,
+																	"uv": [29, 1],
+																	"position": [-2.9, -38.3, -5]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

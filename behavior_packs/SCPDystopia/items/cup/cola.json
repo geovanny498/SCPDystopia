@@ -1,0 +1,31 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_cup_cola",
+			"menu_category": {
+				"category": "none"
+			}
+		},
+		"components": {
+			"scpdt:cup_cola": {},
+			"minecraft:use_modifiers": {
+				"movement_modifier": 0.5,
+				"use_duration": 1.6
+			},
+			"minecraft:use_animation": "drink",
+			"minecraft:hand_equipped": false,
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dt_cup_cola",
+			"minecraft:display_name": {
+				"value": "Cup of Cola"
+			},
+			"minecraft:food": {
+				"nutrition": 1,
+				"saturation_modifier": 0.1,
+				"can_always_eat": true,
+				"using_converts_to": "lc:dt_empty_cup"
+			}
+		}
+	}
+}

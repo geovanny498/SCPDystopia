@@ -1,0 +1,15 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+		"controller.render.scpdt_class_d": {
+			"arrays": {
+				"textures": {
+					"Array.skins": ["Texture.d1", "Texture.d2", "Texture.d3", "Texture.d4"]
+				}
+			},
+			"geometry": "Geometry.default",
+			"materials": [{ "*": "Material.default" }],
+			"textures": ["Array.skins[query.variant]"]
+		}
+	}
+}

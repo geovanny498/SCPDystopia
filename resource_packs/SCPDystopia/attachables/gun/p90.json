@@ -1,0 +1,40 @@
+{
+	"format_version": "1.10",
+	"minecraft:attachable": {
+		"description": {
+			"identifier": "lc:dt_p90",
+			"materials": {
+				"default": "entity_alphatest",
+				"enchanted": "entity_alphatest_glint"
+			},
+			"textures": {
+				"default": "textures/attachment/dt_p90",
+				"enchanted": "textures/misc/enchanted_item_glint"
+			},
+			"geometry": {
+				"default": "geometry.item.dt_p90"
+			},
+			"animations": {
+				"hold": "controller.animation.item.dt_p90.hold",
+				"hold_first_person": "animation.item.dt_p90.hold_first_person",
+				"hold_first_person_sneak": "animation.item.dt_p90.hold_first_person_sneak",
+				"hide_ra": "animation.item.dt_p90.hide_ra",
+				"hide_head": "animation.item.dt_p90.hide_head",
+				"reloading": "animation.item.dt_p90.reload_new",
+				"pickup": "animation.item.dt_p90.pick"
+			},
+			"scripts": {
+				"animate": [
+					"hold",
+					{
+						"hide_ra": "c.is_first_person"
+					},
+					{
+						"hide_head": "!c.is_first_person"
+					}
+				]
+			},
+			"render_controllers": ["controller.render.item_default"]
+		}
+	}
+}

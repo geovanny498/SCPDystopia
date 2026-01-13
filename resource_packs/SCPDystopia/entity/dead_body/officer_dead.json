@@ -1,0 +1,36 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_officer_dead",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"ranged": "textures/entity/humanoid/dt_officer",
+				"combat": "textures/entity/humanoid/dt_officer_combat"
+			},
+			"geometry": {
+				"ranged": "geometry.dt_officer",
+				"combat": "geometry.dt_officer_combat"
+			},
+			"animations": {
+				"death": "animation.dt_misc.dead_body.death3",
+				"gun_taken": "animation.dt_misc.dead_body.glock_taken"
+			},
+			"scripts": {
+				"animate": [
+					"death",
+					{
+						"gun_taken": "query.is_sheared"
+					}
+				]
+			},
+			"render_controllers": ["controller.render.scpdt_officer"],
+			"spawn_egg": {
+				"base_color": "#F5A30B",
+				"overlay_color": "#5A3E18"
+			}
+		}
+	}
+}

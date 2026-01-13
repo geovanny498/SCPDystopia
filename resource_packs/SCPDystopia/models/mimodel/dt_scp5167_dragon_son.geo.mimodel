@@ -1,0 +1,230 @@
+{
+	"name": "dt_scp5167_dragon_son",
+	"texture": "dt_scp5167_dragon_son.png",
+	"texture_size": [64, 64],
+	"parts": [
+		{
+			"name": "amogus",
+			"position": [0, 0, 0],
+			"shapes": [
+				{
+					"type": "block",
+					"from": [-8, 0, -8],
+					"to": [8, 16, 8],
+					"uv": [16, 16],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-7, 3, 8],
+					"to": [7, 13, 9],
+					"uv": [33, 33],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-4, 16, 0],
+					"to": [4, 19, 1],
+					"uv": [43, 48],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-4, -3, 0],
+					"to": [4, 0, 1],
+					"uv": [37, 44],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [-11, 4, 0],
+					"to": [-8, 12, 1],
+					"uv": [15, 49],
+					"position": [0, 0, 0]
+				},
+				{
+					"type": "block",
+					"from": [8, 4, 0],
+					"to": [11, 12, 1],
+					"uv": [49, 1],
+					"position": [0, 0, 0]
+				}
+			],
+			"parts": [
+				{
+					"name": "ring",
+					"position": [0, 8, 0],
+					"parts": [
+						{
+							"name": "am1",
+							"position": [0, 13, 0],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-4, 22, -4],
+									"to": [4, 30, 4],
+									"uv": [8, 40],
+									"position": [0, -21, 0]
+								},
+								{
+									"type": "block",
+									"from": [-3, 25, 4],
+									"to": [3, 29, 5],
+									"uv": [1, 49],
+									"position": [0, -21, 0]
+								},
+								{
+									"type": "block",
+									"from": [-3, 24, -6],
+									"to": [3, 29, -4],
+									"uv": [2, 2],
+									"position": [0, -21, 0]
+								},
+								{
+									"type": "block",
+									"from": [2, 21, -3],
+									"to": [4, 22, 3],
+									"uv": [32, 49],
+									"position": [0, -21, 0]
+								},
+								{
+									"type": "block",
+									"from": [-4, 21, -3],
+									"to": [-2, 22, 3],
+									"uv": [6, 13],
+									"position": [0, -21, 0]
+								}
+							]
+						},
+						{
+							"name": "am2",
+							"position": [13, 0, 0],
+							"rotation": [0, 0, -90],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [9, 9, -4],
+									"to": [17, 17, 4],
+									"uv": [8, 40],
+									"position": [-13, -8, 0]
+								},
+								{
+									"type": "block",
+									"from": [10, 12, 4],
+									"to": [16, 16, 5],
+									"uv": [1, 49],
+									"position": [-13, -8, 0]
+								},
+								{
+									"type": "block",
+									"from": [10, 11, -6],
+									"to": [16, 16, -4],
+									"uv": [2, 2],
+									"position": [-13, -8, 0]
+								},
+								{
+									"type": "block",
+									"from": [15, 8, -3],
+									"to": [17, 9, 3],
+									"uv": [32, 49],
+									"position": [-13, -8, 0]
+								},
+								{
+									"type": "block",
+									"from": [9, 8, -3],
+									"to": [11, 9, 3],
+									"uv": [6, 13],
+									"position": [-13, -8, 0]
+								}
+							]
+						},
+						{
+							"name": "am3",
+							"position": [0, -13, 0],
+							"rotation": [0, 0, 180],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-4, -4, -4],
+									"to": [4, 4, 4],
+									"uv": [8, 40],
+									"position": [0, 5, 0]
+								},
+								{
+									"type": "block",
+									"from": [-3, -1, 4],
+									"to": [3, 3, 5],
+									"uv": [1, 49],
+									"position": [0, 5, 0]
+								},
+								{
+									"type": "block",
+									"from": [-3, -2, -6],
+									"to": [3, 3, -4],
+									"uv": [2, 2],
+									"position": [0, 5, 0]
+								},
+								{
+									"type": "block",
+									"from": [2, -5, -3],
+									"to": [4, -4, 3],
+									"uv": [32, 49],
+									"position": [0, 5, 0]
+								},
+								{
+									"type": "block",
+									"from": [-4, -5, -3],
+									"to": [-2, -4, 3],
+									"uv": [6, 13],
+									"position": [0, 5, 0]
+								}
+							]
+						},
+						{
+							"name": "am4",
+							"position": [-13, 0, 0],
+							"rotation": [0, 0, 90],
+							"shapes": [
+								{
+									"type": "block",
+									"from": [-17, 9, -4],
+									"to": [-9, 17, 4],
+									"uv": [8, 40],
+									"position": [13, -8, 0]
+								},
+								{
+									"type": "block",
+									"from": [-16, 12, 4],
+									"to": [-10, 16, 5],
+									"uv": [1, 49],
+									"position": [13, -8, 0]
+								},
+								{
+									"type": "block",
+									"from": [-16, 11, -6],
+									"to": [-10, 16, -4],
+									"uv": [2, 2],
+									"position": [13, -8, 0]
+								},
+								{
+									"type": "block",
+									"from": [-11, 8, -3],
+									"to": [-9, 9, 3],
+									"uv": [32, 49],
+									"position": [13, -8, 0]
+								},
+								{
+									"type": "block",
+									"from": [-17, 8, -3],
+									"to": [-15, 9, 3],
+									"uv": [6, 13],
+									"position": [13, -8, 0]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}

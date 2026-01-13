@@ -1,0 +1,64 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp5167_dragon_spawner.spawn": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 10.84,
+			"bones": {
+				"amogus1": {
+					"rotation": [0, -90, "math.sin(query.life_time * 200) * 15"],
+					"position": [-25, 0, 0],
+					"scale": {
+						"0.0": ["1+math.sin(query.life_time * 500) * 0.2", "1+math.sin(query.life_time * 600) * 0.2", "1+math.sin(query.life_time * 400) * 0.2"],
+						"10.0": ["1+math.sin(query.life_time * 2000) * 0.5", "1+math.sin(query.life_time * 3000) * 0.5", "1+math.sin(query.life_time * 1000) * 0.5"]
+					}
+				},
+				"amogus2": {
+					"rotation": [0, -90, "math.sin(query.life_time * 500) * 10"],
+					"position": [0, 0, -25],
+					"scale": {
+						"0.0": ["1+math.sin(query.life_time * 500) * 0.2", "1+math.sin(query.life_time * 600) * 0.2", "1+math.sin(query.life_time * 400) * 0.2"],
+						"10.0": ["1+math.sin(query.life_time * 2000) * 0.5", "1+math.sin(query.life_time * 3000) * 0.5", "1+math.sin(query.life_time * 1000) * 0.5"]
+					}
+				},
+				"amogus3": {
+					"rotation": [0, -90, "math.sin(query.life_time * 300) * 15"],
+					"position": [25, 0, 0],
+					"scale": {
+						"0.0": ["1+math.sin(query.life_time * 500) * 0.2", "1+math.sin(query.life_time * 600) * 0.2", "1+math.sin(query.life_time * 400) * 0.2"],
+						"10.0": ["1+math.sin(query.life_time * 2000) * 0.5", "1+math.sin(query.life_time * 3000) * 0.5", "1+math.sin(query.life_time * 1000) * 0.5"]
+					}
+				},
+				"amogus4": {
+					"rotation": [0, -90, "math.sin(query.life_time * 400) * 10"],
+					"position": [0, 0, 25],
+					"scale": {
+						"0.0": ["1+math.sin(query.life_time * 500) * 0.2", "1+math.sin(query.life_time * 600) * 0.2", "1+math.sin(query.life_time * 400) * 0.2"],
+						"10.0": ["1+math.sin(query.life_time * 2000) * 0.5", "1+math.sin(query.life_time * 3000) * 0.5", "1+math.sin(query.life_time * 1000) * 0.5"]
+					}
+				},
+				"amoguses": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"2.08": [0, 300, 0],
+						"5.2": [0, 1000, 0],
+						"10.84": [0, 2700, 0]
+					},
+					"position": {
+						"0.0": [0, 0, 0],
+						"10.0": [0, "33+math.sin(query.life_time * 200) * 2", 0],
+						"10.64": [0, "76+math.sin(query.life_time * 200) * 2", 0],
+						"10.84": [0, "23+math.sin(query.life_time * 200) * 2", 0]
+					},
+					"scale": {
+						"0.0": [0, 0, 0],
+						"1.48": [1, 1, 1],
+						"10.0": [1, 1, 1],
+						"10.64": [2, 2, 2],
+						"10.84": [1, 1, 1]
+					}
+				}
+			}
+		}
+	}
+}

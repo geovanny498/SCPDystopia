@@ -1,0 +1,22 @@
+{
+	"format_version": "1.8.0",
+	"render_controllers": {
+		"controller.render.scpdt_blast_door_e": {
+			"arrays": {
+				"textures": {
+					"Array.skins": [
+						"Texture.default",
+						"Texture.lvl1",
+						"Texture.lvl2",
+						"Texture.lvl3",
+						"Texture.lvl4",
+						"Texture.lvl5"
+					]
+				}
+			},
+			"geometry": "Geometry.default",
+			"materials": [{ "*": "Material.default" }],
+			"textures": ["Array.skins[v.lvl]"]
+		}
+	}
+}

@@ -1,0 +1,31 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_class_d_dead",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"d1": "textures/entity/humanoid/dt_class_d1",
+				"d2": "textures/entity/humanoid/dt_class_d2",
+				"d3": "textures/entity/humanoid/dt_class_d3",
+				"d4": "textures/entity/humanoid/dt_class_d4"
+			},
+			"geometry": {
+				"default": "geometry.dt_humanoid1_dead"
+			},
+			"animations": {
+				"death": "animation.dt_misc.dead_body.death1"
+			},
+			"scripts": {
+				"animate": ["death"]
+			},
+			"render_controllers": ["controller.render.scpdt_class_d"],
+			"spawn_egg": {
+				"base_color": "#F5A30B",
+				"overlay_color": "#5A3E18"
+			}
+		}
+	}
+}

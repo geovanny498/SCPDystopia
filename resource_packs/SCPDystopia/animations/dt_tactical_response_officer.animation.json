@@ -1,0 +1,125 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_tactical_response_officer.walking": {
+			"loop": true,
+			"bones": {
+				"tro": {
+					"rotation": [0, 0, "math.sin(query.life_time * 450) * 0.6"]
+				},
+				"chest": {
+					"rotation": ["math.sin(query.life_time * 900) * 0.7", 0, 0]
+				},
+				"rightLeg": {
+					"rotation": ["math.sin(query.life_time * 450) * 30", 0, 0]
+				},
+				"leftLeg": {
+					"rotation": ["math.sin(query.life_time * -450) * 30", 0, 0]
+				}
+			}
+		},
+		"animation.dt_tactical_response_officer_shotgun.general": {
+			"loop": true,
+			"bones": {
+				"chest": {
+					"rotation": ["2.5+math.sin(query.life_time * 70) * 1.5", 0, 0]
+				},
+				"head": {
+					"rotation": ["2.5+math.sin(query.life_time * 70) * 2", "math.sin(query.life_time * 25) * 2.5", 0]
+				},
+				"leftArm": {
+					"rotation": ["-15+math.sin(query.life_time * 70) * 1", 7.5, 0]
+				},
+				"rightArm": {
+					"rotation": [-42.5, -52.5, "-5+math.sin(query.life_time * 70) * 2"]
+				},
+				"mp5k": {
+					"rotation": [-5, 0, -20],
+					"position": [0, 2, -0.5]
+				},
+				"rightLeg": {
+					"rotation": [0, 0, 2.5]
+				},
+				"leftLeg": {
+					"rotation": [0, 0, -2.5]
+				},
+				"spas12": {
+					"rotation": [-2.5, 0, -20],
+					"position": [0, 2, 0]
+				}
+			}
+		},
+		"animation.dt_tactical_response_officer_shotgun.hold_gun": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"rotation": [0, 2.5, 7.5]
+				},
+				"leftArm": {
+					"rotation": ["-77.5+query.target_x_rotation", 52.5, "5+math.sin(query.life_time * 120) * 2"]
+				},
+				"rightArm": {
+					"rotation": ["-87.5+math.sin(query.life_time * 300) * 0.004+query.target_x_rotation", "-10+math.sin(query.life_time * 150) * 0.2", 0]
+				},
+				"mp5k": {
+					"rotation": [0, 0, 5],
+					"position": [-0.6, 0, 0]
+				},
+				"chest": {
+					"rotation": ["math.sin(query.life_time * 80) * 1", 0, 0]
+				},
+				"spas12": {
+					"position": [0, 3, 0]
+				}
+			}
+		},
+		"animation.dt_tactical_response_officer.general": {
+			"loop": true,
+			"bones": {
+				"chest": {
+					"rotation": ["2.5+math.sin(query.life_time * 70) * 1.5", 0, 0]
+				},
+				"head": {
+					"rotation": ["2.5+math.sin(query.life_time * 70) * 2+query.target_x_rotation", "math.sin(query.life_time * 25) * 2.5+query.target_y_rotation", 0]
+				},
+				"leftArm": {
+					"rotation": ["-25+math.sin(query.life_time * 70) * 1", 7.5, 0]
+				},
+				"rightArm": {
+					"rotation": [-42.5, -52.5, "-15+math.sin(query.life_time * 70) * 2"]
+				},
+				"mp5k": {
+					"rotation": [-5, 0, -20],
+					"position": [0, 2, -0.5]
+				},
+				"rightLeg": {
+					"rotation": [0, 0, 2.5]
+				},
+				"leftLeg": {
+					"rotation": [0, 0, -2.5]
+				}
+			}
+		},
+		"animation.dt_tactical_response_officer.hold_gun": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"rotation": ["query.target_x_rotation", "2.5+query.target_y_rotation", "-12.5+math.sin(query.life_time * 90) * 1"]
+				},
+				"leftArm": {
+					"rotation": ["-77.5+query.target_x_rotation", 52.5, "5+math.sin(query.life_time * 120) * 2"]
+				},
+				"rightArm": {
+					"rotation": ["-87.5+math.sin(query.life_time * 300) * 0.004+query.target_x_rotation", "-15+math.sin(query.life_time * 150) * 0.2", 0]
+				},
+				"mp5k": {
+					"rotation": [0, 0, 5],
+					"position": [-0.6, 0, 0]
+				},
+				"chest": {
+					"rotation": ["math.sin(query.life_time * 80) * 1", 0, 0]
+				}
+			}
+		}
+	}
+}

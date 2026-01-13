@@ -1,0 +1,13 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.armor.dt_scp268.third_person_hidden": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"scale": 0
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,28 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp049.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general"],
+					"transitions": [
+						{
+							"moving": "variable.moving"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"moving": {
+					"animations": ["move"],
+					"transitions": [
+						{
+							"default": "!variable.moving"
+						}
+					],
+					"blend_transition": 0.7
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,37 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.dt_scp007.general": {
+			"loop": true,
+			"bones": {
+				"leftArm": {
+					"rotation": [0, 0, "-1.5+math.sin(query.life_time * -80) * 1.5"]
+				},
+				"rightArm": {
+					"rotation": [0, 0, "1.5+math.sin(query.life_time * 80) * 1.5"]
+				},
+				"earth": {
+					"rotation": [0, "-25+math.sin(query.life_time * 3) * 180", -15],
+					"scale": 0.9
+				}
+			}
+		},
+		"animation.dt_scp007.walking": {
+			"loop": true,
+			"bones": {
+				"leftArm": {
+					"rotation": ["math.sin(query.life_time * 610) * 45", 0, 0]
+				},
+				"rightArm": {
+					"rotation": ["math.sin(query.life_time * -610) * 45", 0, 0]
+				},
+				"rightLeg": {
+					"rotation": ["math.sin(query.life_time * 610) * 45", 0, 0]
+				},
+				"leftLeg": {
+					"rotation": ["math.sin(query.life_time * -610) * 45", 0, 0]
+				}
+			}
+		}
+	}
+}

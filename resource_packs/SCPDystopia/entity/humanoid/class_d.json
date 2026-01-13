@@ -1,0 +1,45 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_class_d",
+			"materials": {
+				"default": "npc"
+			},
+			"textures": {
+				"d1": "textures/entity/humanoid/dt_class_d1",
+				"d2": "textures/entity/humanoid/dt_class_d2",
+				"d3": "textures/entity/humanoid/dt_class_d3",
+				"d4": "textures/entity/humanoid/dt_class_d4"
+			},
+			"geometry": {
+				"default": "geometry.dt_class_d"
+			},
+			"animations": {
+				"general": "animation.dt_humanoid1.general",
+
+				"move_v2_arms": "animation.dt_class_d_v2.move_arms",
+				"move_v2_legs": "animation.dt_class_d_v2.move_legs",
+				"pickup_gun": "animation.dt_class_d_v2.pickup_gun",
+				"gun_ready": "animation.dt_class_d_v2.gun_ready",
+				"firing_gun": "animation.dt_class_d_v2.firing_gun",
+
+				"anim_cont_v2": "controller.animation.dt_class_d_v2.anim_cont",
+				"look_at_target": "animation.common.look_at_target"
+			},
+			"scripts": {
+				"scale": "0.9375",
+				"animate": ["anim_cont_v2"],
+				"pre_animation": [
+					"variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
+				]
+			},
+			"render_controllers": ["controller.render.scpdt_class_d"],
+			"spawn_egg": {
+				"base_color": "#F5A30B",
+				"overlay_color": "#5A3E18"
+			},
+			"enable_attachables": true
+		}
+	}
+}

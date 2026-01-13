@@ -1,0 +1,26 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.item.dt_zeroplasma.general": {
+			"loop": true,
+			"animation_length": 1.28,
+			"bones": {
+				"rolling": {
+					"rotation": {
+						"0.0": [0, 0, 0],
+						"1.28": [0, 360, 0]
+					}
+				}
+			}
+		},
+		"animation.item.dt_zeroplasma.hold_first_person": {
+			"loop": true,
+			"bones": {
+				"zeroplasma": {
+					"rotation": [15, -90, -15],
+					"scale": 1
+				}
+			}
+		}
+	}
+}

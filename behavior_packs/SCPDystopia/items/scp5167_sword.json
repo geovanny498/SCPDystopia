@@ -1,0 +1,33 @@
+{
+	"format_version": "1.21.120",
+	"minecraft:item": {
+		"description": {
+			"identifier": "lc:dt_scp5167_knife",
+			"menu_category": {
+				"category": "equipment"
+			}
+		},
+		"components": {
+			"scpdt:scp5167_knife": {},
+			"scpdt:lose_durability_on_dig": {},
+			"minecraft:can_destroy_in_creative": false,
+			"minecraft:damage": 6,
+			"minecraft:creative_category": {
+				"parent": "itemGroup.name.equipment"
+			},
+			"minecraft:durability": {
+				"max_durability": 150,
+				"damage_chance": {
+					"min": 0,
+					"max": 100
+				}
+			},
+			"minecraft:hand_equipped": true,
+			"minecraft:max_stack_size": 1,
+			"minecraft:icon": "dt_scp5167_sword",
+			"minecraft:display_name": {
+				"value": "SCP-5167 Knife"
+			}
+		}
+	}
+}

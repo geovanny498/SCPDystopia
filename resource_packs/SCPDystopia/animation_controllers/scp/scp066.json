@@ -1,0 +1,50 @@
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.dt_scp066.anim_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": ["general"],
+					"transitions": [
+						{
+							"sound": "query.mark_variant == 1"
+						}
+					],
+					"blend_transition": 0.3
+				},
+				"sound": {
+					"animations": ["loud"],
+					"transitions": [
+						{
+							"default": "query.mark_variant == 0"
+						}
+					],
+					"blend_transition": 0.3
+				}
+			}
+		},
+		"controller.animation.dt_scp066.move_cont": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"transitions": [
+						{
+							"roll": "variable.moving"
+						}
+					],
+					"blend_transition": 0.2
+				},
+				"roll": {
+					"animations": ["rolling"],
+					"transitions": [
+						{
+							"default": "!variable.moving"
+						}
+					],
+					"blend_transition": 0.2
+				}
+			}
+		}
+	}
+}

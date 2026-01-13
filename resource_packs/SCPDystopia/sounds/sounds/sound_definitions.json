@@ -1,0 +1,1673 @@
+{
+    "format_version": "1.14.0",
+    "sound_definitions": {
+        "scpdt.gun.shot_dry": {
+            "category": "neutral",
+            "max_distance" : 10.0,
+            "sounds": [
+                "sounds/scpdt_misc/mp5k/shot_dry"
+            ]
+        },
+        "scpdt.gun.reload_complete": {
+            "category": "neutral",
+            "max_distance" : 10.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/reload_complete",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.horror": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/horror/horror1",
+                "sounds/horror/horror2",
+                "sounds/horror/horror3",
+                "sounds/horror/horror4"
+            ]
+        },
+        "scpdt.card_read": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpdt_misc/card_read"
+            ]
+        },
+        "scpdt.push_button": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpdt_misc/push_button"
+            ]
+        },
+        "scpdt.scp1025.read": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpdt_misc/scp1025_read"
+            ]
+        },
+        "scpdt.coffee_machine.vending": {
+            "category": "neutral",
+            "max_distance" : 10.0,
+            "sounds": [
+                "sounds/scpdt_misc/coffee_vending"
+            ]
+        },
+        "scpdt.machine.on1": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpdt_misc/machine_on1"
+            ]
+        },
+        "scpdt.machine.off1": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpdt_misc/machine_off1"
+            ]
+        },
+        "scpdt.spas12.shot": {
+            "category": "neutral",
+            "max_distance" : 15.0,
+            "sounds": [
+                "sounds/scpdt_misc/spas12_shot"
+            ]
+        },
+        "scpdt.spas12.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/spas12/reload",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.hk_mp5.shot": {
+            "category": "neutral",
+            "max_distance" : 15.0,
+            "sounds": [
+                "sounds/scpdt_misc/hk_mp5_shot"
+            ]
+        },
+        "scpdt.mp5k.reload": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpdt_misc/mp5k/reload"
+            ]
+        },
+        "scpdt.m16.shot": {
+            "category": "neutral",
+            "max_distance" : 30.0,
+            "sounds": [
+                "sounds/scpdt_misc/m16_shot"
+            ]
+        },
+        "scpdt.m16.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/m16/reload",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.glock.shot": {
+            "category": "neutral",
+            "max_distance" : 22.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/glock_shot",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.glock.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/glock/reload",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.p90.shot": {
+            "category": "neutral",
+            "max_distance" : 20.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/p90_shot",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp5167_cannon.shot": {
+            "category": "neutral",
+            "max_distance" : 22.0,
+            "sounds": [
+                "sounds/scpdt_misc/fart/scp5167_cannon"
+            ]
+        },
+        "scpdt.zeroplasma.shot": {
+            "category": "neutral",
+            "max_distance" : 12.0,
+            "sounds": [
+                "sounds/scpdt_misc/zeroplasma_shot"
+            ]
+        },
+        "scpdt.dtrifle.reload": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpdt_misc/dystopiarifle/reload"
+            ]
+        },
+        "scpdt.dtrifle.shot": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpdt_misc/dystopiarifle/shot"
+            ]
+        },
+        "scpdt.ak.shot": {
+            "category": "hostile",
+            "max_distance" : 40.0,
+            "sounds": [
+                "sounds/scpdt_misc/ak/shoot"
+            ]
+        },
+        "scpdt.ak.reload": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpdt_misc/ak/reload"
+            ]
+        },
+        "scpdt.rocket_launcher.shoot": {
+            "category": "hostile",
+            "max_distance" : 40.0,
+            "sounds": [
+                "sounds/scpdt_misc/rocket_launcher/shoot"
+            ]
+        },
+        "scpdt.flamethrower.fire": {
+            "category": "hostile",
+            "max_distance" : 15.0,
+            "sounds": [
+                "sounds/scpdt_misc/flamethrower/fire"
+            ]
+        },
+        "scpdt.door1.open": {
+            "category": "neutral",
+            "max_distance" : 9.0,
+            "sounds": [
+                "sounds/doors/door1_open1",
+                "sounds/doors/door1_open2",
+                "sounds/doors/door1_open3"
+            ]
+        },
+        "scpdt.door1.close": {
+            "category": "neutral",
+            "max_distance" : 9.0,
+            "sounds": [
+                "sounds/doors/door1_close1",
+                "sounds/doors/door1_close2",
+                "sounds/doors/door1_close3"
+            ]
+        },
+        "scpdt.door3.open": {
+            "category": "neutral",
+            "max_distance" : 9.0,
+            "sounds": [
+                "sounds/doors/door_hcz_open1",
+                "sounds/doors/door_hcz_open2",
+                "sounds/doors/door_hcz_open3"
+            ]
+        },
+        "scpdt.door3.close": {
+            "category": "neutral",
+            "max_distance" : 9.0,
+            "sounds": [
+                "sounds/doors/door_hcz_close1",
+                "sounds/doors/door_hcz_close2",
+                "sounds/doors/door_hcz_close3"
+            ]
+        },
+        "scpdt.blast_door.close": {
+            "category": "neutral",
+            "max_distance" : 16.0,
+            "sounds": [
+                "sounds/doors/BigDoorClose1",
+                "sounds/doors/BigDoorClose2",
+                "sounds/doors/BigDoorClose3"
+            ]
+        },
+        "scpdt.blast_door.open": {
+            "category": "neutral",
+            "max_distance" : 16.0,
+            "sounds": [
+                "sounds/doors/BigDoorOpen1",
+                "sounds/doors/BigDoorOpen2",
+                "sounds/doors/BigDoorOpen3"
+            ]
+        },
+        "scpdt.alarm": {
+            "category": "neutral",
+            "max_distance" : 38.0,
+            "sounds": [
+                "sounds/scpdt_misc/alarm"
+            ]
+        },
+        "scpdt.sink_water": {
+            "category": "neutral",
+            "max_distance" : 7.0,
+            "sounds": [
+                "sounds/scpdt_misc/sink"
+            ]
+        },
+        "scpdt.toilet_flush": {
+            "category": "neutral",
+            "max_distance" : 11.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/toilet_flush",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.air_conditioner": {
+            "category": "neutral",
+            "max_distance" : 5.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/air_conditioner",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.hand_dryer": {
+            "category": "neutral",
+            "max_distance" : 11.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/hand_dryer",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.tissue_pull": {
+            "category": "neutral",
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/tissue_paper_pull",
+                    "volume" : 0.86
+                }
+            ]
+        },
+        "scpdt.fart": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpdt_misc/fart/fart1",
+                "sounds/scpdt_misc/fart/fart2",
+                "sounds/scpdt_misc/fart/fart3",
+                "sounds/scpdt_misc/fart/fart4",
+                "sounds/scpdt_misc/fart/fart5",
+                "sounds/scpdt_misc/fart/fart6",
+                "sounds/scpdt_misc/fart/fart7"
+            ]
+        },
+        "scpdt.morphine.use": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpdt_misc/morphine_use"
+            ]
+        },
+        "scpdt.radio_static": {
+            "category": "neutral",
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/radio_static",
+                    "volume" : 0.7
+                }
+            ]
+        },
+        "scpdt.intercom.general": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/intercom/general/announcement1",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/general/announcement2",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/general/announcement3",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/general/announcement4",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/general/announcement5",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/general/announcement6",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/general/announcement7",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.intercom.report": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/intercom/scripted/scripted1",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/scripted/scripted2",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/scripted/scripted3",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/scripted/scripted4",
+                    "volume" : 1.0
+                },
+                {
+                    "name" : "sounds/intercom/scripted/scripted5",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.intercom.report_all": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/intercom/scripted/scripted6",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.intercom.breach": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/intercom/breach/breach",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scream_loader.scream": {
+            "category": "neutral",
+            "max_distance" : 20.0,
+            "sounds": [
+                {
+                    "name" : "sounds/intercom/scream/femurbreaker",
+                    "volume" : 1.0,
+                    "weight" : 62
+                },
+                {
+                    "name" : "sounds/intercom/scream/scream_meme",
+                    "volume" : 1.0,
+                    "weight" : 9
+                }
+            ]
+        },
+        "scpdt.scream_loader.scp106_spawn": {
+            "category": "neutral",
+            "max_distance" : 20.0,
+            "sounds": [
+                {
+                    "name" : "sounds/intercom/scream/scp106_spawn",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.ci_truck.come": {
+            "category": "neutral",
+            "max_distance" : 20.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/chaos_truck",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.mp5a3.shot": {
+            "category": "neutral",
+            "max_distance" : 25.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/mp5a3/shot",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.mp5a3.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/mp5a3/reload",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.m4a1.shot": {
+            "category": "neutral",
+            "max_distance" : 30.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/m4a1/shot",
+                    "volume" : 0.9
+                }
+            ]
+        },
+        "scpdt.m4a1.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/m4a1/reload",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.hig.shoot": {
+            "category": "neutral",
+            "max_distance" : 30.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/hig/shoot",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.hig.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/hig/reload",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scar.shot": {
+            "category": "neutral",
+            "max_distance" : 30.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_misc/scar/shot",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.scar.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/scar/reload",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.suscharger.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/suscharger/reload",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.bomb_activator.activate": {
+            "category": "music",
+            "sounds": [
+                {
+                    "load_on_low_memory" : true,
+                    "name": "sounds/scpdt_misc/warhead_activate",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.bomb_activator.explode": {
+            "category": "music",
+            "sounds": [
+                {
+                    "load_on_low_memory" : true,
+                    "name": "sounds/scpdt_misc/warhead_explode",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.pd.enter": {
+            "category": "music",
+            "sounds": [
+                "sounds/pocketdimension/enter"
+            ]
+        },
+        "scpdt.pd.exit": {
+            "category": "music",
+            "sounds": [
+                "sounds/pocketdimension/exit"
+            ]
+        },
+        "scpdt.tesla.windup": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpdt_misc/tesla/windup"
+            ]
+        },
+        "scpdt.tesla.shock": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpdt_misc/tesla/shock"
+            ]
+        },
+        "scpdt.light.switch": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpdt_misc2/light_switch"
+            ]
+        },
+
+        //Humanoid
+        "scpdt.officer.usp_shot": {
+            "category": "neutral",
+            "max_distance" : 10.0,
+            "sounds": [
+                "sounds/scpmobs/officer/usp_shot"
+            ]
+        },
+        "scpdt.epsilon11.p90_shot": {
+            "category": "neutral",
+            "max_distance" : 15.0,
+            "sounds": [
+                "sounds/scpmobs/epsilon11/p90_shot"
+            ]
+        },
+        "scpdt.eta10.g36c_shot": {
+            "category": "neutral",
+            "max_distance" : 15.0,
+            "sounds": [
+                "sounds/scpmobs/eta10/g36c_shot"
+            ]
+        },
+        "scpdt.m249_turret.m249_shot": {
+            "category": "neutral",
+            "max_distance" : 40.0,
+            "sounds": [
+                "sounds/scpmobs/m249_turret/m249_shot"
+            ]
+        },
+        "scpdt.epsilon11.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/epsilon11/idle1",
+                "sounds/scpmobs/epsilon11/idle2",
+                "sounds/scpmobs/epsilon11/idle3",
+                "sounds/scpmobs/epsilon11/idle4",
+                "sounds/scpmobs/epsilon11/idle5",
+                "sounds/scpmobs/epsilon11/idle6",
+                "sounds/scpmobs/epsilon11/idle7"
+            ]
+        },
+        "scpdt.epsilon11.mad": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/epsilon11/mad1",
+                "sounds/scpmobs/epsilon11/mad2",
+                "sounds/scpmobs/epsilon11/mad3",
+                "sounds/scpmobs/epsilon11/mad4",
+                "sounds/scpmobs/epsilon11/mad5",
+                "sounds/scpmobs/epsilon11/mad6",
+                "sounds/scpmobs/epsilon11/mad7",
+                "sounds/scpmobs/epsilon11/mad8",
+                "sounds/scpmobs/epsilon11/mad9",
+                "sounds/scpmobs/epsilon11/mad10",
+                "sounds/scpmobs/epsilon11/mad11",
+                "sounds/scpmobs/epsilon11/mad12"
+            ]
+        },
+        "scpdt.epsilon11.omfg": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/epsilon11/omfg"
+            ]
+        },
+        "scpdt.epsilon11.step": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/epsilon11/Step1",
+                "sounds/scpmobs/epsilon11/Step2",
+                "sounds/scpmobs/epsilon11/Step3"
+            ]
+        },
+        "scpdt.epsilon11.random_announcement": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/epsilon11/announcement/random1",
+                "sounds/scpmobs/epsilon11/announcement/random2",
+                "sounds/scpmobs/epsilon11/announcement/random3",
+                "sounds/scpmobs/epsilon11/announcement/random4",
+                "sounds/scpmobs/epsilon11/announcement/random5",
+                "sounds/scpmobs/epsilon11/announcement/random6",
+                "sounds/scpmobs/epsilon11/announcement/random7",
+                "sounds/scpmobs/epsilon11/announcement/random8",
+                "sounds/scpmobs/epsilon11/announcement/random9"
+            ]
+        },
+        "scpdt.epsilon11.announc_death": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/epsilon11/announcement/commander_death"
+            ]
+        },
+        "scpdt.epsilon11.enter": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/epsilon11/announcement/enter"
+            ]
+        },
+        "scpdt.epsilon11.apache_propeller": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/epsilon11/apache_propeller"
+            ]
+        },
+        "scpdt.apache_combat.hovering": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpmobs/apache/hovering",
+                    "load_on_low_memory": true,
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.apache_combat.launch": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/apache/launch"
+            ]
+        },
+        "scpdt.eta10.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/eta10/Random1",
+                "sounds/scpmobs/eta10/Random2",
+                "sounds/scpmobs/eta10/Stop2"
+            ]
+        },
+        "scpdt.eta10.hurt": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/eta10/Stop1"
+            ]
+        },
+        "scpdt.eta10.enter": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/eta10/Announc"
+            ]
+        },
+        "scpdt.chaos.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/chaos/idle1",
+                "sounds/scpmobs/chaos/idle2",
+                "sounds/scpmobs/chaos/idle3",
+                "sounds/scpmobs/chaos/idle4",
+                "sounds/scpmobs/chaos/idle5",
+                "sounds/scpmobs/chaos/idle6",
+                "sounds/scpmobs/chaos/idle7"
+            ]
+        },
+        "scpdt.chaos.retreat": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/chaos/retreat1",
+                "sounds/scpmobs/chaos/retreat2",
+                "sounds/scpmobs/chaos/retreat3",
+                "sounds/scpmobs/chaos/retreat4",
+                "sounds/scpmobs/chaos/retreat5",
+                "sounds/scpmobs/chaos/retreat6",
+                "sounds/scpmobs/chaos/retreat7"
+            ]
+        },
+        "scpdt.chaos.death": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/chaos/death1",
+                "sounds/scpmobs/chaos/death2",
+                "sounds/scpmobs/chaos/death3"
+            ]
+        },
+        "scpdt.goc_soldier.shoot": {
+            "category": "hostile",
+            "max_distance" : 20.0,
+            "sounds": [
+                "sounds/scpmobs/goc/soldier/shoot"
+            ]
+        },
+
+        //Joke SCPs
+        "scpdt.scp420j.use": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpdt_misc/joke/smoke"
+            ]
+        },
+        "scpdt.scp789j.butt": {
+            "category": "neutral",
+            "max_distance" : 24.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpdt_misc/joke/butt",
+                    "value": 1.23
+                }
+            ]
+        },
+
+        //SCP Items
+        "scpdt.scp714.use": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpitems/scp714_use"
+            ]
+        },
+
+        //SCP Blocks
+        "scpdt.scp079.broadcast": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpblocks/scp079/Broadcast4",
+                "sounds/scpblocks/scp079/Broadcast5",
+                "sounds/scpblocks/scp079/Broadcast6",
+                "sounds/scpblocks/scp079/Broadcast7"
+            ]
+        },
+        "scpdt.scp079.shutdown": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpblocks/scp079/shutdown1",
+                "sounds/scpblocks/scp079/shutdown2",
+                "sounds/scpblocks/scp079/shutdown3"
+            ]
+        },
+        "scpdt.scp079.booting": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpblocks/scp079/booting"
+            ]
+        },
+        "scpdt.scp914.refine": {
+            "category": "neutral",
+            "max_distance" : 22.0,
+            "sounds": [
+                "sounds/scpblocks/scp914/refine"
+            ]
+        },
+        "scpdt.scp914.change_level": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpblocks/scp914/change_level"
+            ]
+        },
+        "scpdt.scp294.coin": {
+            "category": "neutral",
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/coin",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp294.dispense1": {
+            "category": "neutral",
+            "max_distance" : 14.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/dispense1",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp294.dispense2": {
+            "category": "neutral",
+            "max_distance" : 14.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/dispense2",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp294.dispense3": {
+            "category": "neutral",
+            "max_distance" : 14.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/dispense3",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp294.drink.ahh": {
+            "category": "neutral",
+            "max_distance" : 7.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/drink/ahh",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp294.drink.burn": {
+            "category": "neutral",
+            "max_distance" : 7.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/drink/burn",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp294.drink.cough": {
+            "category": "neutral",
+            "max_distance" : 7.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/drink/cough",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp294.drink.ew": {
+            "category": "neutral",
+            "max_distance" : 7.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/drink/ew1",
+                    "volume" : 1.0
+                },
+                {
+                    "name": "sounds/scpblocks/scp294/drink/ew2",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp294.drink.spit": {
+            "category": "neutral",
+            "max_distance" : 7.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/drink/spit",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp294.drink.vomit": {
+            "category": "neutral",
+            "max_distance" : 7.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpblocks/scp294/drink/vomit",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp1074.touch": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpblocks/scp1074/touch"
+            ]
+        },
+
+        //SCP Mobs
+        "scpdt.scp096.rage": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/scp096/rageing"
+            ]
+        },
+        "scpdt.scp096.scream": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp096/scream"
+            ]
+        },
+        "scpdt.scp096.hurt": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp096/hurt1",
+                "sounds/scpmobs/scp096/hurt2",
+                "sounds/scpmobs/scp096/hurt3"
+            ]
+        },
+        "scpdt.scp096.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp096/cry",
+                "sounds/scpmobs/scp096/scream"
+            ]
+        },
+        "scpdt.scp096.attack": {
+            "category": "hostile",
+            "sounds": [
+                {
+                    "name": "sounds/scpmobs/scp096/attack",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp096_new.triggered": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name": "sounds/scpmobs/scp096/new/triggered",
+                    "load_on_low_memory" : true
+                }
+            ]
+        },
+        "scpdt.scp096_new.scream": {
+            "category": "hostile",
+            "__use_legacy_max_distance" : "true",
+            "sounds": [
+                {
+                    "name": "sounds/scpmobs/scp096/new/chasing_scream1",
+                    "volume" : 1.0
+                },
+                {
+                    "name": "sounds/scpmobs/scp096/new/chasing_scream2",
+                    "volume" : 1.0
+                },
+                {
+                    "pitch" : 0.95,
+                    "name": "sounds/scpmobs/scp096/new/chasing_scream3",
+                    "volume" : 1.0
+                },
+                {
+                    "pitch" : 0.84,
+                    "name": "sounds/scpmobs/scp096/new/chasing_scream4",
+                    "volume" : 1.0
+                },
+                {
+                    "name": "sounds/scpmobs/scp096/new/chasing_scream5",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp096_new.cry": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpmobs/scp096/cry"
+            ]
+        },
+        "scpdt.scp096_new.stopped_chasing": {
+            "category": "neutral",
+            "__use_legacy_max_distance" : "true",
+            "max_distance": 30.0,
+            "sounds": [
+                {
+                    "load_on_low_memory" : true,
+                    "name": "sounds/scpmobs/scp096/new/stop_chase",
+                    "volume": 2.2
+                }
+            ]
+        },
+        "scpdt.scp096_new.chase_music": {
+            "category": "music",
+            "sounds": [
+                {
+                    "load_on_low_memory" : true,
+                    "name": "sounds/scpmobs/scp096/new/chasing_music",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp096_new.climb_noise": {
+            "category": "hostile",
+            "max_distance": 23.0,
+            "sounds": [
+                {
+                    "name": "sounds/scpmobs/scp096/new/climb",
+                    "volume": 0.84
+                }
+            ]
+        },
+        "scpdt.scp049.death": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpdt_de/scp/scp049/death"
+            ]
+        },
+        "scpdt.scp049.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpdt_de/scp/scp049/idle1",
+                "sounds/scpdt_de/scp/scp049/idle2",
+                "sounds/scpdt_de/scp/scp049/idle3",
+                "sounds/scpdt_de/scp/scp049/idle4",
+                "sounds/scpdt_de/scp/scp049/idle5",
+                "sounds/scpdt_de/scp/scp049/idle6",
+                "sounds/scpdt_de/scp/scp049/idle7"
+            ]
+        },
+        "scpdt.scp939.step": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp939/step1",
+                "sounds/scpmobs/scp939/step2",
+                "sounds/scpmobs/scp939/step3",
+                "sounds/scpmobs/scp939/step4"
+            ]
+        },
+        "scpdt.scp939.death": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp939/death1",
+                "sounds/scpmobs/scp939/death2",
+                "sounds/scpmobs/scp939/death3"
+            ]
+        },
+        "scpdt.scp939.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp939/idle1",
+                "sounds/scpmobs/scp939/idle2",
+                "sounds/scpmobs/scp939/idle3",
+                "sounds/scpmobs/scp939/idle4",
+                "sounds/scpmobs/scp939/idle5",
+                "sounds/scpmobs/scp939/idle6"
+            ]
+        },
+        "scpdt.scp939.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp939/attack"
+            ]
+        },
+        "scpdt.scp457.fireloop": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp457/fireloop"
+            ]
+        },
+        "scpdt.scp457.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp457/fireloop",
+                "sounds/scpmobs/scp457/sighting"
+            ]
+        },
+        "scpdt.scp457.death": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp457/sighting"
+            ]
+        },
+        "scpdt.scp106.step": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp106/step1",
+                "sounds/scpmobs/scp106/step2",
+                "sounds/scpmobs/scp106/step3"
+            ]
+        },
+        "scpdt.scp106.spawn": {
+            "category": "neutral",
+            "max_distance" : 15.0,
+            "sounds": [
+                "sounds/scpmobs/scp106/spawn"
+            ]
+        },
+        "scpdt.scp106.death": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp106/death1",
+                "sounds/scpmobs/scp106/death2",
+                "sounds/scpmobs/scp106/death3"
+            ]
+        },
+        "scpdt.scp106.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp106/idle1",
+                "sounds/scpmobs/scp106/idle2",
+                "sounds/scpmobs/scp106/idle3"
+            ]
+        },
+        "scpdt.scp106.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp106/attack"
+            ]
+        },
+        "scpdt.scp999.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp999/idle1",
+                "sounds/scpmobs/scp999/idle2",
+                "sounds/scpmobs/scp999/idle3",
+                "sounds/scpmobs/scp999/idle4",
+                "sounds/scpmobs/scp999/idle5",
+                "sounds/scpmobs/scp999/idle6",
+                "sounds/scpmobs/scp999/idle7"
+            ]
+        },
+        "scpdt.scp035.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp035/idle1",
+                "sounds/scpmobs/scp035/idle2",
+                "sounds/scpmobs/scp035/idle3",
+                "sounds/scpmobs/scp035/idle4",
+                "sounds/scpmobs/scp035/idle5",
+                "sounds/scpmobs/scp035/idle6"
+            ]
+        },
+        "scpdt.scp035.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp035/attack"
+            ]
+        },
+        "scpdt.scp035_tentacle.ambient": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp035_tentacle/ambient1",
+                "sounds/scpmobs/scp035_tentacle/ambient2"
+            ]
+        },
+        "scpdt.scp035_tentacle.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp035_tentacle/attack"
+            ]
+        },
+        "scpdt.scp049.breath": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp049/idle7"
+            ]
+        },
+        "scpdt.scp173.horror": {
+            "category": "music",
+            "sounds": [
+                "sounds/horror/horror1",
+                "sounds/horror/horror2",
+                "sounds/horror/horror3",
+                "sounds/horror/horror4"
+            ]
+        },
+        "scpdt.scp173.rattle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp173/rattle1",
+                "sounds/scpmobs/scp173/rattle2",
+                "sounds/scpmobs/scp173/rattle3"
+            ]
+        },
+        "scpdt.scp173.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp173/attack1",
+                "sounds/scpmobs/scp173/attack2",
+                "sounds/scpmobs/scp173/attack3"
+            ]
+        },
+        "scpdt.scp5167.sus": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp5167/sus1",
+                "sounds/scpmobs/scp5167/sus2",
+                "sounds/scpmobs/scp5167/sus3"
+            ]
+        },
+        "scpdt.scp5167.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp5167/attack"
+            ]
+        },
+        "scpdt.scp5167.eject": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp5167/eject"
+            ]
+        },
+        "scpdt.scp5167.amogus": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp5167/amogus1",
+                "sounds/scpmobs/scp5167/amogus2"
+            ]
+        },
+        "scpdt.scp5167.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp5167/amogus1",
+                "sounds/scpmobs/scp5167/amogus2",
+                "sounds/scpmobs/scp5167/sus1",
+                "sounds/scpmobs/scp5167/sus2",
+                "sounds/scpmobs/scp5167/sus3"
+            ]
+        },
+        "scpdt.scp5167_boss.music1": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/scp5167_boss/music1"
+            ]
+        },
+        "scpdt.scp682.roar": {
+            "category": "hostile",
+            "max_distance" : 34.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpmobs/scp682/roar1",
+                    "volume" : 1.0
+                },
+                "sounds/scpmobs/scp682/roar2",
+                "sounds/scpmobs/scp682/roar3",
+                "sounds/scpmobs/scp682/roar4",
+                "sounds/scpmobs/scp682/roar5",
+                "sounds/scpmobs/scp682/roar6"
+            ]
+        },
+        "scpdt.scp682.step": {
+            "category": "hostile",
+            "max_distance" : 23.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpmobs/scp682/step",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp049_2.idle": {
+            "category": "hostile",
+            "sounds": [
+                {
+                    "name" : "sounds/scpmobs/scp049/scp049_2_breath",
+                    "volume" : 0.9
+                }
+            ]
+        },
+        "scpdt.scp049_2.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp049/scp049_2_attack"
+            ]
+        },
+        "scpdt.scp4959.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp4959/idle1",
+                "sounds/scpmobs/scp4959/idle2",
+                "sounds/scpmobs/scp4959/idle3"
+            ]
+        },
+        "scpdt.scp5167_boss.death": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/scp5167_boss/death"
+            ]
+        },
+        "scpdt.scp5167_boss.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp5167_boss/attack"
+            ]
+        },
+        "scpdt.scp5167_boss.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp5167_boss/sus",
+                "sounds/scpmobs/scp5167_boss/amogus"
+            ]
+        },
+        "scpdt.scp5167_boss.stronger": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/scp5167_boss/stronger"
+            ]
+        },
+        "scpdt.scp5167_dragon.flap": {
+            "category": "music",
+            "sounds": [
+                "sounds/scpmobs/scp5167_dragon/flap"
+            ]
+        },
+        "scpdt.scp5167_dragon.death": {
+            "category": "neutral",
+            "max_distance": 60.0,
+            "sounds": [
+                "sounds/scpmobs/scp5167_dragon/death"
+            ]
+        },
+        "scpdt.scp5167_dragon.shot": {
+            "category": "hostile",
+            "max_distance": 20.0,
+            "sounds": [
+                "sounds/scpmobs/scp5167_boss/death"
+            ]
+        },
+        "scpdt.scp610.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp610/idle1",
+                "sounds/scpmobs/scp610/idle2"
+            ]
+        },
+        "scpdt.scp610.hurt": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp610/hurt"
+            ]
+        },
+        "scpdt.scp610.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp610/attack"
+            ]
+        },
+        "scpdt.scp939_dog.idle": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpmobs/scp939/dog/idle1",
+                "sounds/scpmobs/scp939/dog/idle2",
+                "sounds/scpmobs/scp939/dog/idle3"
+            ]
+        },
+        "scpdt.scp939_dog.hurt": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpmobs/scp939/dog/hurt1",
+                "sounds/scpmobs/scp939/dog/hurt2"
+            ]
+        },
+        "scpdt.scp939_dog.death": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpmobs/scp939/dog/death"
+            ]
+        },
+        "scpdt.scp066.earrape": {
+            "category": "neutral",
+            "max_distance" : 17.0,
+            "sounds": [
+                {
+                    "load_on_low_memory" : true,
+                    "name" : "sounds/scpmobs/scp066/earrape",
+                    "volume" : 1.0
+                }
+            ]
+        },
+        "scpdt.scp066.rolling": {
+            "category": "neutral",
+            "sounds": [
+                "sounds/scpmobs/scp066/rolling"
+            ]
+        },
+        "scpdt.scp066.idle": {
+            "category": "neutral",
+            "max_distance" : 8.0,
+            "sounds": [
+                "sounds/scpmobs/scp066/eric1",
+                "sounds/scpmobs/scp066/eric2",
+                "sounds/scpmobs/scp066/eric3",
+                "sounds/scpmobs/scp066/notes1",
+                "sounds/scpmobs/scp066/notes2",
+                "sounds/scpmobs/scp066/notes3",
+                "sounds/scpmobs/scp066/notes4",
+                "sounds/scpmobs/scp066/notes5",
+                "sounds/scpmobs/scp066/notes6"
+            ]
+        },
+        "scpdt.scp966.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp966/echo1",
+                "sounds/scpmobs/scp966/echo2",
+                "sounds/scpmobs/scp966/echo3",
+                "sounds/scpmobs/scp966/idle1",
+                "sounds/scpmobs/scp966/idle2",
+                "sounds/scpmobs/scp966/idle3"
+            ]
+        },
+        "scpdt.scp966.step": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp966/step1",
+                "sounds/scpmobs/scp966/step2",
+                "sounds/scpmobs/scp966/step3"
+            ]
+        },
+        "scpdt.scp3199.egg_hatch": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp3199/egg_hatch"
+            ]
+        },
+        "scpdt.scp3199.idle": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp3199/idle1",
+                "sounds/scpmobs/scp3199/idle2"
+            ]
+        },
+        "scpdt.scp3199.hurt": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp3199/hurt1",
+                "sounds/scpmobs/scp3199/hurt2"
+            ]
+        },
+        "scpdt.scp3199.death": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp3199/death"
+            ]
+        },
+        "scpdt.scp3199.spit_egg": {
+            "category": "hostile",
+            "sounds": [
+                {
+                    "volume" : 1.0,
+                    "name": "sounds/scpmobs/scp3199/spit_egg"
+                }
+            ]
+        },
+        "scpdt.scp1000.attack": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp1000/attack1",
+                "sounds/scpmobs/scp1000/attack2"
+            ]
+        },
+        "scpdt.scp1000.growl": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpmobs/scp1000/growl1",
+                "sounds/scpmobs/scp1000/growl2"
+            ]
+        },
+
+        //Commentary
+        "scpdt.commentary.triedtospawnentity": {
+            "category": "music",
+            "sounds": [
+                "commentary/sounds/triedtospawnentity"
+            ]
+        },
+        "scpdt.commentary.amogus": {
+            "category": "music",
+            "sounds": [
+                "commentary/sounds/amogus"
+            ]
+        },
+        "scpdt.commentary.thanks": {
+            "category": "music",
+            "sounds": [
+                "commentary/sounds/thanks"
+            ]
+        },
+        "scpdt.commentary.main_features": {
+            "category": "music",
+            "sounds": [
+                "commentary/sounds/mainfeatures"
+            ]
+        },
+        "scpdt.commentary.compatibility": {
+            "category": "music",
+            "sounds": [
+                "commentary/sounds/compatibility"
+            ]
+        },
+        "scpdt.commentary.first_version": {
+            "category": "music",
+            "sounds": [
+                "commentary/sounds/firstversion"
+            ]
+        },
+
+
+
+        // Sounds definitions added after Definitive Edition update below
+
+        "scpdt.firearm_combat.equip_gun": {
+            "category": "hostile",
+            "sounds": [
+                "sounds/scpdt_de/misc/pickup_gun1",
+                "sounds/scpdt_de/misc/pickup_gun2"
+            ]
+        },
+        "scpdt.death.shoot": {
+            "category": "neutral",
+            "max_distance" : 30.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/shot1",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.hk416.shoot": {
+            "category": "neutral",
+            "max_distance" : 30.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/hk416_shoot",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.hk416.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/hk416_reload",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.ak47.shoot": {
+            "category": "neutral",
+            "max_distance" : 30.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/ak47_shoot",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.ak47.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/ak47_reload",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.glock17.shoot": {
+            "category": "neutral",
+            "max_distance" : 30.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/glock17_shoot",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.glock17.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/glock17_reload",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.357_magnum.shoot": {
+            "category": "neutral",
+            "max_distance" : 70.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/colt_python_shoot",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.357_magnum.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/colt_python_reload",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.p90.shoot": {
+            "category": "neutral",
+            "max_distance" : 30.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/p90_shoot",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.p90.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/p90_reload",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.mp7.shoot": {
+            "category": "neutral",
+            "max_distance" : 15.0,
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/mp7_shoot",
+                    "volume" : 0.8
+                }
+            ]
+        },
+        "scpdt.mp7.reload": {
+            "category": "music",
+            "sounds": [
+                {
+                    "name" : "sounds/scpdt_de/gun/mp7_reload",
+                    "volume" : 1.0
+                }
+            ]
+        }
+    }
+}

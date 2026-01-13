@@ -1,0 +1,30 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "lc:dt_ci_truck",
+			"materials": {
+				"default": "entity_emissive_alpha"
+			},
+			"textures": {
+				"default": "textures/entity/dt_ci_truck"
+			},
+			"geometry": {
+				"default": "geometry.dt_ci_truck"
+			},
+			"animations": {
+				"general": "animation.dt_ci_truck.spawn",
+
+				"anim_cont": "controller.animation.dt_ci_truck.anim_cont"
+			},
+			"scripts": {
+				"animate": ["anim_cont"]
+			},
+			"render_controllers": ["controller.render.scp_dystopia"],
+			"spawn_egg": {
+				"base_color": "#464646",
+				"overlay_color": "#284315"
+			}
+		}
+	}
+}

@@ -1,0 +1,1538 @@
+{
+    "individual_event_sounds": {
+        "events": {
+            "scp049_docile": {
+                "pitch": [
+                    1.0,
+                    1.02
+                ],
+                "sound": "scpdt.scp049.docile",
+                "volume": 1.0
+            },
+            "scp5167_dragon_son.shot": {
+                "pitch": 0.9,
+                "sound": "random.explode",
+                "volume": 1.30
+            }
+        }
+    },
+    "entity_sounds": {
+        "entities": {
+            "lc:dt_scp5167_dragon_shot": {
+                "events": {
+                    "purr": "scpdt.scp5167_dragon.shot"
+                },
+                "pitch": [
+                    1.0
+                ],
+                "volume": 0.84
+            },
+            "lc:dt_357_magnum_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.357_magnum.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_357_magnum_bullet_player_ads": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.357_magnum.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_357_magnum_bullet_player_normal": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.357_magnum.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_hk416_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.hk416.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_m4a1_player_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.m4a1.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_scar_player_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.scar.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_dtrifle_player_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.dtrifle.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_p90_player_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.p90.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_ak47_player_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.ak47.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_mp7_player_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.mp7.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_hk416_bullet_player_ads": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.hk416.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_hk416_bullet_player_c": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.hk416.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_m4a1_bullet_player_sneak": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.m4a1.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_m4a1_bullet_player": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.m4a1.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_m4a1_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.m4a1.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_m16_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.m16.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_m16_bullet_player_sneak": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.m16.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_m16_bullet_player": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.m16.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_scar_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.scar.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_scar_bullet_player_sneak": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.scar.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_scar_bullet_player": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.scar.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_dtrifle_bullet_player_sneak": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.dtrifle.shot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_ak47_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.ak47.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_ak47_bullet_player_ads": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.ak47.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_ak47_bullet_player_normal": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.ak47.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_mp7_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.mp7.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_mp7_bullet_player_ads": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.mp7.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_mp7_bullet_player_normal": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.mp7.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_p90_bullet": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.p90.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_p90_bullet_player_ads": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.p90.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_p90_bullet_player_normal": {
+                "events": {
+                    "purr": {
+                        "pitch": 1,
+                        "sound": "scpdt.p90.shoot",
+                        "volume": 0.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.2
+            },
+            "lc:dt_epsilon11": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.p90.shoot",
+                        "volume": 1.1
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_epsilon11c": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.p90.shoot",
+                        "volume": 1.1
+                    }
+                },
+                "pitch": [
+                    0.87,
+                    0.93
+                ],
+                "volume": 0.98
+            },
+            "lc:dt_eta10": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.mp7.shoot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_eta10c": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.mp7.shoot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_nu7": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scar.shot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_nu7c": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scar.shot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_beta7": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.m16.shot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_beta7c": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.m16.shot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_epsilon6": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.mp7.shoot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_epsilon6c": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.mp7.shoot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_thedeath": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.hk416.shoot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": 0.9,
+                "volume": 1.1
+            },
+            "lc:dt_chara": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.hk416.shoot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": 0.9,
+                "volume": 1.1
+            },
+            "lc:dt_alpha1": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.m4a1.shot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_alpha1c": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.hk416.shoot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_alpha1l": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    },
+                    "death": "",
+                    "ambient": "",
+                    "angry": "",
+                    "attack": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.m4a1.shot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 0.85
+            },
+            "lc:dt_officer": {
+                "events": {
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.glock.shot",
+                        "volume": 1.14
+                    }
+                },
+                "pitch": [
+                    1.00
+                ],
+                "volume": 1.00
+            },
+            "lc:dt_tactical_response_officer": {
+                "events": {
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.hk_mp5.shot",
+                        "volume": 1.14
+                    }
+                },
+                "pitch": [
+                    1.00
+                ],
+                "volume": 1.00
+            },
+            "lc:dt_tactical_response_officer_shotgun": {
+                "events": {
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.spas12.shot",
+                        "volume": 1.14
+                    }
+                },
+                "pitch": [
+                    1.00
+                ],
+                "volume": 1.00
+            },
+            "lc:dt_cd_commander": {
+                "events": {
+                    "death": "",
+                    "ambient": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.hk416.shoot",
+                        "volume": 2.0
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.9
+            },
+            "lc:dt_cd_leader": {
+                "events": {
+                    "death": "",
+                    "ambient": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.m4a1.shot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.9
+            },
+            "lc:dt_cd": {
+                "events": {
+                    "death": "",
+                    "ambient": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.m4a1.shot",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.9
+            },
+            "lc:dt_chaos_insurgency": {
+                "events": {
+                    "death": "",
+                    "ambient": "",
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.ak47.shoot",
+                        "volume": 1.14
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 0.9
+            },
+            "lc:dt_m249_turret": {
+                "events": {
+                    "shoot": {
+                        "pitch": 0.93,
+                        "sound": "scpdt.m249_turret.m249_shot",
+                        "volume": 1.1
+                    }
+                },
+                "pitch": [
+                    1.00
+                ],
+                "volume": 1.00
+            },
+            "lc:dt_guard_turret": {
+                "events": {
+                    "hurt": {
+                        "sound": "random.anvil_land",
+                        "pitch": [
+                            0.6,
+                            0.7
+                        ],
+                        "volume": 0.5
+                    },
+                    "death": {
+                        "sound": "random.explode",
+                        "pitch": 0.7,
+                        "volume": 1.0
+                    },
+                    "shoot": {
+                        "pitch": 1.1,
+                        "sound": "scpdt.scar.shot",
+                        "volume": 1.1
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 1.0
+            },
+            "lc:dt_class_d": {
+                "events": {
+                    "shoot": {
+                        "pitch": [
+                            0.9,
+                            1.2
+                        ],
+                        "sound": "scpdt.class_d.gun_fire",
+                        "volume": 1.1
+                    }
+                },
+                "pitch": [
+                    0.9,
+                    1.1
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_epsilon11_apache_combat": {
+                "events": {
+                    "shoot": {
+                        "pitch": 0.86,
+                        "sound": "scpdt.glock.shot",
+                        "volume": 1.4
+                    }
+                },
+                "pitch": [
+                    1.0
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_goc_soldier": {
+                "events": {
+                    "ambient": "scpdt.goc_soldier.idle",
+                    "shoot": "scpdt.goc_soldier.shoot"
+                },
+                "pitch": [
+                    0.9,
+                    1.1
+                ],
+                "volume": 1.0
+            },
+            //SCP and Misc
+            "lc:dt_scp096_old": {
+                "events": {
+                    "death": "scpdt.scp096.scream",
+                    "ambient": "scpdt.scp096.idle",
+                    "plop": "scpdt.scp096.rage",
+                    "bag": "armor.equip_leather",
+                    "hurt": {
+                        "pitch": 1.14,
+                        "sound": "scpdt.scp096.hurt",
+                        "volume": 1.35
+                    },
+                    "attack": "scpdt.scp096.attack"
+                },
+                "pitch": [
+                    0.9,
+                    1.1
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_scp096": {
+                "events": {
+                    "death": "scpdt.scp096.scream",
+                    "plop": "scpdt.scp096_new.scream",
+                    "hurt": {
+                        "pitch": 1.14,
+                        "sound": "scpdt.scp096.hurt",
+                        "volume": 1.35
+                    },
+                    "attack": "scpdt.scp096.attack"
+                },
+                "pitch": [
+                    0.9,
+                    1.1
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_scp049": {
+                "events": {
+                    "step": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp049.step",
+                        "volume": 1.1
+                    },
+                    "death": "scpdt.scp049.death",
+                    "ambient": "scpdt.scp049.idle",
+                    "hurt": "sound.none",
+                    "attack": "scpdt.scp049.attack"
+                },
+                "pitch": [
+                    0.93,
+                    1.07
+                ],
+                "volume": 1.1
+            },
+            "lc:dt_scp939": {
+                "events": {
+                    "step": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp939.step",
+                        "volume": 1.1
+                    },
+                    "death": "scpdt.scp939.death",
+                    "hurt": "scpdt.scp939.death",
+                    "ambient": "scpdt.scp939.idle",
+                    "attack": "scpdt.scp939.attack"
+                },
+                "pitch": [
+                    0.9,
+                    1.1
+                ],
+                "volume": 1.13
+            },
+            "lc:dt_scp939_dog": {
+                "events": {
+                    "step": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp939.step",
+                        "volume": 1.1
+                    },
+                    "death": "scpdt.scp939_dog.death",
+                    "growl": "mob.wolf.growl",
+                    "hurt": "scpdt.scp939_dog.hurt",
+                    "pant": "scpdt.scp939_dog.hurt",
+                    "ambient": "scpdt.scp939_dog.idle",
+                    "attack": "scpdt.scp939.attack",
+                    "whine": "mob.wolf.whine"
+                },
+                "pitch": [
+                    0.9,
+                    1.1
+                ],
+                "volume": 1.13
+            },
+            "lc:dt_scp457": {
+                "events": {
+                    "step": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp457.fireloop",
+                        "volume": 0.90
+                    },
+                    "death": "scpdt.scp457.death",
+                    "ambient": "scpdt.scp457.idle",
+                    "hurt": {
+                        "pitch": 0.4,
+                        "sound": "mob.blaze.hit",
+                        "volume": 1.07
+                    }
+                },
+                "pitch": [
+                    0.90,
+                    1.10
+                ],
+                "volume": 1.1
+            },
+            "lc:dt_scp106": {
+                "events": {
+                    "step": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp106.step",
+                        "volume": 2
+                    },
+                    "death": "scpdt.scp106.death",
+                    "ambient": "scpdt.scp106.idle",
+                    "hurt": "sound.none",
+                    "attack": "scpdt.scp106.attack"
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 1.1
+            },
+            "lc:dt_scp999": {
+                "events": {
+                    "squish.big": {
+                        "pitch": [
+                            0.640,
+                            0.960
+                        ],
+                        "sound": "mob.slime.big"
+                    },
+                    "squish.small": {
+                        "pitch": [
+                            0.640,
+                            0.960
+                        ],
+                        "sound": "mob.slime.small"
+                    },
+                    "death": "mob.slime.small",
+                    "ambient": "scpdt.scp999.idle",
+                    "hurt": "mob.slime.small"
+                },
+                "pitch": [
+                    0.95,
+                    1.05
+                ],
+                "volume": 1.12
+            },
+            "lc:dt_scp035_scientist": {
+                "events": {
+                    "step": {
+                        "pitch": 1.0,
+                        "sound": "mob.zombie.step",
+                        "volume": 1.11
+                    },
+                    "death": "scpdt.horror",
+                    "ambient": "scpdt.scp035.idle",
+                    "hurt": "sound.none",
+                    "attack": "scpdt.scp035.attack"
+                },
+                "pitch": [
+                    0.90,
+                    1.1
+                ],
+                "volume": 1.1
+            },
+            "lc:dt_scp035_tentacle": {
+                "events": {
+                    "death": "sound.none",
+                    "ambient": "scpdt.scp035_tentacle.ambient",
+                    "hurt": "scpdt.scp035_tentacle.ambient",
+                    "attack": "scpdt.scp035_tentacle.attack"
+                },
+                "pitch": [
+                    0.90,
+                    1.1
+                ],
+                "volume": 1.14
+            },
+            "lc:dt_scp173": {
+                "events": {
+                    "step": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp173.rattle",
+                        "volume": 1.3
+                    },
+                    "death": "scpdt.horror",
+                    "ambient": "scpdt.scp173.rattle",
+                    "hurt": "dig.stone",
+                    "attack": "scpdt.scp173.attack",
+                    "plop": {
+                        "pitch": 1.17,
+                        "sound": "mob.zombie.remedy",
+                        "volume": 1.2
+                    }
+                },
+                "pitch": [
+                    0.90,
+                    1.1
+                ],
+                "volume": 1.1
+            },
+            "lc:dt_scp173_cage": {
+                "events": {
+                    "plop": "random.anvil_land"
+                },
+                "pitch": [
+                    0.90,
+                    1.1
+                ],
+                "volume": 1.2
+            },
+            "lc:dt_scp5167": {
+                "events": {
+                    "death": "scpdt.scp5167.eject",
+                    "ambient": "scpdt.scp5167.idle",
+                    "mad": "scpdt.scp5167.sus",
+                    "hurt": "sound.none",
+                    "attack": "scpdt.scp5167.attack"
+                },
+                "pitch": [
+                    0.98,
+                    1.02
+                ],
+                "volume": 1.13
+            },
+            "lc:dt_scp058": {
+                "events": {
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "mob.zombie.step",
+                        "volume": 1.24
+                    },
+                    "death": "mob.zombie.death",
+                    "ambient": "mob.zombie.say",
+                    "attack": "mob.zombie.hurt",
+                    "hurt": "mob.zombie.hurt"
+                },
+                "pitch": [
+                    0.31,
+                    0.37
+                ],
+                "volume": 1.13
+            },
+            "lc:dt_scp682": {
+                "events": {
+                    "step": {
+                        "pitch": 0.96,
+                        "sound": "scpdt.scp682.step",
+                        "volume": 1.64
+                    },
+                    "death": "sound.none",
+                    "ambient": "scpdt.scp682.roar",
+                    "attack": {
+                        "pitch": 0.04,
+                        "sound": "game.player.die",
+                        "volume": 2.1
+                    },
+                    "hurt": "sound.none"
+                },
+                "pitch": [
+                    0.96,
+                    1.04
+                ],
+                "volume": 1.15
+            },
+            "lc:dt_class_d_scp049_2": {
+                "events": {
+                    "ambient": "scpdt.scp049_2.idle",
+                    "death": "mob.zombie.death",
+                    "hurt": "mob.zombie.hurt",
+                    "attack": "scpdt.scp049_2.attack",
+                    "step": {
+                        "pitch": 0.8,
+                        "sound": "mob.zombie.step",
+                        "volume": 0.90
+                    }
+                },
+                "pitch": [
+                    0.93,
+                    1.07
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_scientist_scp049_2": {
+                "events": {
+                    "ambient": "scpdt.scp049_2.idle",
+                    "death": "mob.zombie.death",
+                    "hurt": "mob.zombie.hurt",
+                    "attack": "scpdt.scp049_2.attack",
+                    "step": {
+                        "pitch": 0.8,
+                        "sound": "mob.zombie.step",
+                        "volume": 0.90
+                    }
+                },
+                "pitch": [
+                    0.93,
+                    1.07
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_officer_scp049_2": {
+                "events": {
+                    "ambient": "scpdt.scp049_2.idle",
+                    "death": "mob.zombie.death",
+                    "hurt": "mob.zombie.hurt",
+                    "attack": "scpdt.scp049_2.attack",
+                    "step": {
+                        "pitch": 0.8,
+                        "sound": "mob.zombie.step",
+                        "volume": 0.90
+                    }
+                },
+                "pitch": [
+                    0.93,
+                    1.07
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_tro_scp049_2": {
+                "events": {
+                    "ambient": "scpdt.scp049_2.idle",
+                    "death": "mob.zombie.death",
+                    "hurt": "mob.zombie.hurt",
+                    "attack": "scpdt.scp049_2.attack",
+                    "step": {
+                        "pitch": 0.8,
+                        "sound": "mob.zombie.step",
+                        "volume": 0.90
+                    }
+                },
+                "pitch": [
+                    0.93,
+                    1.07
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_mtf_scp049_2": {
+                "events": {
+                    "ambient": "scpdt.scp049_2.idle",
+                    "death": "mob.zombie.death",
+                    "hurt": "mob.zombie.hurt",
+                    "attack": "scpdt.scp049_2.attack",
+                    "step": {
+                        "pitch": 0.9,
+                        "sound": "scpdt.epsilon11.step",
+                        "volume": 1.0
+                    }
+                },
+                "pitch": [
+                    0.93,
+                    1.07
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_chaos_scp049_2": {
+                "events": {
+                    "ambient": "scpdt.scp049_2.idle",
+                    "death": "mob.zombie.death",
+                    "hurt": "mob.zombie.hurt",
+                    "attack": "scpdt.scp049_2.attack",
+                    "step": {
+                        "pitch": 0.8,
+                        "sound": "mob.zombie.step",
+                        "volume": 0.90
+                    }
+                },
+                "pitch": [
+                    0.93,
+                    1.07
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_janitor_scp049_2": {
+                "events": {
+                    "ambient": "scpdt.scp049_2.idle",
+                    "death": "mob.zombie.death",
+                    "hurt": "mob.zombie.hurt",
+                    "attack": "scpdt.scp049_2.attack",
+                    "step": {
+                        "pitch": 0.8,
+                        "sound": "mob.zombie.step",
+                        "volume": 0.90
+                    }
+                },
+                "pitch": [
+                    0.93,
+                    1.07
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_field_doctor_scp049_2": {
+                "events": {
+                    "ambient": "scpdt.scp049_2.idle",
+                    "death": "mob.zombie.death",
+                    "hurt": "mob.zombie.hurt",
+                    "attack": "scpdt.scp049_2.attack",
+                    "step": {
+                        "pitch": 0.8,
+                        "sound": "mob.zombie.step",
+                        "volume": 0.90
+                    }
+                },
+                "pitch": [
+                    0.93,
+                    1.07
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_scp4959": {
+                "events": {
+                    "ambient": {
+                        "sound": "scpdt.scp4959.idle",
+                        "volume": 1.30
+                    },
+                    "death": {
+                        "sound": "scpdt.scp4959.idle",
+                        "volume": 1.30
+                    },
+                    "hurt": {
+                        "sound": "mob.skeleton.hurt",
+                        "volume": 1.30
+                    },
+                    "step": {
+                        "pitch": 0.3,
+                        "sound": "mob.skeleton.step",
+                        "volume": 1.5
+                    },
+                    "attack": {
+                        "sound": "scpdt.scp4959.idle",
+                        "volume": 1.4
+                    }
+                },
+                "pitch": [
+                    0.25,
+                    0.30
+                ],
+                "volume": 1.3
+            },
+            "lc:dt_scp5167_boss": {
+                "events": {
+                    "step": {
+                        "pitch": 0.96,
+                        "sound": "scpdt.scp682.step",
+                        "volume": 1.84
+                    },
+                    "death": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp5167_boss.death",
+                        "volume": 0.75
+                    },
+                    "ambient": "scpdt.scp5167_boss.idle",
+                    "attack": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp5167_boss.attack",
+                        "volume": 0.8
+                    },
+                    "hurt": "sound.none"
+                },
+                "pitch": [
+                    1.00
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_scp5167_dragon": {
+                "events": {
+                    "death": "scpdt.scp5167_dragon.death",
+                    "flap": "scpdt.scp5167_dragon.flap",
+                    "hurt": {
+                        "pitch": 0.7,
+                        "sound": "mob.enderdragon.hit",
+                        "volume": 10.0
+                    },
+                    "ambient": {
+                        "pitch": 1.0,
+                        "sound": "mob.enderdragon.growl",
+                        "volume": 10.0
+                    }
+                },
+                "pitch": [1.0],
+                "volume": 2.0
+            },
+            "lc:dt_scp5167_dragon_son": {
+                "events": {
+                    "ambient": "mob.ghast.moan",
+                    "death": "mob.ghast.death",
+                    "hurt": "mob.ghast.scream",
+                    "scream": "mob.ghast.affectionate_scream"
+                },
+                "pitch": [
+                    0.5,
+                    0.8
+                ],
+                "volume": 100.0
+            },
+            "lc:dt_scp5167_soldier": {
+                "events": {
+                    "shoot": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.mp5a3.shot",
+                        "volume": 1.14
+                    }
+                },
+                "pitch": [
+                    1.00
+                ],
+                "volume": 1.00
+            },
+            "lc:dt_scp131": {
+                "events": {
+                    "step": "item.spyglass.use"
+                },
+                "pitch": [
+                    0.8
+                ],
+                "volume": 1.1
+            },
+            "lc:dt_scp577": {
+                "events": {
+                    "ambient": "mob.cat.straymeow",
+                    "ambient.tame": "mob.cat.meow",
+                    "death": {
+                        "pitch": 0.90,
+                        "sound": "mob.cat.hit",
+                        "volume": 0.50
+                    },
+                    "eat": "mob.cat.eat",
+                    "hurt": {
+                        "sound": "mob.cat.hit",
+                        "volume": 0.450
+                    },
+                    "purr": "mob.cat.purr",
+                    "purreow": "mob.cat.purreow",
+                    "plop": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.p90.shot",
+                        "volume": 0.9
+                    }
+                },
+                "pitch": [
+                    0.80,
+                    1.20
+                ],
+                "volume": 1.0
+            },
+            "lc:dt_scp610": {
+                "events": {
+                    "ambient": "scpdt.scp610.idle",
+                    "hurt": "scpdt.scp610.hurt",
+                    "attack": {
+                        "pitch": 1.1,
+                        "sound": "scpdt.scp610.attack",
+                        "volume": 0.8
+                    },
+                    "step": {
+                        "pitch": 0.6,
+                        "sound": "mob.zombie.step",
+                        "volume": 1.7
+                    }
+                },
+                "pitch": [
+                    0.8,
+                    1.1
+                ],
+                "volume": 1.2
+            },
+            "lc:dt_scp066": {
+                "events": {
+                    "ambient": "scpdt.scp066.idle",
+                    "hurt": "scpdt.scp066.idle",
+                    "step": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp066.rolling",
+                        "volume": 1.3
+                    },
+                    "death": {
+                        "pitch": 1.06,
+                        "sound": "scpdt.scp066.earrape",
+                        "volume": 1.4
+                    }
+                },
+                "pitch": [
+                    0.9,
+                    1.0
+                ],
+                "volume": 1.1
+            },
+            "lc:dt_scp966": {
+                "events": {
+                    "step": {
+                        "pitch": 1.0,
+                        "sound": "scpdt.scp966.step",
+                        "volume": 1.1
+                    },
+                    "death": "scpdt.scp966.idle",
+                    "ambient": "scpdt.scp966.idle",
+                    "hurt": "sound.none"
+                },
+                "pitch": 1.0,
+                "volume": 1.7
+            },
+            "lc:dt_scp3199": {
+                "events": {
+                    "death": "scpdt.scp3199.death",
+                    "ambient": "scpdt.scp3199.idle",
+                    "hurt": "scpdt.scp3199.hurt",
+                    "attack": "scpdt.scp3199.attack",
+                    "step": {
+                        "pitch": 0.8,
+                        "sound": "mob.zombie.step",
+                        "volume": 0.90
+                    }
+                },
+                "pitch": [
+                    0.9,
+                    1.1
+                ],
+                "volume": 1.1
+            },
+            "lc:dt_scp3199_egg": {
+                "events": {
+                    "death": "scpdt.scp3199.egg_hatch",
+                    "remedy": "scpdt.scp3199.egg_hatch"
+                },
+                "pitch": 1.0,
+                "volume": 1.3
+            },
+            "lc:dt_scp1000": {
+                "events": {
+                    "death": "scpdt.scp1000.growl",
+                    "ambient": "scpdt.scp1000.growl",
+                    "attack": {
+                        "pitch": 0.74,
+                        "sound": "scpdt.scp1000.attack",
+                        "volume": 1.2
+                    },
+                    "step": {
+                        "pitch": 0.8,
+                        "sound": "mob.polarbear.step",
+                        "volume": 2.2
+                    }
+                },
+                "pitch": 1.0,
+                "volume": 1.1
+            }
+        }
+    }
+}
