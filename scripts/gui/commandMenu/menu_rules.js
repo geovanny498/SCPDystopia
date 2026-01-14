@@ -2,7 +2,7 @@
 
 /**
  * Sistema de reglas declarativas para compatibilidad entre sistemas
- * 
+ *
  * Este módulo maneja:
  * 1. Compatibilidad entre sistemas (requires, locks)
  * 2. Control de aplicación (applyMode: "all" | "existing_only")
@@ -12,7 +12,7 @@ import { debugWarn } from "../../utils/debug.js";
 
 /**
  * Definición de reglas de compatibilidad para cada sistema
- * 
+ *
  * Propiedades:
  * - domain: Dominio al que pertenece el sistema (ej: "movement", "combat")
  * - requires: Objeto con dominios y valores requeridos para que este sistema se aplique
@@ -22,18 +22,18 @@ import { debugWarn } from "../../utils/debug.js";
  *   - "existing_only": Solo se aplica a entidades existentes al enviar el formulario
  */
 export const systemRules = {
-    movement: {
-        domain: "movement",
-        applyMode: "existing_only"
-    },
+  movement: {
+    domain: "movement",
+    applyMode: "existing_only",
+  },
 
-    fire: {
-        domain: "combat",
-        applyMode: "all"
-    },
+  fire: {
+    domain: "combat",
+    applyMode: "all",
+  },
 
-    // Ejemplo antiguo para requires:
-    /* 
+  // Ejemplo antiguo para requires:
+  /* 
     distance: {
         domain: "distance",
         applyMode: "existing_only",  // ← Cambiado de "all" a "existing_only" para no colisionar con movement
@@ -45,29 +45,29 @@ export const systemRules = {
     }, 
     */
 
-    spawn: {
-        domain: "spawn",
-        applyMode: "all"
-    },
+  spawn: {
+    domain: "spawn",
+    applyMode: "all",
+  },
 
-    health: {
-        domain: "health",
-        applyMode: "all"
-    },
+  health: {
+    domain: "health",
+    applyMode: "all",
+  },
 
-    teleport: {
-        domain: "teleport",
-        applyMode: "all"
-    }
+  teleport: {
+    domain: "teleport",
+    applyMode: "all",
+  },
 };
 
 /**
  * Obtiene las reglas de un sistema
- * @param {string} systemId 
+ * @param {string} systemId
  * @returns {Object|null}
  */
 export function getSystemRules(systemId) {
-    return systemRules[systemId] || null;
+  return systemRules[systemId] || null;
 }
 
 /**
@@ -79,99 +79,105 @@ export function getSystemRules(systemId) {
  * @returns {Object} - { canApply: boolean, reason: string }
  */
 export function canApplySystem(systemId, allSystemStates, faction, isSpecial) {
-    const rules = getSystemRules(systemId);
+  const rules = getSystemRules(systemId);
 
-    // Si no hay reglas, el sistema siempre se puede aplicar
-    if (!rules) {
-        return { canApply: true, reason: "No hay reglas definidas" };
+  // Si no hay reglas, el sistema siempre se puede aplicar
+  if (!rules) {
+    return { canApply: true, reason: "No hay reglas definidas" };
+  }
+
+  // Si no hay requires, el sistema se puede aplicar
+  if (!rules.requires) {
+    return { canApply: true, reason: "No hay requisitos" };
+  }
+
+  // Verificar cada requisito
+  for (const [requiredDomain, allowedValues] of Object.entries(rules.requires)) {
+    // Buscar el sistema que pertenece a este dominio
+    const requiredSystemId = findSystemByDomain(requiredDomain);
+
+    if (!requiredSystemId) {
+      debugWarn("menuRules:compat", `No se encontró sistema para dominio: ${requiredDomain}`, "yellow");
+      return {
+        canApply: false,
+        reason: `Sistema requerido no encontrado para dominio: ${requiredDomain}`,
+      };
     }
 
-    // Si no hay requires, el sistema se puede aplicar
-    if (!rules.requires) {
-        return { canApply: true, reason: "No hay requisitos" };
+    const requiredState = allSystemStates[requiredSystemId];
+    if (!requiredState || !requiredState[faction]) {
+      debugWarn("menuRules:compat", `No hay estado para ${requiredSystemId} en faction ${faction}`, "yellow");
+      return {
+        canApply: false,
+        reason: `No hay estado para ${requiredSystemId}`,
+      };
     }
 
-    // Verificar cada requisito
-    for (const [requiredDomain, allowedValues] of Object.entries(rules.requires)) {
-        // Buscar el sistema que pertenece a este dominio
-        const requiredSystemId = findSystemByDomain(requiredDomain);
+    const factionState = requiredState[faction];
 
-        if (!requiredSystemId) {
-            debugWarn("menuRules:compat", `No se encontró sistema para dominio: ${requiredDomain}`, "yellow");
-            return {
-                canApply: false,
-                reason: `Sistema requerido no encontrado para dominio: ${requiredDomain}`
-            };
-        }
+    // Obtener el valor actual (mode para dropdown, enable para toggle)
+    const currentValue = isSpecial
+      ? factionState.includeSpecial
+      : factionState.mode !== undefined
+        ? factionState.mode
+        : factionState.enable;
 
-        const requiredState = allSystemStates[requiredSystemId];
-        if (!requiredState || !requiredState[faction]) {
-            debugWarn("menuRules:compat", `No hay estado para ${requiredSystemId} en faction ${faction}`, "yellow");
-            return {
-                canApply: false,
-                reason: `No hay estado para ${requiredSystemId}`
-            };
-        }
+    // Verificar si el valor actual está en los valores permitidos
+    const isAllowed = Array.isArray(allowedValues)
+      ? allowedValues.includes(currentValue)
+      : allowedValues === currentValue;
 
-        const factionState = requiredState[faction];
-
-        // Obtener el valor actual (mode para dropdown, enable para toggle)
-        const currentValue = isSpecial
-            ? factionState.includeSpecial
-            : (factionState.mode !== undefined ? factionState.mode : factionState.enable);
-
-        // Verificar si el valor actual está en los valores permitidos
-        const isAllowed = Array.isArray(allowedValues)
-            ? allowedValues.includes(currentValue)
-            : allowedValues === currentValue;
-
-        if (!isAllowed) {
-            debugWarn("menuRules:compat",
-                `Sistema ${systemId} NO puede aplicarse: ${requiredSystemId} debe ser ${JSON.stringify(allowedValues)}, pero es ${currentValue}`,
-                "yellow");
-            return {
-                canApply: false,
-                reason: `Requiere ${requiredSystemId}=${JSON.stringify(allowedValues)}, actual: ${currentValue}`
-            };
-        }
+    if (!isAllowed) {
+      debugWarn(
+        "menuRules:compat",
+        `Sistema ${systemId} NO puede aplicarse: ${requiredSystemId} debe ser ${JSON.stringify(allowedValues)}, pero es ${currentValue}`,
+        "yellow"
+      );
+      return {
+        canApply: false,
+        reason: `Requiere ${requiredSystemId}=${JSON.stringify(allowedValues)}, actual: ${currentValue}`,
+      };
     }
+  }
 
-    return { canApply: true, reason: "Todos los requisitos cumplidos" };
+  return { canApply: true, reason: "Todos los requisitos cumplidos" };
 }
 
 /**
  * Busca el ID de un sistema por su dominio
- * @param {string} domain 
+ * @param {string} domain
  * @returns {string|null}
  */
 function findSystemByDomain(domain) {
-    for (const [systemId, rules] of Object.entries(systemRules)) {
-        if (rules.domain === domain) {
-            return systemId;
-        }
+  for (const [systemId, rules] of Object.entries(systemRules)) {
+    if (rules.domain === domain) {
+      return systemId;
     }
-    return null;
+  }
+  return null;
 }
 
 /**
  * Verifica si un sistema debe aplicarse a entidades futuras (spawn/load)
- * @param {string} systemId 
+ * @param {string} systemId
  * @returns {boolean}
  */
 export function shouldApplyToFutureEntities(systemId) {
-    const rules = getSystemRules(systemId);
+  const rules = getSystemRules(systemId);
 
-    if (!rules) {
-        debugWarn("menuRules:apply", `Sistema ${systemId}: Sin reglas, aplicar a futuras (default)`, "gray");
-        return true; // Por defecto, aplicar a futuras
-    }
+  if (!rules) {
+    debugWarn("menuRules:apply", `Sistema ${systemId}: Sin reglas, aplicar a futuras (default)`, "gray");
+    return true; // Por defecto, aplicar a futuras
+  }
 
-    const shouldApply = rules.applyMode === "all";
-    debugWarn("menuRules:apply",
-        `Sistema ${systemId}: applyMode=${rules.applyMode}, aplicar a futuras=${shouldApply}`,
-        shouldApply ? "green" : "yellow");
+  const shouldApply = rules.applyMode === "all";
+  debugWarn(
+    "menuRules:apply",
+    `Sistema ${systemId}: applyMode=${rules.applyMode}, aplicar a futuras=${shouldApply}`,
+    shouldApply ? "green" : "yellow"
+  );
 
-    return shouldApply;
+  return shouldApply;
 }
 
 /**
@@ -183,8 +189,8 @@ export function shouldApplyToFutureEntities(systemId) {
  * @returns {Array<string>} - IDs de sistemas que pueden aplicarse
  */
 export function filterApplicableSystems(systemIds, allSystemStates, faction, isSpecial) {
-    return systemIds.filter(systemId => {
-        const result = canApplySystem(systemId, allSystemStates, faction, isSpecial);
-        return result.canApply;
-    });
+  return systemIds.filter((systemId) => {
+    const result = canApplySystem(systemId, allSystemStates, faction, isSpecial);
+    return result.canApply;
+  });
 }

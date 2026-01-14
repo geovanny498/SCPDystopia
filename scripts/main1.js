@@ -4,32 +4,39 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __commonJS = (cb, mod) => function __require() {
-  return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
-};
+var __commonJS = (cb, mod) =>
+  function __require() {
+    return (mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports);
+  };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
+  if ((from && typeof from === "object") || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
+var __toESM = (mod, isNodeMode, target) => (
+  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
+  __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+    mod
+  )
+);
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/common.js
 var require_common = __commonJS({
   "node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/common.js"(exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.RANDOM = exports.EPSILON = exports.ARRAY_TYPE = exports.ANGLE_ORDER = void 0;
     exports.equals = equals;
@@ -37,10 +44,10 @@ var require_common = __commonJS({
     exports.setMatrixArrayType = setMatrixArrayType;
     exports.toDegree = toDegree;
     exports.toRadian = toRadian;
-    var EPSILON = exports.EPSILON = 1e-6;
-    var ARRAY_TYPE = exports.ARRAY_TYPE = typeof Float32Array !== "undefined" ? Float32Array : Array;
-    var RANDOM = exports.RANDOM = Math.random;
-    var ANGLE_ORDER = exports.ANGLE_ORDER = "zyx";
+    var EPSILON = (exports.EPSILON = 1e-6);
+    var ARRAY_TYPE = (exports.ARRAY_TYPE = typeof Float32Array !== "undefined" ? Float32Array : Array);
+    var RANDOM = (exports.RANDOM = Math.random);
+    var ANGLE_ORDER = (exports.ANGLE_ORDER = "zyx");
     function round(a) {
       if (a >= 0) return Math.round(a);
       return a % 0.5 === 0 ? Math.floor(a) : Math.round(a);
@@ -60,7 +67,7 @@ var require_common = __commonJS({
       var tolerance = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : EPSILON;
       return Math.abs(a - b) <= tolerance * Math.max(1, Math.abs(a), Math.abs(b));
     }
-  }
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/mat2.js
@@ -69,14 +76,22 @@ var require_mat2 = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.LDU = LDU;
     exports.add = add;
@@ -106,16 +121,25 @@ var require_mat2 = __commonJS({
     exports.transpose = transpose;
     var glMatrix = _interopRequireWildcard(require_common());
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
@@ -180,7 +204,10 @@ var require_mat2 = __commonJS({
       return out;
     }
     function invert(out, a) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3];
       var det = a0 * a3 - a2 * a1;
       if (!det) {
         return null;
@@ -204,8 +231,14 @@ var require_mat2 = __commonJS({
       return a[0] * a[3] - a[2] * a[1];
     }
     function multiply(out, a, b) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
-      var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2],
+        b3 = b[3];
       out[0] = a0 * b0 + a2 * b1;
       out[1] = a1 * b0 + a3 * b1;
       out[2] = a0 * b2 + a2 * b3;
@@ -213,7 +246,10 @@ var require_mat2 = __commonJS({
       return out;
     }
     function rotate(out, a, rad) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3];
       var s = Math.sin(rad);
       var c = Math.cos(rad);
       out[0] = a0 * c + a2 * s;
@@ -223,8 +259,12 @@ var require_mat2 = __commonJS({
       return out;
     }
     function scale(out, a, v) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
-      var v0 = v[0], v1 = v[1];
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3];
+      var v0 = v[0],
+        v1 = v[1];
       out[0] = a0 * v0;
       out[1] = a1 * v0;
       out[2] = a2 * v1;
@@ -278,9 +318,20 @@ var require_mat2 = __commonJS({
       return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
     }
     function equals(a, b) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
-      var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
-      return Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3));
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2],
+        b3 = b[3];
+      return (
+        Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) &&
+        Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) &&
+        Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) &&
+        Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3))
+      );
     }
     function multiplyScalar(out, a, b) {
       out[0] = a[0] * b;
@@ -296,9 +347,9 @@ var require_mat2 = __commonJS({
       out[3] = a[3] + b[3] * scale2;
       return out;
     }
-    var mul = exports.mul = multiply;
-    var sub = exports.sub = subtract;
-  }
+    var mul = (exports.mul = multiply);
+    var sub = (exports.sub = subtract);
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/mat2d.js
@@ -307,14 +358,22 @@ var require_mat2d = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.add = add;
     exports.clone = clone;
@@ -343,16 +402,25 @@ var require_mat2d = __commonJS({
     exports.translate = translate;
     var glMatrix = _interopRequireWildcard(require_common());
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
@@ -416,8 +484,12 @@ var require_mat2d = __commonJS({
       return out;
     }
     function invert(out, a) {
-      var aa = a[0], ab = a[1], ac = a[2], ad = a[3];
-      var atx = a[4], aty = a[5];
+      var aa = a[0],
+        ab = a[1],
+        ac = a[2],
+        ad = a[3];
+      var atx = a[4],
+        aty = a[5];
       var det = aa * ad - ab * ac;
       if (!det) {
         return null;
@@ -435,8 +507,18 @@ var require_mat2d = __commonJS({
       return a[0] * a[3] - a[1] * a[2];
     }
     function multiply(out, a, b) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
-      var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5];
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3],
+        a4 = a[4],
+        a5 = a[5];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2],
+        b3 = b[3],
+        b4 = b[4],
+        b5 = b[5];
       out[0] = a0 * b0 + a2 * b1;
       out[1] = a1 * b0 + a3 * b1;
       out[2] = a0 * b2 + a2 * b3;
@@ -446,7 +528,12 @@ var require_mat2d = __commonJS({
       return out;
     }
     function rotate(out, a, rad) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3],
+        a4 = a[4],
+        a5 = a[5];
       var s = Math.sin(rad);
       var c = Math.cos(rad);
       out[0] = a0 * c + a2 * s;
@@ -458,8 +545,14 @@ var require_mat2d = __commonJS({
       return out;
     }
     function scale(out, a, v) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
-      var v0 = v[0], v1 = v[1];
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3],
+        a4 = a[4],
+        a5 = a[5];
+      var v0 = v[0],
+        v1 = v[1];
       out[0] = a0 * v0;
       out[1] = a1 * v0;
       out[2] = a2 * v1;
@@ -469,8 +562,14 @@ var require_mat2d = __commonJS({
       return out;
     }
     function translate(out, a, v) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
-      var v0 = v[0], v1 = v[1];
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3],
+        a4 = a[4],
+        a5 = a[5];
+      var v0 = v[0],
+        v1 = v[1];
       out[0] = a0;
       out[1] = a1;
       out[2] = a2;
@@ -480,7 +579,8 @@ var require_mat2d = __commonJS({
       return out;
     }
     function fromRotation(out, rad) {
-      var s = Math.sin(rad), c = Math.cos(rad);
+      var s = Math.sin(rad),
+        c = Math.cos(rad);
       out[0] = c;
       out[1] = s;
       out[2] = -s;
@@ -553,13 +653,30 @@ var require_mat2d = __commonJS({
       return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5];
     }
     function equals(a, b) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5];
-      var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5];
-      return Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3)) && Math.abs(a4 - b4) <= glMatrix.EPSILON * Math.max(1, Math.abs(a4), Math.abs(b4)) && Math.abs(a5 - b5) <= glMatrix.EPSILON * Math.max(1, Math.abs(a5), Math.abs(b5));
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3],
+        a4 = a[4],
+        a5 = a[5];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2],
+        b3 = b[3],
+        b4 = b[4],
+        b5 = b[5];
+      return (
+        Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) &&
+        Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) &&
+        Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) &&
+        Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3)) &&
+        Math.abs(a4 - b4) <= glMatrix.EPSILON * Math.max(1, Math.abs(a4), Math.abs(b4)) &&
+        Math.abs(a5 - b5) <= glMatrix.EPSILON * Math.max(1, Math.abs(a5), Math.abs(b5))
+      );
     }
-    var mul = exports.mul = multiply;
-    var sub = exports.sub = subtract;
-  }
+    var mul = (exports.mul = multiply);
+    var sub = (exports.sub = subtract);
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/mat3.js
@@ -568,14 +685,22 @@ var require_mat3 = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.add = add;
     exports.adjoint = adjoint;
@@ -611,16 +736,25 @@ var require_mat3 = __commonJS({
     exports.transpose = transpose;
     var glMatrix = _interopRequireWildcard(require_common());
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
@@ -715,7 +849,9 @@ var require_mat3 = __commonJS({
     }
     function transpose(out, a) {
       if (out === a) {
-        var a01 = a[1], a02 = a[2], a12 = a[5];
+        var a01 = a[1],
+          a02 = a[2],
+          a12 = a[5];
         out[1] = a[3];
         out[2] = a[6];
         out[3] = a01;
@@ -736,9 +872,15 @@ var require_mat3 = __commonJS({
       return out;
     }
     function invert(out, a) {
-      var a00 = a[0], a01 = a[1], a02 = a[2];
-      var a10 = a[3], a11 = a[4], a12 = a[5];
-      var a20 = a[6], a21 = a[7], a22 = a[8];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2];
+      var a10 = a[3],
+        a11 = a[4],
+        a12 = a[5];
+      var a20 = a[6],
+        a21 = a[7],
+        a22 = a[8];
       var b01 = a22 * a11 - a12 * a21;
       var b11 = -a22 * a10 + a12 * a20;
       var b21 = a21 * a10 - a11 * a20;
@@ -759,9 +901,15 @@ var require_mat3 = __commonJS({
       return out;
     }
     function adjoint(out, a) {
-      var a00 = a[0], a01 = a[1], a02 = a[2];
-      var a10 = a[3], a11 = a[4], a12 = a[5];
-      var a20 = a[6], a21 = a[7], a22 = a[8];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2];
+      var a10 = a[3],
+        a11 = a[4],
+        a12 = a[5];
+      var a20 = a[6],
+        a21 = a[7],
+        a22 = a[8];
       out[0] = a11 * a22 - a12 * a21;
       out[1] = a02 * a21 - a01 * a22;
       out[2] = a01 * a12 - a02 * a11;
@@ -774,18 +922,36 @@ var require_mat3 = __commonJS({
       return out;
     }
     function determinant(a) {
-      var a00 = a[0], a01 = a[1], a02 = a[2];
-      var a10 = a[3], a11 = a[4], a12 = a[5];
-      var a20 = a[6], a21 = a[7], a22 = a[8];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2];
+      var a10 = a[3],
+        a11 = a[4],
+        a12 = a[5];
+      var a20 = a[6],
+        a21 = a[7],
+        a22 = a[8];
       return a00 * (a22 * a11 - a12 * a21) + a01 * (-a22 * a10 + a12 * a20) + a02 * (a21 * a10 - a11 * a20);
     }
     function multiply(out, a, b) {
-      var a00 = a[0], a01 = a[1], a02 = a[2];
-      var a10 = a[3], a11 = a[4], a12 = a[5];
-      var a20 = a[6], a21 = a[7], a22 = a[8];
-      var b00 = b[0], b01 = b[1], b02 = b[2];
-      var b10 = b[3], b11 = b[4], b12 = b[5];
-      var b20 = b[6], b21 = b[7], b22 = b[8];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2];
+      var a10 = a[3],
+        a11 = a[4],
+        a12 = a[5];
+      var a20 = a[6],
+        a21 = a[7],
+        a22 = a[8];
+      var b00 = b[0],
+        b01 = b[1],
+        b02 = b[2];
+      var b10 = b[3],
+        b11 = b[4],
+        b12 = b[5];
+      var b20 = b[6],
+        b21 = b[7],
+        b22 = b[8];
       out[0] = b00 * a00 + b01 * a10 + b02 * a20;
       out[1] = b00 * a01 + b01 * a11 + b02 * a21;
       out[2] = b00 * a02 + b01 * a12 + b02 * a22;
@@ -798,7 +964,17 @@ var require_mat3 = __commonJS({
       return out;
     }
     function translate(out, a, v) {
-      var a00 = a[0], a01 = a[1], a02 = a[2], a10 = a[3], a11 = a[4], a12 = a[5], a20 = a[6], a21 = a[7], a22 = a[8], x = v[0], y = v[1];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a10 = a[3],
+        a11 = a[4],
+        a12 = a[5],
+        a20 = a[6],
+        a21 = a[7],
+        a22 = a[8],
+        x = v[0],
+        y = v[1];
       out[0] = a00;
       out[1] = a01;
       out[2] = a02;
@@ -811,7 +987,17 @@ var require_mat3 = __commonJS({
       return out;
     }
     function rotate(out, a, rad) {
-      var a00 = a[0], a01 = a[1], a02 = a[2], a10 = a[3], a11 = a[4], a12 = a[5], a20 = a[6], a21 = a[7], a22 = a[8], s = Math.sin(rad), c = Math.cos(rad);
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a10 = a[3],
+        a11 = a[4],
+        a12 = a[5],
+        a20 = a[6],
+        a21 = a[7],
+        a22 = a[8],
+        s = Math.sin(rad),
+        c = Math.cos(rad);
       out[0] = c * a00 + s * a10;
       out[1] = c * a01 + s * a11;
       out[2] = c * a02 + s * a12;
@@ -824,7 +1010,8 @@ var require_mat3 = __commonJS({
       return out;
     }
     function scale(out, a, v) {
-      var x = v[0], y = v[1];
+      var x = v[0],
+        y = v[1];
       out[0] = x * a[0];
       out[1] = x * a[1];
       out[2] = x * a[2];
@@ -849,7 +1036,8 @@ var require_mat3 = __commonJS({
       return out;
     }
     function fromRotation(out, rad) {
-      var s = Math.sin(rad), c = Math.cos(rad);
+      var s = Math.sin(rad),
+        c = Math.cos(rad);
       out[0] = c;
       out[1] = s;
       out[2] = 0;
@@ -886,7 +1074,10 @@ var require_mat3 = __commonJS({
       return out;
     }
     function fromQuat(out, q) {
-      var x = q[0], y = q[1], z = q[2], w = q[3];
+      var x = q[0],
+        y = q[1],
+        z = q[2],
+        w = q[3];
       var x2 = x + x;
       var y2 = y + y;
       var z2 = z + z;
@@ -911,10 +1102,22 @@ var require_mat3 = __commonJS({
       return out;
     }
     function normalFromMat4(out, a) {
-      var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
-      var a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
-      var a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
-      var a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a03 = a[3];
+      var a10 = a[4],
+        a11 = a[5],
+        a12 = a[6],
+        a13 = a[7];
+      var a20 = a[8],
+        a21 = a[9],
+        a22 = a[10],
+        a23 = a[11];
+      var a30 = a[12],
+        a31 = a[13],
+        a32 = a[14],
+        a33 = a[15];
       var b00 = a00 * a11 - a01 * a10;
       var b01 = a00 * a12 - a02 * a10;
       var b02 = a00 * a13 - a03 * a10;
@@ -956,10 +1159,40 @@ var require_mat3 = __commonJS({
       return out;
     }
     function str(a) {
-      return "mat3(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ", " + a[4] + ", " + a[5] + ", " + a[6] + ", " + a[7] + ", " + a[8] + ")";
+      return (
+        "mat3(" +
+        a[0] +
+        ", " +
+        a[1] +
+        ", " +
+        a[2] +
+        ", " +
+        a[3] +
+        ", " +
+        a[4] +
+        ", " +
+        a[5] +
+        ", " +
+        a[6] +
+        ", " +
+        a[7] +
+        ", " +
+        a[8] +
+        ")"
+      );
     }
     function frob(a) {
-      return Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2] + a[3] * a[3] + a[4] * a[4] + a[5] * a[5] + a[6] * a[6] + a[7] * a[7] + a[8] * a[8]);
+      return Math.sqrt(
+        a[0] * a[0] +
+          a[1] * a[1] +
+          a[2] * a[2] +
+          a[3] * a[3] +
+          a[4] * a[4] +
+          a[5] * a[5] +
+          a[6] * a[6] +
+          a[7] * a[7] +
+          a[8] * a[8]
+      );
     }
     function add(out, a, b) {
       out[0] = a[0] + b[0];
@@ -1010,16 +1243,52 @@ var require_mat3 = __commonJS({
       return out;
     }
     function exactEquals(a, b) {
-      return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5] && a[6] === b[6] && a[7] === b[7] && a[8] === b[8];
+      return (
+        a[0] === b[0] &&
+        a[1] === b[1] &&
+        a[2] === b[2] &&
+        a[3] === b[3] &&
+        a[4] === b[4] &&
+        a[5] === b[5] &&
+        a[6] === b[6] &&
+        a[7] === b[7] &&
+        a[8] === b[8]
+      );
     }
     function equals(a, b) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5], a6 = a[6], a7 = a[7], a8 = a[8];
-      var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5], b6 = b[6], b7 = b[7], b8 = b[8];
-      return Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3)) && Math.abs(a4 - b4) <= glMatrix.EPSILON * Math.max(1, Math.abs(a4), Math.abs(b4)) && Math.abs(a5 - b5) <= glMatrix.EPSILON * Math.max(1, Math.abs(a5), Math.abs(b5)) && Math.abs(a6 - b6) <= glMatrix.EPSILON * Math.max(1, Math.abs(a6), Math.abs(b6)) && Math.abs(a7 - b7) <= glMatrix.EPSILON * Math.max(1, Math.abs(a7), Math.abs(b7)) && Math.abs(a8 - b8) <= glMatrix.EPSILON * Math.max(1, Math.abs(a8), Math.abs(b8));
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3],
+        a4 = a[4],
+        a5 = a[5],
+        a6 = a[6],
+        a7 = a[7],
+        a8 = a[8];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2],
+        b3 = b[3],
+        b4 = b[4],
+        b5 = b[5],
+        b6 = b[6],
+        b7 = b[7],
+        b8 = b[8];
+      return (
+        Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) &&
+        Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) &&
+        Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) &&
+        Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3)) &&
+        Math.abs(a4 - b4) <= glMatrix.EPSILON * Math.max(1, Math.abs(a4), Math.abs(b4)) &&
+        Math.abs(a5 - b5) <= glMatrix.EPSILON * Math.max(1, Math.abs(a5), Math.abs(b5)) &&
+        Math.abs(a6 - b6) <= glMatrix.EPSILON * Math.max(1, Math.abs(a6), Math.abs(b6)) &&
+        Math.abs(a7 - b7) <= glMatrix.EPSILON * Math.max(1, Math.abs(a7), Math.abs(b7)) &&
+        Math.abs(a8 - b8) <= glMatrix.EPSILON * Math.max(1, Math.abs(a8), Math.abs(b8))
+      );
     }
-    var mul = exports.mul = multiply;
-    var sub = exports.sub = subtract;
-  }
+    var mul = (exports.mul = multiply);
+    var sub = (exports.sub = subtract);
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/mat4.js
@@ -1028,14 +1297,22 @@ var require_mat4 = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.add = add;
     exports.adjoint = adjoint;
@@ -1091,16 +1368,25 @@ var require_mat4 = __commonJS({
     exports.transpose = transpose;
     var glMatrix = _interopRequireWildcard(require_common());
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
@@ -1225,8 +1511,11 @@ var require_mat4 = __commonJS({
     }
     function transpose(out, a) {
       if (out === a) {
-        var a01 = a[1], a02 = a[2], a03 = a[3];
-        var a12 = a[6], a13 = a[7];
+        var a01 = a[1],
+          a02 = a[2],
+          a03 = a[3];
+        var a12 = a[6],
+          a13 = a[7];
         var a23 = a[11];
         out[1] = a[4];
         out[2] = a[8];
@@ -1261,10 +1550,22 @@ var require_mat4 = __commonJS({
       return out;
     }
     function invert(out, a) {
-      var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
-      var a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
-      var a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
-      var a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a03 = a[3];
+      var a10 = a[4],
+        a11 = a[5],
+        a12 = a[6],
+        a13 = a[7];
+      var a20 = a[8],
+        a21 = a[9],
+        a22 = a[10],
+        a23 = a[11];
+      var a30 = a[12],
+        a31 = a[13],
+        a32 = a[14],
+        a33 = a[15];
       var b00 = a00 * a11 - a01 * a10;
       var b01 = a00 * a12 - a02 * a10;
       var b02 = a00 * a13 - a03 * a10;
@@ -1301,10 +1602,22 @@ var require_mat4 = __commonJS({
       return out;
     }
     function adjoint(out, a) {
-      var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
-      var a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
-      var a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
-      var a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a03 = a[3];
+      var a10 = a[4],
+        a11 = a[5],
+        a12 = a[6],
+        a13 = a[7];
+      var a20 = a[8],
+        a21 = a[9],
+        a22 = a[10],
+        a23 = a[11];
+      var a30 = a[12],
+        a31 = a[13],
+        a32 = a[14],
+        a33 = a[15];
       var b00 = a00 * a11 - a01 * a10;
       var b01 = a00 * a12 - a02 * a10;
       var b02 = a00 * a13 - a03 * a10;
@@ -1336,10 +1649,22 @@ var require_mat4 = __commonJS({
       return out;
     }
     function determinant(a) {
-      var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
-      var a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
-      var a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
-      var a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a03 = a[3];
+      var a10 = a[4],
+        a11 = a[5],
+        a12 = a[6],
+        a13 = a[7];
+      var a20 = a[8],
+        a21 = a[9],
+        a22 = a[10],
+        a23 = a[11];
+      var a30 = a[12],
+        a31 = a[13],
+        a32 = a[14],
+        a33 = a[15];
       var b0 = a00 * a11 - a01 * a10;
       var b1 = a00 * a12 - a02 * a10;
       var b2 = a01 * a12 - a02 * a11;
@@ -1353,11 +1678,26 @@ var require_mat4 = __commonJS({
       return a13 * b6 - a03 * b7 + a33 * b8 - a23 * b9;
     }
     function multiply(out, a, b) {
-      var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
-      var a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
-      var a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
-      var a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
-      var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
+      var a00 = a[0],
+        a01 = a[1],
+        a02 = a[2],
+        a03 = a[3];
+      var a10 = a[4],
+        a11 = a[5],
+        a12 = a[6],
+        a13 = a[7];
+      var a20 = a[8],
+        a21 = a[9],
+        a22 = a[10],
+        a23 = a[11];
+      var a30 = a[12],
+        a31 = a[13],
+        a32 = a[14],
+        a33 = a[15];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2],
+        b3 = b[3];
       out[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
       out[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
       out[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
@@ -1389,7 +1729,9 @@ var require_mat4 = __commonJS({
       return out;
     }
     function translate(out, a, v) {
-      var x = v[0], y = v[1], z = v[2];
+      var x = v[0],
+        y = v[1],
+        z = v[2];
       var a00, a01, a02, a03;
       var a10, a11, a12, a13;
       var a20, a21, a22, a23;
@@ -1431,7 +1773,9 @@ var require_mat4 = __commonJS({
       return out;
     }
     function scale(out, a, v) {
-      var x = v[0], y = v[1], z = v[2];
+      var x = v[0],
+        y = v[1],
+        z = v[2];
       out[0] = a[0] * x;
       out[1] = a[1] * x;
       out[2] = a[2] * x;
@@ -1451,7 +1795,9 @@ var require_mat4 = __commonJS({
       return out;
     }
     function rotate(out, a, rad, axis) {
-      var x = axis[0], y = axis[1], z = axis[2];
+      var x = axis[0],
+        y = axis[1],
+        z = axis[2];
       var len = Math.sqrt(x * x + y * y + z * z);
       var s, c, t;
       var a00, a01, a02, a03;
@@ -1643,7 +1989,9 @@ var require_mat4 = __commonJS({
       return out;
     }
     function fromRotation(out, rad, axis) {
-      var x = axis[0], y = axis[1], z = axis[2];
+      var x = axis[0],
+        y = axis[1],
+        z = axis[2];
       var len = Math.sqrt(x * x + y * y + z * z);
       var s, c, t;
       if (len < glMatrix.EPSILON) {
@@ -1738,7 +2086,10 @@ var require_mat4 = __commonJS({
       return out;
     }
     function fromRotationTranslation(out, q, v) {
-      var x = q[0], y = q[1], z = q[2], w = q[3];
+      var x = q[0],
+        y = q[1],
+        z = q[2],
+        w = q[3];
       var x2 = x + x;
       var y2 = y + y;
       var z2 = z + z;
@@ -1771,12 +2122,19 @@ var require_mat4 = __commonJS({
     }
     function fromQuat2(out, a) {
       var translation = new glMatrix.ARRAY_TYPE(3);
-      var bx = -a[0], by = -a[1], bz = -a[2], bw = a[3], ax = a[4], ay = a[5], az = a[6], aw = a[7];
+      var bx = -a[0],
+        by = -a[1],
+        bz = -a[2],
+        bw = a[3],
+        ax = a[4],
+        ay = a[5],
+        az = a[6],
+        aw = a[7];
       var magnitude = bx * bx + by * by + bz * bz + bw * bw;
       if (magnitude > 0) {
-        translation[0] = (ax * bw + aw * bx + ay * bz - az * by) * 2 / magnitude;
-        translation[1] = (ay * bw + aw * by + az * bx - ax * bz) * 2 / magnitude;
-        translation[2] = (az * bw + aw * bz + ax * by - ay * bx) * 2 / magnitude;
+        translation[0] = ((ax * bw + aw * bx + ay * bz - az * by) * 2) / magnitude;
+        translation[1] = ((ay * bw + aw * by + az * bx - ax * bz) * 2) / magnitude;
+        translation[2] = ((az * bw + aw * bz + ax * by - ay * bx) * 2) / magnitude;
       } else {
         translation[0] = (ax * bw + aw * bx + ay * bz - az * by) * 2;
         translation[1] = (ay * bw + aw * by + az * bx - ax * bz) * 2;
@@ -1908,7 +2266,10 @@ var require_mat4 = __commonJS({
       return out_r;
     }
     function fromRotationTranslationScale(out, q, v, s) {
-      var x = q[0], y = q[1], z = q[2], w = q[3];
+      var x = q[0],
+        y = q[1],
+        z = q[2],
+        w = q[3];
       var x2 = x + x;
       var y2 = y + y;
       var z2 = z + z;
@@ -1943,7 +2304,10 @@ var require_mat4 = __commonJS({
       return out;
     }
     function fromRotationTranslationScaleOrigin(out, q, v, s, o) {
-      var x = q[0], y = q[1], z = q[2], w = q[3];
+      var x = q[0],
+        y = q[1],
+        z = q[2],
+        w = q[3];
       var x2 = x + x;
       var y2 = y + y;
       var z2 = z + z;
@@ -1990,7 +2354,10 @@ var require_mat4 = __commonJS({
       return out;
     }
     function fromQuat(out, q) {
-      var x = q[0], y = q[1], z = q[2], w = q[3];
+      var x = q[0],
+        y = q[1],
+        z = q[2],
+        w = q[3];
       var x2 = x + x;
       var y2 = y + y;
       var z2 = z + z;
@@ -2069,7 +2436,7 @@ var require_mat4 = __commonJS({
       }
       return out;
     }
-    var perspective = exports.perspective = perspectiveNO;
+    var perspective = (exports.perspective = perspectiveNO);
     function perspectiveZO(out, fovy, aspect, near, far) {
       var f = 1 / Math.tan(fovy / 2);
       out[0] = f / aspect;
@@ -2097,10 +2464,10 @@ var require_mat4 = __commonJS({
       return out;
     }
     function perspectiveFromFieldOfView(out, fov, near, far) {
-      var upTan = Math.tan(fov.upDegrees * Math.PI / 180);
-      var downTan = Math.tan(fov.downDegrees * Math.PI / 180);
-      var leftTan = Math.tan(fov.leftDegrees * Math.PI / 180);
-      var rightTan = Math.tan(fov.rightDegrees * Math.PI / 180);
+      var upTan = Math.tan((fov.upDegrees * Math.PI) / 180);
+      var downTan = Math.tan((fov.downDegrees * Math.PI) / 180);
+      var leftTan = Math.tan((fov.leftDegrees * Math.PI) / 180);
+      var rightTan = Math.tan((fov.rightDegrees * Math.PI) / 180);
       var xScale = 2 / (leftTan + rightTan);
       var yScale = 2 / (upTan + downTan);
       out[0] = xScale;
@@ -2117,7 +2484,7 @@ var require_mat4 = __commonJS({
       out[11] = -1;
       out[12] = 0;
       out[13] = 0;
-      out[14] = far * near / (near - far);
+      out[14] = (far * near) / (near - far);
       out[15] = 0;
       return out;
     }
@@ -2143,7 +2510,7 @@ var require_mat4 = __commonJS({
       out[15] = 1;
       return out;
     }
-    var ortho = exports.ortho = orthoNO;
+    var ortho = (exports.ortho = orthoNO);
     function orthoZO(out, left, right, bottom, top, near, far) {
       var lr = 1 / (left - right);
       var bt = 1 / (bottom - top);
@@ -2177,7 +2544,11 @@ var require_mat4 = __commonJS({
       var centerx = center[0];
       var centery = center[1];
       var centerz = center[2];
-      if (Math.abs(eyex - centerx) < glMatrix.EPSILON && Math.abs(eyey - centery) < glMatrix.EPSILON && Math.abs(eyez - centerz) < glMatrix.EPSILON) {
+      if (
+        Math.abs(eyex - centerx) < glMatrix.EPSILON &&
+        Math.abs(eyey - centery) < glMatrix.EPSILON &&
+        Math.abs(eyez - centerz) < glMatrix.EPSILON
+      ) {
         return identity(out);
       }
       z0 = eyex - centerx;
@@ -2234,8 +2605,15 @@ var require_mat4 = __commonJS({
       return out;
     }
     function targetTo(out, eye, target, up) {
-      var eyex = eye[0], eyey = eye[1], eyez = eye[2], upx = up[0], upy = up[1], upz = up[2];
-      var z0 = eyex - target[0], z1 = eyey - target[1], z2 = eyez - target[2];
+      var eyex = eye[0],
+        eyey = eye[1],
+        eyez = eye[2],
+        upx = up[0],
+        upy = up[1],
+        upz = up[2];
+      var z0 = eyex - target[0],
+        z1 = eyey - target[1],
+        z2 = eyez - target[2];
       var len = z0 * z0 + z1 * z1 + z2 * z2;
       if (len > 0) {
         len = 1 / Math.sqrt(len);
@@ -2243,7 +2621,9 @@ var require_mat4 = __commonJS({
         z1 *= len;
         z2 *= len;
       }
-      var x0 = upy * z2 - upz * z1, x1 = upz * z0 - upx * z2, x2 = upx * z1 - upy * z0;
+      var x0 = upy * z2 - upz * z1,
+        x1 = upz * z0 - upx * z2,
+        x2 = upx * z1 - upy * z0;
       len = x0 * x0 + x1 * x1 + x2 * x2;
       if (len > 0) {
         len = 1 / Math.sqrt(len);
@@ -2270,10 +2650,61 @@ var require_mat4 = __commonJS({
       return out;
     }
     function str(a) {
-      return "mat4(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ", " + a[4] + ", " + a[5] + ", " + a[6] + ", " + a[7] + ", " + a[8] + ", " + a[9] + ", " + a[10] + ", " + a[11] + ", " + a[12] + ", " + a[13] + ", " + a[14] + ", " + a[15] + ")";
+      return (
+        "mat4(" +
+        a[0] +
+        ", " +
+        a[1] +
+        ", " +
+        a[2] +
+        ", " +
+        a[3] +
+        ", " +
+        a[4] +
+        ", " +
+        a[5] +
+        ", " +
+        a[6] +
+        ", " +
+        a[7] +
+        ", " +
+        a[8] +
+        ", " +
+        a[9] +
+        ", " +
+        a[10] +
+        ", " +
+        a[11] +
+        ", " +
+        a[12] +
+        ", " +
+        a[13] +
+        ", " +
+        a[14] +
+        ", " +
+        a[15] +
+        ")"
+      );
     }
     function frob(a) {
-      return Math.sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2] + a[3] * a[3] + a[4] * a[4] + a[5] * a[5] + a[6] * a[6] + a[7] * a[7] + a[8] * a[8] + a[9] * a[9] + a[10] * a[10] + a[11] * a[11] + a[12] * a[12] + a[13] * a[13] + a[14] * a[14] + a[15] * a[15]);
+      return Math.sqrt(
+        a[0] * a[0] +
+          a[1] * a[1] +
+          a[2] * a[2] +
+          a[3] * a[3] +
+          a[4] * a[4] +
+          a[5] * a[5] +
+          a[6] * a[6] +
+          a[7] * a[7] +
+          a[8] * a[8] +
+          a[9] * a[9] +
+          a[10] * a[10] +
+          a[11] * a[11] +
+          a[12] * a[12] +
+          a[13] * a[13] +
+          a[14] * a[14] +
+          a[15] * a[15]
+      );
     }
     function add(out, a, b) {
       out[0] = a[0] + b[0];
@@ -2352,22 +2783,80 @@ var require_mat4 = __commonJS({
       return out;
     }
     function exactEquals(a, b) {
-      return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5] && a[6] === b[6] && a[7] === b[7] && a[8] === b[8] && a[9] === b[9] && a[10] === b[10] && a[11] === b[11] && a[12] === b[12] && a[13] === b[13] && a[14] === b[14] && a[15] === b[15];
+      return (
+        a[0] === b[0] &&
+        a[1] === b[1] &&
+        a[2] === b[2] &&
+        a[3] === b[3] &&
+        a[4] === b[4] &&
+        a[5] === b[5] &&
+        a[6] === b[6] &&
+        a[7] === b[7] &&
+        a[8] === b[8] &&
+        a[9] === b[9] &&
+        a[10] === b[10] &&
+        a[11] === b[11] &&
+        a[12] === b[12] &&
+        a[13] === b[13] &&
+        a[14] === b[14] &&
+        a[15] === b[15]
+      );
     }
     function equals(a, b) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
-      var a4 = a[4], a5 = a[5], a6 = a[6], a7 = a[7];
-      var a8 = a[8], a9 = a[9], a10 = a[10], a11 = a[11];
-      var a12 = a[12], a13 = a[13], a14 = a[14], a15 = a[15];
-      var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
-      var b4 = b[4], b5 = b[5], b6 = b[6], b7 = b[7];
-      var b8 = b[8], b9 = b[9], b10 = b[10], b11 = b[11];
-      var b12 = b[12], b13 = b[13], b14 = b[14], b15 = b[15];
-      return Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3)) && Math.abs(a4 - b4) <= glMatrix.EPSILON * Math.max(1, Math.abs(a4), Math.abs(b4)) && Math.abs(a5 - b5) <= glMatrix.EPSILON * Math.max(1, Math.abs(a5), Math.abs(b5)) && Math.abs(a6 - b6) <= glMatrix.EPSILON * Math.max(1, Math.abs(a6), Math.abs(b6)) && Math.abs(a7 - b7) <= glMatrix.EPSILON * Math.max(1, Math.abs(a7), Math.abs(b7)) && Math.abs(a8 - b8) <= glMatrix.EPSILON * Math.max(1, Math.abs(a8), Math.abs(b8)) && Math.abs(a9 - b9) <= glMatrix.EPSILON * Math.max(1, Math.abs(a9), Math.abs(b9)) && Math.abs(a10 - b10) <= glMatrix.EPSILON * Math.max(1, Math.abs(a10), Math.abs(b10)) && Math.abs(a11 - b11) <= glMatrix.EPSILON * Math.max(1, Math.abs(a11), Math.abs(b11)) && Math.abs(a12 - b12) <= glMatrix.EPSILON * Math.max(1, Math.abs(a12), Math.abs(b12)) && Math.abs(a13 - b13) <= glMatrix.EPSILON * Math.max(1, Math.abs(a13), Math.abs(b13)) && Math.abs(a14 - b14) <= glMatrix.EPSILON * Math.max(1, Math.abs(a14), Math.abs(b14)) && Math.abs(a15 - b15) <= glMatrix.EPSILON * Math.max(1, Math.abs(a15), Math.abs(b15));
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3];
+      var a4 = a[4],
+        a5 = a[5],
+        a6 = a[6],
+        a7 = a[7];
+      var a8 = a[8],
+        a9 = a[9],
+        a10 = a[10],
+        a11 = a[11];
+      var a12 = a[12],
+        a13 = a[13],
+        a14 = a[14],
+        a15 = a[15];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2],
+        b3 = b[3];
+      var b4 = b[4],
+        b5 = b[5],
+        b6 = b[6],
+        b7 = b[7];
+      var b8 = b[8],
+        b9 = b[9],
+        b10 = b[10],
+        b11 = b[11];
+      var b12 = b[12],
+        b13 = b[13],
+        b14 = b[14],
+        b15 = b[15];
+      return (
+        Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) &&
+        Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) &&
+        Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) &&
+        Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3)) &&
+        Math.abs(a4 - b4) <= glMatrix.EPSILON * Math.max(1, Math.abs(a4), Math.abs(b4)) &&
+        Math.abs(a5 - b5) <= glMatrix.EPSILON * Math.max(1, Math.abs(a5), Math.abs(b5)) &&
+        Math.abs(a6 - b6) <= glMatrix.EPSILON * Math.max(1, Math.abs(a6), Math.abs(b6)) &&
+        Math.abs(a7 - b7) <= glMatrix.EPSILON * Math.max(1, Math.abs(a7), Math.abs(b7)) &&
+        Math.abs(a8 - b8) <= glMatrix.EPSILON * Math.max(1, Math.abs(a8), Math.abs(b8)) &&
+        Math.abs(a9 - b9) <= glMatrix.EPSILON * Math.max(1, Math.abs(a9), Math.abs(b9)) &&
+        Math.abs(a10 - b10) <= glMatrix.EPSILON * Math.max(1, Math.abs(a10), Math.abs(b10)) &&
+        Math.abs(a11 - b11) <= glMatrix.EPSILON * Math.max(1, Math.abs(a11), Math.abs(b11)) &&
+        Math.abs(a12 - b12) <= glMatrix.EPSILON * Math.max(1, Math.abs(a12), Math.abs(b12)) &&
+        Math.abs(a13 - b13) <= glMatrix.EPSILON * Math.max(1, Math.abs(a13), Math.abs(b13)) &&
+        Math.abs(a14 - b14) <= glMatrix.EPSILON * Math.max(1, Math.abs(a14), Math.abs(b14)) &&
+        Math.abs(a15 - b15) <= glMatrix.EPSILON * Math.max(1, Math.abs(a15), Math.abs(b15))
+      );
     }
-    var mul = exports.mul = multiply;
-    var sub = exports.sub = subtract;
-  }
+    var mul = (exports.mul = multiply);
+    var sub = (exports.sub = subtract);
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/vec3.js
@@ -2376,14 +2865,22 @@ var require_vec3 = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.add = add;
     exports.angle = angle;
@@ -2435,16 +2932,25 @@ var require_vec3 = __commonJS({
     exports.zero = zero;
     var glMatrix = _interopRequireWildcard(require_common());
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
@@ -2602,8 +3108,12 @@ var require_vec3 = __commonJS({
       return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
     }
     function cross(out, a, b) {
-      var ax = a[0], ay = a[1], az = a[2];
-      var bx = b[0], by = b[1], bz = b[2];
+      var ax = a[0],
+        ay = a[1],
+        az = a[2];
+      var bx = b[0],
+        by = b[1],
+        bz = b[2];
       out[0] = ay * bz - az * by;
       out[1] = az * bx - ax * bz;
       out[2] = ax * by - ay * bx;
@@ -2663,7 +3173,9 @@ var require_vec3 = __commonJS({
       return out;
     }
     function transformMat4(out, a, m) {
-      var x = a[0], y = a[1], z = a[2];
+      var x = a[0],
+        y = a[1],
+        z = a[2];
       var w = m[3] * x + m[7] * y + m[11] * z + m[15];
       w = w || 1;
       out[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
@@ -2672,15 +3184,22 @@ var require_vec3 = __commonJS({
       return out;
     }
     function transformMat3(out, a, m) {
-      var x = a[0], y = a[1], z = a[2];
+      var x = a[0],
+        y = a[1],
+        z = a[2];
       out[0] = x * m[0] + y * m[3] + z * m[6];
       out[1] = x * m[1] + y * m[4] + z * m[7];
       out[2] = x * m[2] + y * m[5] + z * m[8];
       return out;
     }
     function transformQuat(out, a, q) {
-      var qx = q[0], qy = q[1], qz = q[2], qw = q[3];
-      var vx = a[0], vy = a[1], vz = a[2];
+      var qx = q[0],
+        qy = q[1],
+        qz = q[2],
+        qw = q[3];
+      var vx = a[0],
+        vy = a[1],
+        vz = a[2];
       var tx = qy * vz - qz * vy;
       var ty = qz * vx - qx * vz;
       var tz = qx * vy - qy * vx;
@@ -2693,7 +3212,8 @@ var require_vec3 = __commonJS({
       return out;
     }
     function rotateX(out, a, b, rad) {
-      var p = [], r = [];
+      var p = [],
+        r = [];
       p[0] = a[0] - b[0];
       p[1] = a[1] - b[1];
       p[2] = a[2] - b[2];
@@ -2706,7 +3226,8 @@ var require_vec3 = __commonJS({
       return out;
     }
     function rotateY(out, a, b, rad) {
-      var p = [], r = [];
+      var p = [],
+        r = [];
       p[0] = a[0] - b[0];
       p[1] = a[1] - b[1];
       p[2] = a[2] - b[2];
@@ -2719,7 +3240,8 @@ var require_vec3 = __commonJS({
       return out;
     }
     function rotateZ(out, a, b, rad) {
-      var p = [], r = [];
+      var p = [],
+        r = [];
       p[0] = a[0] - b[0];
       p[1] = a[1] - b[1];
       p[2] = a[2] - b[2];
@@ -2732,7 +3254,14 @@ var require_vec3 = __commonJS({
       return out;
     }
     function angle(a, b) {
-      var ax = a[0], ay = a[1], az = a[2], bx = b[0], by = b[1], bz = b[2], mag = Math.sqrt((ax * ax + ay * ay + az * az) * (bx * bx + by * by + bz * bz)), cosine = mag && dot(a, b) / mag;
+      var ax = a[0],
+        ay = a[1],
+        az = a[2],
+        bx = b[0],
+        by = b[1],
+        bz = b[2],
+        mag = Math.sqrt((ax * ax + ay * ay + az * az) * (bx * bx + by * by + bz * bz)),
+        cosine = mag && dot(a, b) / mag;
       return Math.acos(Math.min(Math.max(cosine, -1), 1));
     }
     function zero(out) {
@@ -2748,20 +3277,28 @@ var require_vec3 = __commonJS({
       return a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
     }
     function equals(a, b) {
-      var a0 = a[0], a1 = a[1], a2 = a[2];
-      var b0 = b[0], b1 = b[1], b2 = b[2];
-      return Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2));
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2];
+      return (
+        Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) &&
+        Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) &&
+        Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2))
+      );
     }
-    var sub = exports.sub = subtract;
-    var mul = exports.mul = multiply;
-    var div = exports.div = divide;
-    var dist = exports.dist = distance;
-    var sqrDist = exports.sqrDist = squaredDistance;
-    var len = exports.len = length;
-    var sqrLen = exports.sqrLen = squaredLength;
-    var forEach = exports.forEach = (function() {
+    var sub = (exports.sub = subtract);
+    var mul = (exports.mul = multiply);
+    var div = (exports.div = divide);
+    var dist = (exports.dist = distance);
+    var sqrDist = (exports.sqrDist = squaredDistance);
+    var len = (exports.len = length);
+    var sqrLen = (exports.sqrLen = squaredLength);
+    var forEach = (exports.forEach = (function () {
       var vec = create();
-      return function(a, stride, offset, count, fn, arg) {
+      return function (a, stride, offset, count, fn, arg) {
         var i, l;
         if (!stride) {
           stride = 3;
@@ -2785,8 +3322,8 @@ var require_vec3 = __commonJS({
         }
         return a;
       };
-    })();
-  }
+    })());
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/vec4.js
@@ -2795,14 +3332,22 @@ var require_vec4 = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.add = add;
     exports.ceil = ceil;
@@ -2846,16 +3391,25 @@ var require_vec4 = __commonJS({
     exports.zero = zero;
     var glMatrix = _interopRequireWildcard(require_common());
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
@@ -3037,7 +3591,12 @@ var require_vec4 = __commonJS({
       return a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3];
     }
     function cross(out, u, v, w) {
-      var A = v[0] * w[1] - v[1] * w[0], B = v[0] * w[2] - v[2] * w[0], C = v[0] * w[3] - v[3] * w[0], D = v[1] * w[2] - v[2] * w[1], E = v[1] * w[3] - v[3] * w[1], F = v[2] * w[3] - v[3] * w[2];
+      var A = v[0] * w[1] - v[1] * w[0],
+        B = v[0] * w[2] - v[2] * w[0],
+        C = v[0] * w[3] - v[3] * w[0],
+        D = v[1] * w[2] - v[2] * w[1],
+        E = v[1] * w[3] - v[3] * w[1],
+        F = v[2] * w[3] - v[3] * w[2];
       var G = u[0];
       var H = u[1];
       var I = u[2];
@@ -3080,7 +3639,10 @@ var require_vec4 = __commonJS({
       return out;
     }
     function transformMat4(out, a, m) {
-      var x = a[0], y = a[1], z = a[2], w = a[3];
+      var x = a[0],
+        y = a[1],
+        z = a[2],
+        w = a[3];
       out[0] = m[0] * x + m[4] * y + m[8] * z + m[12] * w;
       out[1] = m[1] * x + m[5] * y + m[9] * z + m[13] * w;
       out[2] = m[2] * x + m[6] * y + m[10] * z + m[14] * w;
@@ -3088,8 +3650,13 @@ var require_vec4 = __commonJS({
       return out;
     }
     function transformQuat(out, a, q) {
-      var qx = q[0], qy = q[1], qz = q[2], qw = q[3];
-      var vx = a[0], vy = a[1], vz = a[2];
+      var qx = q[0],
+        qy = q[1],
+        qz = q[2],
+        qw = q[3];
+      var vx = a[0],
+        vy = a[1],
+        vz = a[2];
       var tx = qy * vz - qz * vy;
       var ty = qz * vx - qx * vz;
       var tz = qx * vy - qy * vx;
@@ -3116,20 +3683,31 @@ var require_vec4 = __commonJS({
       return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
     }
     function equals(a, b) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
-      var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
-      return Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3));
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2],
+        b3 = b[3];
+      return (
+        Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) &&
+        Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) &&
+        Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) &&
+        Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3))
+      );
     }
-    var sub = exports.sub = subtract;
-    var mul = exports.mul = multiply;
-    var div = exports.div = divide;
-    var dist = exports.dist = distance;
-    var sqrDist = exports.sqrDist = squaredDistance;
-    var len = exports.len = length;
-    var sqrLen = exports.sqrLen = squaredLength;
-    var forEach = exports.forEach = (function() {
+    var sub = (exports.sub = subtract);
+    var mul = (exports.mul = multiply);
+    var div = (exports.div = divide);
+    var dist = (exports.dist = distance);
+    var sqrDist = (exports.sqrDist = squaredDistance);
+    var len = (exports.len = length);
+    var sqrLen = (exports.sqrLen = squaredLength);
+    var forEach = (exports.forEach = (function () {
       var vec = create();
-      return function(a, stride, offset, count, fn, arg) {
+      return function (a, stride, offset, count, fn, arg) {
         var i, l;
         if (!stride) {
           stride = 4;
@@ -3155,8 +3733,8 @@ var require_vec4 = __commonJS({
         }
         return a;
       };
-    })();
-  }
+    })());
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/quat.js
@@ -3165,14 +3743,22 @@ var require_quat = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.add = void 0;
     exports.calculateW = calculateW;
@@ -3211,16 +3797,25 @@ var require_quat = __commonJS({
     var vec321 = _interopRequireWildcard(require_vec3());
     var vec4 = _interopRequireWildcard(require_vec4());
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
@@ -3269,8 +3864,14 @@ var require_quat = __commonJS({
       return Math.acos(2 * dotproduct * dotproduct - 1);
     }
     function multiply(out, a, b) {
-      var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-      var bx = b[0], by = b[1], bz = b[2], bw = b[3];
+      var ax = a[0],
+        ay = a[1],
+        az = a[2],
+        aw = a[3];
+      var bx = b[0],
+        by = b[1],
+        bz = b[2],
+        bw = b[3];
       out[0] = ax * bw + aw * bx + ay * bz - az * by;
       out[1] = ay * bw + aw * by + az * bx - ax * bz;
       out[2] = az * bw + aw * bz + ax * by - ay * bx;
@@ -3279,8 +3880,12 @@ var require_quat = __commonJS({
     }
     function rotateX(out, a, rad) {
       rad *= 0.5;
-      var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-      var bx = Math.sin(rad), bw = Math.cos(rad);
+      var ax = a[0],
+        ay = a[1],
+        az = a[2],
+        aw = a[3];
+      var bx = Math.sin(rad),
+        bw = Math.cos(rad);
       out[0] = ax * bw + aw * bx;
       out[1] = ay * bw + az * bx;
       out[2] = az * bw - ay * bx;
@@ -3289,8 +3894,12 @@ var require_quat = __commonJS({
     }
     function rotateY(out, a, rad) {
       rad *= 0.5;
-      var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-      var by = Math.sin(rad), bw = Math.cos(rad);
+      var ax = a[0],
+        ay = a[1],
+        az = a[2],
+        aw = a[3];
+      var by = Math.sin(rad),
+        bw = Math.cos(rad);
       out[0] = ax * bw - az * by;
       out[1] = ay * bw + aw * by;
       out[2] = az * bw + ax * by;
@@ -3299,8 +3908,12 @@ var require_quat = __commonJS({
     }
     function rotateZ(out, a, rad) {
       rad *= 0.5;
-      var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-      var bz = Math.sin(rad), bw = Math.cos(rad);
+      var ax = a[0],
+        ay = a[1],
+        az = a[2],
+        aw = a[3];
+      var bz = Math.sin(rad),
+        bw = Math.cos(rad);
       out[0] = ax * bw + ay * bz;
       out[1] = ay * bw - ax * bz;
       out[2] = az * bw + aw * bz;
@@ -3308,7 +3921,9 @@ var require_quat = __commonJS({
       return out;
     }
     function calculateW(out, a) {
-      var x = a[0], y = a[1], z = a[2];
+      var x = a[0],
+        y = a[1],
+        z = a[2];
       out[0] = x;
       out[1] = y;
       out[2] = z;
@@ -3316,10 +3931,13 @@ var require_quat = __commonJS({
       return out;
     }
     function exp(out, a) {
-      var x = a[0], y = a[1], z = a[2], w = a[3];
+      var x = a[0],
+        y = a[1],
+        z = a[2],
+        w = a[3];
       var r = Math.sqrt(x * x + y * y + z * z);
       var et = Math.exp(w);
-      var s = r > 0 ? et * Math.sin(r) / r : 0;
+      var s = r > 0 ? (et * Math.sin(r)) / r : 0;
       out[0] = x * s;
       out[1] = y * s;
       out[2] = z * s;
@@ -3327,7 +3945,10 @@ var require_quat = __commonJS({
       return out;
     }
     function ln(out, a) {
-      var x = a[0], y = a[1], z = a[2], w = a[3];
+      var x = a[0],
+        y = a[1],
+        z = a[2],
+        w = a[3];
       var r = Math.sqrt(x * x + y * y + z * z);
       var t = r > 0 ? Math.atan2(r, w) / r : 0;
       out[0] = x * t;
@@ -3343,8 +3964,14 @@ var require_quat = __commonJS({
       return out;
     }
     function slerp(out, a, b, t) {
-      var ax = a[0], ay = a[1], az = a[2], aw = a[3];
-      var bx = b[0], by = b[1], bz = b[2], bw = b[3];
+      var ax = a[0],
+        ay = a[1],
+        az = a[2],
+        aw = a[3];
+      var bx = b[0],
+        by = b[1],
+        bz = b[2],
+        bw = b[3];
       var omega, cosom, sinom, scale0, scale1;
       cosom = ax * bx + ay * by + az * bz + aw * bw;
       if (cosom < 0) {
@@ -3382,7 +4009,10 @@ var require_quat = __commonJS({
       return out;
     }
     function invert(out, a) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3];
       var dot2 = a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3;
       var invDot = dot2 ? 1 / dot2 : 0;
       out[0] = -a0 * invDot;
@@ -3480,29 +4110,29 @@ var require_quat = __commonJS({
     function str(a) {
       return "quat(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ")";
     }
-    var clone = exports.clone = vec4.clone;
-    var fromValues = exports.fromValues = vec4.fromValues;
-    var copy = exports.copy = vec4.copy;
-    var set = exports.set = vec4.set;
-    var add = exports.add = vec4.add;
-    var mul = exports.mul = multiply;
-    var scale = exports.scale = vec4.scale;
-    var dot = exports.dot = vec4.dot;
-    var lerp = exports.lerp = vec4.lerp;
-    var length = exports.length = vec4.length;
-    var len = exports.len = length;
-    var squaredLength = exports.squaredLength = vec4.squaredLength;
-    var sqrLen = exports.sqrLen = squaredLength;
-    var normalize = exports.normalize = vec4.normalize;
-    var exactEquals = exports.exactEquals = vec4.exactEquals;
+    var clone = (exports.clone = vec4.clone);
+    var fromValues = (exports.fromValues = vec4.fromValues);
+    var copy = (exports.copy = vec4.copy);
+    var set = (exports.set = vec4.set);
+    var add = (exports.add = vec4.add);
+    var mul = (exports.mul = multiply);
+    var scale = (exports.scale = vec4.scale);
+    var dot = (exports.dot = vec4.dot);
+    var lerp = (exports.lerp = vec4.lerp);
+    var length = (exports.length = vec4.length);
+    var len = (exports.len = length);
+    var squaredLength = (exports.squaredLength = vec4.squaredLength);
+    var sqrLen = (exports.sqrLen = squaredLength);
+    var normalize = (exports.normalize = vec4.normalize);
+    var exactEquals = (exports.exactEquals = vec4.exactEquals);
     function equals(a, b) {
       return Math.abs(vec4.dot(a, b)) >= 1 - glMatrix.EPSILON;
     }
-    var rotationTo = exports.rotationTo = (function() {
+    var rotationTo = (exports.rotationTo = (function () {
       var tmpvec3 = vec321.create();
       var xUnitVec3 = vec321.fromValues(1, 0, 0);
       var yUnitVec3 = vec321.fromValues(0, 1, 0);
-      return function(out, a, b) {
+      return function (out, a, b) {
         var dot2 = vec321.dot(a, b);
         if (dot2 < -0.999999) {
           vec321.cross(tmpvec3, xUnitVec3, a);
@@ -3525,20 +4155,20 @@ var require_quat = __commonJS({
           return normalize(out, out);
         }
       };
-    })();
-    var sqlerp = exports.sqlerp = (function() {
+    })());
+    var sqlerp = (exports.sqlerp = (function () {
       var temp1 = create();
       var temp2 = create();
-      return function(out, a, b, c, d, t) {
+      return function (out, a, b, c, d, t) {
         slerp(temp1, a, d, t);
         slerp(temp2, b, c, t);
         slerp(out, temp1, temp2, 2 * t * (1 - t));
         return out;
       };
-    })();
-    var setAxes = exports.setAxes = (function() {
+    })());
+    var setAxes = (exports.setAxes = (function () {
       var matr = mat3.create();
-      return function(out, view, right, up) {
+      return function (out, view, right, up) {
         matr[0] = right[0];
         matr[3] = right[1];
         matr[6] = right[2];
@@ -3550,8 +4180,8 @@ var require_quat = __commonJS({
         matr[8] = -view[2];
         return normalize(out, fromMat3(out, matr));
       };
-    })();
-  }
+    })());
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/quat2.js
@@ -3560,14 +4190,22 @@ var require_quat2 = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.add = add;
     exports.clone = clone;
@@ -3609,16 +4247,25 @@ var require_quat2 = __commonJS({
     var quat = _interopRequireWildcard(require_quat());
     var mat4 = _interopRequireWildcard(require_mat4());
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
@@ -3666,7 +4313,9 @@ var require_quat2 = __commonJS({
       dq[1] = y1;
       dq[2] = z1;
       dq[3] = w1;
-      var ax = x2 * 0.5, ay = y2 * 0.5, az = z2 * 0.5;
+      var ax = x2 * 0.5,
+        ay = y2 * 0.5,
+        az = z2 * 0.5;
       dq[4] = ax * w1 + ay * z1 - az * y1;
       dq[5] = ay * w1 + az * x1 - ax * z1;
       dq[6] = az * w1 + ax * y1 - ay * x1;
@@ -3674,7 +4323,13 @@ var require_quat2 = __commonJS({
       return dq;
     }
     function fromRotationTranslation(out, q, t) {
-      var ax = t[0] * 0.5, ay = t[1] * 0.5, az = t[2] * 0.5, bx = q[0], by = q[1], bz = q[2], bw = q[3];
+      var ax = t[0] * 0.5,
+        ay = t[1] * 0.5,
+        az = t[2] * 0.5,
+        bx = q[0],
+        by = q[1],
+        bz = q[2],
+        bw = q[3];
       out[0] = bx;
       out[1] = by;
       out[2] = bz;
@@ -3748,7 +4403,7 @@ var require_quat2 = __commonJS({
       out[7] = w2;
       return out;
     }
-    var getReal = exports.getReal = quat.copy;
+    var getReal = (exports.getReal = quat.copy);
     function getDual(out, a) {
       out[0] = a[4];
       out[1] = a[5];
@@ -3756,7 +4411,7 @@ var require_quat2 = __commonJS({
       out[3] = a[7];
       return out;
     }
-    var setReal = exports.setReal = quat.copy;
+    var setReal = (exports.setReal = quat.copy);
     function setDual(out, q) {
       out[4] = q[0];
       out[5] = q[1];
@@ -3765,14 +4420,31 @@ var require_quat2 = __commonJS({
       return out;
     }
     function getTranslation(out, a) {
-      var ax = a[4], ay = a[5], az = a[6], aw = a[7], bx = -a[0], by = -a[1], bz = -a[2], bw = a[3];
+      var ax = a[4],
+        ay = a[5],
+        az = a[6],
+        aw = a[7],
+        bx = -a[0],
+        by = -a[1],
+        bz = -a[2],
+        bw = a[3];
       out[0] = (ax * bw + aw * bx + ay * bz - az * by) * 2;
       out[1] = (ay * bw + aw * by + az * bx - ax * bz) * 2;
       out[2] = (az * bw + aw * bz + ax * by - ay * bx) * 2;
       return out;
     }
     function translate(out, a, v) {
-      var ax1 = a[0], ay1 = a[1], az1 = a[2], aw1 = a[3], bx1 = v[0] * 0.5, by1 = v[1] * 0.5, bz1 = v[2] * 0.5, ax2 = a[4], ay2 = a[5], az2 = a[6], aw2 = a[7];
+      var ax1 = a[0],
+        ay1 = a[1],
+        az1 = a[2],
+        aw1 = a[3],
+        bx1 = v[0] * 0.5,
+        by1 = v[1] * 0.5,
+        bz1 = v[2] * 0.5,
+        ax2 = a[4],
+        ay2 = a[5],
+        az2 = a[6],
+        aw2 = a[7];
       out[0] = ax1;
       out[1] = ay1;
       out[2] = az1;
@@ -3784,7 +4456,18 @@ var require_quat2 = __commonJS({
       return out;
     }
     function rotateX(out, a, rad) {
-      var bx = -a[0], by = -a[1], bz = -a[2], bw = a[3], ax = a[4], ay = a[5], az = a[6], aw = a[7], ax1 = ax * bw + aw * bx + ay * bz - az * by, ay1 = ay * bw + aw * by + az * bx - ax * bz, az1 = az * bw + aw * bz + ax * by - ay * bx, aw1 = aw * bw - ax * bx - ay * by - az * bz;
+      var bx = -a[0],
+        by = -a[1],
+        bz = -a[2],
+        bw = a[3],
+        ax = a[4],
+        ay = a[5],
+        az = a[6],
+        aw = a[7],
+        ax1 = ax * bw + aw * bx + ay * bz - az * by,
+        ay1 = ay * bw + aw * by + az * bx - ax * bz,
+        az1 = az * bw + aw * bz + ax * by - ay * bx,
+        aw1 = aw * bw - ax * bx - ay * by - az * bz;
       quat.rotateX(out, a, rad);
       bx = out[0];
       by = out[1];
@@ -3797,7 +4480,18 @@ var require_quat2 = __commonJS({
       return out;
     }
     function rotateY(out, a, rad) {
-      var bx = -a[0], by = -a[1], bz = -a[2], bw = a[3], ax = a[4], ay = a[5], az = a[6], aw = a[7], ax1 = ax * bw + aw * bx + ay * bz - az * by, ay1 = ay * bw + aw * by + az * bx - ax * bz, az1 = az * bw + aw * bz + ax * by - ay * bx, aw1 = aw * bw - ax * bx - ay * by - az * bz;
+      var bx = -a[0],
+        by = -a[1],
+        bz = -a[2],
+        bw = a[3],
+        ax = a[4],
+        ay = a[5],
+        az = a[6],
+        aw = a[7],
+        ax1 = ax * bw + aw * bx + ay * bz - az * by,
+        ay1 = ay * bw + aw * by + az * bx - ax * bz,
+        az1 = az * bw + aw * bz + ax * by - ay * bx,
+        aw1 = aw * bw - ax * bx - ay * by - az * bz;
       quat.rotateY(out, a, rad);
       bx = out[0];
       by = out[1];
@@ -3810,7 +4504,18 @@ var require_quat2 = __commonJS({
       return out;
     }
     function rotateZ(out, a, rad) {
-      var bx = -a[0], by = -a[1], bz = -a[2], bw = a[3], ax = a[4], ay = a[5], az = a[6], aw = a[7], ax1 = ax * bw + aw * bx + ay * bz - az * by, ay1 = ay * bw + aw * by + az * bx - ax * bz, az1 = az * bw + aw * bz + ax * by - ay * bx, aw1 = aw * bw - ax * bx - ay * by - az * bz;
+      var bx = -a[0],
+        by = -a[1],
+        bz = -a[2],
+        bw = a[3],
+        ax = a[4],
+        ay = a[5],
+        az = a[6],
+        aw = a[7],
+        ax1 = ax * bw + aw * bx + ay * bz - az * by,
+        ay1 = ay * bw + aw * by + az * bx - ax * bz,
+        az1 = az * bw + aw * bz + ax * by - ay * bx,
+        aw1 = aw * bw - ax * bx - ay * by - az * bz;
       quat.rotateZ(out, a, rad);
       bx = out[0];
       by = out[1];
@@ -3823,7 +4528,14 @@ var require_quat2 = __commonJS({
       return out;
     }
     function rotateByQuatAppend(out, a, q) {
-      var qx = q[0], qy = q[1], qz = q[2], qw = q[3], ax = a[0], ay = a[1], az = a[2], aw = a[3];
+      var qx = q[0],
+        qy = q[1],
+        qz = q[2],
+        qw = q[3],
+        ax = a[0],
+        ay = a[1],
+        az = a[2],
+        aw = a[3];
       out[0] = ax * qw + aw * qx + ay * qz - az * qy;
       out[1] = ay * qw + aw * qy + az * qx - ax * qz;
       out[2] = az * qw + aw * qz + ax * qy - ay * qx;
@@ -3839,7 +4551,14 @@ var require_quat2 = __commonJS({
       return out;
     }
     function rotateByQuatPrepend(out, q, a) {
-      var qx = q[0], qy = q[1], qz = q[2], qw = q[3], bx = a[0], by = a[1], bz = a[2], bw = a[3];
+      var qx = q[0],
+        qy = q[1],
+        qz = q[2],
+        qw = q[3],
+        bx = a[0],
+        by = a[1],
+        bz = a[2],
+        bw = a[3];
       out[0] = qx * bw + qw * bx + qy * bz - qz * by;
       out[1] = qy * bw + qw * by + qz * bx - qx * bz;
       out[2] = qz * bw + qw * bz + qx * by - qy * bx;
@@ -3861,16 +4580,22 @@ var require_quat2 = __commonJS({
       var axisLength = Math.sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]);
       rad = rad * 0.5;
       var s = Math.sin(rad);
-      var bx = s * axis[0] / axisLength;
-      var by = s * axis[1] / axisLength;
-      var bz = s * axis[2] / axisLength;
+      var bx = (s * axis[0]) / axisLength;
+      var by = (s * axis[1]) / axisLength;
+      var bz = (s * axis[2]) / axisLength;
       var bw = Math.cos(rad);
-      var ax1 = a[0], ay1 = a[1], az1 = a[2], aw1 = a[3];
+      var ax1 = a[0],
+        ay1 = a[1],
+        az1 = a[2],
+        aw1 = a[3];
       out[0] = ax1 * bw + aw1 * bx + ay1 * bz - az1 * by;
       out[1] = ay1 * bw + aw1 * by + az1 * bx - ax1 * bz;
       out[2] = az1 * bw + aw1 * bz + ax1 * by - ay1 * bx;
       out[3] = aw1 * bw - ax1 * bx - ay1 * by - az1 * bz;
-      var ax = a[4], ay = a[5], az = a[6], aw = a[7];
+      var ax = a[4],
+        ay = a[5],
+        az = a[6],
+        aw = a[7];
       out[4] = ax * bw + aw * bx + ay * bz - az * by;
       out[5] = ay * bw + aw * by + az * bx - ax * bz;
       out[6] = az * bw + aw * bz + ax * by - ay * bx;
@@ -3889,7 +4614,22 @@ var require_quat2 = __commonJS({
       return out;
     }
     function multiply(out, a, b) {
-      var ax0 = a[0], ay0 = a[1], az0 = a[2], aw0 = a[3], bx1 = b[4], by1 = b[5], bz1 = b[6], bw1 = b[7], ax1 = a[4], ay1 = a[5], az1 = a[6], aw1 = a[7], bx0 = b[0], by0 = b[1], bz0 = b[2], bw0 = b[3];
+      var ax0 = a[0],
+        ay0 = a[1],
+        az0 = a[2],
+        aw0 = a[3],
+        bx1 = b[4],
+        by1 = b[5],
+        bz1 = b[6],
+        bw1 = b[7],
+        ax1 = a[4],
+        ay1 = a[5],
+        az1 = a[6],
+        aw1 = a[7],
+        bx0 = b[0],
+        by0 = b[1],
+        bz0 = b[2],
+        bw0 = b[3];
       out[0] = ax0 * bw0 + aw0 * bx0 + ay0 * bz0 - az0 * by0;
       out[1] = ay0 * bw0 + aw0 * by0 + az0 * bx0 - ax0 * bz0;
       out[2] = az0 * bw0 + aw0 * bz0 + ax0 * by0 - ay0 * bx0;
@@ -3900,7 +4640,7 @@ var require_quat2 = __commonJS({
       out[7] = aw0 * bw1 - ax0 * bx1 - ay0 * by1 - az0 * bz1 + aw1 * bw0 - ax1 * bx0 - ay1 * by0 - az1 * bz0;
       return out;
     }
-    var mul = exports.mul = multiply;
+    var mul = (exports.mul = multiply);
     function scale(out, a, b) {
       out[0] = a[0] * b;
       out[1] = a[1] * b;
@@ -3912,7 +4652,7 @@ var require_quat2 = __commonJS({
       out[7] = a[7] * b;
       return out;
     }
-    var dot = exports.dot = quat.dot;
+    var dot = (exports.dot = quat.dot);
     function lerp(out, a, b, t) {
       var mt = 1 - t;
       if (dot(a, b) < 0) t = -t;
@@ -3949,10 +4689,10 @@ var require_quat2 = __commonJS({
       out[7] = a[7];
       return out;
     }
-    var length = exports.length = quat.length;
-    var len = exports.len = length;
-    var squaredLength = exports.squaredLength = quat.squaredLength;
-    var sqrLen = exports.sqrLen = squaredLength;
+    var length = (exports.length = quat.length);
+    var len = (exports.len = length);
+    var squaredLength = (exports.squaredLength = quat.squaredLength);
+    var sqrLen = (exports.sqrLen = squaredLength);
     function normalize(out, a) {
       var magnitude = squaredLength(a);
       if (magnitude > 0) {
@@ -3978,17 +4718,67 @@ var require_quat2 = __commonJS({
       return out;
     }
     function str(a) {
-      return "quat2(" + a[0] + ", " + a[1] + ", " + a[2] + ", " + a[3] + ", " + a[4] + ", " + a[5] + ", " + a[6] + ", " + a[7] + ")";
+      return (
+        "quat2(" +
+        a[0] +
+        ", " +
+        a[1] +
+        ", " +
+        a[2] +
+        ", " +
+        a[3] +
+        ", " +
+        a[4] +
+        ", " +
+        a[5] +
+        ", " +
+        a[6] +
+        ", " +
+        a[7] +
+        ")"
+      );
     }
     function exactEquals(a, b) {
-      return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5] && a[6] === b[6] && a[7] === b[7];
+      return (
+        a[0] === b[0] &&
+        a[1] === b[1] &&
+        a[2] === b[2] &&
+        a[3] === b[3] &&
+        a[4] === b[4] &&
+        a[5] === b[5] &&
+        a[6] === b[6] &&
+        a[7] === b[7]
+      );
     }
     function equals(a, b) {
-      var a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3], a4 = a[4], a5 = a[5], a6 = a[6], a7 = a[7];
-      var b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3], b4 = b[4], b5 = b[5], b6 = b[6], b7 = b[7];
-      return Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) && Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) && Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3)) && Math.abs(a4 - b4) <= glMatrix.EPSILON * Math.max(1, Math.abs(a4), Math.abs(b4)) && Math.abs(a5 - b5) <= glMatrix.EPSILON * Math.max(1, Math.abs(a5), Math.abs(b5)) && Math.abs(a6 - b6) <= glMatrix.EPSILON * Math.max(1, Math.abs(a6), Math.abs(b6)) && Math.abs(a7 - b7) <= glMatrix.EPSILON * Math.max(1, Math.abs(a7), Math.abs(b7));
+      var a0 = a[0],
+        a1 = a[1],
+        a2 = a[2],
+        a3 = a[3],
+        a4 = a[4],
+        a5 = a[5],
+        a6 = a[6],
+        a7 = a[7];
+      var b0 = b[0],
+        b1 = b[1],
+        b2 = b[2],
+        b3 = b[3],
+        b4 = b[4],
+        b5 = b[5],
+        b6 = b[6],
+        b7 = b[7];
+      return (
+        Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) &&
+        Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1)) &&
+        Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1, Math.abs(a2), Math.abs(b2)) &&
+        Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1, Math.abs(a3), Math.abs(b3)) &&
+        Math.abs(a4 - b4) <= glMatrix.EPSILON * Math.max(1, Math.abs(a4), Math.abs(b4)) &&
+        Math.abs(a5 - b5) <= glMatrix.EPSILON * Math.max(1, Math.abs(a5), Math.abs(b5)) &&
+        Math.abs(a6 - b6) <= glMatrix.EPSILON * Math.max(1, Math.abs(a6), Math.abs(b6)) &&
+        Math.abs(a7 - b7) <= glMatrix.EPSILON * Math.max(1, Math.abs(a7), Math.abs(b7))
+      );
     }
-  }
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/vec2.js
@@ -3997,14 +4787,22 @@ var require_vec2 = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
     exports.add = add;
     exports.angle = angle;
@@ -4053,16 +4851,25 @@ var require_vec2 = __commonJS({
     exports.zero = zero;
     var glMatrix = _interopRequireWildcard(require_common());
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
@@ -4152,19 +4959,23 @@ var require_vec2 = __commonJS({
       return out;
     }
     function distance(a, b) {
-      var x = b[0] - a[0], y = b[1] - a[1];
+      var x = b[0] - a[0],
+        y = b[1] - a[1];
       return Math.sqrt(x * x + y * y);
     }
     function squaredDistance(a, b) {
-      var x = b[0] - a[0], y = b[1] - a[1];
+      var x = b[0] - a[0],
+        y = b[1] - a[1];
       return x * x + y * y;
     }
     function length(a) {
-      var x = a[0], y = a[1];
+      var x = a[0],
+        y = a[1];
       return Math.sqrt(x * x + y * y);
     }
     function squaredLength(a) {
-      var x = a[0], y = a[1];
+      var x = a[0],
+        y = a[1];
       return x * x + y * y;
     }
     function negate(out, a) {
@@ -4178,7 +4989,8 @@ var require_vec2 = __commonJS({
       return out;
     }
     function normalize(out, a) {
-      var x = a[0], y = a[1];
+      var x = a[0],
+        y = a[1];
       var len2 = x * x + y * y;
       if (len2 > 0) {
         len2 = 1 / Math.sqrt(len2);
@@ -4197,7 +5009,8 @@ var require_vec2 = __commonJS({
       return out;
     }
     function lerp(out, a, b, t) {
-      var ax = a[0], ay = a[1];
+      var ax = a[0],
+        ay = a[1];
       out[0] = ax + t * (b[0] - ax);
       out[1] = ay + t * (b[1] - ay);
       return out;
@@ -4210,19 +5023,22 @@ var require_vec2 = __commonJS({
       return out;
     }
     function transformMat2(out, a, m) {
-      var x = a[0], y = a[1];
+      var x = a[0],
+        y = a[1];
       out[0] = m[0] * x + m[2] * y;
       out[1] = m[1] * x + m[3] * y;
       return out;
     }
     function transformMat2d(out, a, m) {
-      var x = a[0], y = a[1];
+      var x = a[0],
+        y = a[1];
       out[0] = m[0] * x + m[2] * y + m[4];
       out[1] = m[1] * x + m[3] * y + m[5];
       return out;
     }
     function transformMat3(out, a, m) {
-      var x = a[0], y = a[1];
+      var x = a[0],
+        y = a[1];
       out[0] = m[0] * x + m[3] * y + m[6];
       out[1] = m[1] * x + m[4] * y + m[7];
       return out;
@@ -4235,17 +5051,26 @@ var require_vec2 = __commonJS({
       return out;
     }
     function rotate(out, a, b, rad) {
-      var p0 = a[0] - b[0], p1 = a[1] - b[1], sinC = Math.sin(rad), cosC = Math.cos(rad);
+      var p0 = a[0] - b[0],
+        p1 = a[1] - b[1],
+        sinC = Math.sin(rad),
+        cosC = Math.cos(rad);
       out[0] = p0 * cosC - p1 * sinC + b[0];
       out[1] = p0 * sinC + p1 * cosC + b[1];
       return out;
     }
     function angle(a, b) {
-      var ax = a[0], ay = a[1], bx = b[0], by = b[1];
+      var ax = a[0],
+        ay = a[1],
+        bx = b[0],
+        by = b[1];
       return Math.abs(Math.atan2(ay * bx - ax * by, ax * bx + ay * by));
     }
     function signedAngle(a, b) {
-      var ax = a[0], ay = a[1], bx = b[0], by = b[1];
+      var ax = a[0],
+        ay = a[1],
+        bx = b[0],
+        by = b[1];
       return Math.atan2(ax * by - ay * bx, ax * bx + ay * by);
     }
     function zero(out) {
@@ -4260,20 +5085,25 @@ var require_vec2 = __commonJS({
       return a[0] === b[0] && a[1] === b[1];
     }
     function equals(a, b) {
-      var a0 = a[0], a1 = a[1];
-      var b0 = b[0], b1 = b[1];
-      return Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) && Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1));
+      var a0 = a[0],
+        a1 = a[1];
+      var b0 = b[0],
+        b1 = b[1];
+      return (
+        Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1, Math.abs(a0), Math.abs(b0)) &&
+        Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1, Math.abs(a1), Math.abs(b1))
+      );
     }
-    var len = exports.len = length;
-    var sub = exports.sub = subtract;
-    var mul = exports.mul = multiply;
-    var div = exports.div = divide;
-    var dist = exports.dist = distance;
-    var sqrDist = exports.sqrDist = squaredDistance;
-    var sqrLen = exports.sqrLen = squaredLength;
-    var forEach = exports.forEach = (function() {
+    var len = (exports.len = length);
+    var sub = (exports.sub = subtract);
+    var mul = (exports.mul = multiply);
+    var div = (exports.div = divide);
+    var dist = (exports.dist = distance);
+    var sqrDist = (exports.sqrDist = squaredDistance);
+    var sqrLen = (exports.sqrLen = squaredLength);
+    var forEach = (exports.forEach = (function () {
       var vec = create();
-      return function(a, stride, offset, count, fn, arg) {
+      return function (a, stride, offset, count, fn, arg) {
         var i, l;
         if (!stride) {
           stride = 2;
@@ -4295,8 +5125,8 @@ var require_vec2 = __commonJS({
         }
         return a;
       };
-    })();
-  }
+    })());
+  },
 });
 
 // node_modules/.pnpm/gl-matrix@3.4.4/node_modules/gl-matrix/cjs/index.js
@@ -4305,16 +5135,34 @@ var require_cjs = __commonJS({
     "use strict";
     function _typeof(o) {
       "@babel/helpers - typeof";
-      return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o2) {
-        return typeof o2;
-      } : function(o2) {
-        return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype ? "symbol" : typeof o2;
-      }, _typeof(o);
+      return (
+        (_typeof =
+          "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
+            ? function (o2) {
+                return typeof o2;
+              }
+            : function (o2) {
+                return o2 && "function" == typeof Symbol && o2.constructor === Symbol && o2 !== Symbol.prototype
+                  ? "symbol"
+                  : typeof o2;
+              }),
+        _typeof(o)
+      );
     }
     Object.defineProperty(exports, "__esModule", {
-      value: true
+      value: true,
     });
-    exports.vec4 = exports.vec3 = exports.vec2 = exports.quat2 = exports.quat = exports.mat4 = exports.mat3 = exports.mat2d = exports.mat2 = exports.glMatrix = void 0;
+    exports.vec4 =
+      exports.vec3 =
+      exports.vec2 =
+      exports.quat2 =
+      exports.quat =
+      exports.mat4 =
+      exports.mat3 =
+      exports.mat2d =
+      exports.mat2 =
+      exports.glMatrix =
+        void 0;
     var glMatrix = _interopRequireWildcard(require_common());
     exports.glMatrix = glMatrix;
     var mat2 = _interopRequireWildcard(require_mat2());
@@ -4336,29 +5184,36 @@ var require_cjs = __commonJS({
     var vec4 = _interopRequireWildcard(require_vec4());
     exports.vec4 = vec4;
     function _interopRequireWildcard(e, t) {
-      if ("function" == typeof WeakMap) var r = /* @__PURE__ */ new WeakMap(), n = /* @__PURE__ */ new WeakMap();
+      if ("function" == typeof WeakMap)
+        var r = /* @__PURE__ */ new WeakMap(),
+          n = /* @__PURE__ */ new WeakMap();
       return (_interopRequireWildcard = function _interopRequireWildcard2(e2, t2) {
         if (!t2 && e2 && e2.__esModule) return e2;
-        var o, i, f = { __proto__: null, "default": e2 };
-        if (null === e2 || "object" != _typeof(e2) && "function" != typeof e2) return f;
-        if (o = t2 ? n : r) {
+        var o,
+          i,
+          f = { __proto__: null, default: e2 };
+        if (null === e2 || ("object" != _typeof(e2) && "function" != typeof e2)) return f;
+        if ((o = t2 ? n : r)) {
           if (o.has(e2)) return o.get(e2);
           o.set(e2, f);
         }
-        for (var _t in e2) "default" !== _t && {}.hasOwnProperty.call(e2, _t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set) ? o(f, _t, i) : f[_t] = e2[_t]);
+        for (var _t in e2)
+          "default" !== _t &&
+            {}.hasOwnProperty.call(e2, _t) &&
+            ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e2, _t)) && (i.get || i.set)
+              ? o(f, _t, i)
+              : (f[_t] = e2[_t]));
         return f;
       })(e, t);
     }
-  }
+  },
 });
 
 // src/bp/scripts/core/block_components/air_conditioner.ts
 import * as mc from "@minecraft/server";
 var playSound = (block) => {
   const locStr = `${block.x} ${block.y} ${block.z}`;
-  block.dimension.runCommand(
-    `execute positioned ${locStr} run playsound scpdt.air_conditioner @a[r=16] ~~~`
-  );
+  block.dimension.runCommand(`execute positioned ${locStr} run playsound scpdt.air_conditioner @a[r=16] ~~~`);
 };
 mc.system.beforeEvents.startup.subscribe((e) => {
   e.blockComponentRegistry.registerCustomComponent("scpdt:air_conditioner", {
@@ -4373,7 +5228,7 @@ mc.system.beforeEvents.startup.subscribe((e) => {
       const isOn = arg.block.permutation.getState("air_conditioner:on") === true;
       if (!isOn) return;
       playSound(arg.block);
-    }
+    },
   });
 });
 
@@ -4387,9 +5242,7 @@ mc2.system.beforeEvents.startup.subscribe((e) => {
   e.blockComponentRegistry.registerCustomComponent("scpdt:alarm", {
     onPlayerInteract(arg) {
       const alarmState = Number(arg.block.permutation.getState("alarm:states"));
-      arg.block.setPermutation(
-        arg.block.permutation.withState("alarm:states", alarmState === 1 ? 2 : 1)
-      );
+      arg.block.setPermutation(arg.block.permutation.withState("alarm:states", alarmState === 1 ? 2 : 1));
       if (alarmState === 1) {
         playSound2(arg.block);
       }
@@ -4398,7 +5251,7 @@ mc2.system.beforeEvents.startup.subscribe((e) => {
       const alarmState = Number(arg.block.permutation.getState("alarm:states"));
       if (alarmState !== 2) return;
       playSound2(arg.block);
-    }
+    },
   });
 });
 
@@ -4430,7 +5283,7 @@ mc4.system.beforeEvents.startup.subscribe((e) => {
       const state = Number(block.permutation.getState("sign:state"));
       const nextState = (state + 1) % 10;
       block.setPermutation(block.permutation.withState("sign:state", nextState));
-    }
+    },
   });
 });
 
@@ -4507,7 +5360,7 @@ var LEGACY_FACING_DIRECTION_INDEX = {
   north: 2,
   east: 5,
   south: 3,
-  west: 4
+  west: 4,
 };
 var getLegacyFacingDirectionIndex = (permutation) => permutation.getState("facing:direction");
 var convertLegacyFacingDirectionToDir = (facingDirection) => {
@@ -4606,7 +5459,7 @@ var getDoorEntityAtBlock = (block, player) => {
     closest: 1,
     type: "lc:dt_blast_door_e",
     location: block.bottomCenter(),
-    maxDistance: 0.3
+    maxDistance: 0.3,
   })[0];
   if (doorEntity) return doorEntity;
   player?.sendMessage({ translate: "dt.guide.blast_door_v2.entity_not_found" });
@@ -4618,8 +5471,7 @@ var onBreak = (block, player) => {
   mc8.system.run(() => {
     try {
       doorEntity.remove();
-    } catch {
-    }
+    } catch {}
   });
   const dontHandleRemoval = !!doorEntity.getDynamicProperty("dontHandleRemoval");
   if (dontHandleRemoval) return;
@@ -4665,7 +5517,7 @@ mc8.system.beforeEvents.startup.subscribe((e) => {
       } else if (currentDoorState === "opened") {
         doorEntity.triggerEvent("scpdt:close");
       }
-    }
+    },
   });
 });
 mc8.world.afterEvents.blockExplode.subscribe((e) => {
@@ -4682,7 +5534,7 @@ mc8.world.afterEvents.dataDrivenEntityTrigger.subscribe(
   },
   {
     entityTypes: ["lc:dt_blast_door_e"],
-    eventTypes: ["scpdt:enable_block_collision"]
+    eventTypes: ["scpdt:enable_block_collision"],
   }
 );
 mc8.world.afterEvents.dataDrivenEntityTrigger.subscribe(
@@ -4694,7 +5546,7 @@ mc8.world.afterEvents.dataDrivenEntityTrigger.subscribe(
   },
   {
     entityTypes: ["lc:dt_blast_door_e"],
-    eventTypes: ["scpdt:disable_block_collision"]
+    eventTypes: ["scpdt:disable_block_collision"],
   }
 );
 mc8.world.afterEvents.entityDie.subscribe((e) => {
@@ -4737,7 +5589,10 @@ mc9.system.beforeEvents.startup.subscribe((e) => {
         dimension.playSound("scpdt.bomb_activator.activate", block.center());
         player.onScreenDisplay.setActionBar("\xA74/// \xA7cDETONATING IN T-MINUS 90 SECONDS \xA74///");
         block.setPermutation(
-          block.permutation.withState("bomb_activator:state", 2).withState("bomb_activator:textures", 2).withState("bomb_activator:explode_countdown", true)
+          block.permutation
+            .withState("bomb_activator:state", 2)
+            .withState("bomb_activator:textures", 2)
+            .withState("bomb_activator:explode_countdown", true)
         );
         return;
       }
@@ -4747,16 +5602,17 @@ mc9.system.beforeEvents.startup.subscribe((e) => {
       }
     },
     onTick({ block, dimension }) {
-      const isCountingDown = Boolean(
-        block.permutation.getState("bomb_activator:explode_countdown")
-      );
+      const isCountingDown = Boolean(block.permutation.getState("bomb_activator:explode_countdown"));
       if (!isCountingDown) return;
       dimension.playSound("scpdt.bomb_activator.explode", block.center());
       dimension.spawnEntity("lc:dt_bomb_activator_explode", block.center());
       block.setPermutation(
-        block.permutation.withState("bomb_activator:state", 3).withState("bomb_activator:textures", 3).withState("bomb_activator:explode_countdown", false)
+        block.permutation
+          .withState("bomb_activator:state", 3)
+          .withState("bomb_activator:textures", 3)
+          .withState("bomb_activator:explode_countdown", false)
       );
-    }
+    },
   });
 });
 
@@ -4769,11 +5625,11 @@ mc10.system.beforeEvents.startup.subscribe((e) => {
       const keyreadEntityLocation = {
         x: center.x,
         y: center.y - 3,
-        z: center.z
+        z: center.z,
       };
       dimension.spawnEntity("lc:dt_keyread", keyreadEntityLocation);
       dimension.playSound("scpdt.push_button", center, { volume: 0.9 });
-    }
+    },
   });
 });
 
@@ -4782,7 +5638,7 @@ import "@minecraft/server";
 var SIT_ENTITY_TYPE = "lc:dt_sit";
 var sit = (sitType, player, location, direction) => {
   const sitEntity = player.dimension.spawnEntity(SIT_ENTITY_TYPE, location, {
-    initialRotation: directionToRotation(direction).y
+    initialRotation: directionToRotation(direction).y,
   });
   sitEntity.setProperty("sit:type", sitType);
   const rideable = sitEntity.getComponent("rideable");
@@ -4805,7 +5661,7 @@ mc12.system.beforeEvents.startup.subscribe((e) => {
         const sitDirection = reverseDirection(convertLegacyFacingDirectionToDir(facingDirIndex));
         sit("standard", player, block.center(), sitDirection);
       }
-    }
+    },
   });
 });
 
@@ -4820,7 +5676,7 @@ mc13.system.beforeEvents.startup.subscribe((e) => {
       const currentVariant = Number(block.permutation.getState("camera:variant"));
       const nextVariant = (currentVariant + 1) % 4;
       block.setPermutation(block.permutation.withState("camera:variant", nextVariant));
-    }
+    },
   });
 });
 
@@ -4835,7 +5691,7 @@ mc14.system.beforeEvents.startup.subscribe((e) => {
       const currentVariant = Number(block.permutation.getState("fence:variant"));
       const nextVariant = (currentVariant + 1) % 3;
       block.setPermutation(block.permutation.withState("fence:variant", nextVariant));
-    }
+    },
   });
 });
 
@@ -4850,7 +5706,7 @@ mc15.system.beforeEvents.startup.subscribe((e) => {
       const currentVariant = Number(block.permutation.getState("ceiling_pipe:states"));
       const nextVariant = currentVariant < 3 ? currentVariant + 1 : 1;
       block.setPermutation(block.permutation.withState("ceiling_pipe:states", nextVariant));
-    }
+    },
   });
 });
 
@@ -4874,19 +5730,15 @@ mc16.system.beforeEvents.startup.subscribe((e) => {
           equippable.setEquipment(mc16.EquipmentSlot.Mainhand, void 0);
         }
       }
-      block.setPermutation(
-        block.permutation.withState("coffee:vending", true).withState("coffee:vending_states", 2)
-      );
+      block.setPermutation(block.permutation.withState("coffee:vending", true).withState("coffee:vending_states", 2));
       dimension.playSound("scpdt.coffee_machine.vending", block.center());
     },
     onTick({ block, dimension }) {
       const vendingState = Number(block.permutation.getState("coffee:vending_states"));
       if (vendingState === 1) return;
       dimension.spawnItem(new mc16.ItemStack("lc:dt_coffee_mug"), block.center());
-      block.setPermutation(
-        block.permutation.withState("coffee:vending", false).withState("coffee:vending_states", 1)
-      );
-    }
+      block.setPermutation(block.permutation.withState("coffee:vending", false).withState("coffee:vending_states", 1));
+    },
   });
 });
 
@@ -4899,7 +5751,7 @@ var COMPONENT = {
     const currentCurveState = arg.block.permutation.getState("curve:states");
     const nextCurveState = currentCurveState === 1 ? 2 : 1;
     arg.block.setPermutation(arg.block.permutation.withState("curve:states", nextCurveState));
-  }
+  },
 };
 mc17.system.beforeEvents.startup.subscribe((e) => {
   e.blockComponentRegistry.registerCustomComponent("scpdt:curve_block", COMPONENT);
@@ -4918,7 +5770,7 @@ mc18.system.beforeEvents.startup.subscribe((e) => {
       } else {
         dimension.playSound("scpdt.machine.on1", block.center());
       }
-    }
+    },
   });
 });
 
@@ -4937,7 +5789,7 @@ mc19.system.beforeEvents.startup.subscribe((e) => {
       const dryerState = Number(block.permutation.getState("hand_dryer:states"));
       if (dryerState === 1) return;
       block.setPermutation(block.permutation.withState("hand_dryer:states", 1));
-    }
+    },
   });
 });
 
@@ -4966,7 +5818,7 @@ mc20.system.beforeEvents.startup.subscribe((e) => {
       block.setPermutation(block.permutation.withState("light:state", newLightState));
       const blinkSoundPitch = lightState === 0 ? 1.2 : 1.4;
       dimension.playSound("block.click", block.center(), { pitch: blinkSoundPitch });
-    }
+    },
   });
 });
 
@@ -4987,7 +5839,7 @@ mc21.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const isBroadcasting = !!block.permutation.getState("intercom:broadcasting");
       if (!isBroadcasting) return;
       block.setPermutation(block.permutation.withState("intercom:broadcasting", false));
-    }
+    },
   });
 });
 
@@ -5008,11 +5860,11 @@ mc23.system.beforeEvents.startup.subscribe((e) => {
       const keyreadEntityLocation = {
         x: center.x,
         y: center.y - 3,
-        z: center.z
+        z: center.z,
       };
       dimension.spawnEntity("lc:dt_keyread", keyreadEntityLocation);
       dimension.playSound("scpdt.card_read", center, { volume: 0.6 });
-    }
+    },
   });
 });
 
@@ -5028,7 +5880,7 @@ mc24.system.beforeEvents.startup.subscribe((e) => {
       } else {
         dimension.playSound("scpdt.machine.on1", block.center());
       }
-    }
+    },
   });
 });
 
@@ -5037,7 +5889,7 @@ import * as mc25 from "@minecraft/server";
 var getPlayerFacingDirectionIndex = (player, reverse = false) => {
   const rot = player.getRotation();
   const yaw = rot.y;
-  const normalizedYaw = (yaw + 180) % 360 - 180;
+  const normalizedYaw = ((yaw + 180) % 360) - 180;
   if (normalizedYaw >= -45 && normalizedYaw < 45) {
     return reverse ? LEGACY_FACING_DIRECTION_INDEX.south : LEGACY_FACING_DIRECTION_INDEX.north;
   } else if (normalizedYaw >= 45 && normalizedYaw < 135) {
@@ -5059,7 +5911,7 @@ var COMPONENT2 = {
       const index = getPlayerFacingDirectionIndex(arg.player, facingDirectionReverse);
       arg.permutationToPlace = arg.permutationToPlace.withState(facingDirectionState, index);
     }
-  }
+  },
 };
 mc25.system.beforeEvents.startup.subscribe((e) => {
   e.blockComponentRegistry.registerCustomComponent("scpdt:legacy_placement_state", COMPONENT2);
@@ -5074,7 +5926,7 @@ mc26.system.beforeEvents.startup.subscribe((e) => {
       const facingDirIndex = getLegacyFacingDirectionIndex(block.permutation);
       const sitDirection = reverseDirection(convertLegacyFacingDirectionToDir(facingDirIndex));
       sit("standard", player, block.center(), sitDirection);
-    }
+    },
   });
 });
 
@@ -5087,7 +5939,7 @@ mc27.system.beforeEvents.startup.subscribe((e) => {
       if (!isHoldingWrench(player)) return;
       const hasDishes = block.permutation.getState("lunch_plate:dishes");
       block.setPermutation(block.permutation.withState("lunch_plate:dishes", !hasDishes));
-    }
+    },
   });
 });
 
@@ -5098,7 +5950,7 @@ mc28.system.beforeEvents.startup.subscribe((e) => {
     onStepOn({ block, dimension }) {
       block.setType("minecraft:air");
       dimension.spawnEntity("lc:dt_mine_explosion", block.bottomCenter());
-    }
+    },
   });
 });
 
@@ -5111,7 +5963,7 @@ mc29.system.beforeEvents.startup.subscribe((e) => {
       const facingDirIndex = getLegacyFacingDirectionIndex(block.permutation);
       const sitDirection = reverseDirection(convertLegacyFacingDirectionToDir(facingDirIndex));
       sit("standard", player, block.center(), sitDirection);
-    }
+    },
   });
 });
 
@@ -5140,7 +5992,7 @@ var toArr3 = (obj, fallbackValues) => {
 var toObj3 = (arr) => ({
   x: arr[0],
   y: arr[1],
-  z: arr[2]
+  z: arr[2],
 });
 var isIndexedCollection = (value) => {
   if (typeof value !== "object" || value === null) {
@@ -5174,7 +6026,7 @@ var HybridVec3 = class _HybridVec3 {
       value: 3,
       writable: false,
       enumerable: false,
-      configurable: false
+      configurable: false,
     });
   }
   // Object support
@@ -5231,7 +6083,7 @@ import * as mc31 from "@minecraft/server";
 var convert = (block, params) => {
   const dir = params.isRotated ? "west" : "north";
   const statesString = createBlockStatesString({
-    "minecraft:cardinal_direction": dir
+    "minecraft:cardinal_direction": dir,
   });
   let newType;
   switch (params.clearanceLevel) {
@@ -5266,7 +6118,7 @@ mc31.system.beforeEvents.startup.subscribe((e) => {
     },
     onTick(arg0, arg1) {
       convert(arg0.block, arg1.params);
-    }
+    },
   });
 });
 
@@ -5280,7 +6132,7 @@ var convert2 = (block, params) => {
   const facingDirection = getLegacyFacingDirectionIndex(block.permutation);
   const cardinalDirection = convertLegacyFacingDirectionToDir(facingDirection).toLocaleLowerCase();
   const statesString = createBlockStatesString({
-    "minecraft:cardinal_direction": cardinalDirection
+    "minecraft:cardinal_direction": cardinalDirection,
   });
   const location = toArr3(block.location).join(" ");
   const cmd = `setblock ${location} ${params.newType} [${statesString}]`;
@@ -5293,7 +6145,7 @@ mc33.system.beforeEvents.startup.subscribe((e) => {
     },
     onTick(arg0, arg1) {
       convert2(arg0.block, arg1.params);
-    }
+    },
   });
 });
 
@@ -5304,11 +6156,8 @@ mc34.system.beforeEvents.startup.subscribe((e) => {
     beforeOnPlayerPlace(arg) {
       const blockFace = arg.permutationToPlace.getState("minecraft:block_face");
       const legacyFacingDir = LEGACY_FACING_DIRECTION_INDEX[blockFace];
-      arg.permutationToPlace = arg.permutationToPlace.withState(
-        "facing:direction",
-        legacyFacingDir
-      );
-    }
+      arg.permutationToPlace = arg.permutationToPlace.withState("facing:direction", legacyFacingDir);
+    },
   });
 });
 
@@ -5321,7 +6170,7 @@ mc35.system.beforeEvents.startup.subscribe((e) => {
       const newPizzaBoxState = pizzaBoxState === 1 ? 2 : 1;
       block.setPermutation(block.permutation.withState("pizza_box:states", newPizzaBoxState));
       dimension.playSound("item.book.page_turn", block.center(), { volume: 0.7 });
-    }
+    },
   });
 });
 
@@ -5336,7 +6185,7 @@ mc36.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const variant = Number(block.permutation.getState(variantStateName));
       const nextVariant = variant < 4 ? variant + 1 : 0;
       block.setPermutation(block.permutation.withState(variantStateName, nextVariant));
-    }
+    },
   });
 });
 
@@ -5350,7 +6199,7 @@ mc37.system.beforeEvents.startup.subscribe((e) => {
       const rackState = Number(block.permutation.getState("rack:states"));
       const newRackState = rackState < 6 ? rackState + 1 : 1;
       block.setPermutation(block.permutation.withState("rack:states", newRackState));
-    }
+    },
   });
 });
 
@@ -5373,7 +6222,7 @@ mc38.system.beforeEvents.startup.subscribe((e) => {
       const radioState = Number(block.permutation.getState("radio:states"));
       if (radioState !== 2) return;
       dimension.playSound("scpdt.radio_static", block.center());
-    }
+    },
   });
 });
 
@@ -5387,7 +6236,7 @@ mc39.system.beforeEvents.startup.subscribe((e) => {
       const signState = Number(block.permutation.getState("restroom_sign:state"));
       const newSignState = signState === 0 ? 1 : 0;
       block.setPermutation(block.permutation.withState("restroom_sign:state", newSignState));
-    }
+    },
   });
 });
 
@@ -5397,7 +6246,7 @@ mc40.system.beforeEvents.startup.subscribe((e) => {
   e.blockComponentRegistry.registerCustomComponent("scpdt:scp006", {
     onStepOn({ entity }) {
       entity?.addEffect("regeneration", 4 * mc40.TicksPerSecond, { amplifier: 1 });
-    }
+    },
   });
 });
 
@@ -5414,10 +6263,12 @@ mc41.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
         location: center,
         maxDistance: LURE_DISTANCE,
         excludeFamilies: ["inanimate", "gate_guardian"],
-        excludeTypes: ["minecraft:ender_dragon"]
+        excludeTypes: ["minecraft:ender_dragon"],
       });
       for (const target of targetCandidates) {
-        const isPlayerAndCreativeOrSpectator = target instanceof mc41.Player && [mc41.GameMode.Creative, mc41.GameMode.Spectator].includes(target.getGameMode());
+        const isPlayerAndCreativeOrSpectator =
+          target instanceof mc41.Player &&
+          [mc41.GameMode.Creative, mc41.GameMode.Spectator].includes(target.getGameMode());
         if (isPlayerAndCreativeOrSpectator) continue;
         const dirToPlayerVec = import_gl_matrix.vec3.sub(
           import_gl_matrix.vec3.create(),
@@ -5425,15 +6276,12 @@ mc41.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
           toArr3(center)
         );
         import_gl_matrix.vec3.normalize(dirToPlayerVec, dirToPlayerVec);
-        const distance = import_gl_matrix.vec3.distance(
-          toArr3(target.getHeadLocation()),
-          toArr3(center)
-        );
+        const distance = import_gl_matrix.vec3.distance(toArr3(target.getHeadLocation()), toArr3(center));
         const raycastHit = arg.dimension.getBlockFromRay(center, toObj3(dirToPlayerVec), {
           includeLiquidBlocks: false,
           includePassableBlocks: false,
           excludeTypes: [arg.block.typeId],
-          maxDistance: distance
+          maxDistance: distance,
         });
         const isBlocked = raycastHit !== void 0;
         if (isBlocked) return;
@@ -5443,7 +6291,7 @@ mc41.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
           import_gl_matrix.vec3.fromValues(0, -1, 0)
         );
         target.teleport(target.location, {
-          facingLocation: toObj3(facingLocationVec)
+          facingLocation: toObj3(facingLocationVec),
         });
         target.addEffect("blindness", 80);
         if (distance < PAIN_DISTANCE) {
@@ -5456,7 +6304,7 @@ mc41.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
           }, 1);
         }
       }
-    }
+    },
   });
 });
 
@@ -5491,7 +6339,7 @@ mc42.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
         runCommandAtBlock(block, "stopsound @a scpdt.scp079.broadcast");
         block.setPermutation(block.permutation.withState("scp079:states", 1));
       }
-    }
+    },
   });
 });
 
@@ -5503,7 +6351,7 @@ mc43.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       if (!player) return;
       dimension.playSound("scpdt.scp1074.touch", block.center());
       player.addEffect("wither", 60 * mc43.TicksPerSecond, { amplifier: 1 });
-    }
+    },
   });
 });
 
@@ -5530,7 +6378,7 @@ mc44.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       }
       const itemStack = new mc44.ItemStack("lc:dt_scp143_leaves", 1);
       dimension.spawnItem(itemStack, block.center());
-    }
+    },
   });
 });
 mc44.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
@@ -5561,7 +6409,7 @@ mc44.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
         }
       }
       grow(block);
-    }
+    },
   });
 });
 mc44.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
@@ -5580,11 +6428,8 @@ mc44.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
           facingDirection = 2;
           break;
       }
-      arg.permutationToPlace = arg.permutationToPlace.withState(
-        "lc:facing_direction",
-        facingDirection
-      );
-    }
+      arg.permutationToPlace = arg.permutationToPlace.withState("lc:facing_direction", facingDirection);
+    },
   });
 });
 
@@ -5602,7 +6447,7 @@ var productLabelsByWordIndex = {
   7: "Me",
   8: "Boyfriend",
   9: "Girlfriend",
-  10: "Amogus"
+  10: "Amogus",
 };
 var productIdsByWordIndex = {
   0: "lc:dt_cup_water",
@@ -5615,7 +6460,7 @@ var productIdsByWordIndex = {
   7: "lc:dt_cup_me",
   8: "lc:dt_cup_boyfriend",
   9: "lc:dt_cup_girlfriend",
-  10: "lc:dt_cup_amogus"
+  10: "lc:dt_cup_amogus",
 };
 mc45.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
   blockComponentRegistry.registerCustomComponent("scpdt:scp294", {
@@ -5648,16 +6493,14 @@ mc45.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
         const nextWordIndex = wordIndex < 10 ? wordIndex + 1 : 0;
         const nextProductLabel = productLabelsByWordIndex[nextWordIndex];
         const currentProductLabel = productLabelsByWordIndex[wordIndex];
-        player.onScreenDisplay.setActionBar(
-          `\xA77Word: \xA78${currentProductLabel} \xA77-> \xA7f${nextProductLabel}`
-        );
+        player.onScreenDisplay.setActionBar(`\xA77Word: \xA78${currentProductLabel} \xA77-> \xA7f${nextProductLabel}`);
         dimension.playSound("scpdt.push_button", block.center());
         block.setPermutation(block.permutation.withState("scp294:word", nextWordIndex));
         return;
       }
       if (!mainhandSlot.hasItem() || mainhandSlot.typeId !== "lc:dt_empty_cup") {
         player.onScreenDisplay.setActionBar({
-          translate: "dt.guide.scp294.empty_cup_required_or_cycle"
+          translate: "dt.guide.scp294.empty_cup_required_or_cycle",
         });
         return;
       }
@@ -5696,12 +6539,12 @@ mc45.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const itemEntity = dimension.spawnItem(itemStack, {
         x: blockCenter.x,
         y: blockCenter.y + 1,
-        z: blockCenter.z
+        z: blockCenter.z,
       });
       const nearestPlayer = dimension.getPlayers({
         location: itemEntity.location,
         closest: 1,
-        maxDistance: 5
+        maxDistance: 5,
       })[0];
       if (!nearestPlayer) return;
       const force = import_gl_matrix3.vec3.sub(
@@ -5710,7 +6553,7 @@ mc45.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
         toArr3(itemEntity.location)
       );
       itemEntity.applyImpulse(toObj3(force));
-    }
+    },
   });
 });
 
@@ -5731,14 +6574,14 @@ var onDeadlyInteraction = (player) => {
     fadeTime: {
       fadeInTime: 0.08,
       holdTime: 0.2,
-      fadeOutTime: 0.9
-    }
+      fadeOutTime: 0.9,
+    },
   });
   player.addEffect("wither", 60 * mc46.TicksPerSecond, { amplifier: 2 });
   player.addEffect("mining_fatigue", 120 * mc46.TicksPerSecond, { amplifier: 2 });
   player.applyDamage(8, {
     cause: mc46.EntityDamageCause.override,
-    damagingEntity: player
+    damagingEntity: player,
   });
 };
 mc46.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
@@ -5761,7 +6604,7 @@ mc46.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
         return;
       }
       player.startItemCooldown(STAGE1_INTERACTION_CD, mc46.TicksPerDay);
-    }
+    },
   });
 });
 mc46.world.afterEvents.entityDie.subscribe(({ deadEntity }) => {
@@ -5783,7 +6626,7 @@ mc47.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const pizzaSliceItem = new mc47.ItemStack("lc:dt_pizza_slice", 1);
       block.dimension.spawnItem(pizzaSliceItem, block.bottomCenter());
       block.dimension.playSound("random.pop", block.center());
-    }
+    },
   });
 });
 
@@ -5810,7 +6653,7 @@ var levelNames = {
   1: "Coarse",
   2: "1:1",
   3: "Fine",
-  4: "VeryFine"
+  4: "VeryFine",
 };
 mc48.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
   blockComponentRegistry.registerCustomComponent("scpdt:scp914", {
@@ -5896,9 +6739,7 @@ mc48.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const refineKeycardLevel = Number(block.permutation.getState("scp914:refine_keycard"));
       const refineOrbIndex = Number(block.permutation.getState("scp914:refine_orb"));
       if (refiningState !== 1) return;
-      block.setPermutation(
-        block.permutation.withState("scp914:refining", 0).withState("scp914:refine_item", 0)
-      );
+      block.setPermutation(block.permutation.withState("scp914:refining", 0).withState("scp914:refine_item", 0));
       switch (refineItemIndex) {
         // source: gun ammo/shell
         case 1: {
@@ -5921,23 +6762,11 @@ mc48.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
               }
             }
           } else if (level === 3) {
-            dimension.spawnItem(
-              new mc48.ItemStack("minecraft:gunpowder", randomInt(2, 4)),
-              block.center()
-            );
-            dimension.spawnItem(
-              new mc48.ItemStack("minecraft:iron_ingot", randomInt(1, 3)),
-              block.center()
-            );
+            dimension.spawnItem(new mc48.ItemStack("minecraft:gunpowder", randomInt(2, 4)), block.center());
+            dimension.spawnItem(new mc48.ItemStack("minecraft:iron_ingot", randomInt(1, 3)), block.center());
           } else if (level === 4) {
-            dimension.spawnItem(
-              new mc48.ItemStack("minecraft:gunpowder", randomInt(3, 6)),
-              block.center()
-            );
-            dimension.spawnItem(
-              new mc48.ItemStack("minecraft:iron_ingot", randomInt(3, 4)),
-              block.center()
-            );
+            dimension.spawnItem(new mc48.ItemStack("minecraft:gunpowder", randomInt(3, 6)), block.center());
+            dimension.spawnItem(new mc48.ItemStack("minecraft:iron_ingot", randomInt(3, 4)), block.center());
           }
           break;
         }
@@ -6010,17 +6839,11 @@ mc48.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
             if (refineOrbIndex === 0) {
               dimension.spawnItem(new mc48.ItemStack("lc:dt_scpdystopia_orb"), block.center());
             } else {
-              dimension.spawnItem(
-                new mc48.ItemStack("lc:dt_enhanced_scpdystopia_orb"),
-                block.center()
-              );
+              dimension.spawnItem(new mc48.ItemStack("lc:dt_enhanced_scpdystopia_orb"), block.center());
             }
           } else if (level === 3) {
             if (refineOrbIndex === 0) {
-              dimension.spawnItem(
-                new mc48.ItemStack("lc:dt_enhanced_scpdystopia_orb"),
-                block.center()
-              );
+              dimension.spawnItem(new mc48.ItemStack("lc:dt_enhanced_scpdystopia_orb"), block.center());
             } else {
               dimension.spawnItem(
                 new mc48.ItemStack("lc:dt_enhanced_scpdystopia_orb", randomInt(1, 2)),
@@ -6029,10 +6852,7 @@ mc48.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
             }
           } else if (level === 4) {
             if (refineOrbIndex === 0) {
-              dimension.spawnItem(
-                new mc48.ItemStack("lc:dt_scpdystopia_orb_block", 2),
-                block.center()
-              );
+              dimension.spawnItem(new mc48.ItemStack("lc:dt_scpdystopia_orb_block", 2), block.center());
             } else {
               dimension.spawnItem(new mc48.ItemStack("lc:dt_imposter_totem"), block.bottomCenter());
             }
@@ -6048,16 +6868,10 @@ mc48.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
           } else if (level === 2) {
             dimension.spawnItem(new mc48.ItemStack("minecraft:ancient_debris"), block.bottomCenter());
           } else if (level === 3) {
-            dimension.spawnItem(
-              new mc48.ItemStack("minecraft:netherite_ingot"),
-              block.bottomCenter()
-            );
+            dimension.spawnItem(new mc48.ItemStack("minecraft:netherite_ingot"), block.bottomCenter());
           } else if (level === 4) {
             if (Math.random() < 0.1) {
-              dimension.spawnItem(
-                new mc48.ItemStack("minecraft:netherite_block"),
-                block.bottomCenter()
-              );
+              dimension.spawnItem(new mc48.ItemStack("minecraft:netherite_block"), block.bottomCenter());
             } else {
               dimension.spawnEntity("lc:dt_bomb_activator_explode", block.bottomCenter());
             }
@@ -6092,7 +6906,7 @@ mc48.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
           break;
         }
       }
-    }
+    },
   });
 });
 
@@ -6106,7 +6920,7 @@ mc49.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       if (isBroadcasting) return;
       block.setPermutation(block.permutation.withState("intercom:broadcasting", true));
       dimension.playSound("scpdt.scream_loader.scream", block.center(), {
-        volume: 5
+        volume: 5,
       });
     },
     onTick({ block, dimension }) {
@@ -6116,22 +6930,26 @@ mc49.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const scp106 = dimension.getEntities({
         families: ["scp106"],
         closest: 1,
-        location: block.center()
+        location: block.center(),
       })[0];
       if (!scp106) return;
       const scp106Container = dimension.getEntities({
         type: "lc:dt_scp106_container",
         closest: 1,
         maxDistance: 32,
-        location: block.center()
+        location: block.center(),
       })[0];
-      const scp106TpLocation = scp106Container ? scp106Container.location : toObj3(import_gl_matrix4.vec3.add(import_gl_matrix4.vec3.create(), toArr3(block.bottomCenter()), [0, 1.1, 0]));
+      const scp106TpLocation = scp106Container
+        ? scp106Container.location
+        : toObj3(
+            import_gl_matrix4.vec3.add(import_gl_matrix4.vec3.create(), toArr3(block.bottomCenter()), [0, 1.1, 0])
+          );
       scp106.teleport(scp106TpLocation);
       dimension.playSound("scpdt.scp106.spawn", scp106TpLocation, { volume: 1.3 });
       if (scp106Container) {
         scp106Container.getComponent("minecraft:rideable").addRider(scp106);
       }
-    }
+    },
   });
 });
 
@@ -6143,10 +6961,8 @@ mc50.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       if (!player) return;
       if (!isHoldingWrench(player)) return;
       const serverRackState = Number(block.permutation.getState("server_rack:states"));
-      block.setPermutation(
-        block.permutation.withState("server_rack:states", serverRackState === 1 ? 2 : 1)
-      );
-    }
+      block.setPermutation(block.permutation.withState("server_rack:states", serverRackState === 1 ? 2 : 1));
+    },
   });
 });
 
@@ -6166,7 +6982,7 @@ mc51.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
     },
     onTick({ block, dimension }) {
       dimension.playSound("scpdt.sink_water", block.center());
-    }
+    },
   });
 });
 
@@ -6175,7 +6991,7 @@ var randf = (min, max) => Math.random() * (max - min) + min;
 var flattenCoordinates = (major, minor, minorRange = 4) => minor + major * minorRange;
 var unflattenToCoordinates = (flatIndex, minorRange = 4) => ({
   major: Math.floor(flatIndex / minorRange),
-  minor: flatIndex % minorRange
+  minor: flatIndex % minorRange,
 });
 
 // src/bp/scripts/core/block_components/sliding_door.ts
@@ -6184,7 +7000,7 @@ var STATE_NAME = {
   isBottomPart: "lc:is_bottom_part",
   action: "lc:action",
   stepMajor: "lc:step_major",
-  stepMinor: "lc:step_minor"
+  stepMinor: "lc:step_minor",
 };
 var MIN_STEP_INDEX = 0;
 var MAX_STEP_INDEX = 15;
@@ -6232,9 +7048,7 @@ var COMPONENT3 = {
     const blockToUpdate = isBottomPart ? block : otherPartBlock;
     const currentAction = blockToUpdate.permutation.getState(STATE_NAME.action);
     const nextAction = currentAction === "close" ? "open" : "close";
-    blockToUpdate.setPermutation(
-      blockToUpdate.permutation.withState(STATE_NAME.action, nextAction)
-    );
+    blockToUpdate.setPermutation(blockToUpdate.permutation.withState(STATE_NAME.action, nextAction));
     if (minClearanceLevel !== -1) {
       dimension.playSound("scpdt.card_read", block.center());
     }
@@ -6258,21 +7072,23 @@ var COMPONENT3 = {
       block.permutation.withState(STATE_NAME.stepMajor, nextStep.major).withState(STATE_NAME.stepMinor, nextStep.minor)
     );
     otherPartBlock.setPermutation(
-      otherPartBlock.permutation.withState(STATE_NAME.stepMajor, nextStep.major).withState(STATE_NAME.stepMinor, nextStep.minor)
+      otherPartBlock.permutation
+        .withState(STATE_NAME.stepMajor, nextStep.major)
+        .withState(STATE_NAME.stepMinor, nextStep.minor)
     );
     if (params.openSound && action === "open" && nextStepFlat === 1) {
       dimension.playSound(params.openSound.id, block.location, {
         volume: params.openSound.volume,
-        pitch: params.openSound.pitch
+        pitch: params.openSound.pitch,
       });
     }
     if (params.closeSound && action === "close" && nextStepFlat === 14) {
       dimension.playSound(params.closeSound.id, block.location, {
         volume: params.closeSound.volume,
-        pitch: params.closeSound.pitch
+        pitch: params.closeSound.pitch,
       });
     }
-  }
+  },
 };
 mc53.system.beforeEvents.startup.subscribe((e) => {
   e.blockComponentRegistry.registerCustomComponent("scpdt:sliding_door", COMPONENT3);
@@ -6286,7 +7102,7 @@ mc54.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       if (!player) return;
       const isLit = Boolean(block.permutation.getState("stand_light:lit"));
       block.setPermutation(block.permutation.withState("stand_light:lit", !isLit));
-    }
+    },
   });
 });
 
@@ -6300,7 +7116,7 @@ mc55.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const currentVariant = Number(block.permutation.getState("table2:variant"));
       const nextVariant = currentVariant < 6 ? currentVariant + 1 : 1;
       block.setPermutation(block.permutation.withState("table2:variant", nextVariant));
-    }
+    },
   });
 });
 
@@ -6324,7 +7140,7 @@ mc56.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       } else if (teslaState === 2) {
         block.setPermutation(block.permutation.withState("tesla:state", 0));
       }
-    }
+    },
   });
 });
 
@@ -6335,7 +7151,7 @@ mc57.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
     onPlayerInteract({ block, dimension }) {
       dimension.playSound("scpdt.tissue_pull", block.center());
       dimension.spawnItem(new mc57.ItemStack("minecraft:paper", 1), block.center());
-    }
+    },
   });
 });
 
@@ -6361,7 +7177,7 @@ mc58.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       if (isButtghost) {
         dimension.playSound("scpdt.scp789j.butt", block.center());
       }
-    }
+    },
   });
 });
 
@@ -6372,7 +7188,7 @@ mc59.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
     onPlayerInteract({ block }) {
       const towelState = Number(block.permutation.getState("towel:state"));
       block.setPermutation(block.permutation.withState("towel:state", towelState === 0 ? 1 : 0));
-    }
+    },
   });
 });
 
@@ -6387,7 +7203,7 @@ mc60.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const variant = Number(block.permutation.getState(variantStateName));
       const nextVariant = variant < 4 ? variant + 1 : 0;
       block.setPermutation(block.permutation.withState(variantStateName, nextVariant));
-    }
+    },
   });
 });
 
@@ -6402,7 +7218,7 @@ mc61.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const variant = Number(block.permutation.getState(variantStateName));
       const nextVariant = variant < 11 ? variant + 1 : 0;
       block.setPermutation(block.permutation.withState(variantStateName, nextVariant));
-    }
+    },
   });
 });
 
@@ -6414,10 +7230,8 @@ mc62.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       if (!player) return;
       if (!isHoldingWrench(player)) return;
       const rackState = Number(block.permutation.getState("rack:states"));
-      block.setPermutation(
-        block.permutation.withState("rack:states", rackState < 4 ? rackState + 1 : 1)
-      );
-    }
+      block.setPermutation(block.permutation.withState("rack:states", rackState < 4 ? rackState + 1 : 1));
+    },
   });
 });
 
@@ -6436,7 +7250,7 @@ var lootLabelsByIndex = {
   9: "Rifle magazines",
   10: "Misc gun magazines",
   11: "Bow",
-  12: "Arrows"
+  12: "Arrows",
 };
 mc63.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
   blockComponentRegistry.registerCustomComponent("scpdt:weapon_crate_openable", {
@@ -6461,7 +7275,7 @@ mc63.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const nextLootLabel = lootLabelsByIndex[nextLootIndex];
       if (nextLootLabel) player.onScreenDisplay.setActionBar(`Set loot to: \xA7l${nextLootLabel}`);
       block.setPermutation(block.permutation.withState("crate:loot", nextLootIndex));
-    }
+    },
   });
 });
 
@@ -6474,7 +7288,7 @@ mc64.system.beforeEvents.startup.subscribe(({ blockComponentRegistry }) => {
       const facingDirIndex = getLegacyFacingDirectionIndex(block.permutation);
       const sitDirection = reverseDirection(convertLegacyFacingDirectionToDir(facingDirIndex));
       sit("standard", player, block.center(), sitDirection);
-    }
+    },
   });
 });
 
@@ -6487,7 +7301,7 @@ mc65.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("I drank a meme... No...");
       }
       source.dimension.playSound("scpdt.scp294.drink.spit", source.getHeadLocation());
-    }
+    },
   });
 });
 
@@ -6500,7 +7314,7 @@ mc66.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("Uh... damn, it tastes weird...");
       }
       source.dimension.playSound("scpdt.scp294.drink.cough", source.getHeadLocation());
-    }
+    },
   });
 });
 
@@ -6513,7 +7327,7 @@ mc67.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("Bitter, but tasty...");
       }
       source.dimension.playSound("scpdt.scp294.drink.ahh", source.getHeadLocation());
-    }
+    },
   });
 });
 
@@ -6527,7 +7341,7 @@ mc68.system.beforeEvents.startup.subscribe((e) => {
       }
       source.dimension.playSound("scpdt.scp294.drink.ahh", source.getHeadLocation());
       source.addEffect("night_vision", 15 * mc68.TicksPerSecond);
-    }
+    },
   });
 });
 
@@ -6540,7 +7354,7 @@ mc69.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("It reminds me of... never mind.");
       }
       source.dimension.playSound("scpdt.scp294.drink.ew", source.getHeadLocation());
-    }
+    },
   });
 });
 
@@ -6553,11 +7367,8 @@ mc70.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("I feel wealthy now!!");
       }
       source.dimension.playSound("scpdt.scp294.drink.ahh", source.getHeadLocation());
-      source.dimension.spawnItem(
-        new mc70.ItemStack("minecraft:gold_nugget", 1),
-        source.getHeadLocation()
-      );
-    }
+      source.dimension.spawnItem(new mc70.ItemStack("minecraft:gold_nugget", 1), source.getHeadLocation());
+    },
   });
 });
 
@@ -6571,7 +7382,7 @@ mc71.system.beforeEvents.startup.subscribe((e) => {
       }
       source.dimension.playSound("scpdt.scp294.drink.ahh", source.getHeadLocation());
       source.addEffect("resistance", 15 * mc71.TicksPerSecond, { amplifier: 1 });
-    }
+    },
   });
 });
 
@@ -6583,9 +7394,9 @@ mc72.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound("scpdt.scp294.drink.vomit", source.getHeadLocation());
       source.applyDamage(45451919, {
         cause: mc72.EntityDamageCause.selfDestruct,
-        damagingEntity: source
+        damagingEntity: source,
       });
-    }
+    },
   });
 });
 
@@ -6598,7 +7409,7 @@ mc73.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("Wow, fresh orange!");
       }
       source.dimension.playSound("scpdt.scp294.drink.ahh", source.getHeadLocation());
-    }
+    },
   });
 });
 
@@ -6611,7 +7422,7 @@ mc74.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("It's definitely not for drink...");
       }
       source.dimension.playSound("scpdt.scp294.drink.spit", source.getHeadLocation());
-    }
+    },
   });
 });
 
@@ -6624,7 +7435,7 @@ mc75.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("Mmm, feeling fresh.");
       }
       source.dimension.playSound("scpdt.scp294.drink.ahh", source.getHeadLocation());
-    }
+    },
   });
 });
 
@@ -6675,7 +7486,7 @@ mc76.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c-\xA7f+\xA7c-");
         shootProjectile(source, "lc:dt_ak_bullet_player_sneak");
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent("scpdt:ak_empty", {
     onUse({ source, itemStack }) {
@@ -6708,7 +7519,7 @@ mc76.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_short");
       source.addEffect("slowness", 4 * mc76.TicksPerSecond, { amplifier: 0, showParticles: false });
-    }
+    },
   });
 });
 
@@ -6719,7 +7530,11 @@ var shootProjectile2 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix6.vec3.scale(import_gl_matrix6.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix6.vec3.scale(
+    import_gl_matrix6.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc77.system.beforeEvents.startup.subscribe((e) => {
@@ -6753,7 +7568,7 @@ mc77.system.beforeEvents.startup.subscribe((e) => {
       } else {
         shootProjectile2(source, "lc:dt_dtrifle_bullet_player", 4);
       }
-    }
+    },
   });
 });
 
@@ -6805,7 +7620,7 @@ mc78.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c(  \xA7f+  \xA7c)");
         shootProjectileTwice(source, "lc:dt_flame_player_sneak");
       }
-    }
+    },
   });
 });
 mc78.system.beforeEvents.startup.subscribe((e) => {
@@ -6840,7 +7655,7 @@ mc78.system.beforeEvents.startup.subscribe((e) => {
       source.playAnimation("animation.dt_misc.gun_reload_extra_long");
       source.dimension.playSound("scpdt.flamethrower.reload", source.getHeadLocation());
       source.addEffect("slowness", 7 * mc78.TicksPerSecond, { amplifier: 1 });
-    }
+    },
   });
 });
 
@@ -6863,7 +7678,11 @@ var shootProjectile4 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix7.vec3.scale(import_gl_matrix7.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix7.vec3.scale(
+    import_gl_matrix7.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc79.system.beforeEvents.startup.subscribe((e) => {
@@ -6898,7 +7717,7 @@ mc79.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c-\xA7f+\xA7c-");
         shootProjectile4(source, bulletTypeSneak, 1.6);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty, {
     onUse({ source, itemStack }) {
@@ -6931,7 +7750,7 @@ mc79.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound2, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_short");
       source.addEffect("slowness", 4 * mc79.TicksPerSecond, { amplifier: 0, showParticles: false });
-    }
+    },
   });
 });
 
@@ -6953,7 +7772,11 @@ var shootProjectile5 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix8.vec3.scale(import_gl_matrix8.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix8.vec3.scale(
+    import_gl_matrix8.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc80.system.beforeEvents.startup.subscribe((e) => {
@@ -6984,7 +7807,7 @@ mc80.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c>  \xA7f+  \xA7c<");
         shootProjectile5(source, bulletTypeNormal2, 16);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty2, {
     onUse({ source, itemStack }) {
@@ -7017,7 +7840,7 @@ mc80.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound3, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_long");
       source.addEffect("slowness", 4 * mc80.TicksPerSecond, { amplifier: 0, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7040,7 +7863,11 @@ var shootProjectile6 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix9.vec3.scale(import_gl_matrix9.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix9.vec3.scale(
+    import_gl_matrix9.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc81.system.beforeEvents.startup.subscribe((e) => {
@@ -7075,7 +7902,7 @@ mc81.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c>>\xA7e+\xA7c<<");
         shootProjectile6(source, bulletTypeSneak3, 3);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty3, {
     onUse({ source, itemStack }) {
@@ -7108,7 +7935,7 @@ mc81.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound4, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_medium");
       source.addEffect("slowness", 3 * mc81.TicksPerSecond, { amplifier: 0, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7130,7 +7957,11 @@ var shootProjectile7 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix10.vec3.scale(import_gl_matrix10.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix10.vec3.scale(
+    import_gl_matrix10.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc82.system.beforeEvents.startup.subscribe((e) => {
@@ -7162,7 +7993,7 @@ mc82.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c>>   \xA7f+   \xA7c<<");
         shootProjectile7(source, bulletTypeSneak4, 5);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty4, {
     onUse({ source, itemStack }) {
@@ -7195,7 +8026,7 @@ mc82.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound5, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_medium");
       source.addEffect("slowness", 4 * mc82.TicksPerSecond, { amplifier: 0, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7218,7 +8049,11 @@ var shootProjectile8 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix11.vec3.scale(import_gl_matrix11.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix11.vec3.scale(
+    import_gl_matrix11.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc83.system.beforeEvents.startup.subscribe((e) => {
@@ -7253,7 +8088,7 @@ mc83.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c>> \xA7e+ \xA7c<<");
         shootProjectile8(source, bulletTypeSneak5, 2);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty5, {
     onUse({ source, itemStack }) {
@@ -7286,7 +8121,7 @@ mc83.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound6, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_long");
       source.addEffect("slowness", 5 * mc83.TicksPerSecond, { amplifier: 1, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7308,7 +8143,11 @@ var shootProjectile9 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix12.vec3.scale(import_gl_matrix12.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix12.vec3.scale(
+    import_gl_matrix12.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc84.system.beforeEvents.startup.subscribe((e) => {
@@ -7339,7 +8178,7 @@ mc84.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c>>      \xA7f+      \xA7c<<");
         shootProjectile9(source, bulletTypeNormal6, 2);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty6, {
     onUse({ source, itemStack }) {
@@ -7372,7 +8211,7 @@ mc84.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound7, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_medium");
       source.addEffect("slowness", 4 * mc84.TicksPerSecond, { amplifier: 0, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7394,7 +8233,11 @@ var shootProjectile10 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix13.vec3.scale(import_gl_matrix13.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix13.vec3.scale(
+    import_gl_matrix13.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc85.system.beforeEvents.startup.subscribe((e) => {
@@ -7425,7 +8268,7 @@ mc85.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c>>  \xA7f+  \xA7c<<");
         shootProjectile10(source, bulletTypeNormal7, 2);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty7, {
     onUse({ source, itemStack }) {
@@ -7458,7 +8301,7 @@ mc85.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound8, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_medium");
       source.addEffect("slowness", 4 * mc85.TicksPerSecond, { amplifier: 0, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7480,7 +8323,11 @@ var shootProjectile11 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix14.vec3.scale(import_gl_matrix14.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix14.vec3.scale(
+    import_gl_matrix14.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc86.system.beforeEvents.startup.subscribe((e) => {
@@ -7511,7 +8358,7 @@ mc86.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c>>   \xA7f+   \xA7c<<");
         shootProjectile11(source, bulletTypeNormal8, 1.8);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty8, {
     onUse({ source, itemStack }) {
@@ -7544,7 +8391,7 @@ mc86.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound9, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_long");
       source.addEffect("slowness", 5 * mc86.TicksPerSecond, { amplifier: 1, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7565,14 +8412,14 @@ mc87.system.beforeEvents.startup.subscribe((e) => {
       const equippable = source.getComponent("equippable");
       if (!equippable) return;
       source.dimension.playSound("scpdt.rocket_launcher.shoot", source.getHeadLocation(), {
-        volume: 2
+        volume: 2,
       });
       source.playAnimation("animation.dt_misc.player_gun_fire");
       source.runCommand("camerashake add @s 0.15 0.4 positional");
       shootRocket(source);
       const emptyItem = new mc87.ItemStack("lc:dt_rocket_launcher_empty");
       equippable.setEquipment(mc87.EquipmentSlot.Mainhand, emptyItem);
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent("scpdt:rocket_launcher_empty", {
     onUse({ source, itemStack }) {
@@ -7605,7 +8452,7 @@ mc87.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound("scpdt.rpg.reload", source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_medium");
       source.addEffect("slowness", 3 * mc87.TicksPerSecond, { amplifier: 1, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7628,7 +8475,11 @@ var shootProjectile12 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix16.vec3.scale(import_gl_matrix16.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix16.vec3.scale(
+    import_gl_matrix16.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc88.system.beforeEvents.startup.subscribe((e) => {
@@ -7664,7 +8515,7 @@ mc88.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c>> \xA7e+ \xA7c<<");
         shootProjectile12(source, bulletTypeSneak9, 1);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty9, {
     onUse({ source, itemStack }) {
@@ -7697,7 +8548,7 @@ mc88.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound10, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_short");
       source.addEffect("slowness", 3 * mc88.TicksPerSecond, { amplifier: 0, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7705,10 +8556,7 @@ mc88.system.beforeEvents.startup.subscribe((e) => {
 var import_gl_matrix17 = __toESM(require_cjs(), 1);
 import * as mc89 from "@minecraft/server";
 var shootBall = (source) => {
-  const projectile = source.dimension.spawnEntity(
-    "lc:dt_scp5167_cannon_ball",
-    source.getHeadLocation()
-  );
+  const projectile = source.dimension.spawnEntity("lc:dt_scp5167_cannon_ball", source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
   const force = import_gl_matrix17.vec3.scale(import_gl_matrix17.vec3.create(), toArr3(source.getViewDirection()), 2.2);
@@ -7726,7 +8574,7 @@ mc89.system.beforeEvents.startup.subscribe((e) => {
       source.runCommand("camerashake add @s 0.44 0.2 rotational");
       source.onScreenDisplay.setActionBar("\xA7c> SUS >  \xA7e+  \xA7c< SUS <");
       shootBall(source);
-    }
+    },
   });
 });
 
@@ -7748,7 +8596,11 @@ var shootProjectile13 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix18.vec3.scale(import_gl_matrix18.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix18.vec3.scale(
+    import_gl_matrix18.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc90.system.beforeEvents.startup.subscribe((e) => {
@@ -7786,7 +8638,7 @@ mc90.system.beforeEvents.startup.subscribe((e) => {
         durability.damage += 2;
       }
       equippable.setEquipment(mc90.EquipmentSlot.Mainhand, itemStack);
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty10, {
     onUse({ source, itemStack }) {
@@ -7819,7 +8671,7 @@ mc90.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound11, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_long");
       source.addEffect("slowness", 6 * mc90.TicksPerSecond, { amplifier: 1, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7840,7 +8692,11 @@ var shootProjectile14 = (source, projectileType, launchPower) => {
   const projectile = source.dimension.spawnEntity(projectileType, source.getHeadLocation());
   const projectileComp = projectile.getComponent("projectile");
   projectileComp.owner = source;
-  const force = import_gl_matrix19.vec3.scale(import_gl_matrix19.vec3.create(), toArr3(source.getViewDirection()), launchPower);
+  const force = import_gl_matrix19.vec3.scale(
+    import_gl_matrix19.vec3.create(),
+    toArr3(source.getViewDirection()),
+    launchPower
+  );
   projectileComp.shoot(toObj3(force));
 };
 mc91.system.beforeEvents.startup.subscribe((e) => {
@@ -7873,7 +8729,7 @@ mc91.system.beforeEvents.startup.subscribe((e) => {
         source.onScreenDisplay.setActionBar("\xA7c>> \xA7e[ + ] \xA7c<<");
         shootProjectile14(source, bulletTypeNormal11, 9);
       }
-    }
+    },
   });
   e.itemComponentRegistry.registerCustomComponent(componentNameEmpty11, {
     onUse({ source, itemStack }) {
@@ -7906,7 +8762,7 @@ mc91.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound(reloadingSound12, source.getHeadLocation());
       source.playAnimation("animation.dt_misc.gun_reload_long");
       source.addEffect("slowness", 12 * mc91.TicksPerSecond, { amplifier: 0, showParticles: false });
-    }
+    },
   });
 });
 
@@ -7916,7 +8772,7 @@ mc92.system.beforeEvents.startup.subscribe((e) => {
   e.itemComponentRegistry.registerCustomComponent("scpdt:dont_damage_durability_on_hit", {
     onBeforeDurabilityDamage(arg) {
       arg.durabilityDamage = 0;
-    }
+    },
   });
 });
 
@@ -7940,13 +8796,10 @@ mc93.system.beforeEvents.startup.subscribe((e) => {
       const shouldDamage = randomInt(damageChanceRange.min, damageChanceRange.max) <= damageChance;
       if (!shouldDamage) return;
       const damageAddition = params.damage ?? 1;
-      const newDamage = Math.max(
-        0,
-        Math.min(durability.maxDurability, durability.damage + damageAddition)
-      );
+      const newDamage = Math.max(0, Math.min(durability.maxDurability, durability.damage + damageAddition));
       durability.damage = newDamage;
       equippable.setEquipment(mc93.EquipmentSlot.Mainhand, mainhandItem);
-    }
+    },
   });
 });
 
@@ -7956,9 +8809,9 @@ mc94.system.beforeEvents.startup.subscribe((e) => {
   e.itemComponentRegistry.registerCustomComponent("scpdt:medkit", {
     onConsume({ source }) {
       source.addEffect("regeneration", 20 * mc94.TicksPerSecond, {
-        amplifier: 2
+        amplifier: 2,
       });
-    }
+    },
   });
 });
 
@@ -8001,7 +8854,7 @@ mc95.system.beforeEvents.startup.subscribe((e) => {
       } else {
         source.kill();
       }
-    }
+    },
   });
 });
 
@@ -8011,9 +8864,9 @@ mc96.system.beforeEvents.startup.subscribe((e) => {
   e.itemComponentRegistry.registerCustomComponent("scpdt:painkillers", {
     onConsume({ source }) {
       source.addEffect("regeneration", 35 * mc96.TicksPerSecond, {
-        amplifier: 0
+        amplifier: 0,
       });
-    }
+    },
   });
 });
 
@@ -8042,9 +8895,9 @@ mc97.system.beforeEvents.startup.subscribe((e) => {
       mc97.world.structureManager.place(structure, source.dimension, structureLocation);
       source.dimension.playSound("random.anvil_land", structureLocation, {
         volume: 2,
-        pitch: 0.8
+        pitch: 0.8,
       });
-    }
+    },
   });
 });
 
@@ -8054,9 +8907,9 @@ mc98.system.beforeEvents.startup.subscribe((e) => {
   e.itemComponentRegistry.registerCustomComponent("scpdt:scp063", {
     onUse({ source }) {
       source.addEffect("haste", 10 * mc98.TicksPerSecond, {
-        amplifier: 3
+        amplifier: 3,
       });
-    }
+    },
   });
 });
 
@@ -8065,15 +8918,12 @@ import * as mc99 from "@minecraft/server";
 mc99.system.beforeEvents.startup.subscribe((e) => {
   e.itemComponentRegistry.registerCustomComponent("scpdt:scp096_picture", {
     onUse({ source }) {
-      const pictureProjectile = source.dimension.spawnEntity(
-        "lc:dt_scp096_picture_t",
-        source.getHeadLocation()
-      );
+      const pictureProjectile = source.dimension.spawnEntity("lc:dt_scp096_picture_t", source.getHeadLocation());
       const projectileComp = pictureProjectile.getComponent("projectile");
       projectileComp.owner = source;
       projectileComp.shoot({ x: 0, y: 0, z: 0 });
       source.onScreenDisplay.setActionBar("\xA7cYou can't undone this. It will come.");
-    }
+    },
   });
 });
 mc99.world.afterEvents.projectileHitEntity.subscribe((e) => {
@@ -8082,7 +8932,7 @@ mc99.world.afterEvents.projectileHitEntity.subscribe((e) => {
   if (!hitEntity || !hitEntity.matches({ families: ["scp096"] })) return;
   hitEntity.applyDamage(1, {
     cause: mc99.EntityDamageCause.override,
-    damagingEntity: e.source
+    damagingEntity: e.source,
   });
 });
 
@@ -8094,7 +8944,7 @@ mc100.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound("scpdt.scp294.drink.ew", source.getHeadLocation());
       source.addEffect("speed", 180 * mc100.TicksPerSecond, { amplifier: 3 });
       source.addEffect("wither", 180 * mc100.TicksPerSecond, { amplifier: 0 });
-    }
+    },
   });
 });
 
@@ -8127,7 +8977,7 @@ mc101.system.beforeEvents.startup.subscribe((e) => {
         source.dimension.playSound("scpdt.fart", source.location);
         source.onScreenDisplay.setActionBar("HAHAHA FUCKIN ASSSS LETS GOOOOO");
       }
-    }
+    },
   });
 });
 
@@ -8148,7 +8998,7 @@ mc102.system.beforeEvents.startup.subscribe((e) => {
       source.extinguishFire();
       source.addEffect("regeneration", 60 * mc102.TicksPerSecond, { amplifier: 3 });
       source.addEffect("absorption", 60 * mc102.TicksPerSecond, { amplifier: 3 });
-    }
+    },
   });
 });
 
@@ -8160,7 +9010,7 @@ mc103.system.beforeEvents.startup.subscribe((e) => {
       source.dimension.playSound("scpdt.scp714.use", source.getHeadLocation());
       source.addEffect("resistance", 30 * mc103.TicksPerSecond, { amplifier: 3 });
       source.addEffect("slowness", 30 * mc103.TicksPerSecond, { amplifier: 1 });
-    }
+    },
   });
 });
 
@@ -8172,11 +9022,10 @@ mc104.system.beforeEvents.startup.subscribe((e) => {
       try {
         arg.hitEntity.applyDamage(694581019072, {
           cause: mc104.EntityDamageCause.override,
-          damagingEntity: arg.attackingEntity
+          damagingEntity: arg.attackingEntity,
         });
-      } catch {
-      }
-    }
+      } catch {}
+    },
   });
 });
 
@@ -8187,32 +9036,32 @@ var effectChoices = [
     weight: 16,
     effect: "weakness",
     duration: 130 * mc105.TicksPerSecond,
-    amplifier: 1
+    amplifier: 1,
   },
   {
     weight: 14,
     effect: "slowness",
     duration: 140 * mc105.TicksPerSecond,
-    amplifier: 0
+    amplifier: 0,
   },
   {
     weight: 10,
     effect: "hunger",
     duration: 60 * mc105.TicksPerSecond,
-    amplifier: 1
+    amplifier: 1,
   },
   {
     weight: 13,
     effect: "mining_fatigue",
     duration: 120 * mc105.TicksPerSecond,
-    amplifier: 0
+    amplifier: 0,
   },
   {
     weight: 3,
     effect: "poison",
     duration: 43 * mc105.TicksPerSecond,
-    amplifier: 0
-  }
+    amplifier: 0,
+  },
 ];
 mc105.system.beforeEvents.startup.subscribe((e) => {
   e.itemComponentRegistry.registerCustomComponent("scpdt:scp1025", {
@@ -8220,12 +9069,12 @@ mc105.system.beforeEvents.startup.subscribe((e) => {
       const effect = weightedRandom(effectChoices);
       source.addEffect(effect.effect, effect.duration, {
         amplifier: effect.amplifier,
-        showParticles: true
+        showParticles: true,
       });
       source.dimension.playSound("scpdt.scp1025.read", source.getHeadLocation(), {
-        volume: 1.2
+        volume: 1.2,
       });
-    }
+    },
   });
 });
 
@@ -8234,12 +9083,10 @@ import * as mc106 from "@minecraft/server";
 mc106.system.beforeEvents.startup.subscribe((e) => {
   e.itemComponentRegistry.registerCustomComponent("scpdt:scp5167_knife", {
     onHitEntity({ attackingEntity }) {
-      attackingEntity.dimension.playSound(
-        "scpdt.scp5167.attack",
-        attackingEntity.getHeadLocation(),
-        { pitch: randf(0.9, 1.1) }
-      );
-    }
+      attackingEntity.dimension.playSound("scpdt.scp5167.attack", attackingEntity.getHeadLocation(), {
+        pitch: randf(0.9, 1.1),
+      });
+    },
   });
 });
 
@@ -8277,9 +9124,9 @@ var weightedEvents = [
       { weight: 10, effect: "hunger", duration: 60, amplifier: 1 },
       { weight: 13, effect: "mining_fatigue", duration: 120, amplifier: 0 },
       { weight: 3, effect: "poison", duration: 43, amplifier: 0 },
-      { weight: 2, effect: "wither", duration: 16, amplifier: 0 }
-    ]
-  }
+      { weight: 2, effect: "wither", duration: 16, amplifier: 0 },
+    ],
+  },
 ];
 var selectRandomWeighted = (options) => {
   if (!options || options.length === 0) return null;
@@ -8317,7 +9164,7 @@ mc107.system.beforeEvents.startup.subscribe((e) => {
           source.onScreenDisplay.setActionBar(`You got SCP-1025 effect`);
         }
       }
-    }
+    },
   });
 });
 
@@ -8329,20 +9176,28 @@ import * as mc108 from "@minecraft/server";
 
 // node_modules/.pnpm/mitt@3.0.1/node_modules/mitt/dist/mitt.mjs
 function mitt_default(n) {
-  return { all: n = n || /* @__PURE__ */ new Map(), on: function(t, e) {
-    var i = n.get(t);
-    i ? i.push(e) : n.set(t, [e]);
-  }, off: function(t, e) {
-    var i = n.get(t);
-    i && (e ? i.splice(i.indexOf(e) >>> 0, 1) : n.set(t, []));
-  }, emit: function(t, e) {
-    var i = n.get(t);
-    i && i.slice().map(function(n2) {
-      n2(e);
-    }), (i = n.get("*")) && i.slice().map(function(n2) {
-      n2(t, e);
-    });
-  } };
+  return {
+    all: (n = n || /* @__PURE__ */ new Map()),
+    on: function (t, e) {
+      var i = n.get(t);
+      i ? i.push(e) : n.set(t, [e]);
+    },
+    off: function (t, e) {
+      var i = n.get(t);
+      i && (e ? i.splice(i.indexOf(e) >>> 0, 1) : n.set(t, []));
+    },
+    emit: function (t, e) {
+      var i = n.get(t);
+      (i &&
+        i.slice().map(function (n2) {
+          n2(e);
+        }),
+        (i = n.get("*")) &&
+          i.slice().map(function (n2) {
+            n2(t, e);
+          }));
+    },
+  };
 }
 
 // src/bp/scripts/core/player_loop.ts
@@ -8356,7 +9211,7 @@ var onTickPlayer = (player) => {
     tickEventData = {
       player,
       health,
-      equippable
+      equippable,
     };
   }
   playerLoopEvents.emit("tick", tickEventData);
@@ -8378,7 +9233,7 @@ playerLoopEvents.on("tick", (data) => {
   if (data.equippable.getEquipment(mc109.EquipmentSlot.Head)?.typeId !== "lc:dt_nvg") return;
   data.player.addEffect("night_vision", 25, {
     amplifier: 255,
-    showParticles: false
+    showParticles: false,
   });
 });
 
@@ -8388,6 +9243,6 @@ playerLoopEvents.on("tick", (data) => {
   if (data.equippable.getEquipment(mc110.EquipmentSlot.Head)?.typeId !== "lc:dt_scp268") return;
   data.player.addEffect("invisibility", 25, {
     amplifier: 255,
-    showParticles: false
+    showParticles: false,
   });
 });

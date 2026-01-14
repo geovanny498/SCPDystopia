@@ -21,8 +21,8 @@
     "files.exclude": {
         "**/.git": true,
         "**/.DS_Store": true,
-        "**/node_modules/*": true,
-        "**/node_modules/@minecraft/**": false,
+        // "**/node_modules/*": true,
+        // "**/node_modules/@minecraft/**": false,
     },
     "cSpell.words": [
         "gametest",
@@ -37,5 +37,6 @@
     "editor.guides.bracketPairs": "active",
     "files.autoSave": "afterDelay",
     "editor.formatOnSave": true,
-    "BC-MC.Diagnostics.Lang": false,
+    // "BC-MC.Diagnostics.Lang": false,
+    "files.encoding": "utf8"
 }

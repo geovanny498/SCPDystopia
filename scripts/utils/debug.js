@@ -4,7 +4,7 @@ import { world } from "@minecraft/server";
 // Configuración global
 // =====================
 export const DEBUG = false; // Mensajes en el chat
-export const DEBUG_CONSOLE = true; // Mensajes en consola
+export const DEBUG_CONSOLE = false; // Mensajes en consola
 
 /*
 === CONFIGURACIONES PREESTABLECIDAS ===
@@ -66,12 +66,12 @@ Otros:
 export const DEBUG_MODULES = [
   // === PRUEBA DE GUI MIGRADO ===
   "playerInteractWithEntity", // Interacción jugador-entidad (GUI)
-
+  // "projectileHitEntity",
   // === PASO 2: VERIFICAR APLICACIÓN A ENTIDADES EXISTENTES ===
-  // "menuScope",          // Ver verificación de scope
-  // "menuScope:check",    // Ver cada verificación individual de entidad
-  // "menuApply",          // Ver aplicación general de sistemas
-  // "menuApply:entity",   // Ver aplicación detallada por entidad
+  "menuScope",          // Ver verificación de scope
+  "menuScope:check",    // Ver cada verificación individual de entidad
+  "menuApply",          // Ver aplicación general de sistemas
+  "menuApply:entity",   // Ver aplicación detallada por entidad
 
   // === DEPURACIÓN DE APPLYMODE (existing_only) ===
   // "menuEvents:spawn",   // Ver qué pasa cuando spawna una entidad
