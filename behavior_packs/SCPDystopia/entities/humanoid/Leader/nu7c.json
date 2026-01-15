@@ -128,7 +128,7 @@
         },
         "minecraft:behavior.ranged_attack": {
           "attack_radius_min": 4,
-          "priority": 1,
+          "priority": 5,
           "target_in_sight_time": 0.3,
           "burst_shots": 40,
           "burst_interval": 0.15,
@@ -142,12 +142,12 @@
       },
       "minecraft:melee_attack": {
         "minecraft:behavior.leap_at_target": {
-          "priority": 0,
+          "priority": 4,
           "must_be_on_ground": false,
           "yd": 0.33
         },
         "minecraft:behavior.delayed_attack": {
-          "priority": 0,
+          "priority": 4,
           "attack_once": false,
           "track_target": true,
           "require_complete_path": false,
@@ -163,7 +163,7 @@
       },
       "open_warfare": {
         "minecraft:behavior.nearest_attackable_target": {
-          "priority": -1,
+          "priority": 4,
           "within_radius": 85,
           "reselect_targets": true,
           "entity_types": [
@@ -237,7 +237,7 @@
           "must_see": true
         },
         "minecraft:behavior.hurt_by_target": {
-          "priority": 2,
+          "priority": 6,
           "entity_types": [
             {
               "filters": {
@@ -297,7 +297,7 @@
       },
       "armed_presence": {
         "minecraft:behavior.nearest_attackable_target": {
-          "priority": -1,
+          "priority": 4,
           "within_radius": 26,
           "reselect_targets": true,
           "entity_types": [
@@ -373,7 +373,7 @@
       },
       "defensive": {
         "minecraft:behavior.nearest_attackable_target": {
-          "priority": -1,
+          "priority": 4,
           "within_radius": 16,
           "reselect_targets": true,
           "entity_types": [
@@ -450,7 +450,7 @@
       // Hurt by target compartido para armed_presence y defensive, usar solo para modo "solo al recibir daño"
       "fire_mode_hit": {
         "minecraft:behavior.hurt_by_target": {
-          "priority": 2,
+          "priority": 6,
           "entity_types": [
             {
               "filters": {
@@ -558,13 +558,13 @@
       "tamed": {
         "minecraft:is_tamed": {},
         "minecraft:behavior.follow_owner": {
-          "priority": -3,
+          "priority": 2,
           "speed_multiplier": 1.16,
           "start_distance": 8,
           "stop_distance": 5
         },
         "minecraft:behavior.teleport_to_owner": {
-          "priority": -4,
+          "priority": 1,
           "filters": {
             "all_of": [
               {
@@ -576,22 +576,22 @@
           }
         },
         "minecraft:behavior.owner_hurt_by_target": {
-          "priority": 2
+          "priority": 6
         },
         "minecraft:behavior.owner_hurt_target": {
-          "priority": 2
+          "priority": 6
         }
       },
       "tamed_far": {
         "minecraft:is_tamed": {},
         "minecraft:behavior.follow_owner": {
-          "priority": -3,
+          "priority": 2,
           "speed_multiplier": 1.16,
           "start_distance": 20,
           "stop_distance": 16
         },
         "minecraft:behavior.teleport_to_owner": {
-          "priority": -4,
+          "priority": 1,
           "filters": {
             "all_of": [
               {
@@ -603,10 +603,10 @@
           }
         },
         "minecraft:behavior.owner_hurt_by_target": {
-          "priority": 2
+          "priority": 6
         },
         "minecraft:behavior.owner_hurt_target": {
-          "priority": 2
+          "priority": 6
         }
       },
       "stop_move": {
@@ -618,7 +618,7 @@
           "value": 0.0
         },
         "minecraft:behavior.tempt": {
-          "priority": -2,
+          "priority": 3,
           "within_radius": 64,
           "speed_multiplier": 1.16,
           "items": ["iron_ingot", "blaze_powder"]
@@ -642,13 +642,13 @@
           "value": 0.1
         },
         "minecraft:behavior.tempt": {
-          "priority": -2,
+          "priority": 3,
           "within_radius": 64,
           "speed_multiplier": 1.16,
           "items": ["iron_ingot", "blaze_powder"]
         },
         "minecraft:behavior.random_stroll": {
-          "priority": 10,
+          "priority": 14,
           "speed_multiplier": 0.86
         }
       },
@@ -670,13 +670,13 @@
           "value": 0.1
         },
         "minecraft:behavior.tempt": {
-          "priority": -2,
+          "priority": 3,
           "within_radius": 64,
           "speed_multiplier": 1.16,
           "items": ["iron_ingot", "blaze_powder"]
         },
         "minecraft:behavior.random_stroll": {
-          "priority": 10,
+          "priority": 14,
           "speed_multiplier": 0.86
         }
       },
@@ -716,7 +716,7 @@
       },
       "humanoid:spawn_soldiers": {
         "minecraft:behavior.summon_entity": {
-          "priority": 0,
+          "priority": 4,
           "summon_choices": [
             {
               "min_activation_range": 0,
@@ -946,18 +946,18 @@
         "max_fall_blocks": 7
       },
       "minecraft:behavior.random_look_around": {
-        "priority": 9
+        "priority": 13
       },
       "minecraft:behavior.move_towards_restriction": {
-        "priority": 5,
+        "priority": 9,
         "speed_multiplier": 1
       },
       "minecraft:behavior.move_indoors": {
-        "priority": 4,
+        "priority": 8,
         "speed_multiplier": 1
       },
       "minecraft:behavior.look_at_player": {
-        "priority": 10,
+        "priority": 14,
         "look_distance": 8,
         "probability": 0.04
       },
@@ -966,7 +966,7 @@
         "height": 1.8
       },
       "minecraft:behavior.open_door": {
-        "priority": 6,
+        "priority": 10,
         "close_door_after": true
       },
       "minecraft:nameable": {
