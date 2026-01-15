@@ -23,6 +23,15 @@ export const teamGroups = {
   ]),
 };
 
+/**
+ * Familias de entidades para filtrado eficiente con EntityQueryOptions
+ * Estas familias se definen en los archivos de entidades (minecraft:type_family)
+ */
+export const teamFamilies = {
+  chaos: ["chaos_insurgency", "chaos"],
+  foundation: ["scpfoundation", "foundation"],
+};
+
 const helmetTeams = {
   "minecraft:golden_helmet": "chaos",
   "minecraft:netherite_helmet": "foundation",

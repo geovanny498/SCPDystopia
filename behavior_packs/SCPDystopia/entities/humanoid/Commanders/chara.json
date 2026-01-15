@@ -1,3 +1,4 @@
+// behavior_packs\SCPDystopia\entities\humanoid\Commanders\chara.json
 {
   "format_version": "1.21.80",
   "minecraft:entity": {
@@ -516,9 +517,7 @@
       "calm": {
         "minecraft:tameable": {
           "probability": 1.0,
-          "tame_items": [
-            "lc:dt_keycard_o5"
-          ],
+          "tame_items": ["lc:dt_keycard_o5"],
           "tame_event": {
             "event": "minecraft:on_tame",
             "target": "self"
@@ -540,9 +539,7 @@
           "broadcast_anger_on_attack": true,
           "broadcast_anger_on_being_attacked": true,
           "broadcast_range": 128,
-          "broadcast_targets": [
-            "alpha1"
-          ],
+          "broadcast_targets": ["alpha1"],
           "calm_event": {
             "event": "humanoid:on_calm",
             "target": "self"
@@ -630,10 +627,7 @@
           "priority": -2,
           "within_radius": 64,
           "speed_multiplier": 1.16,
-          "items": [
-            "netherite_ingot",
-            "blaze_powder"
-          ]
+          "items": ["netherite_ingot", "blaze_powder"]
         }
       },
       "start_move": {
@@ -657,10 +651,7 @@
           "priority": -2,
           "within_radius": 64,
           "speed_multiplier": 1.16,
-          "items": [
-            "netherite_ingot",
-            "blaze_powder"
-          ]
+          "items": ["netherite_ingot", "blaze_powder"]
         },
         "minecraft:behavior.random_stroll": {
           "priority": 10,
@@ -688,10 +679,7 @@
           "priority": -2,
           "within_radius": 64,
           "speed_multiplier": 1.16,
-          "items": [
-            "netherite_ingot",
-            "blaze_powder"
-          ]
+          "items": ["netherite_ingot", "blaze_powder"]
         },
         "minecraft:behavior.random_stroll": {
           "priority": 10,
@@ -754,16 +742,7 @@
       },
       "minecraft:ignore_cannot_be_attacked": {},
       "minecraft:type_family": {
-        "family": [
-          "mob",
-          "foundation",
-          "scpfoundation",
-          "player",
-          "human",
-          "alpha1",
-          "mtf",
-          "villager"
-        ]
+        "family": ["mob", "foundation", "scpfoundation", "player", "human", "alpha1", "mtf", "villager"]
       },
       "minecraft:damage_sensor": {
         "triggers": [
@@ -993,33 +972,25 @@
               {
                 "weight": 30,
                 "add": {
-                  "component_groups": [
-                    "variant0"
-                  ]
+                  "component_groups": ["variant0"]
                 }
               },
               {
                 "weight": 50,
                 "add": {
-                  "component_groups": [
-                    "variant1"
-                  ]
+                  "component_groups": ["variant1"]
                 }
               },
               {
                 "weight": 5,
                 "add": {
-                  "component_groups": [
-                    "variant2"
-                  ]
+                  "component_groups": ["variant2"]
                 }
               },
               {
                 "weight": 15,
                 "add": {
-                  "component_groups": [
-                    "variant3"
-                  ]
+                  "component_groups": ["variant3"]
                 }
               }
             ]
@@ -1039,54 +1010,38 @@
       },
       "minecraft:to_melee_attack": {
         "remove": {
-          "component_groups": [
-            "minecraft:ranged_attack"
-          ]
+          "component_groups": ["minecraft:ranged_attack"]
         },
         "add": {
-          "component_groups": [
-            "minecraft:melee_attack"
-          ]
+          "component_groups": ["minecraft:melee_attack"]
         }
       },
       "minecraft:to_ranged_attack": {
         "remove": {
-          "component_groups": [
-            "minecraft:melee_attack"
-          ]
+          "component_groups": ["minecraft:melee_attack"]
         },
         "add": {
-          "component_groups": [
-            "minecraft:ranged_attack"
-          ]
+          "component_groups": ["minecraft:ranged_attack"]
         }
       },
       "start_chara": {
         "add": {
-          "component_groups": [
-            "variant0"
-          ]
+          "component_groups": ["variant0"]
         }
       },
       "start_chara1": {
         "add": {
-          "component_groups": [
-            "variant1"
-          ]
+          "component_groups": ["variant1"]
         }
       },
       "start_chara2": {
         "add": {
-          "component_groups": [
-            "variant2"
-          ]
+          "component_groups": ["variant2"]
         }
       },
       "start_chara3": {
         "add": {
-          "component_groups": [
-            "variant3"
-          ]
+          "component_groups": ["variant3"]
         }
       },
       "humanoid:heal": {
@@ -1096,141 +1051,81 @@
       },
       "minecraft:become_angry": {
         "add": {
-          "component_groups": [
-            "angry"
-          ]
+          "component_groups": ["angry"]
         },
         "remove": {
-          "component_groups": [
-            "calm"
-          ]
+          "component_groups": ["calm"]
         }
       },
       "minecraft:on_calm": {
         "add": {
-          "component_groups": [
-            "calm"
-          ]
+          "component_groups": ["calm"]
         },
         "remove": {
-          "component_groups": [
-            "angry"
-          ]
+          "component_groups": ["angry"]
         }
       },
       "minecraft:on_tame": {
         "add": {
-          "component_groups": [
-            "start_move",
-            "tamed"
-          ]
+          "component_groups": ["start_move", "tamed"]
         },
         "remove": {
-          "component_groups": [
-            "stop_move",
-            "start_move_free",
-            "tamed_far"
-          ]
+          "component_groups": ["stop_move", "start_move_free", "tamed_far"]
         }
       },
       "humanoid:set_tamed_far": {
         "add": {
-          "component_groups": [
-            "start_move",
-            "tamed_far"
-          ]
+          "component_groups": ["start_move", "tamed_far"]
         },
         "remove": {
-          "component_groups": [
-            "stop_move",
-            "start_move_free",
-            "tamed"
-          ]
+          "component_groups": ["stop_move", "start_move_free", "tamed"]
         },
         "queue_command": {
-          "command": [
-            "title @p actionbar §6Seguir jugador (Lejos)"
-          ]
+          "command": ["title @p actionbar §6Seguir jugador (Lejos)"]
         }
       },
       "humanoid:set_tamed_close": {
         "add": {
-          "component_groups": [
-            "start_move",
-            "tamed"
-          ]
+          "component_groups": ["start_move", "tamed"]
         },
         "remove": {
-          "component_groups": [
-            "stop_move",
-            "start_move_free",
-            "tamed_far"
-          ]
+          "component_groups": ["stop_move", "start_move_free", "tamed_far"]
         },
         "queue_command": {
-          "command": [
-            "title @p actionbar §aSeguir jugador (Cerca)"
-          ]
+          "command": ["title @p actionbar §aSeguir jugador (Cerca)"]
         }
       },
       "mtf:to_move": {
         "add": {
-          "component_groups": [
-            "start_move",
-            "tamed"
-          ]
+          "component_groups": ["start_move", "tamed"]
         },
         "remove": {
-          "component_groups": [
-            "stop_move",
-            "start_move_free",
-            "tamed_far"
-          ]
+          "component_groups": ["stop_move", "start_move_free", "tamed_far"]
         },
         "queue_command": {
-          "command": [
-            "title @p actionbar §e§l[LEGACY] Seguir jugador"
-          ]
+          "command": ["title @p actionbar §e§l[LEGACY] Seguir jugador"]
         }
       },
       "mtf:to_stop": {
         "add": {
-          "component_groups": [
-            "stop_move"
-          ]
+          "component_groups": ["stop_move"]
         },
         "remove": {
-          "component_groups": [
-            "start_move",
-            "start_move_free",
-            "tamed",
-            "tamed_far"
-          ]
+          "component_groups": ["start_move", "start_move_free", "tamed", "tamed_far"]
         },
         "queue_command": {
-          "command": [
-            "title @p actionbar §cDetenerse"
-          ]
+          "command": ["title @p actionbar §cDetenerse"]
         }
       },
       "mtf:to_move_free": {
         "add": {
-          "component_groups": [
-            "start_move_free"
-          ]
+          "component_groups": ["start_move_free"]
         },
         "remove": {
-          "component_groups": [
-            "start_move",
-            "stop_move",
-            "tamed",
-            "tamed_far"
-          ]
+          "component_groups": ["start_move", "stop_move", "tamed", "tamed_far"]
         },
         "queue_command": {
-          "command": [
-            "title @p actionbar §9Caminar libremente"
-          ]
+          "command": ["title @p actionbar §9Caminar libremente"]
         }
       },
       "humanoid:fire_open_warfare": {
@@ -1250,65 +1145,41 @@
       },
       "humanoid:fire_armed_presence": {
         "add": {
-          "component_groups": [
-            "armed_presence",
-            "fire_mode_hit"
-          ]
+          "component_groups": ["armed_presence", "fire_mode_hit"]
         },
         "remove": {
-          "component_groups": [
-            "open_warfare",
-            "defensive"
-          ]
+          "component_groups": ["open_warfare", "defensive"]
         }
       },
       "humanoid:fire_defensive": {
         "add": {
-          "component_groups": [
-            "defensive",
-            "fire_mode_hit"
-          ]
+          "component_groups": ["defensive", "fire_mode_hit"]
         },
         "remove": {
-          "component_groups": [
-            "open_warfare",
-            "armed_presence"
-          ]
+          "component_groups": ["open_warfare", "armed_presence"]
         }
       },
       "humanoid:fire_mode_hit": {
         "add": {
-          "component_groups": [
-            "fire_mode_hit"
-          ]
+          "component_groups": ["fire_mode_hit"]
         },
         "remove": {
-          "component_groups": [
-            "open_warfare",
-            "armed_presence",
-            "defensive"
-          ]
+          "component_groups": ["open_warfare", "armed_presence", "defensive"]
         }
       },
       "become_zombie": {
         "add": {
-          "component_groups": [
-            "zombie"
-          ]
+          "component_groups": ["zombie"]
         }
       },
       "become_scp610": {
         "add": {
-          "component_groups": [
-            "scp610"
-          ]
+          "component_groups": ["scp610"]
         }
       },
       "human:dead_nu7": {
         "add": {
-          "component_groups": [
-            "death_nu7"
-          ]
+          "component_groups": ["death_nu7"]
         }
       },
       "humanoid:start_invincible": {
@@ -1322,56 +1193,38 @@
       },
       "humanoid:stop_invincible": {
         "queue_command": {
-          "command": [
-            "effect @s clear",
-            "title @p actionbar §4§lDesactivar invencibilidad"
-          ]
+          "command": ["effect @s clear", "title @p actionbar §4§lDesactivar invencibilidad"]
         }
       },
       "humanoid:show_boss_bar": {
         "add": {
-          "component_groups": [
-            "humanoid:show_health"
-          ]
+          "component_groups": ["humanoid:show_health"]
         }
       },
       "humanoid:dont_show_boss_bar": {
         "remove": {
-          "component_groups": [
-            "humanoid:show_health"
-          ]
+          "component_groups": ["humanoid:show_health"]
         }
       },
       "humanoid:start_teleport": {
         "add": {
-          "component_groups": [
-            "humanoid:teleport"
-          ]
+          "component_groups": ["humanoid:teleport"]
         },
         "remove": {
-          "component_groups": [
-            "humanoid:teleport_near"
-          ]
+          "component_groups": ["humanoid:teleport_near"]
         }
       },
       "humanoid:stop_teleport": {
         "remove": {
-          "component_groups": [
-            "humanoid:teleport",
-            "humanoid:teleport_near"
-          ]
+          "component_groups": ["humanoid:teleport", "humanoid:teleport_near"]
         }
       },
       "humanoid:start_teleport_near": {
         "add": {
-          "component_groups": [
-            "humanoid:teleport_near"
-          ]
+          "component_groups": ["humanoid:teleport_near"]
         },
         "remove": {
-          "component_groups": [
-            "humanoid:teleport"
-          ]
+          "component_groups": ["humanoid:teleport"]
         }
       }
     }

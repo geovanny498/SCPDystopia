@@ -1,8 +1,9 @@
+// behavior_packs\SCPDystopia\entities\humanoid\Leader\nu7c.json
 {
   "format_version": "1.21.80",
   "minecraft:entity": {
     "description": {
-      "identifier": "lc:dt_nu7c",
+      "identifier": "lc:dt_nu7c", // lider
       "is_spawnable": true,
       "is_summonable": true,
       "is_experimental": false,

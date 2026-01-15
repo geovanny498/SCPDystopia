@@ -1,10 +1,11 @@
 // scripts/gui/commandMenu/menu_apply.js
 import { world } from "@minecraft/server";
-import { debugWarn } from "../../utils/debug.js";
+import { debugMessage, debugWarn } from "../../utils/debug.js";
 import { ControlType, getSystemEvents } from "./menu_config.js";
 import { canApplySystem } from "./menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier } from "./menu_faction.js";
 import { loadScope, isEntityInScope } from "./menu_scope.js";
+import { teamFamilies } from "../../utils/teams.js";
 
 // Importar funciones de menu_events (se inyectarán para evitar ciclos)
 let getMenuSystemStates = null;
@@ -174,33 +175,44 @@ export function applySystemWithEvents(systemId, systemConfig, dimension = null) 
     debugWarn("menuApply", `=== Aplicando sistema ${systemId} ===`, "cyan");
     debugWarn("menuApply", `Scope actual: ${JSON.stringify(scope)}`, "gray");
 
+    // Construir array de familias válidas desde teamFamilies
+    const validFamilies = [...teamFamilies.chaos, ...teamFamilies.foundation];
+
+    debugMessage("menuApply", `Filtrando por ${validFamilies.length} familias: ${validFamilies.join(", ")}`, "blue");
+
     // 1) Escanear entidades en la dimensión solicitada o en todas
     const dims = dimension
       ? [dimension]
       : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
 
     for (const dim of dims) {
-      const ents = dim.getEntities();
-      for (const ent of ents) {
-        if (!ent || !ent.id) continue;
-        if (seen.has(ent.id)) continue;
-        seen.add(ent.id);
-        if (!isValidSoldier(ent, specials)) continue;
+      // Optimización: Obtener entidades por familia usando EntityQueryOptions
+      // Nota: families requiere que la entidad tenga TODAS las familias, así que iteramos por cada familia
+      for (const family of validFamilies) {
+        const ents = dim.getEntities({ families: [family] });
+        debugMessage("menuApply", `Filtrando por familia ${family} en dim ${dim.id}`, "blue");
+        debugMessage("menuApply", `Encontradas ${ents.length} entidades`, "blue");
+        for (const ent of ents) {
+          if (!ent || !ent.id) continue;
+          if (seen.has(ent.id)) continue;
+          seen.add(ent.id);
+          if (!isValidSoldier(ent, specials)) continue;
 
-        // Verificar si está en scope antes de aplicar
-        const factionInfo = getEntityFactionInfo(ent, specials);
-        if (!factionInfo) continue;
+          // Verificar si está en scope antes de aplicar
+          const factionInfo = getEntityFactionInfo(ent, specials);
+          if (!factionInfo) continue;
 
-        const { faction, isSpecial } = factionInfo;
-        const nameTag = ent.nameTag ?? "";
+          const { faction, isSpecial } = factionInfo;
+          const nameTag = ent.nameTag ?? "";
 
-        if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope)) {
-          skippedCount++;
-          continue;
+          if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope)) {
+            skippedCount++;
+            continue;
+          }
+
+          applySystemToEntity(systemId, systemConfig, ent, null, false);
+          appliedCount += 1;
         }
-
-        applySystemToEntity(systemId, systemConfig, ent, null, false);
-        appliedCount += 1;
       }
     }
 

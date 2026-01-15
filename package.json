@@ -17,6 +17,7 @@
     "build:production": "just-scripts build --production",
     "clean": "just-scripts clean",
     "local-deploy": "just-scripts local-deploy",
+    "deploy:production": "just-scripts build --production && just-scripts package",
     "mcaddon": "just-scripts mcaddon",
     "mcaddon:production": "just-scripts mcaddon --production",
     "enablemcloopback": "CheckNetIsolation.exe LoopbackExempt -a -p=S-1-15-2-1958404141-86561845-1752920682-3514627264-368642714-62675701-733520436",
@@ -24,7 +25,7 @@
   },
   "dependencies": {
     "@minecraft/math": "^2.2.11",
-    "@minecraft/server": "^2.0.0",
+    "@minecraft/server": "^2.4.0",
     "@minecraft/server-ui": "^2.0.0",
     "@minecraft/vanilla-data": "^1.21.90"
   }

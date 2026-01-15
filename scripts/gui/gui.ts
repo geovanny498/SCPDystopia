@@ -1,7 +1,7 @@
 // scripts/gui/gui.ts
 import { world, system, EquipmentSlot, Player, Entity } from "@minecraft/server";
 import { ActionFormData, ActionFormResponse } from "@minecraft/server-ui";
-import config, { MenuCategory, GuiConfig, EntitySpecificConfig } from "./config.js";
+import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
 import { debugWarn } from "../utils/debug.js";
 
 interface EntityConfig {

@@ -1,6 +1,6 @@
 # SCP: Dystopia
 
-**Versión:** 1.9.0  
+**Versión:** 1.9.0
 
 ## Descripción
 
@@ -126,9 +126,9 @@ Define los equipos y sus miembros:
 
 #### `damage.js`
 
-Sistema de daño personalizado:
+Sistema de daño personalizado que ignora frames de inmunidd:
 
-- Configuración de daño por entidad
+- Configuración de daño por entidad mediante cause: override
 - Modificadores de daño
 - Aplicación de knockback
 
@@ -157,34 +157,32 @@ Configuración de armas Aplok Guns:
 
 ## Desarrollo
 
-### Compilar el proyecto
+Para ver todos los comandos disponibles, consulta [COMANDOS.md](./COMANDOS.md).
+
+### Comandos principales
 
 ```bash
+# Desarrollo (con debug)
 npm run build
-```
-
-### Compilar para producción
-
-```bash
-npm run build:production
-```
-
-### Desplegar localmente
-
-```bash
 npm run local-deploy
-```
 
-### Crear .mcaddon
+# Producción (sin debug)
+npm run build:production
+npm run deploy:production
+npm run mcaddon:production
+```
+## Comandos de formateo
 
 ```bash
-npm run mcaddon
+# Formatear carpetas de behavior_packs
+npx prettier --write "behavior_packs/SCPDystopia/entities/humanoid/**/*"
+npx prettier --write "scripts/**/*"
 ```
-Créditos a LC Studios MC por el proyecto original, esta es una expansión enfocada en las unidades móviles de la fundación  y la insurgencia del caos
+
+
 ## Licencia
+Créditos a LC Studios MC por el addon de SCPDystopia v1.9.0 Original, esta es una expansión enfocada en las unidades móviles de la fundación y la insurgencia del caos.
 
 Desarrollado por LC Studios MC. Todos los derechos reservados.
 
 ---
-
-**¡Gracias por descargar SCP: Dystopia!**

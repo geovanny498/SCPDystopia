@@ -1,18 +1,18 @@
 {
     "format_version": 2,
     "header": {
-        "description": "§l§bMade by LC Studios MC. Helped by Kaiboi39 and RianDewa45.",
-        "name": "§g[DEV] §d§lSCP: Dystopia RP §7v1.9.0§f",
+        "description": "§l§bCredits: From SCP: Dystopia v1.9.0 §b Oficial made by LC Studios MC. Helped by Kaiboi39 and RianDewa45.",
+        "name": "§g[DEV] §9§lSCP: Dystopia RP v1.0.1-beta.1",
         "uuid": "03cce329-48ac-45be-ae8a-4301f4687e46",
         "version": [
             1,
-            9,
-            0
+            0,
+            1
         ],
         "min_engine_version": [
             1,
-            17,
-            0
+            21,
+            130
         ]
     },
     "modules": [
@@ -22,7 +22,7 @@
             "uuid": "15e4494f-d558-46e0-9108-ca086eca59ef",
             "version": [
                 1,
-                8,
+                0,
                 1
             ]
         }

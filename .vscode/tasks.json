@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "tasks": [     
+  "tasks": [
     {
       "label": "build",
       "type": "shell",
@@ -10,6 +10,11 @@
       "label": "deploy",
       "type": "shell",
       "command": "npm run local-deploy"
+    },
+    {
+      "label": "production",
+      "type": "shell",
+      "command": "npm run deploy:production"
     }
   ]
 }

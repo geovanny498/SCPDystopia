@@ -3,8 +3,11 @@ import { world } from "@minecraft/server";
 // =====================
 // Configuración global
 // =====================
+
+// Se puede aprovechar npm run deploy:production para vaciar casi todo debug.js
+// incluyendo estas constantes
 export const DEBUG = false; // Mensajes en el chat
-export const DEBUG_CONSOLE = false; // Mensajes en consola
+export const DEBUG_CONSOLE = true; // Mensajes en consola
 
 /*
 === CONFIGURACIONES PREESTABLECIDAS ===
@@ -68,10 +71,10 @@ export const DEBUG_MODULES = [
   "playerInteractWithEntity", // Interacción jugador-entidad (GUI)
   // "projectileHitEntity",
   // === PASO 2: VERIFICAR APLICACIÓN A ENTIDADES EXISTENTES ===
-  "menuScope",          // Ver verificación de scope
-  "menuScope:check",    // Ver cada verificación individual de entidad
-  "menuApply",          // Ver aplicación general de sistemas
-  "menuApply:entity",   // Ver aplicación detallada por entidad
+  "menuScope", // Ver verificación de scope
+  "menuScope:check", // Ver cada verificación individual de entidad
+  "menuApply", // Ver aplicación general de sistemas
+  "menuApply:entity", // Ver aplicación detallada por entidad
 
   // === DEPURACIÓN DE APPLYMODE (existing_only) ===
   // "menuEvents:spawn",   // Ver qué pasa cuando spawna una entidad
@@ -155,10 +158,12 @@ const CONSOLE_COLORS = {
  * @example debugMessage("menuApply", "Aplicando sistema a entidad", "green");
  */
 export function debugMessage(module, message, color = "gray") {
-  if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
+  dev: {
+    if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
 
-  const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.gray;
-  console.log(`\x1b[${c}m[DEBUG:${module}] ${message}\x1b[0m`);
+    const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.gray;
+    console.log(`\x1b[${c}m[DEBUG:${module}] ${message}\x1b[0m`);
+  }
 }
 
 /**
@@ -173,10 +178,12 @@ export function debugMessage(module, message, color = "gray") {
  * @example debugWarn("menuRules", "Sistema incompatible detectado", "red");
  */
 export function debugWarn(module, message, color = "yellow") {
-  if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
+  dev: {
+    if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
 
-  const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.yellow;
-  console.warn(`\x1b[${c}m[WARN:${module}] ${message}\x1b[0m`);
+    const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.yellow;
+    console.warn(`\x1b[${c}m[WARN:${module}] ${message}\x1b[0m`);
+  }
 }
 
 // =====================
@@ -195,8 +202,10 @@ export function debugWarn(module, message, color = "yellow") {
  * @example debugChat("menuScope", "Verificando 5 entidades en el scope", "aqua");
  */
 export function debugChat(module, message, color = "gray") {
-  if (!DEBUG || !isModuleEnabled(module)) return;
+  dev: {
+    if (!DEBUG || !isModuleEnabled(module)) return;
 
-  const c = CHAT_COLORS[color.toLowerCase()] ?? CHAT_COLORS.gray;
-  world.sendMessage(`${CHAT_COLORS.dark}[DEBUG:${module}]${CHAT_COLORS.reset} ${c}${message}${CHAT_COLORS.reset}`);
+    const c = CHAT_COLORS[color.toLowerCase()] ?? CHAT_COLORS.gray;
+    world.sendMessage(`${CHAT_COLORS.dark}[DEBUG:${module}]${CHAT_COLORS.reset} ${c}${message}${CHAT_COLORS.reset}`);
+  }
 }

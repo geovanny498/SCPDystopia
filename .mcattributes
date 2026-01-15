@@ -1,3 +1,7 @@
 
 diagnostic.disable.behaviorpack.items.missing=true
 diagnostic.disable.behaviorpack.trading.missing=true
+diagnostic.disable.behaviorpack.block.components.deprecated=true
+diagnostic.disable.molang.function.deprecated=true
+diagnostic.disable.minecraft.filter.has_biome_tag.type=true
+diagnostic.disable.minecraft.tag.missing=true

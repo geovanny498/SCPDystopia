@@ -32,12 +32,6 @@ const bundleTaskOptions: BundleTaskParameters = {
   sourcemap: true,
   outputSourcemapPath: path.resolve(__dirname, "./dist/debug"),
   dropLabels: isProduction ? ["dev"] : undefined,
-  // En producción, reemplaza las importaciones de debug con stubs vacíos
-  alias: isProduction
-    ? {
-        "./utils/debug.js": path.resolve(__dirname, "./scripts/utils/debug.stub.js"),
-      }
-    : undefined,
 };
 
 const copyTaskOptions: CopyTaskParameters = {
