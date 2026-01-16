@@ -1,6 +1,4 @@
 // commands/register_systems.js
-import { registerSoldierSystem } from "./toggle_system.js";
-import { registerTeleportSystem } from "./toggle_teleport.js";
 import {
   system,
   world,
@@ -9,125 +7,80 @@ import {
   CommandPermissionLevel,
   CustomCommandSource,
 } from "@minecraft/server";
-import { systemStates } from "./toggle_system.js";
-import { applySystemToAll } from "./applySystems.js";
 import { systems as menuSystems, ControlType } from "../gui/commandMenu/menu_config.js";
 import { resetAllSystems } from "./worldSave.js";
 import { resetMenuSystemStates } from "../gui/commandMenu/menu_events.js";
 import { resetScope } from "../gui/commandMenu/menu_scope.js";
 import { applySystemsToAll } from "../gui/commandMenu/menu_state.js";
 
-// En deshuso: los sistemas ahora se registran automáticamente desde menu_config.js
-// Sistema de spawn
-// registerSoldierSystem({
-//     name: "spawn",
-//     command: "spawn",
-//     statusCommand: "status_spawn",
-//     desc: "Activa o desactiva el spawn de soldados",
-//     component: "minecraft:behavior.summon_entity",
-//     startEvent: "humanoid:start_spawn_soldiers",
-//     stopEvent: "humanoid:stop_spawn_soldiers",
-//     labelOn: "Spawn activado",
-//     labelOff: "Spawn desactivado",
+// Es necesario actualizar para compatibilidad del menú de comandos o eliminar
+// system.beforeEvents.startup.subscribe((init) => {
+//   const setCmd = {
+//     name: "scpd:set_world_props",
+//     description: "Configura automáticamente las propiedades de SCPDystopia y actualiza systemStates",
+//     permissionLevel: CommandPermissionLevel.Any,
+//     cheatsRequired: false,
+//   };
+
+//   try {
+//     init.customCommandRegistry.registerCommand(setCmd, (origin) => {
+//       const defaultConfigs = {
+//         health: {
+//           foundation: { enable: true, includeSpecial: false },
+//           chaos: { enable: true, includeSpecial: true },
+//         },
+//         spawn: {
+//           foundation: { enable: true, includeSpecial: false },
+//           chaos: { enable: true, includeSpecial: true },
+//         },
+//         teleport: {
+//           foundation: { mode: "normal", includeSpecial: "false" },
+//           chaos: { mode: "normal", includeSpecial: "normal" },
+//         },
+//       };
+
+//       // Guardar en world properties y actualizar systemStates
+//       for (const [systemName, cfg] of Object.entries(defaultConfigs)) {
+//         const id = `scpd_system_${systemName}`;
+//         world.setDynamicProperty(id, JSON.stringify(cfg));
+
+//         // Actualizar systemStates si existe
+//         if (systemName === "teleport") {
+//           if (!systemStates.teleport) systemStates.teleport = {};
+//           systemStates.teleport.foundation = { ...cfg.foundation };
+//           systemStates.teleport.chaos = { ...cfg.chaos };
+//         } else {
+//           if (!systemStates[systemName]) systemStates[systemName] = {};
+//           systemStates[systemName].foundation = { ...cfg.foundation };
+//           systemStates[systemName].chaos = { ...cfg.chaos };
+//         }
+//       }
+
+//       // console.log("[SCPDystopia] Propiedades dinámicas configuradas automáticamente:", Object.keys(defaultConfigs).join(", "));
+
+//       // Aplicar los sistemas actualizados inmediatamente (usar dimensión del ejecutor si existe)
+//       try {
+//         const dim =
+//           origin && origin.sourceType === CustomCommandSource.Entity && origin.sourceEntity
+//             ? origin.sourceEntity.dimension
+//             : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
+//         for (const sysName of Object.keys(defaultConfigs)) {
+//           applySystemToAll(sysName, dim);
+//         }
+//       } catch (e) {
+//         /* no bloquear */
+//       }
+
+//       // Retornar respuesta
+//       return {
+//         status: CustomCommandStatus.Success,
+//         message: "Propiedades de SCPDystopia aplicadas automáticamente y systemStates actualizados",
+//       };
+//     });
+//   } catch (e) {
+//     console.warn("Error registrando scpd:set_world_props:", e);
+//   }
 // });
-
-// // Sistema de barra de vida
-// registerSoldierSystem({
-//     name: "health",
-//     command: "health",
-//     statusCommand: "status_health",
-//     desc: "Activa o desactiva la barra de vida de los soldados",
-//     component: "minecraft:boss",
-//     startEvent: "humanoid:show_boss_bar",
-//     stopEvent: "humanoid:dont_show_boss_bar",
-//     labelOn: "Barra de vida activada",
-//     labelOff: "Barra de vida desactivada",
-// });
-
-// // Sistema de teleport
-// registerTeleportSystem({
-//     name: "teleport",
-//     command: "teleport",
-//     statusCommand: "status_teleport",
-//     desc: "Controla el teleport de soldados",
-//     component: "minecraft:teleport",
-//     events: {
-//         start: "humanoid:start_teleport",
-//         stop: "humanoid:stop_teleport",
-//         start_near: "humanoid:start_teleport_near",
-//         stop_near: "humanoid:stop_teleport_near", // No se usa actualmente
-//     }
-// });
-
-// autoUpdate flags y comando de toggle removed — el sistema ahora aplica cambios de forma explícita mediante applySystemToAll
-
-system.beforeEvents.startup.subscribe((init) => {
-  const setCmd = {
-    name: "scpd:set_world_props",
-    description: "Configura automáticamente las propiedades de SCPDystopia y actualiza systemStates",
-    permissionLevel: CommandPermissionLevel.Any,
-    cheatsRequired: false,
-  };
-
-  try {
-    init.customCommandRegistry.registerCommand(setCmd, (origin) => {
-      const defaultConfigs = {
-        health: {
-          foundation: { enable: true, includeSpecial: false },
-          chaos: { enable: true, includeSpecial: true },
-        },
-        spawn: {
-          foundation: { enable: true, includeSpecial: false },
-          chaos: { enable: true, includeSpecial: true },
-        },
-        teleport: {
-          foundation: { mode: "normal", includeSpecial: "false" },
-          chaos: { mode: "normal", includeSpecial: "normal" },
-        },
-      };
-
-      // Guardar en world properties y actualizar systemStates
-      for (const [systemName, cfg] of Object.entries(defaultConfigs)) {
-        const id = `scpd_system_${systemName}`;
-        world.setDynamicProperty(id, JSON.stringify(cfg));
-
-        // Actualizar systemStates si existe
-        if (systemName === "teleport") {
-          if (!systemStates.teleport) systemStates.teleport = {};
-          systemStates.teleport.foundation = { ...cfg.foundation };
-          systemStates.teleport.chaos = { ...cfg.chaos };
-        } else {
-          if (!systemStates[systemName]) systemStates[systemName] = {};
-          systemStates[systemName].foundation = { ...cfg.foundation };
-          systemStates[systemName].chaos = { ...cfg.chaos };
-        }
-      }
-
-      // console.log("[SCPDystopia] Propiedades dinámicas configuradas automáticamente:", Object.keys(defaultConfigs).join(", "));
-
-      // Aplicar los sistemas actualizados inmediatamente (usar dimensión del ejecutor si existe)
-      try {
-        const dim =
-          origin && origin.sourceType === CustomCommandSource.Entity && origin.sourceEntity
-            ? origin.sourceEntity.dimension
-            : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
-        for (const sysName of Object.keys(defaultConfigs)) {
-          applySystemToAll(sysName, dim);
-        }
-      } catch (e) {
-        /* no bloquear */
-      }
-
-      // Retornar respuesta
-      return {
-        status: CustomCommandStatus.Success,
-        message: "Propiedades de SCPDystopia aplicadas automáticamente y systemStates actualizados",
-      };
-    });
-  } catch (e) {
-    console.warn("Error registrando scpd:set_world_props:", e);
-  }
-});
 
 // --- Comando check ---
 system.beforeEvents.startup.subscribe((init) => {

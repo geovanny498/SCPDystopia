@@ -33,6 +33,7 @@ export const specialUnits = {
         label: "§9§lMTF Delta-1",
         units: [
           "§c§lMTF Delta-1 Chara",
+          "§4§lMTF Delta-1 Death",
           "§d§lMTF Delta-1 Mita",
           "§d§lMTF Delta-1 Commander",
           "§d§lMTF Delta-1 Frisk",

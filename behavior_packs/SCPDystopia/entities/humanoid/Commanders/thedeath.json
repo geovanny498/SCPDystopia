@@ -109,7 +109,7 @@
       "minecraft:mode_switcher": {
         "minecraft:target_nearby_sensor": {
           "inside_range": 3.0,
-          "outside_range": 3.1,
+          "outside_range": 3.5,
           "must_see": true,
           "on_inside_range": {
             "event": "minecraft:to_melee_attack",
@@ -570,12 +570,19 @@
         },
         "minecraft:behavior.teleport_to_owner": {
           "priority": 1,
+          "cooldown": 3.0,
           "filters": {
-            "all_of": [
+            "any_of": [
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 8
+                "value": 16
+              },
+              {
+                "all_of": [
+                  { "test": "in_water", "value": true },
+                  { "test": "owner_distance", "operator": ">", "value": 8 }
+                ]
               }
             ]
           }
@@ -597,12 +604,19 @@
         },
         "minecraft:behavior.teleport_to_owner": {
           "priority": 1,
+          "cooldown": 3.0,
           "filters": {
-            "all_of": [
+            "any_of": [
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 18
+                "value": 28
+              },
+              {
+                "all_of": [
+                  { "test": "in_water", "value": true },
+                  { "test": "owner_distance", "operator": ">", "value": 12 }
+                ]
               }
             ]
           }
