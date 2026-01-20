@@ -1,86 +1,18 @@
 // commands/register_systems.js
+import { system, world, CustomCommandStatus, CommandPermissionLevel, CustomCommandSource } from "@minecraft/server";
 import {
-  system,
-  world,
-  CustomCommandParamType,
-  CustomCommandStatus,
-  CommandPermissionLevel,
-  CustomCommandSource,
-} from "@minecraft/server";
-import { systems as menuSystems, ControlType } from "../gui/commandMenu/menu_config.js";
+  systems as menuSystems,
+  ControlType,
+  UnitHierarchy,
+  UnitHierarchyLabels,
+  SpecialGroups,
+  SpecialGroupLabels,
+} from "../gui/commandMenu/menu_config.js";
 import { resetAllSystems } from "./worldSave.js";
 import { resetMenuSystemStates } from "../gui/commandMenu/menu_events.js";
 import { resetScope } from "../gui/commandMenu/menu_scope.js";
+import { resetGroups, loadGroups, getUnitsInGroup } from "../gui/commandMenu/menu_groups.js";
 import { applySystemsToAll } from "../gui/commandMenu/menu_state.js";
-
-// Es necesario actualizar para compatibilidad del menú de comandos o eliminar
-// system.beforeEvents.startup.subscribe((init) => {
-//   const setCmd = {
-//     name: "scpd:set_world_props",
-//     description: "Configura automáticamente las propiedades de SCPDystopia y actualiza systemStates",
-//     permissionLevel: CommandPermissionLevel.Any,
-//     cheatsRequired: false,
-//   };
-
-//   try {
-//     init.customCommandRegistry.registerCommand(setCmd, (origin) => {
-//       const defaultConfigs = {
-//         health: {
-//           foundation: { enable: true, includeSpecial: false },
-//           chaos: { enable: true, includeSpecial: true },
-//         },
-//         spawn: {
-//           foundation: { enable: true, includeSpecial: false },
-//           chaos: { enable: true, includeSpecial: true },
-//         },
-//         teleport: {
-//           foundation: { mode: "normal", includeSpecial: "false" },
-//           chaos: { mode: "normal", includeSpecial: "normal" },
-//         },
-//       };
-
-//       // Guardar en world properties y actualizar systemStates
-//       for (const [systemName, cfg] of Object.entries(defaultConfigs)) {
-//         const id = `scpd_system_${systemName}`;
-//         world.setDynamicProperty(id, JSON.stringify(cfg));
-
-//         // Actualizar systemStates si existe
-//         if (systemName === "teleport") {
-//           if (!systemStates.teleport) systemStates.teleport = {};
-//           systemStates.teleport.foundation = { ...cfg.foundation };
-//           systemStates.teleport.chaos = { ...cfg.chaos };
-//         } else {
-//           if (!systemStates[systemName]) systemStates[systemName] = {};
-//           systemStates[systemName].foundation = { ...cfg.foundation };
-//           systemStates[systemName].chaos = { ...cfg.chaos };
-//         }
-//       }
-
-//       // console.log("[SCPDystopia] Propiedades dinámicas configuradas automáticamente:", Object.keys(defaultConfigs).join(", "));
-
-//       // Aplicar los sistemas actualizados inmediatamente (usar dimensión del ejecutor si existe)
-//       try {
-//         const dim =
-//           origin && origin.sourceType === CustomCommandSource.Entity && origin.sourceEntity
-//             ? origin.sourceEntity.dimension
-//             : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
-//         for (const sysName of Object.keys(defaultConfigs)) {
-//           applySystemToAll(sysName, dim);
-//         }
-//       } catch (e) {
-//         /* no bloquear */
-//       }
-
-//       // Retornar respuesta
-//       return {
-//         status: CustomCommandStatus.Success,
-//         message: "Propiedades de SCPDystopia aplicadas automáticamente y systemStates actualizados",
-//       };
-//     });
-//   } catch (e) {
-//     console.warn("Error registrando scpd:set_world_props:", e);
-//   }
-// });
 
 // --- Comando check ---
 system.beforeEvents.startup.subscribe((init) => {
@@ -94,48 +26,62 @@ system.beforeEvents.startup.subscribe((init) => {
   try {
     init.customCommandRegistry.registerCommand(checkCmd, (origin) => {
       const ids = world.getDynamicPropertyIds();
-
-      // Log en consola de TODAS las propiedades dinámicas
       console.log(`[SCPDystopia] Propiedades dinámicas encontradas: ${ids.length > 0 ? ids.join(", ") : "ninguna"}`);
 
-      // Obtener dinámicamente todos los sistemas de menu_config.js
       const systemIds = Object.keys(menuSystems);
-      const scpdProps = systemIds.map((sysId) => `scpd_system_${sysId}`);
 
-      function formatSystemCompact(sysId, sysConfig, state) {
-        if (!state || !state.foundation || !state.chaos)
-          return {
-            name: sysConfig.displayName,
-            foundationNormal: "§7N/A§r",
-            foundationSpecial: "§7N/A§r",
-            chaosNormal: "§7N/A§r",
-            chaosSpecial: "§7N/A§r",
-          };
+      // Función para obtener el color de un valor de dropdown
+      function getDropdownValueColor(sysConfig, value) {
+        if (value === "false" || value === "off") return "§c";
+        const option = sysConfig.options?.find((opt) => opt.value === value);
+        if (option?.label) {
+          // Extraer el código de color del label (ej: "§aSeguir..." -> "§a")
+          const colorMatch = option.label.match(/^(§[0-9a-fk-or])/i);
+          if (colorMatch) return colorMatch[1];
+        }
+        return "§a"; // Default verde
+      }
 
-        function formatFactionCompact(data) {
-          const isDropdown = sysConfig.controlType === ControlType.DROPDOWN;
+      function formatSystemCompact(sysId, sysConfig, state, isSaved) {
+        const result = {
+          name: sysConfig.displayName,
+          isSaved: isSaved,
+          foundation: {},
+          chaos: {},
+        };
 
-          if (isDropdown) {
-            const normalMode = data.mode === "false" ? "§cOFF§r" : `§a${data.mode}§r`;
-            const specialMode = data.includeSpecial === "false" ? "§cOFF§r" : `§a${data.includeSpecial}§r`;
-            return { normal: normalMode, special: specialMode };
-          } else {
-            const enabled = data.enable ? "§aON§r" : "§cOFF§r";
-            const specials = data.includeSpecial ? "§aON§r" : "§cOFF§r";
-            return { normal: enabled, special: specials };
+        if (!state) return result;
+
+        const isDropdown = sysConfig.controlType === ControlType.DROPDOWN;
+
+        for (const faction of ["foundation", "chaos"]) {
+          const factionState = state[faction];
+          if (!factionState) continue;
+
+          // Jerarquías
+          for (const hierarchy of Object.values(UnitHierarchy)) {
+            const value = factionState[hierarchy];
+            if (isDropdown) {
+              const color = getDropdownValueColor(sysConfig, value);
+              result[faction][hierarchy] = value === "false" ? "§cOFF§r" : `${color}${value}§r`;
+            } else {
+              result[faction][hierarchy] = value ? "§aON§r" : "§cOFF§r";
+            }
+          }
+
+          // Grupos
+          for (const groupId of Object.values(SpecialGroups)) {
+            const value = factionState[groupId];
+            if (isDropdown) {
+              const color = getDropdownValueColor(sysConfig, value);
+              result[faction][groupId] = value === "false" ? "§cOFF§r" : `${color}${value}§r`;
+            } else {
+              result[faction][groupId] = value ? "§aON§r" : "§cOFF§r";
+            }
           }
         }
 
-        const foundationData = formatFactionCompact(state.foundation);
-        const chaosData = formatFactionCompact(state.chaos);
-
-        return {
-          name: sysConfig.displayName,
-          foundationNormal: foundationData.normal,
-          foundationSpecial: foundationData.special,
-          chaosNormal: chaosData.normal,
-          chaosSpecial: chaosData.special,
-        };
+        return result;
       }
 
       // Recopilar datos de todos los sistemas
@@ -144,174 +90,195 @@ system.beforeEvents.startup.subscribe((init) => {
         const id = `scpd_system_${sysId}`;
         const sysConfig = menuSystems[sysId];
         const raw = world.getDynamicProperty(id);
+        const isSaved = raw !== undefined;
         let state;
-        try {
-          state = JSON.parse(raw ?? "{}");
-        } catch {
-          state = {};
+        if (isSaved) {
+          try {
+            state = JSON.parse(raw);
+          } catch {
+            state = sysConfig.defaults;
+          }
+        } else {
+          // Usar defaults si no hay propiedad guardada
+          state = sysConfig.defaults;
         }
-
-        systemsData.push(formatSystemCompact(sysId, sysConfig, state));
+        systemsData.push(formatSystemCompact(sysId, sysConfig, state, isSaved));
       }
 
-      // Función para calcular longitud sin códigos de formato
-      function getVisibleLength(str) {
-        return str.replace(/§[0-9a-fk-or]/gi, "").length;
-      }
+      // Construir mensaje
+      let message = `§e§l[SCPDystopia] Propiedades del mundo§r\n§7${"─".repeat(60)}§r\n`;
 
-      // Función para hacer padding considerando códigos de formato
-      function padEndVisible(str, targetLength) {
-        const visibleLen = getVisibleLength(str);
-        const padding = targetLength - visibleLen;
-        return str + " ".repeat(Math.max(0, padding));
-      }
+      for (const sysData of systemsData) {
+        const statusLabel = sysData.isSaved ? "§a[Guardado]§r" : "§8[Por defecto]§r";
+        message += `\n§l${sysData.name}§r ${statusLabel}\n`;
 
-      // Crear tabla en columnas (2 columnas) con ancho fijo
-      const colsPerRow = 2;
-      const colWidth = 35;
-      const separator = "    ";
-      let message = `§e§l[SCPDystopia] Propiedades del mundo§r\n§7${"─".repeat(80)}§r\n`;
-      let consoleOutput = `[SCPDystopia] Propiedades del mundo:\n${"─".repeat(80)}\n`;
+        for (const faction of ["foundation", "chaos"]) {
+          // Colores de facción con reset después
+          const factionLabel = faction === "foundation" ? "§lFoundation§r" : "§2§lChaos§r";
+          message += `  ${factionLabel}:\n`;
 
-      for (let i = 0; i < systemsData.length; i += colsPerRow) {
-        const row = systemsData.slice(i, i + colsPerRow);
+          // Jerarquías (No Especiales)
+          message += `    §8No Especiales:§r `;
+          const hierarchyValues = [];
+          for (const h of Object.values(UnitHierarchy)) {
+            // Usar el label con color de UnitHierarchyLabels
+            const label = UnitHierarchyLabels[h];
+            hierarchyValues.push(`${label}§r=${sysData[faction][h] || "§7N/A§r"}`);
+          }
+          message += hierarchyValues.join("§7, §r") + "\n";
 
-        // Encabezados de sistemas
-        let headerLine = "";
-        let consoleHeaderLine = "";
-        for (let j = 0; j < colsPerRow; j++) {
-          const sys = row[j];
-          if (sys) {
-            const name = sys.name.substring(0, colWidth - 2);
-            headerLine += padEndVisible(`§l${name}§r`, colWidth - 6);
-            consoleHeaderLine += `${name.padEnd(colWidth)}`;
+          // Grupos (Especiales)
+          message += `    §eEspeciales:§r `;
+          const groupValues = [];
+          // Labels cortos para grupos: A, B, C, D, NG
+          const shortGroupLabels = {
+            groupA: "§9A§r",
+            groupB: "§aB§r",
+            groupC: "§6C§r",
+            groupD: "§dD§r",
+            noGroup: "§7NG§r",
+          };
+          for (const g of Object.values(SpecialGroups)) {
+            const label = shortGroupLabels[g] || g;
+            groupValues.push(`${label}=${sysData[faction][g] || "§7N/A§r"}`);
           }
-          if (j < colsPerRow - 1) {
-            headerLine += separator;
-            consoleHeaderLine += separator;
-          }
-        }
-        message += `${headerLine}\n`;
-        consoleOutput += `${consoleHeaderLine}\n`;
-
-        // Fila Foundation - Normales
-        let foundationNormalLine = "";
-        let consoleFoundationNormalLine = "";
-        for (let j = 0; j < colsPerRow; j++) {
-          const sys = row[j];
-          if (sys) {
-            const text = `§6F.Normal:§r ${sys.foundationNormal}`;
-            foundationNormalLine += padEndVisible(text, colWidth);
-            consoleFoundationNormalLine += `F.Normal: ${sys.foundationNormal}`.padEnd(colWidth);
-          }
-          if (j < colsPerRow - 1) {
-            foundationNormalLine += separator;
-            consoleFoundationNormalLine += separator;
-          }
-        }
-        message += `${foundationNormalLine}\n`;
-        consoleOutput += `${consoleFoundationNormalLine}\n`;
-
-        // Fila Foundation - Especiales
-        let foundationSpecialLine = "";
-        let consoleFoundationSpecialLine = "";
-        for (let j = 0; j < colsPerRow; j++) {
-          const sys = row[j];
-          if (sys) {
-            const text = `§6F.Special:§r ${sys.foundationSpecial}`;
-            foundationSpecialLine += padEndVisible(text, colWidth);
-            consoleFoundationSpecialLine += `F.Special: ${sys.foundationSpecial}`.padEnd(colWidth);
-          }
-          if (j < colsPerRow - 1) {
-            foundationSpecialLine += separator;
-            consoleFoundationSpecialLine += separator;
-          }
-        }
-        message += `${foundationSpecialLine}\n`;
-        consoleOutput += `${consoleFoundationSpecialLine}\n`;
-
-        // Fila Chaos - Normales
-        let chaosNormalLine = "";
-        let consoleChaosNormalLine = "";
-        for (let j = 0; j < colsPerRow; j++) {
-          const sys = row[j];
-          if (sys) {
-            const text = `§5C.Normal:§r ${sys.chaosNormal}`;
-            chaosNormalLine += padEndVisible(text, colWidth);
-            consoleChaosNormalLine += `C.Normal: ${sys.chaosNormal}`.padEnd(colWidth);
-          }
-          if (j < colsPerRow - 1) {
-            chaosNormalLine += separator;
-            consoleChaosNormalLine += separator;
-          }
-        }
-        message += `${chaosNormalLine}\n`;
-        consoleOutput += `${consoleChaosNormalLine}\n`;
-
-        // Fila Chaos - Especiales
-        let chaosSpecialLine = "";
-        let consoleChaosSpecialLine = "";
-        for (let j = 0; j < colsPerRow; j++) {
-          const sys = row[j];
-          if (sys) {
-            const text = `§5C.Special:§r ${sys.chaosSpecial}`;
-            chaosSpecialLine += padEndVisible(text, colWidth);
-            consoleChaosSpecialLine += `C.Special: ${sys.chaosSpecial}`.padEnd(colWidth);
-          }
-          if (j < colsPerRow - 1) {
-            chaosSpecialLine += separator;
-            consoleChaosSpecialLine += separator;
-          }
-        }
-        message += `${chaosSpecialLine}\n`;
-        consoleOutput += `${consoleChaosSpecialLine}\n`;
-
-        // Separador entre filas
-        if (i + colsPerRow < systemsData.length) {
-          message += `§7${"─".repeat(80)}§r\n`;
-          consoleOutput += `${"─".repeat(80)}\n`;
+          message += groupValues.join("§7, §r") + "\n";
         }
       }
 
-      message += `§7${"─".repeat(80)}§r`;
-      consoleOutput += `${"─".repeat(80)}`;
+      message += `\n§7${"─".repeat(60)}§r`;
 
-      console.log(consoleOutput);
       world.sendMessage(message);
 
       return {
         status: CustomCommandStatus.Success,
-        message: "Propiedades mostradas en consola y chat",
+        message: "Propiedades mostradas en chat",
       };
     });
   } catch {}
 });
 
-// --- Comando reset ---
+// --- Comando check_groups ---
+system.beforeEvents.startup.subscribe((init) => {
+  const checkGroupsCmd = {
+    name: "scpd:check_groups",
+    description: "Muestra qué especiales están asignados a cada grupo",
+    permissionLevel: CommandPermissionLevel.Any,
+    cheatsRequired: false,
+  };
+
+  try {
+    init.customCommandRegistry.registerCommand(checkGroupsCmd, (origin) => {
+      // Verificar si existe la propiedad dinámica
+      const rawGroups = world.getDynamicProperty("scpd_special_groups");
+      const isSaved = rawGroups !== undefined;
+      const groups = loadGroups();
+
+      // Labels cortos con colores
+      const groupLabels = {
+        groupA: "§9§lGrupo A§r",
+        groupB: "§a§lGrupo B§r",
+        groupC: "§6§lGrupo C§r",
+        groupD: "§d§lGrupo D§r",
+        noGroup: "§7§lSin Grupo§r",
+      };
+
+      const statusLabel = isSaved ? "§a[Guardado]§r" : "§8[Por defecto]§r";
+      let message = `§9§l[SCPDystopia] Grupos de Especiales§r ${statusLabel}\n§7${"─".repeat(50)}§r\n`;
+
+      for (const faction of ["foundation", "chaos"]) {
+        const factionLabel = faction === "foundation" ? "§6§lFoundation§r" : "§2§lChaos§r";
+        message += `\n${factionLabel}:\n`;
+
+        for (const groupId of Object.values(SpecialGroups)) {
+          const units = getUnitsInGroup(faction, groupId);
+          const label = groupLabels[groupId] || groupId;
+
+          if (units.length === 0) {
+            message += `  ${label}: §8(vacío)§r\n`;
+          } else {
+            message += `  ${label}: §f${units.length} unidades§r\n`;
+            for (const unit of units) {
+              // Mostrar el nombre con su formato original (ya tiene colores)
+              message += `    §7-§r ${unit}§r\n`;
+            }
+          }
+        }
+      }
+
+      message += `\n§7${"─".repeat(50)}§r`;
+
+      world.sendMessage(message);
+
+      return {
+        status: CustomCommandStatus.Success,
+        message: "Grupos mostrados en chat",
+      };
+    });
+  } catch {}
+});
+
+// --- Comando reset_groups ---
 system.beforeEvents.startup.subscribe((init) => {
   try {
     init.customCommandRegistry.registerCommand(
       {
-        name: "scpd:reset_system",
-        description: "Resetea todos los sistemas y el scope a valores por defecto",
+        name: "scpd:reset_groups",
+        description: "Reinicia los grupos de especiales a valores por defecto (Sin grupo)",
         permissionLevel: CommandPermissionLevel.Any,
         cheatsRequired: false,
       },
       (origin) => {
         try {
-          // 1. Limpiar todas las propiedades dinámicas (sistemas + scope)
+          resetGroups();
+
+          world.sendMessage("§a[SCPDystopia] Grupos de especiales reiniciados a valores por defecto");
+
+          return {
+            status: CustomCommandStatus.Success,
+            message: "Grupos reiniciados",
+          };
+        } catch (e) {
+          console.warn(`[SCPDystopia] Error en reset_groups: ${e}`);
+          return {
+            status: CustomCommandStatus.Failure,
+            message: `Error al reiniciar grupos: ${e}`,
+          };
+        }
+      }
+    );
+  } catch (e) {
+    console.warn(`Error registrando scpd:reset_groups: ${e}`);
+  }
+});
+
+// --- Comando reset_all ---
+system.beforeEvents.startup.subscribe((init) => {
+  try {
+    init.customCommandRegistry.registerCommand(
+      {
+        name: "scpd:reset_all",
+        description: "Resetea todos los sistemas, scope y grupos a valores por defecto",
+        permissionLevel: CommandPermissionLevel.Any,
+        cheatsRequired: false,
+      },
+      (origin) => {
+        try {
+          // 1. Limpiar todas las propiedades dinámicas
           resetAllSystems();
 
-          // 2. Reiniciar estados del menú en memoria (recarga defaults desde menu_config.js)
+          // 2. Reiniciar estados del menú en memoria
           resetMenuSystemStates();
 
-          // 3. Resetear scope (también usa defaults)
+          // 3. Resetear scope
           resetScope();
 
-          // 4. Aplicar los sistemas reseteados a todas las entidades existentes
+          // 4. Resetear grupos de especiales
+          resetGroups();
+
+          // 5. Aplicar los sistemas reseteados a todas las entidades existentes
           system.run(() => {
             try {
-              // Obtener dimensión del ejecutor si existe, sino aplicar en todas
               const dimension =
                 origin && origin.sourceType === CustomCommandSource.Entity && origin.sourceEntity
                   ? origin.sourceEntity.dimension
@@ -328,10 +295,10 @@ system.beforeEvents.startup.subscribe((init) => {
 
           return {
             status: CustomCommandStatus.Success,
-            message: "Todos los sistemas y scope reseteados a valores por defecto. Aplicando a entidades...",
+            message: "Todos los sistemas, scope y grupos reseteados a valores por defecto",
           };
         } catch (e) {
-          console.warn(`[SCPDystopia] Error en reset_system: ${e}`);
+          console.warn(`[SCPDystopia] Error en reset_all: ${e}`);
           return {
             status: CustomCommandStatus.Failure,
             message: `Error al resetear: ${e}`,
@@ -340,6 +307,6 @@ system.beforeEvents.startup.subscribe((init) => {
       }
     );
   } catch (e) {
-    console.warn(`Error registrando scpd:reset_system: ${e}`);
+    console.warn(`Error registrando scpd:reset_all: ${e}`);
   }
 });

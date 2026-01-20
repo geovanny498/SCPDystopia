@@ -9,6 +9,7 @@ import "./gui/gui.js";
 import "./gui/commandMenu/menu.js";
 import "./commands/config_command.js";
 import "./commands/scope_commands.js";
+import "./commands/teleport_command.js";
 
 // Importar funciones de inicialización del menú
 import {

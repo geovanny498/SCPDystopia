@@ -1,6 +1,6 @@
 // scripts/gui/commandMenu/menu_state.js
 import { saveSystemState, loadSystemState } from "../../commands/worldSave.js";
-import { getSystemConfig, getSystemDefaults, getSystemEvents } from "./menu_config.js";
+import { getSystemConfig, getSystemDefaults } from "./menu_config.js";
 import { applySystemWithEvents } from "./menu_apply.js";
 import { updateMenuSystemState } from "./menu_events.js";
 import { debugWarn } from "../../utils/debug.js";
@@ -8,8 +8,6 @@ import { debugWarn } from "../../utils/debug.js";
 /**
  * Carga el estado de un sistema desde propiedades dinámicas
  * Si no existe, retorna los valores por defecto
- * @param {string} systemId
- * @returns {Object}
  */
 export function loadSystemOrDefault(systemId) {
   const loaded = loadSystemState(systemId);
@@ -19,8 +17,6 @@ export function loadSystemOrDefault(systemId) {
 
 /**
  * Carga los estados de múltiples sistemas
- * @param {Array<string>} systemIds
- * @returns {Object}
  */
 export function loadSystemStates(systemIds) {
   const states = {};
@@ -35,15 +31,13 @@ export function loadSystemStates(systemIds) {
 /**
  * Guarda el estado de un sistema en propiedades dinámicas
  * y actualiza el estado compartido en memoria
- * @param {string} systemId
- * @param {Object} state
  */
 export function saveSystemAndUpdateMemory(systemId, state) {
   try {
     // Guardar en propiedades dinámicas
     saveSystemState(systemId, state);
 
-    // Actualizar estado en memoria del menú (independiente de toggle_system)
+    // Actualizar estado en memoria del menú
     updateMenuSystemState(systemId, state);
 
     debugWarn("menuState", `Sistema ${systemId} guardado y actualizado en memoria`, "green");
@@ -54,7 +48,6 @@ export function saveSystemAndUpdateMemory(systemId, state) {
 
 /**
  * Guarda los estados de múltiples sistemas
- * @param {Object} parsedStates - Estados parseados del formulario
  */
 export function saveSystemStates(parsedStates) {
   for (const systemId in parsedStates) {
@@ -64,8 +57,6 @@ export function saveSystemStates(parsedStates) {
 
 /**
  * Aplica un sistema a todas las entidades usando los eventos de la configuración
- * @param {string} systemId
- * @param {Dimension} dimension
  */
 export function applySystemToAll(systemId, dimension) {
   try {
@@ -84,8 +75,6 @@ export function applySystemToAll(systemId, dimension) {
 
 /**
  * Aplica múltiples sistemas
- * @param {Array<string>} systemIds
- * @param {Dimension} dimension
  */
 export function applySystemsToAll(systemIds, dimension) {
   systemIds.forEach((systemId) => {

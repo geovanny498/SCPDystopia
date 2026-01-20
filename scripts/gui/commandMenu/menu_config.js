@@ -17,11 +17,74 @@ export const Factions = {
   CHAOS: "chaos",
 };
 
+// Definición de grupos para especiales (A-D + Sin grupo)
+export const SpecialGroups = {
+  GROUP_A: "groupA",
+  GROUP_B: "groupB",
+  GROUP_C: "groupC",
+  GROUP_D: "groupD",
+  NO_GROUP: "noGroup",
+};
+
+// Labels para los grupos
+export const SpecialGroupLabels = {
+  [SpecialGroups.GROUP_A]: "§9Grupo A",
+  [SpecialGroups.GROUP_B]: "§aGrupo B",
+  [SpecialGroups.GROUP_C]: "§6Grupo C",
+  [SpecialGroups.GROUP_D]: "§dGrupo D",
+  [SpecialGroups.NO_GROUP]: "§8Sin grupo",
+};
+
+// Definición de jerarquías para no especiales
+export const UnitHierarchy = {
+  BASIC: "basic",
+  LEADER: "leader",
+  COMMANDER: "commander",
+};
+
+// Labels para jerarquías
+export const UnitHierarchyLabels = {
+  [UnitHierarchy.BASIC]: "§7Básicos",
+  [UnitHierarchy.LEADER]: "§eL\u00edderes",
+  [UnitHierarchy.COMMANDER]: "§6Comandantes",
+};
+
 // NOTA: Algunas unidades pueden aparecer en múltiples subgrupos.
 // El sistema usa OR lógico: la unidad estará EN SCOPE si está en
 // CUALQUIERA de los subgrupos seleccionados.
 
-// Definición de unidades especiales por bando con subgrupos
+/**
+ * Definición de unidades NO especiales por bando y jerarquía (por typeId)
+ * Similar a cómo specialUnits define subgrupos, pero usando typeId en lugar de nametag
+ */
+export const normalUnits = {
+  [Factions.FOUNDATION]: {
+    [UnitHierarchy.BASIC]: [
+      "lc:dt_epsilon11",
+      "lc:dt_eta10",
+      "lc:dt_nu7",
+      "lc:dt_beta7",
+      "lc:dt_epsilon6",
+      "lc:dt_alpha1",
+    ],
+    [UnitHierarchy.LEADER]: [
+      "lc:dt_alpha1l",
+      "lc:dt_epsilon11c",
+      "lc:dt_eta10c",
+      "lc:dt_nu7c",
+      "lc:dt_beta7c",
+      "lc:dt_epsilon6c",
+    ],
+    [UnitHierarchy.COMMANDER]: ["lc:dt_chara", "lc:dt_thedeath", "lc:dt_alpha1c"],
+  },
+  [Factions.CHAOS]: {
+    [UnitHierarchy.BASIC]: ["lc:dt_chaos_insurgency"],
+    [UnitHierarchy.LEADER]: ["lc:dt_cd"],
+    [UnitHierarchy.COMMANDER]: ["lc:dt_cd_commander", "lc:dt_cd_leader"],
+  },
+};
+
+// Definición de unidades especiales por bando con subgrupos (por nametag)
 export const specialUnits = {
   [Factions.FOUNDATION]: {
     // Lista plana para compatibilidad (se genera automáticamente)
@@ -89,16 +152,22 @@ for (const faction in specialUnits) {
  * Definición de sistemas
  * Cada sistema define su comportamiento completo incluyendo eventos
  * Puedes usar códigos § directamente en displayName
+ *
+ * NUEVO: supportsHierarchy indica si el sistema soporta jerarquías (Básicos/Líderes/Comandantes)
+ * NUEVO: supportsGroups indica si el sistema soporta grupos de especiales (A-D + Sin grupo)
  */
 export const systems = {
   movement: {
     id: "movement",
     displayName: "§1Movimiento / Patrulla",
     description: "§8(Sólo entidades existentes)",
+    tooltip: "Controla cómo se mueven las unidades: seguir al jugador, caminar libremente o detenerse",
     category: "movement_patrol",
     dynamicProperty: "scpd_system_movement",
     controlType: ControlType.DROPDOWN,
     supportsSpecials: true,
+    supportsHierarchy: true,
+    supportsGroups: true,
 
     // Opciones para dropdown con eventos asociados
     options: [
@@ -135,19 +204,36 @@ export const systems = {
     factions: {
       [Factions.FOUNDATION]: {
         label: "§lFoundation",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
       [Factions.CHAOS]: {
         label: "§2§lChaos",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
     },
 
+    // Defaults por jerarquía y grupos
     defaults: {
-      [Factions.FOUNDATION]: { mode: "free", includeSpecial: "free" },
-      [Factions.CHAOS]: { mode: "free", includeSpecial: "free" },
+      [Factions.FOUNDATION]: {
+        // Jerarquías (no especiales)
+        [UnitHierarchy.BASIC]: "free",
+        [UnitHierarchy.LEADER]: "free",
+        [UnitHierarchy.COMMANDER]: "free",
+        // Grupos de especiales
+        [SpecialGroups.GROUP_A]: "free",
+        [SpecialGroups.GROUP_B]: "free",
+        [SpecialGroups.GROUP_C]: "free",
+        [SpecialGroups.GROUP_D]: "free",
+        [SpecialGroups.NO_GROUP]: "free",
+      },
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: "free",
+        [UnitHierarchy.LEADER]: "free",
+        [UnitHierarchy.COMMANDER]: "free",
+        [SpecialGroups.GROUP_A]: "free",
+        [SpecialGroups.GROUP_B]: "free",
+        [SpecialGroups.GROUP_C]: "free",
+        [SpecialGroups.GROUP_D]: "free",
+        [SpecialGroups.NO_GROUP]: "free",
+      },
     },
   },
 
@@ -155,13 +241,15 @@ export const systems = {
     id: "fire",
     displayName: "§cModo de Disparo",
     description: "",
+    tooltip:
+      "Define cuándo y cómo atacan las unidades: guerra abierta, presencia armada, defensivo, al recibir daño, etc.",
     category: "combat",
     dynamicProperty: "scpd_system_fire",
     controlType: ControlType.DROPDOWN,
     supportsSpecials: true,
+    supportsHierarchy: true,
+    supportsGroups: true,
 
-    // Opciones para dropdown con eventos asociados
-    // IMPORTANTE: Siempre debe tener uno de los 3 modos activos
     options: [
       {
         value: "open_warfare",
@@ -196,19 +284,33 @@ export const systems = {
     factions: {
       [Factions.FOUNDATION]: {
         label: "§lFoundation",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
       [Factions.CHAOS]: {
         label: "§2§lChaos",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
     },
 
     defaults: {
-      [Factions.FOUNDATION]: { mode: "armed_presence", includeSpecial: "armed_presence" },
-      [Factions.CHAOS]: { mode: "armed_presence", includeSpecial: "armed_presence" },
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: "armed_presence",
+        [UnitHierarchy.LEADER]: "armed_presence",
+        [UnitHierarchy.COMMANDER]: "armed_presence",
+        [SpecialGroups.GROUP_A]: "armed_presence",
+        [SpecialGroups.GROUP_B]: "armed_presence",
+        [SpecialGroups.GROUP_C]: "armed_presence",
+        [SpecialGroups.GROUP_D]: "armed_presence",
+        [SpecialGroups.NO_GROUP]: "armed_presence",
+      },
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: "armed_presence",
+        [UnitHierarchy.LEADER]: "armed_presence",
+        [UnitHierarchy.COMMANDER]: "armed_presence",
+        [SpecialGroups.GROUP_A]: "armed_presence",
+        [SpecialGroups.GROUP_B]: "armed_presence",
+        [SpecialGroups.GROUP_C]: "armed_presence",
+        [SpecialGroups.GROUP_D]: "armed_presence",
+        [SpecialGroups.NO_GROUP]: "armed_presence",
+      },
     },
   },
 
@@ -216,12 +318,14 @@ export const systems = {
     id: "spawn",
     displayName: "§1Spawn de soldados",
     description: "",
+    tooltip: "Activa o desactiva la generación automática de soldados adicionales",
     category: "advanced",
     dynamicProperty: "scpd_system_spawn",
     controlType: ControlType.TOGGLE,
     supportsSpecials: true,
+    supportsHierarchy: true,
+    supportsGroups: true,
 
-    // Eventos asociados a cada opción
     events: {
       enable: {
         true: "humanoid:start_spawn_soldiers",
@@ -232,19 +336,33 @@ export const systems = {
     factions: {
       [Factions.FOUNDATION]: {
         label: "§lFoundation",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
       [Factions.CHAOS]: {
         label: "§2§lChaos",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
     },
 
     defaults: {
-      [Factions.FOUNDATION]: { enable: false, includeSpecial: false },
-      [Factions.CHAOS]: { enable: false, includeSpecial: false },
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
+      },
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
+      },
     },
   },
 
@@ -252,12 +370,14 @@ export const systems = {
     id: "health",
     displayName: "§cBarra de vida",
     description: "",
+    tooltip: "Muestra u oculta la barra de vida de las unidades en pantalla",
     category: "advanced",
     dynamicProperty: "scpd_system_health",
     controlType: ControlType.TOGGLE,
     supportsSpecials: true,
+    supportsHierarchy: true,
+    supportsGroups: true,
 
-    // Eventos asociados a cada opción
     events: {
       enable: {
         true: "humanoid:show_boss_bar",
@@ -268,19 +388,33 @@ export const systems = {
     factions: {
       [Factions.FOUNDATION]: {
         label: "§lFoundation",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
       [Factions.CHAOS]: {
         label: "§2§lChaos",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
     },
 
     defaults: {
-      [Factions.FOUNDATION]: { enable: false, includeSpecial: false },
-      [Factions.CHAOS]: { enable: false, includeSpecial: false },
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
+      },
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
+      },
     },
   },
 
@@ -288,19 +422,20 @@ export const systems = {
     id: "teleport",
     displayName: "§2Teletransportación",
     description: "",
+    tooltip: "Controla si las unidades pueden teletransportarse al enemigo cuando están lejos",
     category: "advanced",
     dynamicProperty: "scpd_system_teleport",
     controlType: ControlType.DROPDOWN,
     supportsSpecials: true,
+    supportsHierarchy: true,
+    supportsGroups: true,
 
-    // Opciones para dropdown con eventos asociados
     options: [
       {
         value: "normal",
         label: "§aNormal",
         events: {
           start: "humanoid:start_teleport",
-          // stop: "humanoid:stop_teleport"
         },
       },
       {
@@ -308,7 +443,6 @@ export const systems = {
         label: "§6Cercano",
         events: {
           start: "humanoid:start_teleport_near",
-          // stop: "humanoid:stop_teleport_near"
         },
       },
       {
@@ -323,19 +457,33 @@ export const systems = {
     factions: {
       [Factions.FOUNDATION]: {
         label: "§lFoundation",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
       [Factions.CHAOS]: {
         label: "§2§lChaos",
-        normalLabel: "Normales",
-        specialLabel: "Especiales",
       },
     },
 
     defaults: {
-      [Factions.FOUNDATION]: { mode: "false", includeSpecial: "false" },
-      [Factions.CHAOS]: { mode: "false", includeSpecial: "false" },
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: "false",
+        [UnitHierarchy.LEADER]: "false",
+        [UnitHierarchy.COMMANDER]: "false",
+        [SpecialGroups.GROUP_A]: "false",
+        [SpecialGroups.GROUP_B]: "false",
+        [SpecialGroups.GROUP_C]: "false",
+        [SpecialGroups.GROUP_D]: "false",
+        [SpecialGroups.NO_GROUP]: "false",
+      },
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: "false",
+        [UnitHierarchy.LEADER]: "false",
+        [UnitHierarchy.COMMANDER]: "false",
+        [SpecialGroups.GROUP_A]: "false",
+        [SpecialGroups.GROUP_B]: "false",
+        [SpecialGroups.GROUP_C]: "false",
+        [SpecialGroups.GROUP_D]: "false",
+        [SpecialGroups.NO_GROUP]: "false",
+      },
     },
   },
 };
@@ -466,4 +614,66 @@ export function getSystemEvents(systemId, value) {
   }
 
   return {};
+}
+
+/**
+ * Obtiene la jerarquía de una entidad no especial por su typeId
+ * @param {string} typeId
+ * @param {string} faction
+ * @returns {string|null} - UnitHierarchy value o null si no se encuentra
+ */
+export function getUnitHierarchy(typeId, faction) {
+  const factionUnits = normalUnits[faction];
+  if (!factionUnits) return null;
+
+  for (const hierarchy of Object.values(UnitHierarchy)) {
+    if (factionUnits[hierarchy]?.includes(typeId)) {
+      return hierarchy;
+    }
+  }
+  return null;
+}
+
+/**
+ * Verifica si un typeId pertenece a unidades normales de un bando
+ * @param {string} typeId
+ * @param {string} faction
+ * @returns {boolean}
+ */
+export function isNormalUnit(typeId, faction) {
+  return getUnitHierarchy(typeId, faction) !== null;
+}
+
+/**
+ * Obtiene todos los typeIds de unidades normales de un bando
+ * @param {string} faction
+ * @returns {Array<string>}
+ */
+export function getAllNormalTypeIds(faction) {
+  const factionUnits = normalUnits[faction];
+  if (!factionUnits) return [];
+
+  const allTypeIds = [];
+  for (const hierarchy of Object.values(UnitHierarchy)) {
+    if (factionUnits[hierarchy]) {
+      allTypeIds.push(...factionUnits[hierarchy]);
+    }
+  }
+  return allTypeIds;
+}
+
+/**
+ * Obtiene la lista de grupos de especiales disponibles
+ * @returns {Array<{id: string, label: string}>}
+ */
+export function getSpecialGroupsList() {
+  return Object.entries(SpecialGroupLabels).map(([id, label]) => ({ id, label }));
+}
+
+/**
+ * Obtiene la lista de jerarquías disponibles
+ * @returns {Array<{id: string, label: string}>}
+ */
+export function getHierarchyList() {
+  return Object.entries(UnitHierarchyLabels).map(([id, label]) => ({ id, label }));
 }

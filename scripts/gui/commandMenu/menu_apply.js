@@ -1,9 +1,9 @@
 // scripts/gui/commandMenu/menu_apply.js
 import { world } from "@minecraft/server";
 import { debugMessage, debugWarn } from "../../utils/debug.js";
-import { ControlType, getSystemEvents } from "./menu_config.js";
+import { ControlType, getSystemEvents, SpecialGroups, UnitHierarchy } from "./menu_config.js";
 import { canApplySystem } from "./menu_rules.js";
-import { getEntityFactionInfo, isValidSoldier } from "./menu_faction.js";
+import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "./menu_faction.js";
 import { loadScope, isEntityInScope } from "./menu_scope.js";
 import { teamFamilies } from "../../utils/teams.js";
 
@@ -23,8 +23,6 @@ export function injectMenuEventAccessors(accessors) {
 
 /**
  * Trigger seguro de eventos en entidades
- * @param {Entity} ent
- * @param {string} eventName
  */
 function safeTriggerEvent(ent, eventName) {
   if (!ent || !eventName) return;
@@ -35,18 +33,9 @@ function safeTriggerEvent(ent, eventName) {
   }
 }
 
-// isValidSoldier ahora se importa desde menu_faction.js
-
 /**
  * Aplica un sistema a una entidad específica usando eventos de la configuración
- * IMPORTANTE: Esta función NO verifica el scope. El llamador debe verificar isEntityInScope() antes de llamar.
- * @param {string} systemId
- * @param {Object} systemConfig
- * @param {Entity} ent
- * @param {Object} stateOverride - Estado opcional (si no se pasa, usa el de memoria)
- * @param {boolean} skipCompatibilityCheck - Si es true, omite la verificación de compatibilidad
- * @param {string} factionOverride - Facción pre-calculada (opcional, para optimización)
- * @param {boolean} isSpecialOverride - Si es especial pre-calculado (opcional, para optimización)
+ * NUEVO: Usa jerarquías para no especiales y grupos para especiales
  */
 export function applySystemToEntity(
   systemId,
@@ -54,11 +43,12 @@ export function applySystemToEntity(
   ent,
   stateOverride = null,
   skipCompatibilityCheck = false,
-  factionOverride = null,
-  isSpecialOverride = null
+  factionInfoOverride = null
 ) {
   try {
-    const specials = getMenuSpecialSoldiers ? getMenuSpecialSoldiers() : { foundation: [], chaos: [] };
+    const specials = getMenuSpecialSoldiers
+      ? getMenuSpecialSoldiers()
+      : { foundation: { all: [] }, chaos: { all: [] } };
 
     if (!ent || !isValidSoldier(ent, specials)) return;
 
@@ -70,25 +60,17 @@ export function applySystemToEntity(
       return;
     }
 
-    // Usar facción pre-calculada o calcularla
-    let faction, isSpecial;
-    if (factionOverride !== null && isSpecialOverride !== null) {
-      faction = factionOverride;
-      isSpecial = isSpecialOverride;
-    } else {
-      // Determinar el bando y si es especial usando el módulo centralizado
-      const factionInfo = getEntityFactionInfo(ent, specials);
-      if (!factionInfo) {
-        debugWarn("menuApply:entity", `${ent.nameTag || ent.typeId}: No se pudo determinar facción`, "red");
-        return;
-      }
-      faction = factionInfo.faction;
-      isSpecial = factionInfo.isSpecial;
+    // Obtener información de facción
+    const factionInfo = factionInfoOverride || getEntityFactionInfo(ent, specials);
+    if (!factionInfo) {
+      debugWarn("menuApply:entity", `${ent.nameTag || ent.typeId}: No se pudo determinar facción`, "red");
+      return;
     }
 
+    const { faction, isSpecial, hierarchy, group } = factionInfo;
     const nameTag = ent.nameTag ?? "";
 
-    // Verificar compatibilidad con otros sistemas (a menos que se omita explícitamente)
+    // Verificar compatibilidad con otros sistemas
     if (!skipCompatibilityCheck) {
       const allStates = stateOverride ? { ...systemStates, [systemId]: stateOverride } : systemStates;
       const result = canApplySystem(systemId, allStates, faction, isSpecial);
@@ -105,29 +87,34 @@ export function applySystemToEntity(
       return;
     }
 
+    // Obtener el valor de configuración según jerarquía/grupo
+    const configValue = getEntityConfigValue(factionState, factionInfo);
+
+    if (configValue === undefined) {
+      debugWarn("menuApply:entity", `Sistema ${systemId}: Sin valor para ${isSpecial ? group : hierarchy}`, "yellow");
+      return;
+    }
+
+    // Construir etiqueta para debug
+    const entityLabel = isSpecial
+      ? `${nameTag} [${faction}-especial-${group}]`
+      : `${nameTag} [${faction}-${hierarchy}]`;
+
     // Aplicar según el tipo de control
     if (systemConfig.controlType === ControlType.TOGGLE) {
-      // Para toggle, determinar si está habilitado
-      const isEnabled = isSpecial ? factionState.includeSpecial : factionState.enable;
-
-      // Obtener eventos
+      const isEnabled = !!configValue;
       const events = getSystemEvents(systemId, isEnabled);
 
       if (events.event) {
         safeTriggerEvent(ent, events.event);
         debugWarn(
           "menuApply:entity",
-          `${systemId} → ${nameTag} [${faction}${isSpecial ? "-especial" : "-normal"}]: ${isEnabled ? "ON" : "OFF"}`,
+          `${systemId} → ${entityLabel}: ${isEnabled ? "ON" : "OFF"}`,
           isEnabled ? "green" : "gray"
         );
-      } else {
-        debugWarn("menuApply:entity", `Sistema ${systemId}: Sin evento configurado`, "yellow");
       }
     } else if (systemConfig.controlType === ControlType.DROPDOWN) {
-      // Para dropdown, obtener el modo seleccionado
-      const mode = isSpecial ? factionState.includeSpecial : factionState.mode;
-
-      // Obtener eventos para este modo
+      const mode = configValue;
       const events = getSystemEvents(systemId, mode);
 
       // Primero detener cualquier modo anterior
@@ -135,20 +122,12 @@ export function applySystemToEntity(
         safeTriggerEvent(ent, events.stop);
       }
 
-      // Luego iniciar el nuevo modo (si no es "false" u "off")
+      // Luego iniciar el nuevo modo
       if (events.start && mode !== "false" && mode !== "off") {
         safeTriggerEvent(ent, events.start);
-        debugWarn(
-          "menuApply:entity",
-          `${systemId} → ${nameTag} [${faction}${isSpecial ? "-especial" : "-normal"}]: modo=${mode}`,
-          "green"
-        );
+        debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: modo=${mode}`, "green");
       } else {
-        debugWarn(
-          "menuApply:entity",
-          `${systemId} → ${nameTag} [${faction}${isSpecial ? "-especial" : "-normal"}]: desactivado`,
-          "gray"
-        );
+        debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: desactivado`, "gray");
       }
     }
   } catch (e) {
@@ -158,65 +137,59 @@ export function applySystemToEntity(
 
 /**
  * Aplica un sistema a todas las entidades usando eventos de la configuración
- * @param {string} systemId
- * @param {Object} systemConfig
- * @param {Dimension} dimension
  */
 export function applySystemWithEvents(systemId, systemConfig, dimension = null) {
   try {
     const seen = new Set();
     let appliedCount = 0;
     let skippedCount = 0;
-    const specials = getMenuSpecialSoldiers ? getMenuSpecialSoldiers() : { foundation: [], chaos: [] };
+    const specials = getMenuSpecialSoldiers
+      ? getMenuSpecialSoldiers()
+      : { foundation: { all: [] }, chaos: { all: [] } };
 
     // Cargar scope una sola vez para optimización
     const scope = loadScope();
 
     debugWarn("menuApply", `=== Aplicando sistema ${systemId} ===`, "cyan");
-    debugWarn("menuApply", `Scope actual: ${JSON.stringify(scope)}`, "gray");
 
     // Construir array de familias válidas desde teamFamilies
     const validFamilies = [...teamFamilies.chaos, ...teamFamilies.foundation];
 
-    debugMessage("menuApply", `Filtrando por ${validFamilies.length} familias: ${validFamilies.join(", ")}`, "blue");
-
-    // 1) Escanear entidades en la dimensión solicitada o en todas
+    // Escanear entidades en la dimensión solicitada o en todas
     const dims = dimension
       ? [dimension]
       : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
 
     for (const dim of dims) {
-      // Optimización: Obtener entidades por familia usando EntityQueryOptions
-      // Nota: families requiere que la entidad tenga TODAS las familias, así que iteramos por cada familia
       for (const family of validFamilies) {
         const ents = dim.getEntities({ families: [family] });
-        debugMessage("menuApply", `Filtrando por familia ${family} en dim ${dim.id}`, "blue");
-        debugMessage("menuApply", `Encontradas ${ents.length} entidades`, "blue");
+
         for (const ent of ents) {
           if (!ent || !ent.id) continue;
           if (seen.has(ent.id)) continue;
           seen.add(ent.id);
           if (!isValidSoldier(ent, specials)) continue;
 
-          // Verificar si está en scope antes de aplicar
+          // Obtener información de facción
           const factionInfo = getEntityFactionInfo(ent, specials);
           if (!factionInfo) continue;
 
           const { faction, isSpecial } = factionInfo;
           const nameTag = ent.nameTag ?? "";
 
-          if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope)) {
+          // Verificar scope (pasando jerarquía para no especiales)
+          if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, factionInfo.hierarchy)) {
             skippedCount++;
             continue;
           }
 
-          applySystemToEntity(systemId, systemConfig, ent, null, false);
+          applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo);
           appliedCount += 1;
         }
       }
     }
 
-    // 2) Procesar lista auxiliar de soldados conocida
+    // Procesar lista auxiliar de soldados conocida
     const allSoldiers = getMenuSoldiers ? getMenuSoldiers() : null;
     if (Array.isArray(allSoldiers)) {
       for (const id of allSoldiers) {
@@ -227,19 +200,18 @@ export function applySystemWithEvents(systemId, systemConfig, dimension = null) 
           seen.add(id);
           if (!isValidSoldier(ent, specials)) continue;
 
-          // Verificar si está en scope antes de aplicar
           const factionInfo = getEntityFactionInfo(ent, specials);
           if (!factionInfo) continue;
 
           const { faction, isSpecial } = factionInfo;
           const nameTag = ent.nameTag ?? "";
 
-          if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope)) {
+          if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, factionInfo.hierarchy)) {
             skippedCount++;
             continue;
           }
 
-          applySystemToEntity(systemId, systemConfig, ent, null, false);
+          applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo);
           appliedCount += 1;
         } catch {}
       }

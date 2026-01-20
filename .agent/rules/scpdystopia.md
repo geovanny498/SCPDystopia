@@ -11,5 +11,3 @@ Hay funciones de depuración en scripts/utils/debug.js para mejor personalizaci�
 Existen comandos dentro de scripts\commands para modificar en masa a los soldados dentro de la carpeta entities\humanoid. Hay un menú en scripts\gui para personalizar a los soldados de manera individual. Por las carpetas puedes saber la jerarquia de los soldados.
 
 Puedes consultar @minecraft/server y @minecraft/server-ui dentro de node_modules para buscar funciones o métodos en caso de ser necesario.
-
-Si usas debugWarn, debugMessage o debugChat, ponelos dentro de dev: {} para que se puedan eliminar al compilar en modo producción.

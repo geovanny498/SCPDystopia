@@ -3,58 +3,41 @@ import { system } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { debugWarn } from "../../utils/debug.js";
 import { loadScope, saveScope, getScopeSummary } from "./menu_scope.js";
-import { specialUnits } from "./menu_config.js";
+import { specialUnits, UnitHierarchy, UnitHierarchyLabels } from "./menu_config.js";
 
 /**
  * Muestra el menú principal de configuración de scope
- * @param {Player} player
  */
 export function showScopeMenu(player) {
   try {
     debugWarn("menuScope", "=== showScopeMenu iniciado ===", "cyan");
 
-    const currentScope = loadScope();
-    const summary = getScopeSummary(currentScope);
-
     const form = new ActionFormData()
-      .title("§9Alcance de Aplicación")
-      .body(`§7Define §la quién §r§7se aplicarán los cambios en los sistemas:`);
+      .title("§eAlcance de Aplicación")
+      .body("§7Define §la quién §r§7se aplicarán los cambios en los sistemas:");
 
     form.button("§lConfigurar Foundation");
     form.button("§2§lConfigurar Chaos");
     form.button("§8« Volver al menú principal");
 
-    debugWarn("menuScope", "Mostrando ActionForm...", "cyan");
-
     system.run(() => {
       form
         .show(player)
         .then((res) => {
-          debugWarn(
-            "menuScope",
-            `ActionForm resultado: canceled=${res?.canceled}, selection=${res?.selection}`,
-            "cyan"
-          );
-
           if (!res || res.canceled) {
             import("./menu.js").then((module) => {
               system.run(() => {
                 module.buildAndShowMenu(player);
               });
             });
-            debugWarn("menuScope", "ActionForm cancelado", "yellow");
             return;
           }
 
           if (res.selection === 0) {
-            debugWarn("menuScope", "Seleccionado: Foundation", "green");
             showFactionScopeMenu(player, "foundation");
           } else if (res.selection === 1) {
-            debugWarn("menuScope", "Seleccionado: Chaos", "green");
             showFactionScopeMenu(player, "chaos");
-          } else if (res.selection === 2) {
-            debugWarn("menuScope", "Volviendo al menú principal", "gray");
-            // Importar dinámicamente para evitar ciclos
+          } else {
             import("./menu.js").then((module) => {
               system.run(() => {
                 module.buildAndShowMenu(player);
@@ -73,28 +56,26 @@ export function showScopeMenu(player) {
 
 /**
  * Muestra el menú de configuración de scope para una facción específica
- * @param {Player} player
- * @param {string} faction - "foundation" | "chaos"
  */
 function showFactionScopeMenu(player, faction) {
   try {
-    debugWarn("menuScope", `=== showFactionScopeMenu iniciado (${faction}) ===`, "cyan");
-
     const currentScope = loadScope();
     const factionScope = currentScope[faction];
     const factionData = specialUnits[faction];
-
-    debugWarn("menuScope", `factionScope: ${JSON.stringify(factionScope)}`, "gray");
-
     const factionLabel = faction === "foundation" ? "§lFoundation" : "§2§lChaos";
 
-    const form = new ActionFormData()
-      .title(`§9Alcance§r - ${factionLabel}`)
-      .body("§7Selecciona qué unidades se verán afectadas:");
+    // Construir resumen de estado actual
+    const basicStatus = factionScope[UnitHierarchy.BASIC] ? "§aIncluidos" : "§cExcluidos";
+    const leaderStatus = factionScope[UnitHierarchy.LEADER] ? "§aIncluidos" : "§cExcluidos";
+    const commanderStatus = factionScope[UnitHierarchy.COMMANDER] ? "§aIncluidos" : "§cExcluidos";
 
-    // Botón para normales (abre modal simple)
-    const normalsStatus = factionScope.includeNormals !== undefined ? factionScope.includeNormals : true;
-    form.button(`Normales: ${normalsStatus ? "§aIncluidas" : "§cExcluidas"}`);
+    const form = new ActionFormData()
+      .title(`§eAlcance§r - ${factionLabel}`)
+      .body("§7Selecciona qué unidades se verán afectadas:");
+    // Botón para configurar jerarquías (No Especiales)
+    form
+      .button(`§8No Especiales\n§8B: ${basicStatus}§r §eL: ${leaderStatus}§r §6C: ${commanderStatus}§r`)
+      .label("§e── Especiales ──");
 
     // Botones para cada subgrupo de especiales
     const subgroupIds = Object.keys(factionData.subgroups);
@@ -105,46 +86,28 @@ function showFactionScopeMenu(player, faction) {
       form.button(`${subgroup.label}\n§8${selectedCount}/${totalCount} seleccionadas`);
     });
 
-    // Botón para volver
     form.button("§8« Volver");
-
-    debugWarn("menuScope", `Mostrando ActionForm para ${faction}...`, "cyan");
 
     system.run(() => {
       form
         .show(player)
         .then((res) => {
-          debugWarn(
-            "menuScope",
-            `ActionForm resultado: canceled=${res?.canceled}, selection=${res?.selection}`,
-            "cyan"
-          );
-
           if (!res || res.canceled) {
-            debugWarn("menuScope", "ActionForm cancelado, volviendo al menú de scope", "yellow");
-            system.run(() => {
-              showScopeMenu(player);
-            });
+            showScopeMenu(player);
             return;
           }
 
           const selection = res.selection;
 
           if (selection === 0) {
-            // Configurar normales
-            debugWarn("menuScope", "Seleccionado: Normales", "green");
-            showNormalsModal(player, faction);
+            // Configurar jerarquías (No Especiales)
+            showHierarchyModal(player, faction);
           } else if (selection > 0 && selection <= subgroupIds.length) {
             // Configurar subgrupo específico
             const subgroupId = subgroupIds[selection - 1];
-            debugWarn("menuScope", `Seleccionado subgrupo: ${subgroupId}`, "green");
             showSubgroupModal(player, faction, subgroupId);
           } else {
-            // Volver
-            debugWarn("menuScope", "Volviendo al menú de scope", "gray");
-            system.run(() => {
-              showScopeMenu(player);
-            });
+            showScopeMenu(player);
           }
         })
         .catch((err) => {
@@ -153,64 +116,81 @@ function showFactionScopeMenu(player, faction) {
     });
   } catch (e) {
     debugWarn("menuScope", `Error en showFactionScopeMenu: ${e}`, "red");
-    debugWarn("menuScope", `Stack: ${e.stack}`, "red");
   }
 }
 
 /**
- * Muestra modal para configurar normales
- * @param {Player} player
- * @param {string} faction
+ * Muestra modal para configurar jerarquías (Básicos, Líderes, Comandantes)
  */
-function showNormalsModal(player, faction) {
+function showHierarchyModal(player, faction) {
   try {
     const currentScope = loadScope();
     const factionScope = currentScope[faction];
     const factionLabel = faction === "foundation" ? "§lFoundation" : "§2§lChaos";
 
-    const normalsDefault = factionScope.includeNormals !== undefined ? factionScope.includeNormals : true;
-
     const form = new ModalFormData()
-      .title(`Normales - ${factionLabel}`)
-      .toggle("Incluir unidades normales", { defaultValue: normalsDefault })
-      .submitButton("§aGuardar");
+      .title(`§7No Especiales - ${factionLabel}`)
+      .label("§7Selecciona qué unidades incluir según su jerarquía:");
+
+    // Toggle para cada jerarquía
+    const basicDefault = factionScope[UnitHierarchy.BASIC] !== undefined ? factionScope[UnitHierarchy.BASIC] : true;
+    const leaderDefault = factionScope[UnitHierarchy.LEADER] !== undefined ? factionScope[UnitHierarchy.LEADER] : true;
+    const commanderDefault =
+      factionScope[UnitHierarchy.COMMANDER] !== undefined ? factionScope[UnitHierarchy.COMMANDER] : true;
+
+    form.toggle(`${UnitHierarchyLabels[UnitHierarchy.BASIC]}§r (MTFs base)`, { defaultValue: basicDefault });
+    form.toggle(`${UnitHierarchyLabels[UnitHierarchy.LEADER]}§r (Líderes de escuadrón)`, {
+      defaultValue: leaderDefault,
+    });
+    form.toggle(`${UnitHierarchyLabels[UnitHierarchy.COMMANDER]}§r (Comandantes)`, { defaultValue: commanderDefault });
+
+    form.submitButton("§aGuardar");
 
     system.run(() => {
       form
         .show(player)
         .then((res) => {
           if (!res || res.canceled) {
-            system.run(() => {
-              showFactionScopeMenu(player, faction);
-            });
+            showFactionScopeMenu(player, faction);
             return;
           }
 
-          const includeNormals = !!res.formValues[0];
-          currentScope[faction].includeNormals = includeNormals;
+          const values = res.formValues;
+          // Filtrar valores undefined (del label)
+          const filtered = values.filter((v) => v !== undefined && v !== null);
+
+          currentScope[faction][UnitHierarchy.BASIC] = !!filtered[0];
+          currentScope[faction][UnitHierarchy.LEADER] = !!filtered[1];
+          currentScope[faction][UnitHierarchy.COMMANDER] = !!filtered[2];
+
           saveScope(currentScope);
 
-          player.sendMessage(`§a[SCOPE] Normales ${includeNormals ? "incluidas" : "excluidas"}`);
-          debugWarn("menuScope", `Normales actualizadas: ${includeNormals}`, "green");
+          const statusMsg = [
+            `§7Básicos: ${filtered[0] ? "§aON" : "§cOFF"}`,
+            `§eLíderes: ${filtered[1] ? "§aON" : "§cOFF"}`,
+            `§6Comandantes: ${filtered[2] ? "§aON" : "§cOFF"}`,
+          ].join("§r, ");
 
-          system.run(() => {
-            showFactionScopeMenu(player, faction);
-          });
+          player.sendMessage(`§a[SCOPE] Jerarquías actualizadas: ${statusMsg}§r`);
+          debugWarn(
+            "menuScope",
+            `Jerarquías actualizadas: B=${filtered[0]}, L=${filtered[1]}, C=${filtered[2]}`,
+            "green"
+          );
+
+          showFactionScopeMenu(player, faction);
         })
         .catch((err) => {
-          debugWarn("menuScope", `Error en modal normales: ${err}`, "red");
+          debugWarn("menuScope", `Error en modal jerarquías: ${err}`, "red");
         });
     });
   } catch (e) {
-    debugWarn("menuScope", `Error en showNormalsModal: ${e}`, "red");
+    debugWarn("menuScope", `Error en showHierarchyModal: ${e}`, "red");
   }
 }
 
 /**
- * Muestra modal para configurar un subgrupo específico
- * @param {Player} player
- * @param {string} faction
- * @param {string} subgroupId
+ * Muestra modal para configurar un subgrupo específico de especiales
  */
 function showSubgroupModal(player, faction, subgroupId) {
   try {
@@ -227,7 +207,7 @@ function showSubgroupModal(player, faction, subgroupId) {
 
     const form = new ModalFormData()
       .title(`§9${subgroup.label}§r - ${factionLabel}`)
-      .label("§7Selecciona las unidades a incluir:");
+      .label("§7Selecciona las unidades especiales a incluir:");
 
     // Agregar toggle para cada unidad
     subgroup.units.forEach((unitName) => {
@@ -242,9 +222,7 @@ function showSubgroupModal(player, faction, subgroupId) {
         .show(player)
         .then((res) => {
           if (!res || res.canceled) {
-            system.run(() => {
-              showFactionScopeMenu(player, faction);
-            });
+            showFactionScopeMenu(player, faction);
             return;
           }
 
@@ -276,11 +254,8 @@ function showSubgroupModal(player, faction, subgroupId) {
 
           const selectedCount = subgroup.units.filter((u) => currentUnits.includes(u)).length;
           player.sendMessage(`§a[SCOPE] ${subgroup.label}: ${selectedCount}/${subgroup.units.length} seleccionadas`);
-          debugWarn("menuScope", `Subgrupo ${subgroupId} actualizado: ${selectedCount} unidades`, "green");
 
-          system.run(() => {
-            showFactionScopeMenu(player, faction);
-          });
+          showFactionScopeMenu(player, faction);
         })
         .catch((err) => {
           debugWarn("menuScope", `Error en modal subgrupo: ${err}`, "red");

@@ -1,14 +1,21 @@
 // scripts/gui/commandMenu/menu_builder.js
 import { ModalFormData } from "@minecraft/server-ui";
-import { ControlType, Factions, menuConfig } from "./menu_config.js";
+import {
+  ControlType,
+  Factions,
+  UnitHierarchy,
+  UnitHierarchyLabels,
+  SpecialGroups,
+  SpecialGroupLabels,
+  menuConfig,
+} from "./menu_config.js";
+import { loadGroups, getGroupsSummary, getUnitsInGroup } from "./menu_groups.js";
 
 /**
  * Construye el formulario para uno o más sistemas
- * @param {Array<Object>} systems - Array de configuraciones de sistemas
- * @param {Object} loadedStates - Estados cargados de los sistemas
- * @returns {ModalFormData}
+ * NUEVO: Soporta jerarquías (Básicos/Líderes/Comandantes) y grupos de especiales (A-D + Sin grupo)
  */
-export function buildSystemForm(systems, loadedStates) {
+export function buildSystemForm(systems, loadedStates, selectedFaction = null) {
   // Determinar el título
   let title = menuConfig.title;
   if (systems.length === 1) {
@@ -17,18 +24,24 @@ export function buildSystemForm(systems, loadedStates) {
 
   const form = new ModalFormData().title(title);
 
-  const systemCount = systems.length;
+  // Si no hay facción seleccionada, mostrar selector de facción primero
+  // (esto se maneja en menu_system.js, aquí asumimos que ya se seleccionó)
+  const factions = selectedFaction ? [selectedFaction] : [Factions.FOUNDATION, Factions.CHAOS];
+
+  // Cargar resumen de grupos para cada facción (forzar recarga para datos actualizados)
+  loadGroups(true); // Forzar recarga antes de obtener el resumen
+  const groupsSummaryByFaction = {};
+  for (const faction of factions) {
+    groupsSummaryByFaction[faction] = getGroupsSummary(faction);
+  }
 
   systems.forEach((system, index) => {
     // Título del sistema (solo si hay múltiples sistemas)
-    if (systemCount > 1) {
+    if (systems.length > 1) {
       form.label(system.displayName);
     }
 
-    // Construir controles para cada bando
-    const factionOrder = [Factions.FOUNDATION, Factions.CHAOS];
-
-    factionOrder.forEach((faction) => {
+    factions.forEach((faction) => {
       const factionConfig = system.factions[faction];
       if (!factionConfig) return;
 
@@ -38,37 +51,69 @@ export function buildSystemForm(systems, loadedStates) {
       // Estado cargado o default
       const state = loadedStates[system.id]?.[faction] || system.defaults[faction];
 
-      // Controles según el tipo
-      if (system.controlType === ControlType.TOGGLE) {
-        // Toggle para normales
-        const normalValue = state.enable ?? false;
-        form.toggle(factionConfig.normalLabel, { defaultValue: normalValue });
+      // Sección: No Especiales (Jerarquías)
+      if (system.supportsHierarchy) {
+        form.label("§7── No Especiales ──");
 
-        // Toggle para especiales (si está soportado)
-        if (system.supportsSpecials) {
-          const specialValue = state.includeSpecial ?? false;
-          form.toggle(factionConfig.specialLabel, { defaultValue: specialValue });
+        for (const hierarchy of Object.values(UnitHierarchy)) {
+          const hierarchyLabel = UnitHierarchyLabels[hierarchy];
+          const currentValue = state[hierarchy];
+
+          // Agregar tooltip del sistema solo al primer dropdown (Básicos)
+          const isFirstHierarchy = hierarchy === UnitHierarchy.BASIC;
+          const tooltipOptions = isFirstHierarchy && system.tooltip ? { tooltip: system.tooltip } : {};
+
+          if (system.controlType === ControlType.TOGGLE) {
+            const value = currentValue ?? false;
+            form.toggle(hierarchyLabel, { defaultValue: !!value, ...tooltipOptions });
+          } else if (system.controlType === ControlType.DROPDOWN) {
+            const labels = system.options.map((opt) => opt.label);
+            const currentIndex = system.options.findIndex((opt) => opt.value === currentValue);
+            form.dropdown(hierarchyLabel, labels, {
+              defaultValueIndex: Math.max(0, currentIndex),
+              ...tooltipOptions,
+            });
+          }
         }
-      } else if (system.controlType === ControlType.DROPDOWN) {
-        // Dropdown para normales
-        const normalValue = state.mode ?? system.defaults[faction].mode;
-        const normalIndex = system.options.findIndex((opt) => opt.value === normalValue);
-        const labels = system.options.map((opt) => opt.label);
+      }
 
-        form.dropdown(factionConfig.normalLabel, labels, { defaultValueIndex: Math.max(0, normalIndex) });
+      // Sección: Especiales (Grupos)
+      if (system.supportsGroups) {
+        form.label("§e── Especiales ──");
 
-        // Dropdown para especiales (si está soportado)
-        if (system.supportsSpecials) {
-          const specialValue = state.includeSpecial ?? system.defaults[faction].includeSpecial;
-          const specialIndex = system.options.findIndex((opt) => opt.value === specialValue);
+        const groupsSummary = groupsSummaryByFaction[faction] || {};
 
-          form.dropdown(factionConfig.specialLabel, labels, { defaultValueIndex: Math.max(0, specialIndex) });
+        for (const groupId of Object.values(SpecialGroups)) {
+          const baseLabel = SpecialGroupLabels[groupId];
+          const unitCount = groupsSummary[groupId] || 0;
+          // Agregar cantidad de unidades al label
+          const groupLabel = `${baseLabel}§r §8(${unitCount})`;
+          const currentValue = state[groupId];
+
+          // Crear tooltip con las unidades del grupo
+          const unitsInGroup = getUnitsInGroup(faction, groupId);
+          const tooltip =
+            unitsInGroup.length > 0
+              ? `Unidades en ${baseLabel}:\n§r${unitsInGroup.join("\n§r")}`
+              : `${baseLabel} está vacío`;
+
+          if (system.controlType === ControlType.TOGGLE) {
+            const value = currentValue ?? false;
+            form.toggle(groupLabel, { defaultValue: !!value, tooltip: tooltip });
+          } else if (system.controlType === ControlType.DROPDOWN) {
+            const labels = system.options.map((opt) => opt.label);
+            const currentIndex = system.options.findIndex((opt) => opt.value === currentValue);
+            form.dropdown(groupLabel, labels, {
+              defaultValueIndex: Math.max(0, currentIndex),
+              tooltip: tooltip,
+            });
+          }
         }
       }
     });
 
-    // Divisor entre sistemas (excepto después del último)
-    if (menuConfig.useDividers && index < systemCount - 1) {
+    // Divisor entre sistemas
+    if (menuConfig.useDividers && index < systems.length - 1) {
       form.divider();
     }
   });
@@ -80,11 +125,9 @@ export function buildSystemForm(systems, loadedStates) {
 
 /**
  * Parsea los valores del formulario para uno o más sistemas
- * @param {Array<Object>} systems - Array de configuraciones de sistemas
- * @param {Array} formValues - Valores retornados por el formulario
- * @returns {Object} - Estados parseados por sistema
+ * NUEVO: Soporta jerarquías y grupos
  */
-export function parseSystemFormValues(systems, formValues) {
+export function parseSystemFormValues(systems, formValues, selectedFaction = null) {
   // Filtrar valores nulos/undefined (labels y dividers)
   const filtered = formValues.filter((v) => v !== null && v !== undefined);
 
@@ -97,47 +140,53 @@ export function parseSystemFormValues(systems, formValues) {
     return v;
   };
 
+  const factions = selectedFaction ? [selectedFaction] : [Factions.FOUNDATION, Factions.CHAOS];
+
   systems.forEach((system) => {
-    const systemState = {
-      [Factions.FOUNDATION]: {},
-      [Factions.CHAOS]: {},
-    };
+    const systemState = {};
 
-    const factionOrder = [Factions.FOUNDATION, Factions.CHAOS];
+    // Inicializar estados para ambas facciones
+    for (const f of [Factions.FOUNDATION, Factions.CHAOS]) {
+      systemState[f] = {};
+    }
 
-    factionOrder.forEach((faction) => {
-      if (system.controlType === ControlType.TOGGLE) {
-        // Leer toggle de normales
-        const normalValue = !!nextValue();
-        systemState[faction].enable = normalValue;
-
-        // Leer toggle de especiales (si está soportado)
-        if (system.supportsSpecials) {
-          const specialValue = !!nextValue();
-          systemState[faction].includeSpecial = specialValue;
+    factions.forEach((faction) => {
+      // Leer jerarquías (no especiales)
+      if (system.supportsHierarchy) {
+        for (const hierarchy of Object.values(UnitHierarchy)) {
+          if (system.controlType === ControlType.TOGGLE) {
+            systemState[faction][hierarchy] = !!nextValue();
+          } else if (system.controlType === ControlType.DROPDOWN) {
+            const index = nextValue();
+            systemState[faction][hierarchy] =
+              typeof index === "number" ? system.options[index]?.value : system.defaults[faction][hierarchy];
+          }
         }
-      } else if (system.controlType === ControlType.DROPDOWN) {
-        // Leer dropdown de normales
-        const normalIndex = nextValue();
-        const normalValue =
-          typeof normalIndex === "number"
-            ? system.options[normalIndex]?.value
-            : normalIndex || system.defaults[faction].mode;
+      }
 
-        systemState[faction].mode = normalValue;
-
-        // Leer dropdown de especiales (si está soportado)
-        if (system.supportsSpecials) {
-          const specialIndex = nextValue();
-          const specialValue =
-            typeof specialIndex === "number"
-              ? system.options[specialIndex]?.value
-              : specialIndex || system.defaults[faction].includeSpecial;
-
-          systemState[faction].includeSpecial = specialValue;
+      // Leer grupos (especiales)
+      if (system.supportsGroups) {
+        for (const groupId of Object.values(SpecialGroups)) {
+          if (system.controlType === ControlType.TOGGLE) {
+            systemState[faction][groupId] = !!nextValue();
+          } else if (system.controlType === ControlType.DROPDOWN) {
+            const index = nextValue();
+            systemState[faction][groupId] =
+              typeof index === "number" ? system.options[index]?.value : system.defaults[faction][groupId];
+          }
         }
       }
     });
+
+    // Si solo se configuró una facción, copiar defaults para la otra
+    if (selectedFaction) {
+      const otherFaction = selectedFaction === Factions.FOUNDATION ? Factions.CHAOS : Factions.FOUNDATION;
+      // Mantener el estado anterior de la otra facción si existe
+      const existingState = parsedStates[system.id]?.[otherFaction];
+      if (!existingState) {
+        systemState[otherFaction] = { ...system.defaults[otherFaction] };
+      }
+    }
 
     parsedStates[system.id] = systemState;
   });
@@ -147,21 +196,13 @@ export function parseSystemFormValues(systems, formValues) {
 
 /**
  * Genera el mensaje de confirmación según los sistemas configurados
- * @param {string} playerName - Nombre del jugador
- * @param {Array<Object>} systems - Array de sistemas configurados
- * @param {boolean} isAllCategory - Si se configuró la categoría "all"
- * @returns {string}
  */
 export function getConfirmationMessage(playerName, systems, isAllCategory = false) {
-  // Si es la categoría "all", usar mensaje general
   if (isAllCategory) {
     return menuConfig.messages.allSystems.replace("{player}", playerName);
   }
 
-  // Si es un solo sistema o múltiples, listar sus nombres con colores
-  const systemNames = systems
-    .map((sys) => `${sys.displayName}§r`) // Mantener colores y agregar §r después
-    .join(", ");
+  const systemNames = systems.map((sys) => `${sys.displayName}§r`).join(", ");
 
   return menuConfig.messages.specificSystems.replace("{player}", playerName).replace("{systems}", systemNames);
 }
