@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/menu_scope.js
 import { world } from "@minecraft/server";
 import { debugWarn } from "../../utils/debug.js";
-import { specialUnits } from "./menu_config.js";
+import { specialUnits, UnitHierarchy } from "./menu_config.js";
 
 /**
  * Sistema de Alcance de Aplicación (Scope)
@@ -10,69 +10,105 @@ import { specialUnits } from "./menu_config.js";
  * Es independiente del formulario de sistemas (que define QUÉ se hace).
  *
  * El scope se guarda en dynamic properties y persiste hasta que el jugador lo cambie.
+ *
+ * NUEVO: Soporta jerarquías separadas (basic, leader, commander) en lugar de un solo toggle "includeNormals"
  */
 
 const SCOPE_PROPERTY = "scpd_menu_scope";
 
 /**
- * CONFIGURACIÓN: Define si por defecto se incluyen todas las unidades especiales
- * - true: Todas las unidades especiales están seleccionadas por defecto
- * - false: Ninguna unidad especial está seleccionada por defecto (solo normales)
+ * CONFIGURACIÓN: Define si por defecto se incluyen todas las unidades
  */
-const INCLUDE_ALL_SPECIALS_BY_DEFAULT = true;
+const INCLUDE_ALL_BY_DEFAULT = true;
 
 /**
  * Cache del scope en memoria para evitar cargas duplicadas
- * Se invalida cuando se guarda un nuevo scope
  */
 let scopeCache = null;
 
 /**
  * Genera el scope por defecto
- * Si INCLUDE_ALL_SPECIALS_BY_DEFAULT es true, incluye todas las unidades especiales
- * Si es false, solo incluye normales (sin especiales)
- * @returns {Object}
+ * Incluye jerarquías separadas: basic, leader, commander
  */
 function generateDefaultScope() {
   const scope = {
     foundation: {
-      includeNormals: true,
-      includeSpecials: INCLUDE_ALL_SPECIALS_BY_DEFAULT,
+      // Jerarquías separadas (reemplaza includeNormals)
+      [UnitHierarchy.BASIC]: INCLUDE_ALL_BY_DEFAULT,
+      [UnitHierarchy.LEADER]: INCLUDE_ALL_BY_DEFAULT,
+      [UnitHierarchy.COMMANDER]: INCLUDE_ALL_BY_DEFAULT,
+      // Especiales (se mantiene igual)
+      includeSpecials: INCLUDE_ALL_BY_DEFAULT,
       specialUnits: [],
     },
     chaos: {
-      includeNormals: true,
-      includeSpecials: INCLUDE_ALL_SPECIALS_BY_DEFAULT,
+      [UnitHierarchy.BASIC]: INCLUDE_ALL_BY_DEFAULT,
+      [UnitHierarchy.LEADER]: INCLUDE_ALL_BY_DEFAULT,
+      [UnitHierarchy.COMMANDER]: INCLUDE_ALL_BY_DEFAULT,
+      includeSpecials: INCLUDE_ALL_BY_DEFAULT,
       specialUnits: [],
     },
   };
 
   // Si la configuración indica incluir todas las especiales, agregarlas
-  if (INCLUDE_ALL_SPECIALS_BY_DEFAULT) {
-    // Agregar todas las unidades especiales de Foundation
+  if (INCLUDE_ALL_BY_DEFAULT) {
     if (specialUnits.foundation && specialUnits.foundation.all) {
       scope.foundation.specialUnits = [...specialUnits.foundation.all];
     }
-
-    // Agregar todas las unidades especiales de Chaos
     if (specialUnits.chaos && specialUnits.chaos.all) {
       scope.chaos.specialUnits = [...specialUnits.chaos.all];
     }
   }
-  // Si es false, el array queda vacío (ya inicializado arriba)
 
   return scope;
 }
 
 /**
+ * Migra un scope antiguo al nuevo formato con jerarquías
+ */
+function migrateOldScope(oldScope) {
+  const newScope = generateDefaultScope();
+
+  for (const faction of ["foundation", "chaos"]) {
+    if (!oldScope[faction]) continue;
+
+    const oldFaction = oldScope[faction];
+
+    // Migrar includeNormals a las 3 jerarquías
+    if (oldFaction.includeNormals !== undefined) {
+      newScope[faction][UnitHierarchy.BASIC] = oldFaction.includeNormals;
+      newScope[faction][UnitHierarchy.LEADER] = oldFaction.includeNormals;
+      newScope[faction][UnitHierarchy.COMMANDER] = oldFaction.includeNormals;
+    }
+
+    // Copiar jerarquías si ya existen
+    if (oldFaction[UnitHierarchy.BASIC] !== undefined) {
+      newScope[faction][UnitHierarchy.BASIC] = oldFaction[UnitHierarchy.BASIC];
+    }
+    if (oldFaction[UnitHierarchy.LEADER] !== undefined) {
+      newScope[faction][UnitHierarchy.LEADER] = oldFaction[UnitHierarchy.LEADER];
+    }
+    if (oldFaction[UnitHierarchy.COMMANDER] !== undefined) {
+      newScope[faction][UnitHierarchy.COMMANDER] = oldFaction[UnitHierarchy.COMMANDER];
+    }
+
+    // Copiar especiales
+    if (oldFaction.includeSpecials !== undefined) {
+      newScope[faction].includeSpecials = oldFaction.includeSpecials;
+    }
+    if (oldFaction.specialUnits) {
+      newScope[faction].specialUnits = [...oldFaction.specialUnits];
+    }
+  }
+
+  return newScope;
+}
+
+/**
  * Carga el scope desde dynamic properties
- * Usa cache en memoria para evitar cargas duplicadas
- * @param {boolean} forceReload - Si es true, ignora el cache y recarga desde propiedades
- * @returns {Object}
  */
 export function loadScope(forceReload = false) {
   try {
-    // Si hay cache y no se fuerza la recarga, usar el cache
     if (scopeCache && !forceReload) {
       debugWarn("menuScope", "Scope cargado desde cache en memoria", "gray");
       return scopeCache;
@@ -81,24 +117,16 @@ export function loadScope(forceReload = false) {
     const raw = world.getDynamicProperty(SCOPE_PROPERTY);
 
     if (!raw) {
-      const msg = INCLUDE_ALL_SPECIALS_BY_DEFAULT
-        ? "No hay scope guardado, generando defaults (todas las unidades incluidas)"
-        : "No hay scope guardado, generando defaults (solo normales, sin especiales)";
-      debugWarn("menuScope", msg, "yellow");
-
+      debugWarn("menuScope", "No hay scope guardado, generando defaults", "yellow");
       const defaultScope = generateDefaultScope();
-      debugWarn("menuScope", `Default scope generado: ${JSON.stringify(defaultScope)}`, "gray");
-
-      // Guardar en cache
       scopeCache = defaultScope;
       return defaultScope;
     }
 
-    debugWarn("menuScope", `Scope cargado desde propiedades dinámicas`, "cyan");
+    debugWarn("menuScope", "Scope cargado desde propiedades dinámicas", "cyan");
     const parsed = JSON.parse(raw);
-    debugWarn("menuScope", `Scope parseado: ${JSON.stringify(parsed)}`, "gray");
 
-    // Validar estructura
+    // Validar estructura básica
     if (!parsed.foundation || !parsed.chaos) {
       debugWarn("menuScope", "Scope inválido, generando defaults", "yellow");
       const defaultScope = generateDefaultScope();
@@ -106,7 +134,18 @@ export function loadScope(forceReload = false) {
       return defaultScope;
     }
 
-    // Guardar en cache
+    // Verificar si necesita migración (tiene includeNormals pero no tiene jerarquías)
+    const needsMigration =
+      parsed.foundation.includeNormals !== undefined && parsed.foundation[UnitHierarchy.BASIC] === undefined;
+
+    if (needsMigration) {
+      debugWarn("menuScope", "Migrando scope antiguo al nuevo formato con jerarquías", "yellow");
+      const migratedScope = migrateOldScope(parsed);
+      saveScope(migratedScope);
+      scopeCache = migratedScope;
+      return migratedScope;
+    }
+
     scopeCache = parsed;
     return parsed;
   } catch (e) {
@@ -119,19 +158,13 @@ export function loadScope(forceReload = false) {
 
 /**
  * Guarda el scope en dynamic properties
- * Invalida el cache para forzar recarga en la próxima lectura
- * @param {Object} scope
  */
 export function saveScope(scope) {
   try {
     const serialized = JSON.stringify(scope);
     world.setDynamicProperty(SCOPE_PROPERTY, serialized);
-
-    // Invalidar cache para que la próxima carga sea desde propiedades
     scopeCache = scope;
-
     debugWarn("menuScope", "Scope guardado correctamente", "green");
-    debugWarn("menuScope", `Scope guardado: ${serialized}`, "gray");
   } catch (e) {
     debugWarn("menuScope", `Error guardando scope: ${e}`, "red");
   }
@@ -139,14 +172,15 @@ export function saveScope(scope) {
 
 /**
  * Verifica si una entidad está dentro del scope actual
+ * ACTUALIZADO: Ahora verifica por jerarquía específica para no especiales
  * @param {Entity} ent
  * @param {string} faction - "foundation" | "chaos"
  * @param {boolean} isSpecial
  * @param {string} nameTag - nameTag de la entidad
- * @param {Object} scope - Scope actual (opcional, si no se pasa se carga)
- * @returns {boolean}
+ * @param {Object} scope - Scope actual (opcional)
+ * @param {string} hierarchy - Jerarquía de la entidad (basic/leader/commander) para no especiales
  */
-export function isEntityInScope(ent, faction, isSpecial, nameTag, scope = null) {
+export function isEntityInScope(ent, faction, isSpecial, nameTag, scope = null, hierarchy = null) {
   if (!scope) {
     scope = loadScope();
   }
@@ -157,15 +191,28 @@ export function isEntityInScope(ent, faction, isSpecial, nameTag, scope = null) 
     return false;
   }
 
-  // Si es normal: verificar includeNormals
+  // Si es normal: verificar por jerarquía específica
   if (!isSpecial) {
-    const inScope = !!factionScope.includeNormals;
+    // Si se proporciona jerarquía, verificar esa específica
+    if (hierarchy && factionScope[hierarchy] !== undefined) {
+      const inScope = !!factionScope[hierarchy];
+      debugWarn(
+        "menuScope:check",
+        `${nameTag} [${faction}-${hierarchy}]: ${inScope ? "EN SCOPE" : "FUERA DE SCOPE"}`,
+        inScope ? "green" : "gray"
+      );
+      return inScope;
+    }
+
+    // Fallback: verificar si alguna jerarquía está activa (compatibilidad)
+    const anyHierarchyActive =
+      factionScope[UnitHierarchy.BASIC] || factionScope[UnitHierarchy.LEADER] || factionScope[UnitHierarchy.COMMANDER];
     debugWarn(
       "menuScope:check",
-      `${nameTag} [${faction}-normal]: ${inScope ? "EN SCOPE" : "FUERA DE SCOPE"}`,
-      inScope ? "green" : "gray"
+      `${nameTag} [${faction}-normal]: ${anyHierarchyActive ? "EN SCOPE" : "FUERA DE SCOPE"}`,
+      anyHierarchyActive ? "green" : "gray"
     );
-    return inScope;
+    return anyHierarchyActive;
   }
 
   // Si es especial: verificar si la unidad individual está en la lista
@@ -189,8 +236,6 @@ export function isEntityInScope(ent, faction, isSpecial, nameTag, scope = null) 
 
 /**
  * Obtiene un resumen legible del scope actual
- * @param {Object} scope
- * @returns {string}
  */
 export function getScopeSummary(scope) {
   const lines = [];
@@ -202,9 +247,11 @@ export function getScopeSummary(scope) {
     const factionLabel = faction === "foundation" ? "§lFoundation" : "§2§lChaos";
     const parts = [];
 
-    if (factionScope.includeNormals) {
-      parts.push("§aNormales");
-    }
+    // Mostrar estado de cada jerarquía
+    const basicStatus = factionScope[UnitHierarchy.BASIC] ? "§aON" : "§cOFF";
+    const leaderStatus = factionScope[UnitHierarchy.LEADER] ? "§aON" : "§cOFF";
+    const commanderStatus = factionScope[UnitHierarchy.COMMANDER] ? "§aON" : "§cOFF";
+    parts.push(`§7B: ${basicStatus}§r, §eL: ${leaderStatus}§r, §6C: ${commanderStatus}§r`);
 
     // Mostrar unidades especiales seleccionadas
     if (factionScope.specialUnits && factionScope.specialUnits.length > 0) {
@@ -213,49 +260,32 @@ export function getScopeSummary(scope) {
       const selectedCount = factionScope.specialUnits.length;
 
       if (selectedCount === totalSpecials) {
-        parts.push(`§eEspeciales: §aTodas (${selectedCount})`);
+        parts.push(`§eEsp: §aTodas§r`);
       } else {
-        parts.push(`§eEspeciales: ${selectedCount}/${totalSpecials}`);
+        parts.push(`§eEsp: ${selectedCount}/${totalSpecials}§r`);
       }
     } else {
-      parts.push("§eEspeciales: §cNinguna");
+      parts.push("§eEsp: §c0§r");
     }
 
-    if (parts.length > 0) {
-      lines.push(`${factionLabel}§r: ${parts.join("§r + ")}`);
-    } else {
-      lines.push(`${factionLabel}§r: §cNinguna unidad seleccionada`);
-    }
+    lines.push(`${factionLabel}§r: ${parts.join(" | ")}`);
   }
 
-  return lines.length > 0 ? lines.join("\n") : "§cNinguna unidad seleccionada en ninguna facción";
+  return lines.length > 0 ? lines.join("\n") : "§cNinguna unidad seleccionada";
 }
 
 /**
  * Reinicia el scope a valores por defecto
- * IMPORTANTE: Sobrescribe completamente la propiedad dinámica
  */
 export function resetScope() {
   try {
     debugWarn("menuScope", "=== INICIANDO RESET DE SCOPE ===", "cyan");
-
-    // Generar el nuevo scope con defaults
     const newScope = generateDefaultScope();
-    debugWarn("menuScope", `Nuevo scope generado: ${JSON.stringify(newScope)}`, "gray");
-
-    // Sobrescribir directamente la propiedad dinámica (no intentar borrarla primero)
     saveScope(newScope);
-
-    const msg = INCLUDE_ALL_SPECIALS_BY_DEFAULT
-      ? "Scope reiniciado a valores por defecto (todas las unidades incluidas)"
-      : "Scope reiniciado a valores por defecto (solo normales, sin especiales)";
-    debugWarn("menuScope", msg, "green");
-    debugWarn("menuScope", "=== RESET DE SCOPE COMPLETADO ===", "cyan");
-
+    debugWarn("menuScope", "Scope reiniciado a valores por defecto", "green");
     return newScope;
   } catch (e) {
     debugWarn("menuScope", `Error reseteando scope: ${e}`, "red");
-    debugWarn("menuScope", `Stack: ${e.stack}`, "red");
     const defaultScope = generateDefaultScope();
     scopeCache = defaultScope;
     return defaultScope;

@@ -1,5 +1,5 @@
 // scripts/commands/scope_commands.js
-import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel } from "@minecraft/server";
+import { system, world, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel } from "@minecraft/server";
 import { loadScope, resetScope, getScopeSummary } from "../gui/commandMenu/menu_scope.js";
 import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
 import { applySystemsToAll } from "../gui/commandMenu/menu_state.js";
@@ -29,17 +29,23 @@ system.beforeEvents.startup.subscribe((init) => {
         }
 
         const entity = origin.sourceEntity;
+
+        // Verificar si existe la propiedad dinámica
+        const rawScope = world.getDynamicProperty("scpd_menu_scope");
+        const isSaved = rawScope !== undefined;
+
         const scope = loadScope();
         const summary = getScopeSummary(scope);
 
         // Mostrar en chat del jugador
-        entity.sendMessage("§9=== Alcance de Aplicación Actual ===");
+        const statusLabel = isSaved ? "§a[Guardado]§r" : "§8[Por defecto]§r";
+        entity.sendMessage(`§e=== Alcance de Aplicación Actual ===§r ${statusLabel}`);
         entity.sendMessage(summary);
         entity.sendMessage("§8Usa el menú para modificar el alcance");
         // entity.sendMessage("§8Datos técnicos: " + JSON.stringify(scope));
 
         // Mostrar en consola
-        console.warn("§9=== Alcance de Aplicación Actual ===");
+        console.warn("§e=== Alcance de Aplicación Actual ===");
         console.warn(summary);
         console.warn(`Datos técnicos: ${JSON.stringify(scope)}`);
         console.warn(`Consultado por: ${entity.name}`);

@@ -5,6 +5,7 @@ import { debugWarn } from "../../utils/debug.js";
 
 import { getCategoryConfig, getSystemsByCategory } from "./menu_config.js";
 import { showSystemMenu } from "./menu_system.js";
+import { showScopeMenu } from "./menu_scope_ui.js";
 
 /**
  * Muestra el menú de una categoría específica
@@ -53,6 +54,12 @@ export function showCategoryMenu(player, categoryId) {
     // Agregar botón para configurar todos
     form.button(`§lConfigurar Todos\n§r§8todos los sistemas de esta categoría`);
 
+    // Si es la categoría "advanced", agregar botón de Alcance
+    const isAdvanced = categoryId === "advanced";
+    if (isAdvanced) {
+      form.button("§eConfigurar Alcance\n§8Define a quién se aplican los cambios");
+    }
+
     // Agregar botón de volver
     form.button("§8« Volver al menú principal");
 
@@ -71,22 +78,32 @@ export function showCategoryMenu(player, categoryId) {
         const selectedIndex = res.selection;
         if (selectedIndex === undefined || selectedIndex < 0) return;
 
-        // Botón "Volver" es el último
-        if (selectedIndex === systems.length + 1) {
-          // Volver al menú principal
+        // Calcular índices según si es advanced o no
+        const configureAllIndex = systems.length;
+        const scopeIndex = isAdvanced ? systems.length + 1 : -1;
+        const backIndex = isAdvanced ? systems.length + 2 : systems.length + 1;
+
+        // Botón "Volver"
+        if (selectedIndex === backIndex) {
           import("./menu.js").then((module) => {
             module.buildAndShowMenu(player);
           });
           return;
         }
 
-        // Botón "Configurar Todos" es el penúltimo (después de todos los sistemas)
-        if (selectedIndex === systems.length) {
+        // Botón "Configurar Alcance" (solo en advanced)
+        if (isAdvanced && selectedIndex === scopeIndex) {
+          showScopeMenu(player);
+          return;
+        }
+
+        // Botón "Configurar Todos"
+        if (selectedIndex === configureAllIndex) {
           showSystemMenu(player, systems, false, categoryId);
           return;
         }
 
-        // Sistema individual (índice directo porque ya no hay botón al principio)
+        // Sistema individual
         const selectedSystem = systems[selectedIndex];
         if (selectedSystem) {
           showSystemMenu(player, [selectedSystem], false, categoryId);

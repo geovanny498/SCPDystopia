@@ -18,8 +18,6 @@ const menuSoldiers = [];
  */
 const menuSystemStates = {};
 
-// isValidSoldier ahora se importa desde menu_faction.js
-
 /**
  * Carga todos los estados de sistemas desde propiedades dinámicas
  */
@@ -56,7 +54,6 @@ export function getMenuSpecialSoldiers() {
 
 /**
  * Maneja una entidad cuando spawna o se carga
- * @param {Entity} ent
  */
 function handleSoldierEntity(ent) {
   try {
@@ -67,31 +64,29 @@ function handleSoldierEntity(ent) {
       menuSoldiers.push(ent.id);
     }
 
-    // Determinar faction e isSpecial usando el módulo centralizado
+    // Determinar faction e info usando el módulo centralizado
     const factionInfo = getEntityFactionInfo(ent, specialUnits);
     if (!factionInfo) return;
 
-    const { faction, isSpecial } = factionInfo;
+    const { faction, isSpecial, hierarchy, group } = factionInfo;
     const nameTag = ent.nameTag ?? "";
 
-    debugWarn(
-      "menuEvents:spawn",
-      `Nueva entidad: ${nameTag} [${faction}${isSpecial ? "-especial" : "-normal"}]`,
-      "cyan"
-    );
+    const entityLabel = isSpecial
+      ? `${nameTag} [${faction}-especial-${group}]`
+      : `${nameTag} [${faction}-${hierarchy}]`;
 
-    // VERIFICAR SCOPE: Si la entidad no está en el scope, ignorar silenciosamente
+    debugWarn("menuEvents:spawn", `Nueva entidad: ${entityLabel}`, "cyan");
+
+    // VERIFICAR SCOPE (pasando jerarquía para no especiales)
     const scope = loadScope();
-    if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope)) {
+    if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, hierarchy)) {
       debugWarn("menuEvents:spawn", `${nameTag}: FUERA DE SCOPE, no se aplican reglas`, "yellow");
-      return; // Silencioso, sin aplicar nada
+      return;
     }
 
     debugWarn("menuEvents:spawn", `${nameTag}: EN SCOPE, aplicando sistemas...`, "green");
 
-    // Aplicar solo los sistemas que:
-    // 1. Tienen applyMode: "all" (se aplican a futuras entidades)
-    // 2. Cumplen con las reglas de compatibilidad
+    // Aplicar sistemas que correspondan
     for (const systemId in systems) {
       const systemConfig = systems[systemId];
       const state = menuSystemStates[systemId];
@@ -115,9 +110,8 @@ function handleSoldierEntity(ent) {
         continue;
       }
 
-      // Aplicar usando la función unificada (pasando faction e isSpecial pre-calculados)
-      // skipCompatibilityCheck=true porque ya verificamos arriba
-      applySystemToEntity(systemId, systemConfig, ent, state, true, faction, isSpecial);
+      // Aplicar usando la función unificada
+      applySystemToEntity(systemId, systemConfig, ent, state, true, factionInfo);
     }
   } catch (e) {
     debugWarn("menuEvents:spawn", `Error manejando entidad: ${e}`, "red");
@@ -133,7 +127,6 @@ export function initializeMenuEvents() {
     loadAllSystemStates();
 
     // Event listener para cuando una entidad spawna
-    // Usar runTimeout con 0 ticks para ejecutar al final del tick (después de la inicialización completa)
     world.afterEvents.entitySpawn.subscribe((ev) => {
       handleSoldierEntity(ev.entity);
     });
@@ -159,8 +152,6 @@ export function initializeMenuEvents() {
 
 /**
  * Actualiza el estado de un sistema en memoria
- * @param {string} systemId
- * @param {Object} state
  */
 export function updateMenuSystemState(systemId, state) {
   menuSystemStates[systemId] = state;
@@ -169,7 +160,6 @@ export function updateMenuSystemState(systemId, state) {
 
 /**
  * Reinicia todos los estados del menú a valores por defecto
- * Limpia la memoria y recarga desde propiedades dinámicas (o defaults si no existen)
  */
 export function resetMenuSystemStates() {
   debugWarn("menuEvents", "=== Reiniciando estados del menú ===", "yellow");
@@ -179,7 +169,7 @@ export function resetMenuSystemStates() {
     delete menuSystemStates[key];
   }
 
-  // Recargar todos los estados (esto cargará los defaults si no hay propiedades dinámicas)
+  // Recargar todos los estados
   loadAllSystemStates();
 
   debugWarn("menuEvents", "Estados del menú reiniciados correctamente", "green");

@@ -57,6 +57,17 @@ Módulos del Sistema de Menú:
 - menuScope         → Sistema de alcance de aplicación (menu_scope.js)
 - menuScope:check   → Verificación individual de entidades en scope (detallado)
 
+Módulos de Grupos y Jerarquías (NUEVO):
+- menuGroups        → Sistema de grupos de especiales (menu_groups.ts)
+- menuGroups:ui     → UI de asignación de grupos (menu_groups_ui.ts)
+- menuFaction       → Determinación de facción/jerarquía/grupo (menu_faction.ts)
+
+Módulos de Sistema de Teletransporte:
+- teleportMenu      → Flujo general de menús de teletransporte
+- teleportUtils     → Filtrado y obtención de entidades
+- teleportLogic     → Lógica de teletransporte de entidades
+- teleportCommand   → Comando /scpd:teleport
+
 Módulos de Sistemas Legacy:
 - applySystems      → Sistema de aplicación antiguo
 - toggle_system     → Sistema de toggle antiguo
@@ -70,11 +81,24 @@ export const DEBUG_MODULES = [
   // === PRUEBA DE GUI MIGRADO ===
   "playerInteractWithEntity", // Interacción jugador-entidad (GUI)
   // "projectileHitEntity",
+
   // === PASO 2: VERIFICAR APLICACIÓN A ENTIDADES EXISTENTES ===
   "menuScope", // Ver verificación de scope
   "menuScope:check", // Ver cada verificación individual de entidad
   "menuApply", // Ver aplicación general de sistemas
   "menuApply:entity", // Ver aplicación detallada por entidad
+
+  // === NUEVO: GRUPOS Y JERARQUÍAS ===
+  "menuGroups", // Sistema de grupos de especiales
+  "menuGroups:ui",
+  // "menuGroups:ui",    // UI de asignación de grupos (detallado)
+  "menuFaction", // Determinación de facción/jerarquía/grupo
+
+  // === SISTEMA DE TELETRANSPORTE ===
+  "teleportMenu", // Flujo de menús de teletransporte
+  "teleportUtils", // Filtrado y obtención de entidades
+  "teleportLogic", // Lógica de teletransporte
+  "teleportCommand", // Comando /scpd:teleport
 
   // === DEPURACIÓN DE APPLYMODE (existing_only) ===
   // "menuEvents:spawn",   // Ver qué pasa cuando spawna una entidad
