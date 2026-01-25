@@ -244,7 +244,7 @@
       "armed_presence": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 4,
-          "within_radius": 22,
+          "within_radius": 24,
           "reselect_targets": true,
           "entity_types": [
             {
@@ -290,7 +290,7 @@
                   }
                 ]
               },
-              "max_dist": 22
+              "max_dist": 24
             },
             {
               "filters": {
@@ -310,7 +310,7 @@
                   }
                 ]
               },
-              "max_dist": 22
+              "max_dist": 24
             }
           ],
           "must_see_forget_duration": 3.0,

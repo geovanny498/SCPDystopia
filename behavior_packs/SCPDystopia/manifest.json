@@ -98,6 +98,11 @@
             "name": "§l§4World War IV Mode: §6True"
         },
         {
+            "folder_name": "f_spawn_world_war",
+            "memory_tier": 0,
+            "name": "§l§4World War IV Mode: §6True §4Only SCP Foundation: §6True"
+        },
+        {
             "folder_name": "ci_spawn_world_war",
             "memory_tier": 0,
             "name": "§l§4World War IV Mode: §6True §4Only CI: §6True"

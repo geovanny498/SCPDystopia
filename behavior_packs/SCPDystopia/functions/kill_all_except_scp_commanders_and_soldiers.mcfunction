@@ -22,6 +22,15 @@ tag @e[name="§e§lMTF Epsilon-6 Commander"] remove eliminar
 
 
 
+tag @e[name="§lMTF Alpha-1 Leader"] remove eliminar
+tag @e[name="§1§lMTF Epsilon-11 Leader"] remove eliminar
+tag @e[name="§b§lMTF Eta-10 Leader"] remove eliminar
+tag @e[name="§8§lMTF Nu-7 Leader"] remove eliminar
+tag @e[name="§6§lMTF Beta-7 Leader"] remove eliminar
+tag @e[name="§e§lMTF Epsilon-6 Leader"] remove eliminar
+
+
+
 tag @e[name="MTF Alpha-1 Member"] remove eliminar
 
 tag @e[name="§1MTF Epsilon-11 Member"] remove eliminar
