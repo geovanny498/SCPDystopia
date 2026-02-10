@@ -295,7 +295,7 @@
       "armed_presence": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 4,
-          "within_radius": 24,
+          "within_radius": 26,
           "reselect_targets": true,
           "entity_types": [
             {
@@ -338,7 +338,7 @@
                   }
                 ]
               },
-              "max_dist": 24
+              "max_dist": 26
             },
             {
               "filters": {
@@ -380,7 +380,7 @@
                   }
                 ]
               },
-              "max_dist": 24
+              "max_dist": 26
             }
           ],
           "must_see_forget_duration": 3.0,
@@ -390,7 +390,7 @@
       "defensive": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 4,
-          "within_radius": 12,
+          "within_radius": 14,
           "reselect_targets": true,
           "entity_types": [
             {
@@ -433,7 +433,7 @@
                   }
                 ]
               },
-              "max_dist": 12
+              "max_dist": 14
             },
             {
               "filters": {
@@ -475,7 +475,7 @@
                   }
                 ]
               },
-              "max_dist": 12
+              "max_dist": 14
             }
           ],
           "must_see_forget_duration": 3.0,
@@ -542,11 +542,11 @@
           "target": "self"
         },
         "minecraft:angry": {
-          "duration": 15,
+          "duration": 8,
           "broadcast_anger": false,
           "broadcast_anger_on_attack": true,
           "broadcast_anger_on_being_attacked": true,
-          "broadcast_range": 64,
+          "broadcast_range": 32,
           "broadcast_targets": ["chaos_insurgency"],
           "calm_event": {
             "event": "humanoid:on_calm",
@@ -916,10 +916,6 @@
       },
       "minecraft:behavior.random_look_around": {
         "priority": 13
-      },
-      "minecraft:behavior.move_towards_restriction": {
-        "priority": 9,
-        "speed_multiplier": 1
       },
       "minecraft:behavior.move_indoors": {
         "priority": 8,
