@@ -54,8 +54,11 @@ export function getMenuSpecialSoldiers() {
 
 /**
  * Maneja una entidad cuando spawna o se carga
+ * @param {Entity} ent
+ * @param {Object} options
+ * @param {boolean} [options.forceApply=false] - Si true, ignora el scope y forza aplicar sistemas
  */
-function handleSoldierEntity(ent) {
+function handleSoldierEntity(ent, { forceApply = false } = {}) {
   try {
     if (!ent || !isValidSoldier(ent, specialUnits)) return;
 
@@ -75,16 +78,20 @@ function handleSoldierEntity(ent) {
       ? `${nameTag} [${faction}-especial-${group}]`
       : `${nameTag} [${faction}-${hierarchy}]`;
 
-    debugWarn("menuEvents:spawn", `Nueva entidad: ${entityLabel}`, "cyan");
+    debugWarn("menuEvents:spawn", `Entidad: ${entityLabel}`, "cyan");
 
     // VERIFICAR SCOPE (pasando jerarquía para no especiales)
-    const scope = loadScope();
-    if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, hierarchy)) {
-      debugWarn("menuEvents:spawn", `${nameTag}: FUERA DE SCOPE, no se aplican reglas`, "yellow");
-      return;
-    }
+    if (!forceApply) {
+      const scope = loadScope();
+      if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, hierarchy)) {
+        debugWarn("menuEvents:spawn", `${nameTag}: FUERA DE SCOPE, no se aplican reglas`, "yellow");
+        return;
+      }
 
-    debugWarn("menuEvents:spawn", `${nameTag}: EN SCOPE, aplicando sistemas...`, "green");
+      debugWarn("menuEvents:spawn", `${nameTag}: EN SCOPE, aplicando sistemas...`, "green");
+    } else {
+      debugWarn("menuEvents:spawn", `EntitySpawn${nameTag}: FORCE APPLY activado, omitiendo scope`, "cyan");
+    }
 
     // Aplicar sistemas que correspondan
     for (const systemId in systems) {
@@ -126,9 +133,9 @@ export function initializeMenuEvents() {
     // Cargar estados iniciales
     loadAllSystemStates();
 
-    // Event listener para cuando una entidad spawna
+    // Event listener para cuando una entidad spawnea (forzar aplicación)
     world.afterEvents.entitySpawn.subscribe((ev) => {
-      handleSoldierEntity(ev.entity);
+      handleSoldierEntity(ev.entity, { forceApply: true });
     });
 
     // Event listener para cuando una entidad se carga

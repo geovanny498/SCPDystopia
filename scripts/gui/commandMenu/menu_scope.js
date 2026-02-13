@@ -10,8 +10,6 @@ import { specialUnits, UnitHierarchy } from "./menu_config.js";
  * Es independiente del formulario de sistemas (que define QUÉ se hace).
  *
  * El scope se guarda en dynamic properties y persiste hasta que el jugador lo cambie.
- *
- * NUEVO: Soporta jerarquías separadas (basic, leader, commander) en lugar de un solo toggle "includeNormals"
  */
 
 const SCOPE_PROPERTY = "scpd_menu_scope";

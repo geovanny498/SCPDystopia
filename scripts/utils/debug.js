@@ -118,6 +118,7 @@ export const DEBUG_MODULES = [
 
   // === MENÚ: EVENTOS ===
   // "menuEvents",         // Eventos de spawn/load (general)
+  "menuEvents:spawn"
 
   // === MENÚ: REGLAS (NUEVO) ===
   // "menuRules",          // Verificación de reglas (general)
