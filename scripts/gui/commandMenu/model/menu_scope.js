@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/menu_scope.js
 import { world } from "@minecraft/server";
-import { debugWarn } from "../../utils/debug.js";
-import { specialUnits, UnitHierarchy } from "./menu_config.js";
+import { debugWarn } from "../../../utils/debug.js";
+import { specialUnits, UnitHierarchy } from "../menu_config.js";
 
 /**
  * Sistema de Alcance de Aplicación (Scope)

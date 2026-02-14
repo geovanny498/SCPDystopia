@@ -1,9 +1,9 @@
 // scripts/gui/commandMenu/menu_category.js
 import { system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
-import { debugWarn } from "../../utils/debug.js";
+import { debugWarn } from "../../../utils/debug.js";
 
-import { getCategoryConfig, getSystemsByCategory } from "./menu_config.js";
+import { getCategoryConfig, getSystemsByCategory } from "../menu_config.js";
 import { showSystemMenu } from "./menu_system.js";
 import { showScopeMenu } from "./menu_scope_ui.js";
 
@@ -67,7 +67,7 @@ export function showCategoryMenu(player, categoryId) {
       form.show(player).then((res) => {
         // Si el usuario canceló, volver al menú principal
         if (!res || res.canceled) {
-          import("./menu.js").then((module) => {
+          import("../builder/menu.js").then((module) => {
             system.run(() => {
               module.buildAndShowMenu(player);
             });
@@ -85,7 +85,7 @@ export function showCategoryMenu(player, categoryId) {
 
         // Botón "Volver"
         if (selectedIndex === backIndex) {
-          import("./menu.js").then((module) => {
+          import("../builder/menu.js").then((module) => {
             module.buildAndShowMenu(player);
           });
           return;

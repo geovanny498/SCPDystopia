@@ -11,9 +11,9 @@ import { Factions } from "../commandMenu/menu_config.js";
  * Títulos principales del sistema de teletransporte
  */
 export const TeleportTitles = {
-  main: "§lSCPDystopia | Teletransporte",
-  foundation: "§lFundación SCP | Teletransporte",
-  chaos: "§2§lInsurgencia del Caos | Teletransporte",
+  main: "SCPDystopia | Teletransporte",
+  foundation: "§lFundación SCP",
+  chaos: "§2§lInsurgencia del Caos",
 };
 
 /**

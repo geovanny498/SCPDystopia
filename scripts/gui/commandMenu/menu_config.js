@@ -161,7 +161,7 @@ export const systems = {
     id: "movement",
     displayName: "§1Movimiento / Patrulla",
     description: "§8(Sólo entidades existentes)",
-    tooltip: "Controla cómo se mueven las unidades: seguir al jugador, caminar libremente o detenerse",
+    tooltip: "Controla cómo se mueven las unidades: seguir al jugador (requiere domesticar), caminar libremente o detenerse",
     category: "movement_patrol",
     dynamicProperty: "scpd_system_movement",
     controlType: ControlType.DROPDOWN,

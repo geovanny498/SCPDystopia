@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/menu_groups.ts
 import { world } from "@minecraft/server";
-import { debugWarn } from "../../utils/debug.js";
-import { Factions, SpecialGroups, specialUnits } from "./menu_config.js";
+import { debugWarn } from "../../../utils/debug.js";
+import { Factions, SpecialGroups, specialUnits } from "../menu_config.js";
 
 /**
  * Sistema de Grupos de Especiales

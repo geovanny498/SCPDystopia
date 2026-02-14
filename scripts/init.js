@@ -6,7 +6,7 @@ import "./components/removeTarget.js";
 import "./utils/weapons.js";
 import "./commands/register_systems.js";
 import "./gui/gui.js";
-import "./gui/commandMenu/menu.js";
+import "./gui/commandMenu/builder/menu.js";
 import "./commands/config_command.js";
 import "./commands/scope_commands.js";
 import "./commands/teleport_command.js";
@@ -17,8 +17,8 @@ import {
   getMenuSystemStates,
   getMenuSoldiers,
   getMenuSpecialSoldiers,
-} from "./gui/commandMenu/menu_events.js";
-import { injectMenuEventAccessors } from "./gui/commandMenu/menu_apply.js";
+} from "./gui/commandMenu/core/menu_events.js";
+import { injectMenuEventAccessors } from "./gui/commandMenu/core/menu_apply.js";
 
 // Inicializar el sistema de menú DESPUÉS de que el mundo esté listo
 system.afterEvents.scriptEventReceive.subscribe(() => {}, { namespaces: ["__init__"] });

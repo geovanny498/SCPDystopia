@@ -1,11 +1,11 @@
 // scripts/gui/commandMenu/menu_events.js
 import { world } from "@minecraft/server";
-import { debugWarn } from "../../utils/debug.js";
-import { systems, specialUnits } from "./menu_config.js";
+import { debugWarn } from "../../../utils/debug.js";
+import { systems, specialUnits } from "../menu_config.js";
 import { loadSystemOrDefault } from "./menu_state.js";
-import { shouldApplyToFutureEntities, canApplySystem } from "./menu_rules.js";
-import { getEntityFactionInfo, isValidSoldier } from "./menu_faction.js";
-import { loadScope, isEntityInScope } from "./menu_scope.js";
+import { shouldApplyToFutureEntities, canApplySystem } from "../menu_rules.js";
+import { getEntityFactionInfo, isValidSoldier } from "../model/menu_faction.js";
+import { loadScope, isEntityInScope } from "../model/menu_scope.js";
 import { applySystemToEntity } from "./menu_apply.js";
 
 /**

@@ -1,12 +1,12 @@
 // scripts\gui\commandMenu\menu.js
 import { world, system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
-import { debugWarn } from "../../utils/debug.js";
+import { debugWarn } from "../../../utils/debug.js";
 
 // Importar módulos de configuración y lógica
-import { getOrderedCategories } from "./menu_config.js";
-import { showCategoryMenu } from "./menu_category.js";
-import { showGroupsMenu } from "./menu_groups_ui.js";
+import { getOrderedCategories } from "../menu_config.js";
+import { showCategoryMenu } from "../ui/menu_category.js";
+import { showGroupsMenu } from "../ui/menu_groups_ui.js";
 
 /**
  * Construye y muestra el menú principal de categorías

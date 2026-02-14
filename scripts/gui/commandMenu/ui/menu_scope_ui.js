@@ -1,9 +1,9 @@
 // scripts/gui/commandMenu/menu_scope_ui.js
 import { system } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
-import { debugWarn } from "../../utils/debug.js";
-import { loadScope, saveScope, getScopeSummary } from "./menu_scope.js";
-import { specialUnits, UnitHierarchy, UnitHierarchyLabels } from "./menu_config.js";
+import { debugWarn } from "../../../utils/debug.js";
+import { loadScope, saveScope, getScopeSummary } from "../model/menu_scope.js";
+import { specialUnits, UnitHierarchy, UnitHierarchyLabels } from "../menu_config.js";
 
 /**
  * Muestra el menú principal de configuración de scope
@@ -25,7 +25,7 @@ export function showScopeMenu(player) {
         .show(player)
         .then((res) => {
           if (!res || res.canceled) {
-            import("./menu.js").then((module) => {
+            import("../builder/menu.js").then((module) => {
               system.run(() => {
                 module.buildAndShowMenu(player);
               });
@@ -38,7 +38,7 @@ export function showScopeMenu(player) {
           } else if (res.selection === 1) {
             showFactionScopeMenu(player, "chaos");
           } else {
-            import("./menu.js").then((module) => {
+            import("../builder/menu.js").then((module) => {
               system.run(() => {
                 module.buildAndShowMenu(player);
               });

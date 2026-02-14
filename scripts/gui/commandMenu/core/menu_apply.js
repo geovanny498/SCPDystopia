@@ -1,11 +1,11 @@
 // scripts/gui/commandMenu/menu_apply.js
 import { world } from "@minecraft/server";
-import { debugMessage, debugWarn } from "../../utils/debug.js";
-import { ControlType, getSystemEvents, SpecialGroups, UnitHierarchy } from "./menu_config.js";
-import { canApplySystem } from "./menu_rules.js";
-import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "./menu_faction.js";
-import { loadScope, isEntityInScope } from "./menu_scope.js";
-import { teamFamilies } from "../../utils/teams.js";
+import { debugMessage, debugWarn } from "../../../utils/debug.js";
+import { ControlType, getSystemEvents, SpecialGroups, UnitHierarchy } from "../menu_config.js";
+import { canApplySystem } from "../menu_rules.js";
+import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "../model/menu_faction.js";
+import { loadScope, isEntityInScope } from "../model/menu_scope.js";
+import { teamFamilies } from "../../../utils/teams.js";
 
 // Importar funciones de menu_events (se inyectarán para evitar ciclos)
 let getMenuSystemStates = null;

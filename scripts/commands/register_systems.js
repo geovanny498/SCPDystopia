@@ -9,10 +9,10 @@ import {
   SpecialGroupLabels,
 } from "../gui/commandMenu/menu_config.js";
 import { resetAllSystems } from "./worldSave.js";
-import { resetMenuSystemStates } from "../gui/commandMenu/menu_events.js";
-import { resetScope } from "../gui/commandMenu/menu_scope.js";
-import { resetGroups, loadGroups, getUnitsInGroup } from "../gui/commandMenu/menu_groups.js";
-import { applySystemsToAll } from "../gui/commandMenu/menu_state.js";
+import { resetMenuSystemStates } from "../gui/commandMenu/core/menu_events.js";
+import { resetScope } from "../gui/commandMenu/model/menu_scope.js";
+import { resetGroups, loadGroups, getUnitsInGroup } from "../gui/commandMenu/model/menu_groups.js";
+import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
 
 // --- Comando check ---
 system.beforeEvents.startup.subscribe((init) => {

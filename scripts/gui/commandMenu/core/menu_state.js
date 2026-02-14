@@ -1,9 +1,9 @@
 // scripts/gui/commandMenu/menu_state.js
-import { saveSystemState, loadSystemState } from "../../commands/worldSave.js";
-import { getSystemConfig, getSystemDefaults } from "./menu_config.js";
+import { saveSystemState, loadSystemState } from "../../../commands/worldSave.js";
+import { getSystemConfig, getSystemDefaults } from "../menu_config.js";
 import { applySystemWithEvents } from "./menu_apply.js";
 import { updateMenuSystemState } from "./menu_events.js";
-import { debugWarn } from "../../utils/debug.js";
+import { debugWarn } from "../../../utils/debug.js";
 
 /**
  * Carga el estado de un sistema desde propiedades dinámicas

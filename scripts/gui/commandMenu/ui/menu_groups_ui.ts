@@ -1,9 +1,9 @@
 // scripts/gui/commandMenu/menu_groups_ui.ts
 import { Player, system } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
-import { debugWarn } from "../../utils/debug.js";
-import { Factions, SpecialGroups, SpecialGroupLabels, specialUnits } from "./menu_config.js";
-import { loadGroups, saveGroups, getGroupsSummary } from "./menu_groups.js";
+import { debugWarn } from "../../../utils/debug.js";
+import { Factions, SpecialGroups, SpecialGroupLabels, specialUnits } from "../menu_config.js";
+import { loadGroups, saveGroups, getGroupsSummary } from "../model/menu_groups.js";
 
 /**
  * Muestra el menú principal de configuración de grupos de especiales
@@ -26,7 +26,7 @@ export function showGroupsMenu(player: Player): void {
         .then((res) => {
           if (!res || res.canceled) {
             // Volver al menú principal
-            import("./menu.js").then((module) => {
+            import("../builder/menu.js").then((module) => {
               system.run(() => {
                 module.buildAndShowMenu(player);
               });
@@ -39,7 +39,7 @@ export function showGroupsMenu(player: Player): void {
           } else if (res.selection === 1) {
             showFactionGroupsMenu(player, Factions.CHAOS);
           } else {
-            import("./menu.js").then((module) => {
+            import("../builder/menu.js").then((module) => {
               system.run(() => {
                 module.buildAndShowMenu(player);
               });

@@ -8,8 +8,8 @@ import {
   SpecialGroups,
   SpecialGroupLabels,
   menuConfig,
-} from "./menu_config.js";
-import { loadGroups, getGroupsSummary, getUnitsInGroup } from "./menu_groups.js";
+} from "../menu_config.js";
+import { loadGroups, getGroupsSummary, getUnitsInGroup } from "../model/menu_groups.js";
 
 /**
  * Construye el formulario para uno o más sistemas

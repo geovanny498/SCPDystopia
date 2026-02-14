@@ -1,9 +1,9 @@
 // scripts/gui/commandMenu/menu_faction.ts
 import { Entity } from "@minecraft/server";
-import { getTeam } from "../../utils/teams.js";
-import { Factions, UnitHierarchy, SpecialGroups, specialUnits, getUnitHierarchy } from "./menu_config.js";
+import { getTeam } from "../../../utils/teams.js";
+import { Factions, UnitHierarchy, SpecialGroups, specialUnits, getUnitHierarchy } from "../menu_config.js";
 import { getUnitGroup } from "./menu_groups.js";
-import { debugWarn } from "../../utils/debug.js";
+import { debugWarn } from "../../../utils/debug.js";
 
 /**
  * Módulo centralizado para determinar el bando, facción, jerarquía y grupo de una entidad

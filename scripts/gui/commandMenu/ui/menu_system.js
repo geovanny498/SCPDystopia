@@ -1,10 +1,10 @@
 // scripts/gui/commandMenu/menu_system.js
 import { world, system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
-import { debugWarn } from "../../utils/debug.js";
-import { Factions } from "./menu_config.js";
-import { buildSystemForm, parseSystemFormValues, getConfirmationMessage } from "./menu_builder.js";
-import { loadSystemStates, saveSystemStates, applySystemsToAll } from "./menu_state.js";
+import { debugWarn } from "../../../utils/debug.js";
+import { Factions } from "../menu_config.js";
+import { buildSystemForm, parseSystemFormValues, getConfirmationMessage } from "../builder/menu_builder.js";
+import { loadSystemStates, saveSystemStates, applySystemsToAll } from "../core/menu_state.js";
 
 /**
  * Muestra el selector de facción antes de mostrar el formulario de sistemas
@@ -164,13 +164,13 @@ function askConfigureOtherFaction(player, systems, currentFaction, isAllCategory
  */
 function goBack(player, categoryId) {
   if (categoryId) {
-    import("./menu_config.js").then((configModule) => {
+    import("../menu_config.js").then((configModule) => {
       const category = configModule.getCategoryConfig(categoryId);
       const hasSingleSystem = category && category.systems && category.systems.length === 1;
       const isAll = categoryId === "all";
 
       if (hasSingleSystem || isAll) {
-        import("./menu.js").then((module) => {
+        import("../builder/menu.js").then((module) => {
           system.run(() => {
             module.buildAndShowMenu(player);
           });
@@ -184,7 +184,7 @@ function goBack(player, categoryId) {
       }
     });
   } else {
-    import("./menu.js").then((module) => {
+    import("../builder/menu.js").then((module) => {
       system.run(() => {
         module.buildAndShowMenu(player);
       });

@@ -1,8 +1,8 @@
 // scripts/commands/scope_commands.js
 import { system, world, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel } from "@minecraft/server";
-import { loadScope, resetScope, getScopeSummary } from "../gui/commandMenu/menu_scope.js";
+import { loadScope, resetScope, getScopeSummary } from "../gui/commandMenu/model/menu_scope.js";
 import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
-import { applySystemsToAll } from "../gui/commandMenu/menu_state.js";
+import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
 
 /**
  * Comandos para gestionar el scope del menú

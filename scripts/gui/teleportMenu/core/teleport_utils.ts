@@ -6,7 +6,7 @@
  */
 
 import { Entity, Dimension } from "@minecraft/server";
-import { getEntityFactionInfo, isValidSoldier } from "../../commandMenu/menu_faction.js";
+import { getEntityFactionInfo, isValidSoldier } from "../../commandMenu/model/menu_faction.js";
 import { normalUnits, specialUnits, Factions, UnitHierarchy } from "../../commandMenu/menu_config.js";
 import { teamFamilies } from "../../../utils/teams.js";
 import { debugWarn } from "../../../utils/debug.js";

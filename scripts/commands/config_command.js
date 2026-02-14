@@ -1,6 +1,6 @@
 // scripts/commands/config_command.js
 import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel } from "@minecraft/server";
-import { buildAndShowMenu } from "../gui/commandMenu/menu.js";
+import { buildAndShowMenu } from "../gui/commandMenu/builder/menu.js";
 
 system.beforeEvents.startup.subscribe((init) => {
   const cmd = {

@@ -482,7 +482,7 @@
           "must_see": true
         }
       },
-      // Hurt by target compartido para armed_presence y defensive, usar solo para modo "solo al recibir daño"
+      // Hurt by target compartido para armed_presence y defensive, usarlo solo lo convierte en el modo "solo al recibir daño"
       "fire_mode_hit": {
         "minecraft:behavior.hurt_by_target": {
           "priority": 6,

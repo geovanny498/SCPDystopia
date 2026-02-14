@@ -18,7 +18,7 @@ import { debugWarn } from "../../utils/debug.js";
  * - requires: Objeto con dominios y valores requeridos para que este sistema se aplique
  * - locks: Array de dominios que este sistema bloquea (no se pueden aplicar simultáneamente)
  * - applyMode: "all" | "existing_only"
- *   - "all": Se aplica a entidades existentes Y futuras (spawn/load)
+ *   - "all": Se aplica a entidades existentes Y futuras (spawn/load/existing_only)
  *   - "existing_only": Solo se aplica a entidades existentes al enviar el formulario
  */
 export const systemRules = {
