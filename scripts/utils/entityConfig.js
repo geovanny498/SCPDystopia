@@ -84,4 +84,38 @@ export const entityDamageConfig = {
     damage: true,
     knockback: false,
   },
+
+
+  "tzap:lead_zombie": {
+    damage: true,
+    knockback: false,
+  },
+  "tzap:lead_zombiet2": {
+    damage: true,
+    knockback: false,
+  },
+  "tzap:lead_zombiet3": {
+    damage: true,
+    knockback: false,
+  },
+  "tzap:lead_zombiet4": {
+    damage: true,
+    knockback: false,
+  },
+  "tzap:lead_zombiet5": {
+    damage: true,
+    knockback: false,
+  },
+  "tzap:mutant_zombie": {
+    damage: true,
+    knockback: false,
+  },
+  "tzap:mutant_zombiet2": {
+    damage: true,
+    knockback: false,
+  },
+  "tzap:mutant_zombiet3": {
+    damage: true,
+    knockback: false,
+  },
 };

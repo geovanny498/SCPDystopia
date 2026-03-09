@@ -2,7 +2,13 @@
 import { Player, system } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
-import { Factions, SpecialGroups, SpecialGroupLabels, specialUnits } from "../menu_config.js";
+import {
+  Factions,
+  SpecialGroups,
+  SpecialGroupLabels,
+  specialUnits,
+  getGroupsOrderForAssignment,
+} from "../menu_config.js";
 import { loadGroups, saveGroups, getGroupsSummary } from "../model/menu_groups.js";
 
 /**
@@ -138,8 +144,8 @@ function showSubgroupAssignmentModal(player: Player, faction: string, subgroupId
     const groups = loadGroups(true); // Forzar recarga
     const factionGroups = groups[faction as keyof typeof groups] || {};
 
-    // Opciones de grupos para el dropdown
-    const groupOptions = Object.values(SpecialGroups);
+    // Opciones de grupos para el dropdown (Sin grupo primero para usabilidad)
+    const groupOptions = getGroupsOrderForAssignment();
     const groupLabels = groupOptions.map((g) => SpecialGroupLabels[g as keyof typeof SpecialGroupLabels]);
 
     const form = new ModalFormData().title(`§9${subgroup.label}`);

@@ -22,7 +22,9 @@
           "default": 23
         },
         "minecraft:biome_filter": {
-          "test": "has_biome_tag", "operator": "==", "value": "monster"
+          "test": "has_biome_tag",
+          "operator": "==",
+          "value": "monster"
         }
       }
     ]

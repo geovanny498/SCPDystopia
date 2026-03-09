@@ -35,9 +35,9 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
   const saved = getAllMenuSelection(player.name, faction); // Recuperar estado
 
   form.label("§7─── Soldados NO Especiales ───");
-  form.toggle("§7Básicos", { defaultValue: saved.hierarchies[0] });
-  form.toggle("§eLíderes", { defaultValue: saved.hierarchies[1] });
-  form.toggle("§6Comandantes", { defaultValue: saved.hierarchies[2] });
+  form.toggle("§7Básicos", { defaultValue: saved?.hierarchies[0] ?? true });
+  form.toggle("§eLíderes", { defaultValue: saved?.hierarchies[1] ?? true });
+  form.toggle("§6Comandantes", { defaultValue: saved?.hierarchies[2] ?? true });
 
   // ===== SECCIÓN 2: Unidades Especiales Individuales =====
   form.label("§e─── Soldados Especiales ───");
@@ -56,7 +56,7 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
       // Toggle para cada unidad del subgrupo
       subgroup.units.forEach((unitName: string) => {
         allSpecialUnits.push(unitName);
-        const isSelected = saved.specialUnits.includes(unitName);
+        const isSelected = saved?.specialUnits.includes(unitName) ?? true;
         form.toggle(unitName, { defaultValue: isSelected });
       });
     });

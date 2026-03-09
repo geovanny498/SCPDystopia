@@ -175,7 +175,7 @@ npm run mcaddon:production
 
 ```bash
 # Formatear carpetas de behavior_packs
-npx prettier --write "behavior_packs/SCPDystopia/entities/humanoid/**/*"
+npx prettier --write "subpacks/ext_spawn/spawn_rules/**/*"
 npx prettier --write "scripts/**/*"
 ```
 

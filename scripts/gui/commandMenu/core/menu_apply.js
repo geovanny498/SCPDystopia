@@ -12,6 +12,22 @@ let getMenuSystemStates = null;
 let getMenuSoldiers = null;
 let getMenuSpecialSoldiers = null;
 
+// eventos que, al activarse, deberían intentar domesticar la entidad
+import { isAutoTameEvent } from "../menu_config.js";
+
+export function tryAutoTame(ent, player) {
+  if (!ent || !player) return;
+  try {
+    const comp = ent.getComponent("minecraft:tameable");
+    if (comp && !comp.isTamed) {
+      comp.tame(player);
+    }
+  } catch (e) {
+    // no es crítico, sólo una ayuda
+    debugWarn("menuApply:entity", `autoTame falló: ${e}`, "yellow");
+  }
+}
+
 /**
  * Inyecta las funciones de menu_events para evitar importaciones circulares
  */
@@ -24,9 +40,12 @@ export function injectMenuEventAccessors(accessors) {
 /**
  * Trigger seguro de eventos en entidades
  */
-function safeTriggerEvent(ent, eventName) {
+function safeTriggerEvent(ent, eventName, player = null) {
   if (!ent || !eventName) return;
   try {
+    if (player && isAutoTameEvent(eventName)) {
+      tryAutoTame(ent, player);
+    }
     ent.triggerEvent(eventName);
   } catch (e) {
     debugWarn("menuApply:entity", `Error en evento ${eventName}: ${e}`, "red");
@@ -35,7 +54,6 @@ function safeTriggerEvent(ent, eventName) {
 
 /**
  * Aplica un sistema a una entidad específica usando eventos de la configuración
- * NUEVO: Usa jerarquías para no especiales y grupos para especiales
  */
 export function applySystemToEntity(
   systemId,
@@ -43,7 +61,8 @@ export function applySystemToEntity(
   ent,
   stateOverride = null,
   skipCompatibilityCheck = false,
-  factionInfoOverride = null
+  factionInfoOverride = null,
+  player = null // jugador que está realizando la acción (puede ser null)
 ) {
   try {
     const specials = getMenuSpecialSoldiers
@@ -60,7 +79,6 @@ export function applySystemToEntity(
       return;
     }
 
-    // Obtener información de facción
     const factionInfo = factionInfoOverride || getEntityFactionInfo(ent, specials);
     if (!factionInfo) {
       debugWarn("menuApply:entity", `${ent.nameTag || ent.typeId}: No se pudo determinar facción`, "red");
@@ -106,7 +124,7 @@ export function applySystemToEntity(
       const events = getSystemEvents(systemId, isEnabled);
 
       if (events.event) {
-        safeTriggerEvent(ent, events.event);
+        safeTriggerEvent(ent, events.event, player);
         debugWarn(
           "menuApply:entity",
           `${systemId} → ${entityLabel}: ${isEnabled ? "ON" : "OFF"}`,
@@ -119,12 +137,12 @@ export function applySystemToEntity(
 
       // Primero detener cualquier modo anterior
       if (events.stop) {
-        safeTriggerEvent(ent, events.stop);
+        safeTriggerEvent(ent, events.stop, player);
       }
 
       // Luego iniciar el nuevo modo
       if (events.start && mode !== "false" && mode !== "off") {
-        safeTriggerEvent(ent, events.start);
+        safeTriggerEvent(ent, events.start, player);
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: modo=${mode}`, "green");
       } else {
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: desactivado`, "gray");
@@ -138,7 +156,7 @@ export function applySystemToEntity(
 /**
  * Aplica un sistema a todas las entidades usando eventos de la configuración
  */
-export function applySystemWithEvents(systemId, systemConfig, dimension = null) {
+export function applySystemWithEvents(systemId, systemConfig, dimension = null, player = null) {
   try {
     const seen = new Set();
     let appliedCount = 0;
@@ -183,7 +201,7 @@ export function applySystemWithEvents(systemId, systemConfig, dimension = null) 
             continue;
           }
 
-          applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo);
+          applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo, player);
           appliedCount += 1;
         }
       }
@@ -211,7 +229,7 @@ export function applySystemWithEvents(systemId, systemConfig, dimension = null) 
             continue;
           }
 
-          applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo);
+          applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo, player);
           appliedCount += 1;
         } catch {}
       }

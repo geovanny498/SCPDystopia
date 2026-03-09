@@ -8,6 +8,7 @@ import {
   SpecialGroups,
   SpecialGroupLabels,
   menuConfig,
+  getGroupsOrderForSystems,
 } from "../menu_config.js";
 import { loadGroups, getGroupsSummary, getUnitsInGroup } from "../model/menu_groups.js";
 
@@ -83,7 +84,10 @@ export function buildSystemForm(systems, loadedStates, selectedFaction = null) {
 
         const groupsSummary = groupsSummaryByFaction[faction] || {};
 
-        for (const groupId of Object.values(SpecialGroups)) {
+        // Usar el orden de grupos para sistemas (Sin grupo al final)
+        const groupsOrder = getGroupsOrderForSystems();
+
+        for (const groupId of groupsOrder) {
           const baseLabel = SpecialGroupLabels[groupId];
           const unitCount = groupsSummary[groupId] || 0;
           // Agregar cantidad de unidades al label
@@ -166,7 +170,10 @@ export function parseSystemFormValues(systems, formValues, selectedFaction = nul
 
       // Leer grupos (especiales)
       if (system.supportsGroups) {
-        for (const groupId of Object.values(SpecialGroups)) {
+        // Usar el mismo orden que en el formulario
+        const groupsOrder = getGroupsOrderForSystems();
+
+        for (const groupId of groupsOrder) {
           if (system.controlType === ControlType.TOGGLE) {
             systemState[faction][groupId] = !!nextValue();
           } else if (system.controlType === ControlType.DROPDOWN) {

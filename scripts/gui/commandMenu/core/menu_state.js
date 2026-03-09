@@ -58,7 +58,7 @@ export function saveSystemStates(parsedStates) {
 /**
  * Aplica un sistema a todas las entidades usando los eventos de la configuración
  */
-export function applySystemToAll(systemId, dimension) {
+export function applySystemToAll(systemId, dimension, player = null) {
   try {
     const systemConfig = getSystemConfig(systemId);
     if (!systemConfig) {
@@ -66,7 +66,7 @@ export function applySystemToAll(systemId, dimension) {
       return;
     }
 
-    applySystemWithEvents(systemId, systemConfig, dimension);
+    applySystemWithEvents(systemId, systemConfig, dimension, player);
     debugWarn("menuState", `Sistema ${systemId} aplicado`, "green");
   } catch (e) {
     debugWarn("menuState", `Error aplicando sistema ${systemId}: ${e}`, "red");
@@ -76,8 +76,8 @@ export function applySystemToAll(systemId, dimension) {
 /**
  * Aplica múltiples sistemas
  */
-export function applySystemsToAll(systemIds, dimension) {
+export function applySystemsToAll(systemIds, dimension, player = null) {
   systemIds.forEach((systemId) => {
-    applySystemToAll(systemId, dimension);
+    applySystemToAll(systemId, dimension, player);
   });
 }

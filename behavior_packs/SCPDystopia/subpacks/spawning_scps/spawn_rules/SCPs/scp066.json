@@ -17,9 +17,11 @@
         "minecraft:weight": {
           "default": 10
         },
-    
+
         "minecraft:biome_filter": {
-          "test": "has_biome_tag", "operator":"==", "value": "animal"
+          "test": "has_biome_tag",
+          "operator": "==",
+          "value": "animal"
         }
       }
     ]

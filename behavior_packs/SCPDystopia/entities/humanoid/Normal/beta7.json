@@ -76,11 +76,11 @@
           "priority": 5,
           "target_in_sight_time": 0.3,
           "burst_shots": 30,
-          "burst_interval": 0.22,
+          "burst_interval": 0.21,
           "charge_charged_trigger": 0.0,
-          "charge_shoot_trigger": 1.5,
-          "attack_interval_min": 1.5,
-          "attack_interval_max": 1.5,
+          "charge_shoot_trigger": 1.35,
+          "attack_interval_min": 1.35,
+          "attack_interval_max": 1.35,
           "attack_radius": 30.0,
           "speed_multiplier": 1.0
         }
@@ -319,7 +319,7 @@
       "defensive": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 4,
-          "within_radius": 14,
+          "within_radius": 16,
           "reselect_targets": true,
           "entity_types": [
             {
@@ -365,7 +365,7 @@
                   }
                 ]
               },
-              "max_dist": 14
+              "max_dist": 16
             },
             {
               "filters": {
@@ -385,7 +385,7 @@
                   }
                 ]
               },
-              "max_dist": 14
+              "max_dist": 16
             }
           ],
           "must_see_forget_duration": 3.0,
@@ -516,12 +516,46 @@
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 24
+                "value": 20
               },
               {
                 "all_of": [
                   { "test": "in_water", "value": true },
-                  { "test": "owner_distance", "operator": ">", "value": 12 }
+                  { "test": "owner_distance", "operator": ">", "value": 14 }
+                ]
+              }
+            ]
+          }
+        },
+        "minecraft:behavior.owner_hurt_by_target": {
+          "priority": 6
+        },
+        "minecraft:behavior.owner_hurt_target": {
+          "priority": 6
+        }
+      },
+      "tamed_mid": {
+        "minecraft:is_tamed": {},
+        "minecraft:behavior.follow_owner": {
+          "priority": 2,
+          "speed_multiplier": 1.16,
+          "start_distance": 16,
+          "stop_distance": 13
+        },
+        "minecraft:behavior.teleport_to_owner": {
+          "priority": 1,
+          "cooldown": 4.0,
+          "filters": {
+            "any_of": [
+              {
+                "test": "owner_distance",
+                "operator": ">",
+                "value": 36
+              },
+              {
+                "all_of": [
+                  { "test": "in_water", "value": true },
+                  { "test": "owner_distance", "operator": ">", "value": 14 }
                 ]
               }
             ]
@@ -539,8 +573,8 @@
         "minecraft:behavior.follow_owner": {
           "priority": 2,
           "speed_multiplier": 1.16,
-          "start_distance": 24,
-          "stop_distance": 18
+          "start_distance": 26,
+          "stop_distance": 23
         },
         "minecraft:behavior.teleport_to_owner": {
           "priority": 1,
@@ -550,12 +584,12 @@
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 36
+                "value": 42
               },
               {
                 "all_of": [
                   { "test": "in_water", "value": true },
-                  { "test": "owner_distance", "operator": ">", "value": 16 }
+                  { "test": "owner_distance", "operator": ">", "value": 24 }
                 ]
               }
             ]
@@ -1020,18 +1054,7 @@
           "component_groups": ["start_move", "tamed"]
         },
         "remove": {
-          "component_groups": ["stop_move", "start_move_free", "tamed_far"]
-        }
-      },
-      "humanoid:set_tamed_far": {
-        "add": {
-          "component_groups": ["start_move", "tamed_far"]
-        },
-        "remove": {
-          "component_groups": ["stop_move", "start_move_free", "tamed"]
-        },
-        "queue_command": {
-          "command": ["title @p actionbar §6Seguir jugador (Lejos)"]
+          "component_groups": ["stop_move", "start_move_free", "tamed_mid", "tamed_far"]
         }
       },
       "humanoid:set_tamed_close": {
@@ -1039,10 +1062,32 @@
           "component_groups": ["start_move", "tamed"]
         },
         "remove": {
-          "component_groups": ["stop_move", "start_move_free", "tamed_far"]
+          "component_groups": ["stop_move", "start_move_free", "tamed_mid", "tamed_far"]
         },
         "queue_command": {
           "command": ["title @p actionbar §aSeguir jugador (Cerca)"]
+        }
+      },
+      "humanoid:set_tamed_mid": {
+        "add": {
+          "component_groups": ["start_move", "tamed_mid"]
+        },
+        "remove": {
+          "component_groups": ["stop_move", "start_move_free", "tamed", "tamed_far"]
+        },
+        "queue_command": {
+          "command": ["title @p actionbar §eSeguir jugador (Medio)"]
+        }
+      },
+      "humanoid:set_tamed_far": {
+        "add": {
+          "component_groups": ["start_move", "tamed_far"]
+        },
+        "remove": {
+          "component_groups": ["stop_move", "start_move_free", "tamed", "tamed_mid"]
+        },
+        "queue_command": {
+          "command": ["title @p actionbar §6Seguir jugador (Lejos)"]
         }
       },
       "mtf:to_move": {
@@ -1050,7 +1095,7 @@
           "component_groups": ["start_move", "tamed"]
         },
         "remove": {
-          "component_groups": ["stop_move", "start_move_free", "tamed_far"]
+          "component_groups": ["stop_move", "start_move_free", "tamed_mid", "tamed_far"]
         },
         "queue_command": {
           "command": ["title @p actionbar §e§l[LEGACY] Seguir jugador"]
@@ -1061,7 +1106,7 @@
           "component_groups": ["stop_move"]
         },
         "remove": {
-          "component_groups": ["start_move", "start_move_free", "tamed", "tamed_far"]
+          "component_groups": ["start_move", "start_move_free", "tamed", "tamed_mid", "tamed_far"]
         },
         "queue_command": {
           "command": ["title @p actionbar §cDetenerse"]
@@ -1072,7 +1117,7 @@
           "component_groups": ["start_move_free"]
         },
         "remove": {
-          "component_groups": ["start_move", "stop_move", "tamed", "tamed_far"]
+          "component_groups": ["start_move", "stop_move", "tamed", "tamed_mid", "tamed_far"]
         },
         "queue_command": {
           "command": ["title @p actionbar §9Caminar libremente"]

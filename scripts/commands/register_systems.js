@@ -285,7 +285,7 @@ system.beforeEvents.startup.subscribe((init) => {
                   : null;
 
               const systemIds = Object.keys(menuSystems);
-              applySystemsToAll(systemIds, dimension);
+              applySystemsToAll(systemIds, dimension, origin.sourceEntity || null);
 
               console.log("[SCPDystopia] Sistemas aplicados a entidades existentes");
             } catch (e) {

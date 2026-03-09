@@ -4,7 +4,7 @@
 // solo guiarse por los comentarios para saber quien los dispara
 // Pierce es la cantidad de enemigos que pueden dañar, no atravesar
 export const projectileConfig = {
-  // Soldados Normales (50-65 de vida)
+  // Soldados basicos (50-65 de vida)
   "lc:dt_m4a1_bullet": { damage: 5, knockback: 0.02, pierce: 1 },
   "lc:dt_m16_bullet": { damage: 4, knockback: 0.02, pierce: 1 },
   "lc:dt_ak47_bullet": { damage: 4, knockback: 0.02, pierce: 1 },
@@ -12,7 +12,7 @@ export const projectileConfig = {
   "lc:dt_p90_bullet": { damage: 5, knockback: 0.02, pierce: 1 },
   "lc:dt_scar_bullet": { damage: 5, knockback: 0.02, pierce: 1 },
 
-  // Soldados Líderes (90-110 de vida)
+  // Soldados Líderes (150-180 de vida)
   "lc:dt_m4a1_bullet_player": { damage: 6, knockback: 0.04, pierce: 2 },
   "lc:dt_mp7_bullet_player_normal": { damage: 5, knockback: 0.04, pierce: 2 },
   "lc:dt_m16_bullet_player": { damage: 5, knockback: 0.04, pierce: 2 },

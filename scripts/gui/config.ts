@@ -93,6 +93,10 @@ const config: GuiConfig = {
             event: "humanoid:set_tamed_close",
           },
           {
+            label: "§eSeguir jugador (Medio)",
+            event: "humanoid:set_tamed_mid",
+          },
+          {
             label: "§6Seguir jugador (Lejos)",
             event: "humanoid:set_tamed_far",
           },

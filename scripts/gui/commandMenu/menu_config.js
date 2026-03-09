@@ -92,7 +92,7 @@ export const specialUnits = {
 
     // Subgrupos
     subgroups: {
-      delta1: {
+      mtf_delta1: {
         label: "§9§lMTF Delta-1",
         units: [
           "§c§lMTF Delta-1 Chara",
@@ -103,18 +103,40 @@ export const specialUnits = {
           "§d§lMTF Delta-1 Leader",
         ],
       },
-      alpha1: {
-        label: "§f§lMTF Alpha-1",
+      mtf_alpha1_commanders: {
+        label: "§f§lMTF Alpha-1 (Comandantes)",
         units: ["§lMTF Alpha-1 Commander", "§lMTF Alpha-1 Commander 2", "§lMTF Alpha-1 Commander 3"],
       },
-      other_mtf: {
-        label: "§6§lOtros MTF",
+      mtf_commanders: {
+        label: "§6§lComandantes MTF (Otros)",
         units: [
           "§1§lMTF Epsilon-11 Commander",
           "§b§lMTF Eta-10 Commander",
           "§8§lMTF Nu-7 Commander",
           "§6§lMTF Beta-7 Commander",
           "§e§lMTF Epsilon-6 Commander",
+        ],
+      },
+      mtf_leaders: {
+        label: "§e§lLíderes MTF",
+        units: [
+          "§lMTF Alpha-1 Leader",
+          "§1§lMTF Epsilon-11 Leader",
+          "§b§lMTF Eta-10 Leader",
+          "§8§lMTF Nu-7 Leader",
+          "§6§lMTF Beta-7 Leader",
+          "§e§lMTF Epsilon-6 Leader",
+        ],
+      },
+      mtf_members: {
+        label: "Miembros MTF",
+        units: [
+          "MTF Alpha-1 Member",
+          "§1MTF Epsilon-11 Member",
+          "§bMTF Eta-10 Member",
+          "§8MTF Nu-7 Member",
+          "§6MTF Beta-7 Member",
+          "§eMTF Epsilon-6 Member",
         ],
       },
     },
@@ -161,7 +183,8 @@ export const systems = {
     id: "movement",
     displayName: "§1Movimiento / Patrulla",
     description: "§8(Sólo entidades existentes)",
-    tooltip: "Controla cómo se mueven las unidades: seguir al jugador (requiere domesticar), caminar libremente o detenerse",
+    tooltip:
+      "Controla cómo se mueven las unidades: seguir al jugador, caminar libremente o detenerse",
     category: "movement_patrol",
     dynamicProperty: "scpd_system_movement",
     controlType: ControlType.DROPDOWN,
@@ -177,6 +200,16 @@ export const systems = {
         events: {
           start: "humanoid:set_tamed_close",
         },
+        // Intentará domesticar la entidad al jugador que ejecutó el menú
+        autoTame: true,
+      },
+      {
+        value: "follow_mid",
+        label: "§eSeguir jugador (Medio)",
+        events: {
+          start: "humanoid:set_tamed_mid",
+        },
+        autoTame: true,
       },
       {
         value: "follow_far",
@@ -184,6 +217,7 @@ export const systems = {
         events: {
           start: "humanoid:set_tamed_far",
         },
+        autoTame: true,
       },
       {
         value: "free",
@@ -598,7 +632,8 @@ export function getSystemDefaults(systemId) {
  * Obtiene los eventos de un sistema según el tipo de control
  * @param {string} systemId
  * @param {string} value - El valor seleccionado (true/false para toggle, o el value de la opción para dropdown)
- * @returns {Object} - Objeto con eventos { start?, stop? }
+ * @returns {Object} - Objeto con eventos { start?, stop? } y, si aplica,
+ *   `autoTame` booleano indicando que el jugador debe domar la entidad.
  */
 export function getSystemEvents(systemId, value) {
   const sys = systems[systemId];
@@ -606,14 +641,50 @@ export function getSystemEvents(systemId, value) {
 
   if (sys.controlType === ControlType.TOGGLE) {
     // Para toggle, value es true/false
-    return sys.events?.enable?.[value] ? { event: sys.events.enable[value] } : {};
+    const ev = sys.events?.enable?.[value];
+    return ev ? { event: ev } : {};
   } else if (sys.controlType === ControlType.DROPDOWN) {
     // Para dropdown, buscar la opción por value
     const option = sys.options?.find((opt) => opt.value === value);
-    return option?.events || {};
+    if (!option) return {};
+    const result = { ...(option.events || {}) };
+    if (option.autoTame) result.autoTame = true;
+    return result;
   }
 
   return {};
+}
+
+/**
+ * Determina si un nombre de evento corresponde a un modo que debe
+ * intentar domesticar automáticamente la entidad.
+ *
+ * Revisa todas las opciones de todos los sistemas buscando la bandera
+ * `autoTame` y comparando con `start`.
+ *
+ * @param {string} eventName
+ * @returns {boolean}
+ */
+export function isAutoTameEvent(eventName) {
+  if (!eventName) return false;
+  for (const sys of Object.values(systems)) {
+    if (sys.controlType === ControlType.DROPDOWN && Array.isArray(sys.options)) {
+      for (const opt of sys.options) {
+        if (opt.autoTame && opt.events && opt.events.start === eventName) {
+          return true;
+        }
+      }
+    }
+
+    if (sys.controlType === ControlType.TOGGLE && sys.events && sys.events.enable) {
+      for (const key in sys.events.enable) {
+        if (sys.events.enable[key] === eventName && sys.autoTame) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 
 /**
@@ -663,11 +734,21 @@ export function getAllNormalTypeIds(faction) {
 }
 
 /**
- * Obtiene la lista de grupos de especiales disponibles
- * @returns {Array<{id: string, label: string}>}
+ * Obtiene el orden de grupos para la vista de asignación ("Sin grupo" primero)
+ * @returns {Array<string>} Array de IDs de grupos
  */
-export function getSpecialGroupsList() {
-  return Object.entries(SpecialGroupLabels).map(([id, label]) => ({ id, label }));
+export function getGroupsOrderForAssignment() {
+  const allGroups = Object.values(SpecialGroups);
+  return [SpecialGroups.NO_GROUP, ...allGroups.filter((g) => g !== SpecialGroups.NO_GROUP)];
+}
+
+/**
+ * Obtiene el orden de grupos para formularios de sistemas ("Sin grupo" al final)
+ * @returns {Array<string>} Array de IDs de grupos
+ */
+export function getGroupsOrderForSystems() {
+  // NO_GROUP ya está al final en la definición de SpecialGroups
+  return Object.values(SpecialGroups);
 }
 
 /**

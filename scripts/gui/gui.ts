@@ -4,6 +4,11 @@ import { ActionFormData, ActionFormResponse } from "@minecraft/server-ui";
 import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
 import { debugWarn } from "../utils/debug.js";
 
+// Utilizar la misma configuración que el menú de comandos para detectar
+// qué eventos son de taming
+import { isAutoTameEvent } from "./commandMenu/menu_config.js";
+import { tryAutoTame } from "./commandMenu/core/menu_apply.js";
+
 interface EntityConfig {
   specific: MenuCategory[];
   global: MenuCategory[];
@@ -311,6 +316,10 @@ function showEntryMenu(
     if (!entry || !entry.event) return;
 
     try {
+      // si el evento está marcado como de taming intentamos domesticar
+      if (isAutoTameEvent(entry.event)) {
+        tryAutoTame(entity, player);
+      }
       entity.triggerEvent(entry.event);
       world.sendMessage(
         `§8[§aMENU§8] §7${player.name} configuró a ${soldierName} §7-> §e${category.category}§7: §f${entry.label}`

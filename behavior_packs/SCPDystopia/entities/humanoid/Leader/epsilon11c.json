@@ -130,11 +130,11 @@
           "priority": 5,
           "target_in_sight_time": 0.3,
           "burst_shots": 50,
-          "burst_interval": 0.15,
+          "burst_interval": 0.13,
           "charge_charged_trigger": 0.0,
-          "charge_shoot_trigger": 1.2,
-          "attack_interval_min": 1.2,
-          "attack_interval_max": 1.2,
+          "charge_shoot_trigger": 1.0,
+          "attack_interval_min": 1.0,
+          "attack_interval_max": 1.0,
           "attack_radius": 30.0,
           "speed_multiplier": 1.0
         }
@@ -570,12 +570,46 @@
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 20
+                "value": 18
               },
               {
                 "all_of": [
                   { "test": "in_water", "value": true },
-                  { "test": "owner_distance", "operator": ">", "value": 10 }
+                  { "test": "owner_distance", "operator": ">", "value": 12 }
+                ]
+              }
+            ]
+          }
+        },
+        "minecraft:behavior.owner_hurt_by_target": {
+          "priority": 6
+        },
+        "minecraft:behavior.owner_hurt_target": {
+          "priority": 6
+        }
+      },
+      "tamed_mid": {
+        "minecraft:is_tamed": {},
+        "minecraft:behavior.follow_owner": {
+          "priority": 2,
+          "speed_multiplier": 1.16,
+          "start_distance": 15,
+          "stop_distance": 12
+        },
+        "minecraft:behavior.teleport_to_owner": {
+          "priority": 1,
+          "cooldown": 4.0,
+          "filters": {
+            "any_of": [
+              {
+                "test": "owner_distance",
+                "operator": ">",
+                "value": 34
+              },
+              {
+                "all_of": [
+                  { "test": "in_water", "value": true },
+                  { "test": "owner_distance", "operator": ">", "value": 13 }
                 ]
               }
             ]
@@ -593,23 +627,23 @@
         "minecraft:behavior.follow_owner": {
           "priority": 2,
           "speed_multiplier": 1.16,
-          "start_distance": 20,
-          "stop_distance": 16
+          "start_distance": 24,
+          "stop_distance": 21
         },
         "minecraft:behavior.teleport_to_owner": {
           "priority": 1,
-          "cooldown": 3.5,
+          "cooldown": 4.0,
           "filters": {
             "any_of": [
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 32
+                "value": 40
               },
               {
                 "all_of": [
                   { "test": "in_water", "value": true },
-                  { "test": "owner_distance", "operator": ">", "value": 14 }
+                  { "test": "owner_distance", "operator": ">", "value": 22 }
                 ]
               }
             ]
@@ -923,8 +957,8 @@
         ]
       },
       "minecraft:health": {
-        "value": 95,
-        "max": 95
+        "value": 160,
+        "max": 160
       },
       "minecraft:breathable": {
         "total_supply": 15,
@@ -1106,18 +1140,7 @@
           "component_groups": ["start_move", "tamed"]
         },
         "remove": {
-          "component_groups": ["stop_move", "start_move_free", "tamed_far"]
-        }
-      },
-      "humanoid:set_tamed_far": {
-        "add": {
-          "component_groups": ["start_move", "tamed_far"]
-        },
-        "remove": {
-          "component_groups": ["stop_move", "start_move_free", "tamed"]
-        },
-        "queue_command": {
-          "command": ["title @p actionbar §6Seguir jugador (Lejos)"]
+          "component_groups": ["stop_move", "start_move_free", "tamed_mid", "tamed_far"]
         }
       },
       "humanoid:set_tamed_close": {
@@ -1125,10 +1148,32 @@
           "component_groups": ["start_move", "tamed"]
         },
         "remove": {
-          "component_groups": ["stop_move", "start_move_free", "tamed_far"]
+          "component_groups": ["stop_move", "start_move_free", "tamed_mid", "tamed_far"]
         },
         "queue_command": {
           "command": ["title @p actionbar §aSeguir jugador (Cerca)"]
+        }
+      },
+      "humanoid:set_tamed_mid": {
+        "add": {
+          "component_groups": ["start_move", "tamed_mid"]
+        },
+        "remove": {
+          "component_groups": ["stop_move", "start_move_free", "tamed", "tamed_far"]
+        },
+        "queue_command": {
+          "command": ["title @p actionbar §eSeguir jugador (Medio)"]
+        }
+      },
+      "humanoid:set_tamed_far": {
+        "add": {
+          "component_groups": ["start_move", "tamed_far"]
+        },
+        "remove": {
+          "component_groups": ["stop_move", "start_move_free", "tamed", "tamed_mid"]
+        },
+        "queue_command": {
+          "command": ["title @p actionbar §6Seguir jugador (Lejos)"]
         }
       },
       "mtf:to_move": {
@@ -1136,7 +1181,7 @@
           "component_groups": ["start_move", "tamed"]
         },
         "remove": {
-          "component_groups": ["stop_move", "start_move_free", "tamed_far"]
+          "component_groups": ["stop_move", "start_move_free", "tamed_mid", "tamed_far"]
         },
         "queue_command": {
           "command": ["title @p actionbar §e§l[LEGACY] Seguir jugador"]
@@ -1147,7 +1192,7 @@
           "component_groups": ["stop_move"]
         },
         "remove": {
-          "component_groups": ["start_move", "start_move_free", "tamed", "tamed_far"]
+          "component_groups": ["start_move", "start_move_free", "tamed", "tamed_mid", "tamed_far"]
         },
         "queue_command": {
           "command": ["title @p actionbar §cDetenerse"]
@@ -1158,7 +1203,7 @@
           "component_groups": ["start_move_free"]
         },
         "remove": {
-          "component_groups": ["start_move", "stop_move", "tamed", "tamed_far"]
+          "component_groups": ["start_move", "stop_move", "tamed", "tamed_mid", "tamed_far"]
         },
         "queue_command": {
           "command": ["title @p actionbar §9Caminar libremente"]

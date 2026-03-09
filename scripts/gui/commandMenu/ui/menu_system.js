@@ -103,8 +103,8 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
           // 6. Guardar todos los estados
           saveSystemStates(parsedStates);
 
-          // 7. Aplicar todos los sistemas
-          applySystemsToAll(systemIds, player.dimension);
+          // 7. Aplicar todos los sistemas (pasamos jugador para posibles auto-tame)
+          applySystemsToAll(systemIds, player.dimension, player);
 
           // 8. Mensaje de confirmación
           try {

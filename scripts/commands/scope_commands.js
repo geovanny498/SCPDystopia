@@ -100,7 +100,8 @@ system.beforeEvents.startup.subscribe((init) => {
           try {
             const dimension = entity.dimension;
             const systemIds = Object.keys(menuSystems);
-            applySystemsToAll(systemIds, dimension);
+            // El jugador que ejecutó el comando puede ser usado para auto-domesticar
+            applySystemsToAll(systemIds, dimension, entity);
 
             console.log("[SCPDystopia] Sistemas reaplicados a entidades existentes con nuevo scope");
             entity.sendMessage("§a[SCOPE] Sistemas reaplicados a entidades existentes");

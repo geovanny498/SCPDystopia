@@ -100,14 +100,9 @@ export function saveAllMenuSelection(
 
 /**
  * Obtiene la selección del menú TODAS
+ * Devuelve null si no hay datos guardados
  */
 export function getAllMenuSelection(playerName: string, faction: string) {
   const session = getPlayerSession(playerName);
-  // Default: todo false, array vacio
-  return (
-    session.allMenuSelection.get(faction) || {
-      hierarchies: [false, false, false],
-      specialUnits: [],
-    }
-  );
+  return session.allMenuSelection.get(faction) || null;
 }

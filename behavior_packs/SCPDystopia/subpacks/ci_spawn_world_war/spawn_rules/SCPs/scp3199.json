@@ -26,9 +26,7 @@
             "entity_type": "lc:dt_scp3199<scp3199:spawn_injected>"
           }
         ],
-        "minecraft:biome_filter": [
-          { "test": "has_biome_tag", "operator": "==", "value": "monster" }
-        ]
+        "minecraft:biome_filter": [{ "test": "has_biome_tag", "operator": "==", "value": "monster" }]
       },
       {
         "minecraft:spawns_on_surface": {},
@@ -55,9 +53,7 @@
             "entity_type": "lc:dt_scp3199<scp3199:spawn_injected>"
           }
         ],
-        "minecraft:biome_filter": [
-          { "test": "has_biome_tag", "operator": "==", "value": "monster" }
-        ]
+        "minecraft:biome_filter": [{ "test": "has_biome_tag", "operator": "==", "value": "monster" }]
       },
       {
         "minecraft:spawns_on_surface": {},
@@ -78,9 +74,7 @@
             "entity_type": "lc:dt_scp3199<scp3199:spawn_injected>"
           }
         ],
-        "minecraft:biome_filter": [
-          { "test": "has_biome_tag", "operator": "==", "value": "monster" }
-        ]
+        "minecraft:biome_filter": [{ "test": "has_biome_tag", "operator": "==", "value": "monster" }]
       }
     ]
   }
