@@ -1,45 +1,31 @@
 {
-    "format_version": 2,
-    "header": {
-        "description": "§l§bCredits: From SCP: Dystopia v1.9.0 §b Oficial made by LC Studios MC. Helped by Kaiboi39 and RianDewa45.",
-        "name": "§g[DEV] §9§lSCP: Dystopia RP v1.0.1-beta.1",
-        "uuid": "03cce329-48ac-45be-ae8a-4301f4687e46",
-        "version": [
-            1,
-            0,
-            1
-        ],
-        "min_engine_version": [
-            1,
-            21,
-            130
-        ]
+  "format_version": 2,
+  "header": {
+    "description": "§l§bCredits: From SCP: Dystopia v1.9.0 §b Oficial made by LC Studios MC. Helped by Kaiboi39 and RianDewa45.",
+    "name": "§g[DEV] §9§lSCP: Dystopia RP v1.0.1-beta.1",
+    "uuid": "03cce329-48ac-45be-ae8a-4301f4687e46",
+    "version": [1, 0, 1],
+    "min_engine_version": [1, 21, 130]
+  },
+  "modules": [
+    {
+      "description": "Made by LC Studios MC",
+      "type": "resources",
+      "uuid": "15e4494f-d558-46e0-9108-ca086eca59ef",
+      "version": [1, 0, 1]
+    }
+  ],
+  "capabilities": ["pbr"],
+  "subpacks": [
+    {
+      "folder_name": "hazmat",
+      "memory_tier": 1,
+      "name": "§7§lHazmat Delta-1"
     },
-    "modules": [
-        {
-            "description": "Made by LC Studios MC",
-            "type": "resources",
-            "uuid": "15e4494f-d558-46e0-9108-ca086eca59ef",
-            "version": [
-                1,
-                0,
-                1
-            ]
-        }
-    ],
-    "capabilities": [
-        "pbr"
-    ],
-    "subpacks": [
-        {
-            "folder_name": "hazmat",
-            "memory_tier": 1,
-            "name": "§7§lHazmat Delta-1"
-        },
-        {
-            "folder_name": "normal",
-            "memory_tier": 1,
-            "name": "§4§lNormal Delta-1"
-        }
-    ]
+    {
+      "folder_name": "normal",
+      "memory_tier": 1,
+      "name": "§4§lNormal Delta-1"
+    }
+  ]
 }

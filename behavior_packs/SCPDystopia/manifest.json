@@ -1,117 +1,93 @@
 {
-    "format_version": 2,
-    "header": {
-        "description": "§l§bCredits: From SCP: Dystopia v1.9.0 §b Oficial made by LC Studios MC. Helped by Kaiboi39 and RianDewa45.",
-        "name": "§g[DEV] §9§lSCP: Dystopia BP v1.0.1-beta.1",
-        "uuid": "0b342e6a-74d1-4f0e-9ec1-44848741705c",
-        "version": [
-            1,
-            0,
-            1
-        ],
-        "min_engine_version": [
-            1,
-            21,
-            130
-        ]
+  "format_version": 2,
+  "header": {
+    "description": "§l§bCredits: From SCP: Dystopia v1.9.0 §b Oficial made by LC Studios MC. Helped by Kaiboi39 and RianDewa45.",
+    "name": "§g[DEV] §9§lSCP: Dystopia BP v1.0.1-beta.1",
+    "uuid": "0b342e6a-74d1-4f0e-9ec1-44848741705c",
+    "version": [1, 0, 1],
+    "min_engine_version": [1, 21, 130]
+  },
+  "modules": [
+    {
+      "description": "THIS ADDON HAS 100 OVER 3D BLOCKS",
+      "type": "data",
+      "uuid": "d9103392-6212-4669-acd3-5017756f47c8",
+      "version": [1, 0, 1]
     },
-    "modules": [
-        {
-            "description": "THIS ADDON HAS 100 OVER 3D BLOCKS",
-            "type": "data",
-            "uuid": "d9103392-6212-4669-acd3-5017756f47c8",
-            "version": [
-                1,
-                0,
-                1
-            ]
-        },
-        {
-            "description": "Scripts",
-            "language": "javascript",
-            "type": "script",
-            "uuid": "5fa83869-172d-41dc-8fb0-bd98da2e9da6",
-            "version": [
-                1,
-                0,
-                0
-            ],
-            "entry": "scripts/init.js"
-        }
-    ],
-    "capabilities": [
-        "script_eval"
-    ],
-    "dependencies": [
-        {
-            "uuid": "03cce329-48ac-45be-ae8a-4301f4687e46",
-            "version": [
-                1,
-                0,
-                1
-            ]
-        },
-		{
-			"module_name": "@minecraft/server",
-			"version": "2.4.0"
-		},
-		{
-			"module_name": "@minecraft/server-ui",
-			"version": "2.0.0"
-		}
-    ],
-    "subpacks": [
-        {
-            
-            "folder_name": "no_spawning",
-            "memory_tier": 0,
-            "name": "§a§lSpawn addon entities: §7False"
-        },
-        {
-            "folder_name": "spawning_foundation",
-            "memory_tier": 0,
-            "name": "§a§lSpawn SCP Foundation MTFs: §7True"
-        },
-        {
-            "folder_name": "spawning_humans",
-            "memory_tier": 0,
-            "name": "§lSpawn SCP Foundation MTFs and Chaos Insurgency: §4True"
-        },
-        {
-            "folder_name": "s_foundatAndSCPs",
-            "memory_tier": 0,
-            "name": "§lSpawn SCP Foundation MTFs and SCPS: §4True"
-        },
-        {
-            "folder_name": "spawning_scps",
-            "memory_tier": 0,
-            "name": "§lSpawn SCPs: §4True"
-        },
-        {
-            "folder_name": "spawning_scp_ci",
-            "memory_tier": 0,
-            "name": "§l§cSpawn SCPs and Chaos Insurgency: §8True"
-        },
-        {
-            "folder_name": "spawn_world_war",
-            "memory_tier": 0,
-            "name": "§l§4World War IV Mode: §6True"
-        },
-        {
-            "folder_name": "f_spawn_world_war",
-            "memory_tier": 0,
-            "name": "§l§4World War IV Mode: §6True §4Only SCP Foundation: §6True"
-        },
-        {
-            "folder_name": "ci_spawn_world_war",
-            "memory_tier": 0,
-            "name": "§l§4World War IV Mode: §6True §4Only CI: §6True"
-        },
-        {
-            "folder_name": "spawning_all",
-            "memory_tier": 0,
-            "name": "§c§lSpawn SCPs, SCP Foundation MTFs and Chaos Insurgency: §8True"
-        }
-        
-    ]
+    {
+      "description": "Scripts",
+      "language": "javascript",
+      "type": "script",
+      "uuid": "5fa83869-172d-41dc-8fb0-bd98da2e9da6",
+      "version": [1, 0, 0],
+      "entry": "scripts/init.js"
+    }
+  ],
+  "capabilities": ["script_eval"],
+  "dependencies": [
+    {
+      "uuid": "03cce329-48ac-45be-ae8a-4301f4687e46",
+      "version": [1, 0, 1]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.4.0"
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": "2.0.0"
+    }
+  ],
+  "subpacks": [
+    {
+      "folder_name": "no_spawning",
+      "memory_tier": 0,
+      "name": "§a§lSpawn addon entities: §7False"
+    },
+    {
+      "folder_name": "spawning_foundation",
+      "memory_tier": 0,
+      "name": "§a§lSpawn SCP Foundation MTFs: §7True"
+    },
+    {
+      "folder_name": "spawning_humans",
+      "memory_tier": 0,
+      "name": "§lSpawn SCP Foundation MTFs and Chaos Insurgency: §4True"
+    },
+    {
+      "folder_name": "s_foundatAndSCPs",
+      "memory_tier": 0,
+      "name": "§lSpawn SCP Foundation MTFs and SCPS: §4True"
+    },
+    {
+      "folder_name": "spawning_scps",
+      "memory_tier": 0,
+      "name": "§lSpawn SCPs: §4True"
+    },
+    {
+      "folder_name": "spawning_scp_ci",
+      "memory_tier": 0,
+      "name": "§l§cSpawn SCPs and Chaos Insurgency: §8True"
+    },
+    {
+      "folder_name": "spawn_world_war",
+      "memory_tier": 0,
+      "name": "§l§4World War IV Mode: §6True"
+    },
+    {
+      "folder_name": "f_spawn_world_war",
+      "memory_tier": 0,
+      "name": "§l§4World War IV Mode: §6True §4Only SCP Foundation: §6True"
+    },
+    {
+      "folder_name": "ci_spawn_world_war",
+      "memory_tier": 0,
+      "name": "§l§4World War IV Mode: §6True §4Only CI: §6True"
+    },
+    {
+      "folder_name": "spawning_all",
+      "memory_tier": 0,
+      "name": "§c§lSpawn SCPs, SCP Foundation MTFs and Chaos Insurgency: §8True"
+    }
+  ]
 }
