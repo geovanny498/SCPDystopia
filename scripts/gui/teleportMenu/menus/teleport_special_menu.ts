@@ -105,7 +105,7 @@ function showSubgroupTogglesMenu(player: Player, faction: string, subgroupId: st
   debugMessage("teleportMenu", `Mostrando toggles para ${subgroupId}: ${subgroup.units.length} unidades`, "cyan");
 
   const form = new ModalFormData();
-  form.title(`${subgroup.label}${" | Teletransporte"}`);
+  form.title(`${subgroup.label}${"§r | Teletransporte"}`);
   form.label(CommonTexts.toggleLabel);
 
   // Añadir toggle para cada unidad del subgrupo

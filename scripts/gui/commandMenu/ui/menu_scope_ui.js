@@ -206,7 +206,7 @@ function showSubgroupModal(player, faction, subgroupId) {
     }
 
     const form = new ModalFormData()
-      .title(`§9${subgroup.label}§r - ${factionLabel}`)
+      .title(`${subgroup.label}§r - ${factionLabel}`)
       .label("§7Selecciona las unidades especiales a incluir:");
 
     // Agregar toggle para cada unidad
