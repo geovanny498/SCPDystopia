@@ -148,7 +148,7 @@ function showSubgroupAssignmentModal(player: Player, faction: string, subgroupId
     const groupOptions = getGroupsOrderForAssignment();
     const groupLabels = groupOptions.map((g) => SpecialGroupLabels[g as keyof typeof SpecialGroupLabels]);
 
-    const form = new ModalFormData().title(`§9${subgroup.label}`);
+    const form = new ModalFormData().title(`${subgroup.label}`);
 
     // Agregar label informativo
     form.label("§7Selecciona el grupo para cada unidad:");

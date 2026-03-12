@@ -9,7 +9,7 @@
     {
       "label": "deploy",
       "type": "shell",
-      "command": "npm run local-deploy"
+      "command": "npx just-scripts local-deploy --watch"
     },
     {
       "label": "production",

@@ -166,11 +166,15 @@ Para ver todos los comandos disponibles, consulta [COMANDOS.md](./COMANDOS.md).
 npm run build
 npm run local-deploy
 
+# Desarrollo con actualización automatica para ts y js
+npx just-scripts local-deploy --watch
+
 # Producción (sin debug)
 npm run build:production
 npm run deploy:production
 npm run mcaddon:production
 ```
+
 ## Comandos de formateo
 
 ```bash
@@ -179,8 +183,8 @@ npx prettier --write "subpacks/ext_spawn/spawn_rules/**/*"
 npx prettier --write "scripts/**/*"
 ```
 
-
 ## Licencia
+
 Créditos a LC Studios MC por el addon de SCPDystopia v1.9.0 Original, esta es una expansión enfocada en las unidades móviles de la fundación y la insurgencia del caos.
 
 Desarrollado por LC Studios MC. Todos los derechos reservados.

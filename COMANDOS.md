@@ -5,7 +5,11 @@
 ### Compilar y copiar a behavior/resource packs (con debug)
 
 ```bash
+
+# Compilar
 npm run build
+
+# Copiar a rutas de development
 npm run package
 ```
 
@@ -13,9 +17,25 @@ npm run package
 
 ```bash
 npm run local-deploy
+
+# Desarrollo con actualización automatica para ts y js
+npx just-scripts local-deploy --watch
 ```
 
 Observa cambios en archivos y recompila automáticamente.
+
+### Comandos de formateo
+
+```bash
+# Formatear carpetas de behavior_packs
+# Cambiar rutas seguido de /**/*
+
+# Spawn rules
+npx prettier --write "subpacks/ext_spawn/spawn_rules/**/*"
+
+# Scripts
+npx prettier --write "scripts/**/*"
+```
 
 ## Producción
 
@@ -43,6 +63,8 @@ npm run build:production
 
 ```bash
 npm run clean
+
+npx just-scripts clean
 ```
 
 ### Lint (verificar código)
@@ -79,9 +101,9 @@ npm run enablemcpreviewloopback
 
 | Comando                      | Debug incluido | Destino                           |
 | ---------------------------- | -------------- | --------------------------------- |
-| `npm run build`              | ✅ Sí          | dist/                             |
-| `npm run build:production`   | ❌ No          | dist/                             |
-| `npm run package`            | ✅ Sí          | behavior_packs/ y resource_packs/ |
-| `npm run deploy:production`  | ❌ No          | behavior_packs/ y resource_packs/ |
-| `npm run mcaddon`            | ✅ Sí          | dist/packages/\*.mcaddon          |
-| `npm run mcaddon:production` | ❌ No          | dist/packages/\*.mcaddon          |
+| `npm run build`              | Sí             | dist/                             |
+| `npm run build:production`   | No             | dist/                             |
+| `npm run package`            | Sí             | behavior_packs/ y resource_packs/ |
+| `npm run deploy:production`  | No             | behavior_packs/ y resource_packs/ |
+| `npm run mcaddon`            | Sí             | dist/packages/\*.mcaddon          |
+| `npm run mcaddon:production` | No             | dist/packages/\*.mcaddon          |
