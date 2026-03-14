@@ -183,7 +183,8 @@ export const systems = {
     id: "movement",
     displayName: "§1Movimiento / Patrulla",
     description: "§8(Sólo entidades existentes)",
-    tooltip: "Controla cómo se mueven las unidades: seguir al jugador, caminar libremente o detenerse",
+    tooltip:
+      "§7Define cómo se desplazan las unidades en terreno.\n\nModos:\n- Seguir jugador (§aCerca/§eMedia/§6Lejos§7)\n- §9Caminar libremente\n§7- §cDetenerse",
     category: "movement_patrol",
     dynamicProperty: "scpd_system_movement",
     controlType: ControlType.DROPDOWN,
@@ -204,7 +205,7 @@ export const systems = {
       },
       {
         value: "follow_mid",
-        label: "§eSeguir jugador (Medio)",
+        label: "§eSeguir jugador (Media)",
         events: {
           start: "humanoid:set_tamed_mid",
         },
@@ -272,10 +273,10 @@ export const systems = {
 
   fire: {
     id: "fire",
-    displayName: "§cAtaque / Reglas de Disparo",
+    displayName: "§cIniciativa de Combate",
     description: "",
     tooltip:
-      "Define cuándo y cómo atacan las unidades: guerra abierta, presencia armada, defensivo, al recibir daño, etc.",
+      "§7Define el radio de conciencia y respuesta ante amenazas.\n\nModos:\n- §cMáxima\n§7- §aIntermedia\n§7- §9Cercana\n§7- §6Pasiva",
     category: "combat",
     dynamicProperty: "scpd_system_fire",
     controlType: ControlType.DROPDOWN,
@@ -285,29 +286,29 @@ export const systems = {
 
     options: [
       {
-        value: "open_warfare",
-        label: "§cGuerra Abierta",
+        value: "maximum",
+        label: "§cMáxima",
         events: {
           start: "humanoid:fire_open_warfare",
         },
       },
       {
-        value: "armed_presence",
-        label: "§aPresencia Armada",
+        value: "intermediate",
+        label: "§aIntermedia",
         events: {
           start: "humanoid:fire_armed_presence",
         },
       },
       {
-        value: "defensive",
-        label: "§9Defensivo (alcance reducido)",
+        value: "close",
+        label: "§9Cercana",
         events: {
           start: "humanoid:fire_defensive",
         },
       },
       {
-        value: "on_hit",
-        label: "§6Al Recibir Daño",
+        value: "passive",
+        label: "§6Pasiva",
         events: {
           start: "humanoid:fire_mode_hit",
         },
@@ -325,24 +326,24 @@ export const systems = {
 
     defaults: {
       [Factions.FOUNDATION]: {
-        [UnitHierarchy.BASIC]: "armed_presence",
-        [UnitHierarchy.LEADER]: "armed_presence",
-        [UnitHierarchy.COMMANDER]: "armed_presence",
-        [SpecialGroups.GROUP_A]: "armed_presence",
-        [SpecialGroups.GROUP_B]: "armed_presence",
-        [SpecialGroups.GROUP_C]: "armed_presence",
-        [SpecialGroups.GROUP_D]: "armed_presence",
-        [SpecialGroups.NO_GROUP]: "armed_presence",
+        [UnitHierarchy.BASIC]: "intermediate",
+        [UnitHierarchy.LEADER]: "intermediate",
+        [UnitHierarchy.COMMANDER]: "intermediate",
+        [SpecialGroups.GROUP_A]: "intermediate",
+        [SpecialGroups.GROUP_B]: "intermediate",
+        [SpecialGroups.GROUP_C]: "intermediate",
+        [SpecialGroups.GROUP_D]: "intermediate",
+        [SpecialGroups.NO_GROUP]: "intermediate",
       },
       [Factions.CHAOS]: {
-        [UnitHierarchy.BASIC]: "armed_presence",
-        [UnitHierarchy.LEADER]: "armed_presence",
-        [UnitHierarchy.COMMANDER]: "armed_presence",
-        [SpecialGroups.GROUP_A]: "armed_presence",
-        [SpecialGroups.GROUP_B]: "armed_presence",
-        [SpecialGroups.GROUP_C]: "armed_presence",
-        [SpecialGroups.GROUP_D]: "armed_presence",
-        [SpecialGroups.NO_GROUP]: "armed_presence",
+        [UnitHierarchy.BASIC]: "intermediate",
+        [UnitHierarchy.LEADER]: "intermediate",
+        [UnitHierarchy.COMMANDER]: "intermediate",
+        [SpecialGroups.GROUP_A]: "intermediate",
+        [SpecialGroups.GROUP_B]: "intermediate",
+        [SpecialGroups.GROUP_C]: "intermediate",
+        [SpecialGroups.GROUP_D]: "intermediate",
+        [SpecialGroups.NO_GROUP]: "intermediate",
       },
     },
   },
@@ -351,7 +352,8 @@ export const systems = {
     id: "spawn",
     displayName: "§1Spawn de soldados",
     description: "",
-    tooltip: "Activa o desactiva la generación automática de soldados adicionales",
+    tooltip:
+      "§7Habilita la capacidad de generar refuerzos adicionales (Sólo líderes y algunos comandantes).\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
     category: "advanced",
     dynamicProperty: "scpd_system_spawn",
     controlType: ControlType.TOGGLE,
@@ -403,7 +405,8 @@ export const systems = {
     id: "health",
     displayName: "§cBarra de vida",
     description: "",
-    tooltip: "Muestra u oculta la barra de vida de las unidades en pantalla",
+    tooltip:
+      "§7Visualización de la salud de las unidades cercanas en la interfaz.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
     category: "advanced",
     dynamicProperty: "scpd_system_health",
     controlType: ControlType.TOGGLE,
@@ -455,7 +458,8 @@ export const systems = {
     id: "teleport",
     displayName: "§2Teletransportación",
     description: "",
-    tooltip: "Controla si las unidades pueden teletransportarse al enemigo cuando están lejos",
+    tooltip:
+      "§7Define la agresividad del teletransporte hacia el enemigo cuando hay distancia.\n\nModos:\n- §aNormal\n§7- §6Cercano\n§7- §cDesactivado",
     category: "advanced",
     dynamicProperty: "scpd_system_teleport",
     controlType: ControlType.DROPDOWN,
@@ -536,7 +540,7 @@ export const categories = {
   },
   combat: {
     id: "combat",
-    displayName: "§cAtaque / Reglas de disparo",
+    displayName: "§cIniciativa de Combate",
     description: "",
     systems: ["fire"],
   },

@@ -93,7 +93,7 @@ const config: GuiConfig = {
             event: "humanoid:set_tamed_close",
           },
           {
-            label: "§eSeguir jugador (Medio)",
+            label: "§eSeguir jugador (Media)",
             event: "humanoid:set_tamed_mid",
           },
           {
@@ -112,22 +112,22 @@ const config: GuiConfig = {
       },
       {
         id: "attack_rules",
-        category: "§cAtaque / Reglas de disparo§r",
+        category: "§cIniciativa de Combate§r",
         entries: [
           {
-            label: "§cGuerra Abierta",
+            label: "§cMáxima",
             event: "humanoid:fire_open_warfare",
           },
           {
-            label: "§aPresencia Armada",
+            label: "§aIntermedia",
             event: "humanoid:fire_armed_presence",
           },
           {
-            label: "§9Defensivo (alcance reducido)",
+            label: "§9Cercana",
             event: "humanoid:fire_defensive",
           },
           {
-            label: "§6Solo al recibir daño",
+            label: "§6Pasiva",
             event: "humanoid:fire_mode_hit",
           },
         ],

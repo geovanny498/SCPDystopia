@@ -135,7 +135,7 @@
           "charge_shoot_trigger": 0.6,
           "attack_interval_min": 0.6,
           "attack_interval_max": 0.6,
-          "attack_radius": 60.0,
+          "attack_radius": 64.0,
           "speed_multiplier": 1.0
         }
       },
@@ -163,7 +163,7 @@
       "open_warfare": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 4,
-          "within_radius": 128,
+          "within_radius": 64,
           "reselect_targets": true,
           "entity_types": [
             {
@@ -209,7 +209,7 @@
                   }
                 ]
               },
-              "max_dist": 128
+              "max_dist": 64
             },
             {
               "filters": {
@@ -229,7 +229,7 @@
                   }
                 ]
               },
-              "max_dist": 128
+              "max_dist": 64
             }
           ],
           "must_see_forget_duration": 6.0,
@@ -249,7 +249,7 @@
                   }
                 ]
               },
-              "max_dist": 128
+              "max_dist": 96
             },
             {
               "filters": {
@@ -289,7 +289,7 @@
                   }
                 ]
               },
-              "max_dist": 128
+              "max_dist": 96
             }
           ]
         }
@@ -446,7 +446,7 @@
           "must_see": true
         }
       },
-      // Hurt by target compartido para armed_presence y defensive, usarlo solo lo convierte en el modo "solo al recibir daño"
+      // Hurt by target compartido para armed_presence y defensive, usarlo solo lo convierte en iniciativa de combate "pasiva"
       "fire_mode_hit": {
         "minecraft:behavior.hurt_by_target": {
           "priority": 6,
@@ -1129,7 +1129,7 @@
           "component_groups": ["stop_move", "start_move_free", "tamed", "tamed_far"]
         },
         "queue_command": {
-          "command": ["title @p actionbar §eSeguir jugador (Medio)"]
+          "command": ["title @p actionbar §eSeguir jugador (Media)"]
         }
       },
       "humanoid:set_tamed_far": {

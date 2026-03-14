@@ -109,7 +109,7 @@
       "open_warfare": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 4,
-          "within_radius": 64,
+          "within_radius": 48,
           "reselect_targets": true,
           "entity_types": [
             {
@@ -155,7 +155,7 @@
                   }
                 ]
               },
-              "max_dist": 64
+              "max_dist": 48
             },
             {
               "filters": {
@@ -175,7 +175,7 @@
                   }
                 ]
               },
-              "max_dist": 64
+              "max_dist": 48
             }
           ],
           "must_see_forget_duration": 3.0,
@@ -392,7 +392,7 @@
           "must_see": true
         }
       },
-      // Hurt by target compartido para armed_presence y defensive, usarlo solo lo convierte en el modo "solo al recibir daño"
+      // Hurt by target compartido para armed_presence y defensive, usarlo solo lo convierte en iniciativa de combate "pasiva"
       "fire_mode_hit": {
         "minecraft:behavior.hurt_by_target": {
           "priority": 6,
@@ -1076,7 +1076,7 @@
           "component_groups": ["stop_move", "start_move_free", "tamed", "tamed_far"]
         },
         "queue_command": {
-          "command": ["title @p actionbar §eSeguir jugador (Medio)"]
+          "command": ["title @p actionbar §eSeguir jugador (Media)"]
         }
       },
       "humanoid:set_tamed_far": {
@@ -1133,7 +1133,7 @@
           "component_groups": [
             "armed_presence",
             "defensive",
-            // Quitar hurt_by_target compartido entre todos menos fire_open_warfare
+            // Quitar hurt_by_target compartido
             "fire_mode_hit"
           ]
         }
