@@ -167,16 +167,37 @@
           "reselect_targets": true,
           "entity_types": [
             {
+              // Detección de sigilo
+              "filters": {
+                "all_of": [
+                  { "test": "is_family", "subject": "other", "value": "hidden" },
+                  {
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
+                      { "test": "is_family", "subject": "other", "value": "chaos" },
+                      { "test": "is_family", "subject": "other", "value": "class_d" }
+                    ]
+                  }
+                ]
+              },
+              "max_dist": 18
+            },
+            {
               // Objetivos Tácticos: Rango Máximo
               "filters": {
-                "any_of": [
-                  { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
-                  { "test": "is_family", "subject": "other", "value": "chaos" },
-                  { "test": "is_family", "subject": "other", "value": "class_d" },
-                  { "test": "is_family", "subject": "other", "value": "scp049" },
-                  { "test": "is_family", "subject": "other", "value": "scp682" },
-                  { "test": "is_family", "subject": "other", "value": "scp173" },
-                  { "test": "is_family", "subject": "other", "value": "scp106" }
+                "all_of": [
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "hidden" },
+                  {
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
+                      { "test": "is_family", "subject": "other", "value": "chaos" },
+                      { "test": "is_family", "subject": "other", "value": "class_d" },
+                      { "test": "is_family", "subject": "other", "value": "scp049" },
+                      { "test": "is_family", "subject": "other", "value": "scp682" },
+                      { "test": "is_family", "subject": "other", "value": "scp173" },
+                      { "test": "is_family", "subject": "other", "value": "scp106" }
+                    ]
+                  }
                 ]
               },
               "max_dist": 58
@@ -284,15 +305,36 @@
           "reselect_targets": true,
           "entity_types": [
             {
+              // Detección de sigilo
               "filters": {
-                "any_of": [
-                  { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
-                  { "test": "is_family", "subject": "other", "value": "chaos" },
-                  { "test": "is_family", "subject": "other", "value": "class_d" },
-                  { "test": "is_family", "subject": "other", "value": "scp049" },
-                  { "test": "is_family", "subject": "other", "value": "scp682" },
-                  { "test": "is_family", "subject": "other", "value": "scp173" },
-                  { "test": "is_family", "subject": "other", "value": "scp106" }
+                "all_of": [
+                  { "test": "is_family", "subject": "other", "value": "hidden" },
+                  {
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
+                      { "test": "is_family", "subject": "other", "value": "chaos" },
+                      { "test": "is_family", "subject": "other", "value": "class_d" }
+                    ]
+                  }
+                ]
+              },
+              "max_dist": 16
+            },
+            {
+              "filters": {
+                "all_of": [
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "hidden" },
+                  {
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
+                      { "test": "is_family", "subject": "other", "value": "chaos" },
+                      { "test": "is_family", "subject": "other", "value": "class_d" },
+                      { "test": "is_family", "subject": "other", "value": "scp049" },
+                      { "test": "is_family", "subject": "other", "value": "scp682" },
+                      { "test": "is_family", "subject": "other", "value": "scp173" },
+                      { "test": "is_family", "subject": "other", "value": "scp106" }
+                    ]
+                  }
                 ]
               },
               "max_dist": 30
@@ -341,15 +383,36 @@
           "reselect_targets": true,
           "entity_types": [
             {
+              // Detección de sigilo
               "filters": {
-                "any_of": [
-                  { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
-                  { "test": "is_family", "subject": "other", "value": "chaos" },
-                  { "test": "is_family", "subject": "other", "value": "class_d" },
-                  { "test": "is_family", "subject": "other", "value": "scp049" },
-                  { "test": "is_family", "subject": "other", "value": "scp682" },
-                  { "test": "is_family", "subject": "other", "value": "scp173" },
-                  { "test": "is_family", "subject": "other", "value": "scp106" }
+                "all_of": [
+                  { "test": "is_family", "subject": "other", "value": "hidden" },
+                  {
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
+                      { "test": "is_family", "subject": "other", "value": "chaos" },
+                      { "test": "is_family", "subject": "other", "value": "class_d" }
+                    ]
+                  }
+                ]
+              },
+              "max_dist": 12
+            },
+            {
+              "filters": {
+                "all_of": [
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "hidden" },
+                  {
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
+                      { "test": "is_family", "subject": "other", "value": "chaos" },
+                      { "test": "is_family", "subject": "other", "value": "class_d" },
+                      { "test": "is_family", "subject": "other", "value": "scp049" },
+                      { "test": "is_family", "subject": "other", "value": "scp682" },
+                      { "test": "is_family", "subject": "other", "value": "scp173" },
+                      { "test": "is_family", "subject": "other", "value": "scp106" }
+                    ]
+                  }
                 ]
               },
               "max_dist": 18
@@ -391,7 +454,7 @@
           "must_see": true
         }
       },
-      // Hurt by target compartido para armed_presence y defensive, usarlo solo lo convierte en iniciativa de combate "pasiva"
+      // Hurt by target compartido para armed_presence y defensive, usarlo solo lo convierte en iniciativa de combate "neutral / sigilo"
       "fire_mode_hit": {
         "minecraft:behavior.hurt_by_target": {
           "priority": 6,
@@ -732,6 +795,16 @@
             }
           ]
         }
+      },
+      "humanoid:stealth_on": {
+        "minecraft:type_family": {
+          "family": ["mob", "foundation", "scpfoundation", "player", "human", "alpha1", "mtf", "villager", "hidden"]
+        }
+      },
+      "humanoid:stealth_off": {
+        "minecraft:type_family": {
+          "family": ["mob", "foundation", "scpfoundation", "player", "human", "alpha1", "mtf", "villager"]
+        }
       }
     },
     "components": {
@@ -754,9 +827,6 @@
         "despawn_from_distance": {}
       },
       "minecraft:ignore_cannot_be_attacked": {},
-      "minecraft:type_family": {
-        "family": ["mob", "foundation", "scpfoundation", "player", "human", "alpha1", "mtf", "villager"]
-      },
       "minecraft:damage_sensor": {
         "triggers": [
           {
@@ -1011,6 +1081,7 @@
                 "minecraft:ranged_attack",
                 "start_move",
                 "calm",
+                "humanoid:stealth_off",
                 "fire_mode_hit" // por defecto armed_presence en el menú
               ]
             }
@@ -1151,40 +1222,49 @@
       "humanoid:fire_open_warfare": {
         "add": {
           "component_groups": [
-            "open_warfare" // Tiene hurt_by_target propio
+            "open_warfare",
+            "humanoid:stealth_off" // Visibilidad normal
           ]
         },
         "remove": {
           "component_groups": [
             "armed_presence",
             "defensive",
-            // Quitar hurt_by_target compartido
-            "fire_mode_hit"
+            "fire_mode_hit",
+            "humanoid:stealth_on" // Quita sigilo
           ]
         }
       },
       "humanoid:fire_armed_presence": {
         "add": {
-          "component_groups": ["armed_presence", "fire_mode_hit"]
+          "component_groups": ["armed_presence", "fire_mode_hit", "humanoid:stealth_off"]
         },
         "remove": {
-          "component_groups": ["open_warfare", "defensive"]
+          "component_groups": ["open_warfare", "defensive", "humanoid:stealth_on"]
         }
       },
       "humanoid:fire_defensive": {
         "add": {
-          "component_groups": ["defensive", "fire_mode_hit"]
+          "component_groups": ["defensive", "fire_mode_hit", "humanoid:stealth_off"]
         },
         "remove": {
-          "component_groups": ["open_warfare", "armed_presence"]
+          "component_groups": ["open_warfare", "armed_presence", "humanoid:stealth_on"]
         }
       },
       "humanoid:fire_mode_hit": {
         "add": {
-          "component_groups": ["fire_mode_hit"]
+          "component_groups": [
+            "fire_mode_hit",
+            "humanoid:stealth_on" // Activa el sigilo
+          ]
         },
         "remove": {
-          "component_groups": ["open_warfare", "armed_presence", "defensive"]
+          "component_groups": [
+            "open_warfare",
+            "armed_presence",
+            "defensive",
+            "humanoid:stealth_off" // Quita visibilidad normal
+          ]
         }
       },
       "humanoid:start_spawn_soldiers": {

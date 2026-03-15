@@ -127,7 +127,7 @@ const config: GuiConfig = {
             event: "humanoid:fire_defensive",
           },
           {
-            label: "§6Pasiva",
+            label: "§6Neutral / Sigilo",
             event: "humanoid:fire_mode_hit",
           },
         ],
