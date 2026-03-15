@@ -83,7 +83,7 @@
       "minecraft:physics": {},
       "minecraft:timer": {
         "looping": false,
-        "time": 0.64,
+        "time": 0.256,
         "time_down_event": {
           "event": "lc:dt_start_despawn"
         }

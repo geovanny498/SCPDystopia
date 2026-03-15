@@ -168,69 +168,52 @@
           "reselect_targets": true,
           "entity_types": [
             {
+              // Objetivos Tácticos: Rango Máximo
               "filters": {
-                "all_of": [
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "scp096"
-                  },
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "scp001_gg"
-                  },
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "enderman"
-                  },
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "scp280"
-                  },
-                  {
-                    "other_with_families": [
-                      "monster",
-                      "warden",
-                      "scp",
-                      "pillager",
-                      "hoglin",
-                      "piglin",
-                      "class_d",
-                      "chaos_insurgency",
-                      "chaos",
-                      "scp049"
-                    ]
-                  }
+                "any_of": [
+                  { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
+                  { "test": "is_family", "subject": "other", "value": "chaos" },
+                  { "test": "is_family", "subject": "other", "value": "class_d" },
+                  { "test": "is_family", "subject": "other", "value": "scp049" },
+                  { "test": "is_family", "subject": "other", "value": "scp682" },
+                  { "test": "is_family", "subject": "other", "value": "scp173" },
+                  { "test": "is_family", "subject": "other", "value": "scp106" }
                 ]
               },
               "max_dist": 64
             },
             {
+              // Jugador miembro de la insurgencia del caos
               "filters": {
                 "all_of": [
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "==",
-                    "value": "player"
-                  },
-                  {
-                    "test": "has_equipment",
-                    "subject": "other",
-                    "domain": "head",
-                    "operator": "==",
-                    "value": "minecraft:golden_helmet"
-                  }
+                  { "test": "is_family", "subject": "other", "value": "player" },
+                  { "test": "has_equipment", "subject": "other", "domain": "head", "value": "minecraft:golden_helmet" }
                 ]
               },
               "max_dist": 64
+            },
+            {
+              // Amenazas no relevantes: Rango Superior a iniciativa intermedia (armed_presence)
+              "filters": {
+                "all_of": [
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp096" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp001_gg" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "enderman" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp280" },
+                  {
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "monster" },
+                      { "test": "is_family", "subject": "other", "value": "warden" },
+                      { "test": "is_family", "subject": "other", "value": "scp" },
+                      { "test": "is_family", "subject": "other", "value": "pillager" },
+                      { "test": "is_family", "subject": "other", "value": "hoglin" },
+                      { "test": "is_family", "subject": "other", "value": "piglin" },
+                      { "test": "is_family", "subject": "other", "value": "scp029" }
+                    ]
+                  }
+                ]
+              },
+              "max_dist": 48
             }
           ],
           "must_see_forget_duration": 6.0,
@@ -303,45 +286,24 @@
           "entity_types": [
             {
               "filters": {
+                "any_of": [
+                  { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
+                  { "test": "is_family", "subject": "other", "value": "chaos" },
+                  { "test": "is_family", "subject": "other", "value": "class_d" },
+                  { "test": "is_family", "subject": "other", "value": "scp049" },
+                  { "test": "is_family", "subject": "other", "value": "scp682" },
+                  { "test": "is_family", "subject": "other", "value": "scp173" },
+                  { "test": "is_family", "subject": "other", "value": "scp106" }
+                ]
+              },
+              "max_dist": 34
+            },
+            {
+              // Jugador miembro de la insurgencia del caos
+              "filters": {
                 "all_of": [
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "scp096"
-                  },
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "scp001_gg"
-                  },
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "enderman"
-                  },
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "scp280"
-                  },
-                  {
-                    "other_with_families": [
-                      "monster",
-                      "warden",
-                      "scp",
-                      "pillager",
-                      "hoglin",
-                      "piglin",
-                      "class_d",
-                      "chaos_insurgency",
-                      "chaos",
-                      "scp049"
-                    ]
-                  }
+                  { "test": "is_family", "subject": "other", "value": "player" },
+                  { "test": "has_equipment", "subject": "other", "domain": "head", "value": "minecraft:golden_helmet" }
                 ]
               },
               "max_dist": 34
@@ -349,18 +311,20 @@
             {
               "filters": {
                 "all_of": [
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp096" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp001_gg" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "enderman" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp280" },
                   {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "==",
-                    "value": "player"
-                  },
-                  {
-                    "test": "has_equipment",
-                    "subject": "other",
-                    "domain": "head",
-                    "operator": "==",
-                    "value": "minecraft:golden_helmet"
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "monster" },
+                      { "test": "is_family", "subject": "other", "value": "warden" },
+                      { "test": "is_family", "subject": "other", "value": "scp" },
+                      { "test": "is_family", "subject": "other", "value": "pillager" },
+                      { "test": "is_family", "subject": "other", "value": "hoglin" },
+                      { "test": "is_family", "subject": "other", "value": "piglin" },
+                      { "test": "is_family", "subject": "other", "value": "scp029" }
+                    ]
                   }
                 ]
               },
@@ -379,45 +343,24 @@
           "entity_types": [
             {
               "filters": {
+                "any_of": [
+                  { "test": "is_family", "subject": "other", "value": "chaos_insurgency" },
+                  { "test": "is_family", "subject": "other", "value": "chaos" },
+                  { "test": "is_family", "subject": "other", "value": "class_d" },
+                  { "test": "is_family", "subject": "other", "value": "scp049" },
+                  { "test": "is_family", "subject": "other", "value": "scp682" },
+                  { "test": "is_family", "subject": "other", "value": "scp173" },
+                  { "test": "is_family", "subject": "other", "value": "scp106" }
+                ]
+              },
+              "max_dist": 22
+            },
+            {
+              // Jugador miembro de la insurgencia del caos
+              "filters": {
                 "all_of": [
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "scp096"
-                  },
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "scp001_gg"
-                  },
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "enderman"
-                  },
-                  {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "scp280"
-                  },
-                  {
-                    "other_with_families": [
-                      "monster",
-                      "warden",
-                      "scp",
-                      "pillager",
-                      "hoglin",
-                      "piglin",
-                      "class_d",
-                      "chaos_insurgency",
-                      "chaos",
-                      "scp049"
-                    ]
-                  }
+                  { "test": "is_family", "subject": "other", "value": "player" },
+                  { "test": "has_equipment", "subject": "other", "domain": "head", "value": "minecraft:golden_helmet" }
                 ]
               },
               "max_dist": 22
@@ -425,18 +368,20 @@
             {
               "filters": {
                 "all_of": [
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp096" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp001_gg" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "enderman" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp280" },
                   {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "==",
-                    "value": "player"
-                  },
-                  {
-                    "test": "has_equipment",
-                    "subject": "other",
-                    "domain": "head",
-                    "operator": "==",
-                    "value": "minecraft:golden_helmet"
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "monster" },
+                      { "test": "is_family", "subject": "other", "value": "warden" },
+                      { "test": "is_family", "subject": "other", "value": "scp" },
+                      { "test": "is_family", "subject": "other", "value": "pillager" },
+                      { "test": "is_family", "subject": "other", "value": "hoglin" },
+                      { "test": "is_family", "subject": "other", "value": "piglin" },
+                      { "test": "is_family", "subject": "other", "value": "scp029" }
+                    ]
                   }
                 ]
               },
