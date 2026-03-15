@@ -735,7 +735,7 @@
       "humanoid:show_health": {
         "minecraft:boss": {
           "should_darken_sky": false,
-          "name": "§g§lMTF Epsilon-6 Commander",
+          "name": "§g§lMTF Epsilon-6 Leader",
           "hud_range": 5
         }
       },

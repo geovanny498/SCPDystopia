@@ -735,7 +735,7 @@
       "humanoid:show_health": {
         "minecraft:boss": {
           "should_darken_sky": false,
-          "name": "§b§lMTF eta-10 Commander",
+          "name": "§b§lMTF Eta-10 Leader",
           "hud_range": 5
         }
       },

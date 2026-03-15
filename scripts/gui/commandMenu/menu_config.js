@@ -182,7 +182,7 @@ export const systems = {
   movement: {
     id: "movement",
     displayName: "§1Movimiento / Patrulla",
-    description: "§8(Sólo entidades existentes)",
+    description: "§8(Sólo entidades existentes)", // descripción visible en el botón de la categoría
     tooltip:
       "§7Define cómo se desplazan las unidades en terreno.\n\nModos:\n- Seguir jugador (§aCerca/§eMedia/§6Lejos§7)\n- §9Caminar libremente\n§7- §cDetenerse",
     category: "movement_patrol",

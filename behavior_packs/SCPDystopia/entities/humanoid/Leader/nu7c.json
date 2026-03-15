@@ -736,7 +736,7 @@
       "humanoid:show_health": {
         "minecraft:boss": {
           "should_darken_sky": false,
-          "name": "§8§lMTF Nu-7 Commander",
+          "name": "§8§lMTF Nu-7 Leader",
           "hud_range": 5
         }
       },

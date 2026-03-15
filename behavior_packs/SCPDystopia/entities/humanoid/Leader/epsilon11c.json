@@ -135,7 +135,7 @@
           "charge_shoot_trigger": 1.0,
           "attack_interval_min": 1.0,
           "attack_interval_max": 1.0,
-          "attack_radius": 30.0,
+          "attack_radius": 40.0,
           "speed_multiplier": 1.0
         }
       },
@@ -735,7 +735,7 @@
       "humanoid:show_health": {
         "minecraft:boss": {
           "should_darken_sky": false,
-          "name": "§1§lMTF Epsilon-11 Commander",
+          "name": "§1§lMTF Epsilon-11 Leader",
           "hud_range": 5
         }
       },
