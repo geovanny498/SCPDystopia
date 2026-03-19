@@ -276,7 +276,7 @@ export const systems = {
     displayName: "§cIniciativa de Combate",
     description: "",
     tooltip:
-      "§7Define el radio de conciencia y respuesta ante amenazas.\n\nModos:\n- §cMáxima\n§7- §aIntermedia\n§7- §9Cercana\n§7- §6Neutral / Sigilo",
+      "§7Define el radio de conciencia y respuesta ante amenazas.\n\nModos:\n- §cMáxima\n§7- §9Avanzada\n§7- §aIntermedia\n§7- §bCercana\n§7- §eNeutral / Sigilo",
     category: "combat",
     dynamicProperty: "scpd_system_fire",
     controlType: ControlType.DROPDOWN,
@@ -293,6 +293,13 @@ export const systems = {
         },
       },
       {
+        value: "advanced",
+        label: "§9Avanzada",
+        events: {
+          start: "humanoid:fire_advanced",
+        },
+      },
+      {
         value: "intermediate",
         label: "§aIntermedia",
         events: {
@@ -301,14 +308,14 @@ export const systems = {
       },
       {
         value: "close",
-        label: "§9Cercana",
+        label: "§bCercana",
         events: {
           start: "humanoid:fire_defensive",
         },
       },
       {
         value: "neutral",
-        label: "§6Neutral / Sigilo",
+        label: "§eNeutral / Sigilo",
         events: {
           start: "humanoid:fire_mode_hit",
         },

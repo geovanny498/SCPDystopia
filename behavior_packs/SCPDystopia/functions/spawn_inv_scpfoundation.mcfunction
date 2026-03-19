@@ -31,43 +31,20 @@ event entity @e[name="§lMTF Alpha-1 Commander 3"] start_variant2
 
 
 
-effect @e[name="§c§lMTF Delta-1 Chara"] regeneration infinite 255 true
-effect @e[name="§c§lMTF Delta-1 Chara"] resistance infinite 255 true
-
-effect @e[name="§d§lMTF Delta-1 Frisk"] regeneration infinite 255 true
-effect @e[name="§d§lMTF Delta-1 Frisk"] resistance infinite 255 true
-
-effect @e[name="§d§lMTF Delta-1 Commander"] regeneration infinite 255 true
-effect @e[name="§d§lMTF Delta-1 Commander"] resistance infinite 255 true
-
-effect @e[name="§d§lMTF Delta-1 Mita"] regeneration infinite 255 true
-effect @e[name="§d§lMTF Delta-1 Mita"] resistance infinite 255 true
-
-effect @e[name="§d§lMTF Delta-1 Leader"] regeneration infinite 255 true
-effect @e[name="§d§lMTF Delta-1 Leader"] resistance infinite 255 true
+event entity @e[name="§c§lMTF Delta-1 Chara"] humanoid:start_invincible
+event entity @e[name="§d§lMTF Delta-1 Frisk"] humanoid:start_invincible
+event entity @e[name="§d§lMTF Delta-1 Commander"] humanoid:start_invincible
+event entity @e[name="§d§lMTF Delta-1 Mita"] humanoid:start_invincible
+event entity @e[name="§d§lMTF Delta-1 Leader"] humanoid:start_invincible
 
 
-effect @e[name="§lMTF Alpha-1 Commander"] regeneration infinite 255 true
-effect @e[name="§lMTF Alpha-1 Commander"] resistance infinite 255 true
-
-effect @e[name="§lMTF Alpha-1 Commander 2"] regeneration infinite 255 true
-effect @e[name="§lMTF Alpha-1 Commander 2"] resistance infinite 255 true
-
-effect @e[name="§lMTF Alpha-1 Commander 3"] regeneration infinite 255 true
-effect @e[name="§lMTF Alpha-1 Commander 3"] resistance infinite 255 true
+event entity @e[name="§lMTF Alpha-1 Commander"] humanoid:start_invincible
+event entity @e[name="§lMTF Alpha-1 Commander 2"] humanoid:start_invincible
+event entity @e[name="§lMTF Alpha-1 Commander 3"] humanoid:start_invincible
 
 
-effect @e[name="§1§lMTF Epsilon-11 Commander"] regeneration infinite 255 true
-effect @e[name="§1§lMTF Epsilon-11 Commander"] resistance infinite 255 true
-
-effect @e[name="§b§lMTF Eta-10 Commander"] regeneration infinite 255 true
-effect @e[name="§b§lMTF Eta-10 Commander"] resistance infinite 255 true
-
-effect @e[name="§8§lMTF Nu-7 Commander"] regeneration infinite 255 true
-effect @e[name="§8§lMTF Nu-7 Commander"] resistance infinite 255 true
-
-effect @e[name="§6§lMTF Beta-7 Commander"] regeneration infinite 255 true
-effect @e[name="§6§lMTF Beta-7 Commander"] resistance infinite 255 true
-
-effect @e[name="§e§lMTF Epsilon-6 Commander"] regeneration infinite 255 true
-effect @e[name="§e§lMTF Epsilon-6 Commander"] resistance infinite 255 true
+event entity @e[name="§1§lMTF Epsilon-11 Commander"] humanoid:start_invincible
+event entity @e[name="§b§lMTF Eta-10 Commander"] humanoid:start_invincible
+event entity @e[name="§8§lMTF Nu-7 Commander"] humanoid:start_invincible
+event entity @e[name="§6§lMTF Beta-7 Commander"] humanoid:start_invincible
+event entity @e[name="§e§lMTF Epsilon-6 Commander"] humanoid:start_invincible

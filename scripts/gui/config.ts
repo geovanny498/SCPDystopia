@@ -119,15 +119,19 @@ const config: GuiConfig = {
             event: "humanoid:fire_open_warfare",
           },
           {
+            label: "§9Avanzada",
+            event: "humanoid:fire_advanced",
+          },
+          {
             label: "§aIntermedia",
             event: "humanoid:fire_armed_presence",
           },
           {
-            label: "§9Cercana",
+            label: "§bCercana",
             event: "humanoid:fire_defensive",
           },
           {
-            label: "§6Neutral / Sigilo",
+            label: "§eNeutral / Sigilo",
             event: "humanoid:fire_mode_hit",
           },
         ],

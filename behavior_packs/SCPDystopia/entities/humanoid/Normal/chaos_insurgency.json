@@ -180,7 +180,7 @@
                   }
                 ]
               },
-              "max_dist": 16
+              "max_dist": 18
             },
             {
               // Objetivos Tácticos: Rango Máximo
@@ -266,48 +266,124 @@
                   }
                 ]
               },
-              "max_dist": 36
+              "max_dist": 48
             }
           ],
           "must_see_forget_duration": 3.0,
           "must_see": true
-        },
-        "minecraft:behavior.hurt_by_target": {
-          "priority": 6,
+        }
+      },
+      "advanced": {
+        "minecraft:behavior.nearest_attackable_target": {
+          "priority": 4,
+          "within_radius": 36,
+          "reselect_targets": true,
           "entity_types": [
             {
+              // Detección de sigilo
               "filters": {
                 "all_of": [
+                  { "test": "is_family", "subject": "other", "value": "hidden" },
                   {
-                    "test": "is_family",
-                    "subject": "other",
-                    "operator": "!=",
-                    "value": "chaos_insurgency"
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "scpfoundation" },
+                      { "test": "is_family", "subject": "other", "value": "foundation" },
+                      { "test": "is_family", "subject": "other", "value": "villager" }
+                    ]
                   }
                 ]
               },
-              "max_dist": 64
+              "max_dist": 16
             },
             {
+              // Objetivos Tácticos: Rango Máximo
+              "filters": {
+                "all_of": [
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "hidden" },
+                  {
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "scpfoundation" },
+                      { "test": "is_family", "subject": "other", "value": "foundation" },
+                      { "test": "is_family", "subject": "other", "value": "villager" },
+                      { "test": "is_family", "subject": "other", "value": "scp049" },
+                      { "test": "is_family", "subject": "other", "value": "scp682" },
+                      { "test": "is_family", "subject": "other", "value": "scp173" },
+                      { "test": "is_family", "subject": "other", "value": "scp106" }
+                    ]
+                  }
+                ]
+              },
+              "max_dist": 36
+            },
+            {
+              // Jugador miembro de la fundación scp
               "filters": {
                 "all_of": [
                   {
                     "test": "is_family",
                     "subject": "other",
                     "value": "player"
+                  }
+                ],
+                "any_of": [
+                  {
+                    "test": "has_equipment",
+                    "subject": "other",
+                    "domain": "head",
+                    "operator": "==",
+                    "value": "minecraft:netherite_helmet"
                   },
                   {
                     "test": "has_equipment",
                     "subject": "other",
                     "domain": "head",
-                    "operator": "!=",
-                    "value": "minecraft:golden_helmet"
+                    "operator": "==",
+                    "value": "minecraft:diamond_helmet"
+                  },
+                  {
+                    "test": "has_equipment",
+                    "subject": "other",
+                    "domain": "head",
+                    "operator": "==",
+                    "value": "minecraft:iron_helmet"
+                  },
+                  {
+                    "test": "has_equipment",
+                    "subject": "other",
+                    "domain": "head",
+                    "operator": "==",
+                    "value": "gabrielaplok:nv_goggles"
                   }
                 ]
               },
-              "max_dist": 64
+              "max_dist": 36
+            },
+            {
+              // Amenazas no relevantes: Rango Superior a iniciativa intermedia (armed_presence)
+              "filters": {
+                "all_of": [
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp096" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp001_gg" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "enderman" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp280" },
+                  {
+                    "any_of": [
+                      { "test": "is_family", "subject": "other", "value": "monster" },
+                      { "test": "is_family", "subject": "other", "value": "warden" },
+                      { "test": "is_family", "subject": "other", "value": "scp" },
+                      { "test": "is_family", "subject": "other", "value": "pillager" },
+                      { "test": "is_family", "subject": "other", "value": "hoglin" },
+                      { "test": "is_family", "subject": "other", "value": "piglin" },
+                      { "test": "is_family", "subject": "other", "value": "scp029" }
+                    ]
+                  }
+                ]
+              },
+              "max_dist": 36
             }
-          ]
+          ],
+          "must_see_forget_duration": 3.0,
+          "must_see": true
         }
       },
       "armed_presence": {
@@ -532,7 +608,7 @@
           "must_see": true
         }
       },
-      // Hurt by target compartido para armed_presence y defensive, usarlo solo lo convierte en iniciativa de combate "neutral / sigilo"
+      // Hurt by target compartido para todos los modos de iniciativa de combate, usarlo sin el resto activo lo convierte en iniciativa de combate "neutral / sigilo"
       "fire_mode_hit": {
         "minecraft:behavior.hurt_by_target": {
           "priority": 6,
@@ -548,7 +624,7 @@
                   }
                 ]
               },
-              "max_dist": 45
+              "max_dist": 64
             },
             {
               "filters": {
@@ -567,7 +643,7 @@
                   }
                 ]
               },
-              "max_dist": 45
+              "max_dist": 64
             }
           ]
         }
@@ -1227,16 +1303,25 @@
         "add": {
           "component_groups": [
             "open_warfare",
+            "fire_mode_hit",
             "humanoid:stealth_off" // Visibilidad normal
           ]
         },
         "remove": {
           "component_groups": [
+            "advanced",
             "armed_presence",
             "defensive",
-            "fire_mode_hit",
             "humanoid:stealth_on" // Quita sigilo
           ]
+        }
+      },
+      "humanoid:fire_advanced": {
+        "add": {
+          "component_groups": ["advanced", "fire_mode_hit", "humanoid:stealth_off"]
+        },
+        "remove": {
+          "component_groups": ["open_warfare", "armed_presence", "defensive", "humanoid:stealth_on"]
         }
       },
       "humanoid:fire_armed_presence": {
@@ -1244,7 +1329,7 @@
           "component_groups": ["armed_presence", "fire_mode_hit", "humanoid:stealth_off"]
         },
         "remove": {
-          "component_groups": ["open_warfare", "defensive", "humanoid:stealth_on"]
+          "component_groups": ["open_warfare", "advanced", "defensive", "humanoid:stealth_on"]
         }
       },
       "humanoid:fire_defensive": {
@@ -1252,7 +1337,7 @@
           "component_groups": ["defensive", "fire_mode_hit", "humanoid:stealth_off"]
         },
         "remove": {
-          "component_groups": ["open_warfare", "armed_presence", "humanoid:stealth_on"]
+          "component_groups": ["open_warfare", "advanced", "armed_presence", "humanoid:stealth_on"]
         }
       },
       "humanoid:fire_mode_hit": {
@@ -1265,6 +1350,7 @@
         "remove": {
           "component_groups": [
             "open_warfare",
+            "advanced",
             "armed_presence",
             "defensive",
             "humanoid:stealth_off" // Quita visibilidad normal
@@ -1288,16 +1374,12 @@
       },
       "humanoid:start_invincible": {
         "queue_command": {
-          "command": [
-            "effect @s regeneration infinite 255 true",
-            "effect @s resistance infinite 255 true",
-            "title @p actionbar §4§lActivar invencibilidad"
-          ]
+          "command": ["effect @s regeneration infinite 255 true", "effect @s resistance infinite 255 true"]
         }
       },
       "humanoid:stop_invincible": {
         "queue_command": {
-          "command": ["effect @s clear", "title @p actionbar §4§lDesactivar invencibilidad"]
+          "command": ["effect @s clear"]
         }
       },
       "humanoid:show_boss_bar": {
