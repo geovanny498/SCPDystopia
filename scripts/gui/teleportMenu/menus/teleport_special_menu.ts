@@ -10,7 +10,11 @@ import { Player, system } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { SpecialSoldiersTexts, CommonTexts, getSubgroupLabel } from "../teleport_config.js";
 // Import dinámico para evitar ciclos: import { showTypeSelectionMenu } from "./teleport_type_menu.js";
-import { getSpecialEntitiesByToggles } from "../core/teleport_utils.js";
+import {
+  getSpecialEntitiesByToggles,
+  getCoordinateInputFromFormValues,
+  parseTeleportDestination,
+} from "../core/teleport_utils.js";
 import { teleportEntitiesToPlayer } from "../core/teleport_logic.js";
 import { Factions, specialUnits } from "../../commandMenu/menu_config.js";
 import { debugMessage } from "../../../utils/debug.js";
@@ -114,6 +118,7 @@ function showSubgroupTogglesMenu(player: Player, faction: string, subgroupId: st
     form.toggle(unitName, { defaultValue: isSelected });
   });
 
+  form.textField("§7Coordenadas destino (x y z)", "Ej: 100 64 -200");
   form.submitButton(CommonTexts.submitButton);
 
   system.run(() => {
@@ -161,6 +166,16 @@ function showSubgroupTogglesMenu(player: Player, faction: string, subgroupId: st
           return;
         }
 
+        // Obtener coordenadas destino del campo de texto
+        const coordString = getCoordinateInputFromFormValues(values);
+        const destination = parseTeleportDestination(coordString, player);
+
+        if (!destination) {
+          player.sendMessage("§c[TELEPORT] Coordenadas inválidas. Usa formato x y z o x,y,z.");
+          showSpecialSoldiersMenu(player, faction);
+          return;
+        }
+
         debugMessage(
           "teleportLogic",
           `Teletransportando ${selectedUnits.length} unidades especiales: ${selectedUnits.join(", ")}`,
@@ -169,7 +184,7 @@ function showSubgroupTogglesMenu(player: Player, faction: string, subgroupId: st
 
         // Obtener entidades y teletransportar
         const entities = getSpecialEntitiesByToggles(faction, selectedUnits, player.dimension);
-        const result = teleportEntitiesToPlayer(entities, player);
+        const result = teleportEntitiesToPlayer(entities, player, destination);
 
         // Mensaje al jugador
         const subgroupLabel = getSubgroupLabel(faction, subgroupId);

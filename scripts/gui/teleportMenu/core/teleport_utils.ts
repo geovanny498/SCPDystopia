@@ -5,7 +5,7 @@
  * IMPORTANTE: Reutiliza las funciones del sistema de comandos existente
  */
 
-import { Entity, Dimension } from "@minecraft/server";
+import { Entity, Dimension, Player } from "@minecraft/server";
 import { getEntityFactionInfo, isValidSoldier } from "../../commandMenu/model/menu_faction.js";
 import { normalUnits, specialUnits, Factions, UnitHierarchy } from "../../commandMenu/menu_config.js";
 import { teamFamilies } from "../../../utils/teams.js";
@@ -216,4 +216,67 @@ export function getAllFactionEntities(faction: string, dimension: Dimension): En
 
   debugWarn("teleportUtils", `Encontradas ${entities.length} entidades totales`, "green");
   return entities;
+}
+
+/**
+ * Extrae el valor de texto de coordenadas desde formValues de un ModalFormData.
+ * Devuelve `undefined` si no hay valor válido (campo vacío o no presente).
+ */
+export function getCoordinateInputFromFormValues(formValues: any[] | undefined): string | undefined {
+  if (!formValues || !Array.isArray(formValues)) return undefined;
+
+  for (const value of formValues) {
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      if (trimmed.length > 0) return trimmed;
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Convierte un texto de coordenadas (x y z / x,y,z) a Vector3.
+ * Si el texto está vacío, devuelve la ubicación actual del jugador.
+ * Retorna null si el formato es inválido.
+ */
+export function parseTeleportDestination(
+  rawInput: string | undefined,
+  player: Player
+): { x: number; y: number; z: number } | null {
+  const source = rawInput?.trim() ?? "";
+  if (source.length === 0) {
+    const pos = player.location;
+    return { x: pos.x, y: pos.y, z: pos.z };
+  }
+
+  const normalized = source.replace(/,/g, " ").replace(/\s+/g, " ").trim();
+  const parts = normalized.split(" ");
+  if (parts.length !== 3) return null;
+
+  const parseAxis = (axisValue: string, base: number): number | null => {
+    axisValue = axisValue.trim();
+    if (axisValue === "~") {
+      return base;
+    }
+
+    if (axisValue.startsWith("~")) {
+      const offsetText = axisValue.slice(1);
+      if (offsetText.length === 0) return base;
+      const offset = Number(offsetText);
+      if (Number.isNaN(offset)) return null;
+      return base + offset;
+    }
+
+    const absolute = Number(axisValue);
+    return Number.isNaN(absolute) ? null : absolute;
+  };
+
+  const x = parseAxis(parts[0], player.location.x);
+  const y = parseAxis(parts[1], player.location.y);
+  const z = parseAxis(parts[2], player.location.z);
+
+  if (x === null || y === null || z === null) return null;
+
+  return { x, y, z };
 }

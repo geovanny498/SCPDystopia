@@ -101,7 +101,7 @@ export const ResultMessages = {
   /** Mensaje cuando se teletransportan entidades exitosamente */
   success: (count: number, faction: string): string => {
     const factionLabel = faction === Factions.FOUNDATION ? "§lFundación" : "§2§lChaos";
-    return `§a[TELEPORT] §r${count} entidades de ${factionLabel}§r teletransportadas a tu posición.`;
+    return `§a[TELEPORT] §r${count} entidades de ${factionLabel}§r teletransportadas.`;
   },
 
   /** Mensaje cuando no se encuentran entidades */

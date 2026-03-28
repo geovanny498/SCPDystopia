@@ -711,7 +711,7 @@
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 20
+                "value": 24
               },
               {
                 "all_of": [

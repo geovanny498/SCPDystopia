@@ -8,7 +8,11 @@
 import { Player, system } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import { NormalSoldiersTexts, ResultMessages, CommonTexts } from "../teleport_config.js";
-import { getNormalEntitiesByHierarchy } from "../core/teleport_utils.js";
+import {
+  getNormalEntitiesByHierarchy,
+  getCoordinateInputFromFormValues,
+  parseTeleportDestination,
+} from "../core/teleport_utils.js";
 import { teleportEntitiesToPlayer } from "../core/teleport_logic.js";
 import { UnitHierarchy } from "../../commandMenu/menu_config.js";
 import { debugMessage } from "../../../utils/debug.js";
@@ -31,6 +35,7 @@ export function showNormalSoldiersMenu(player: Player, faction: string): void {
   form.toggle(NormalSoldiersTexts.toggleBasic, { defaultValue: saved[0] });
   form.toggle(NormalSoldiersTexts.toggleLeader, { defaultValue: saved[1] });
   form.toggle(NormalSoldiersTexts.toggleCommander, { defaultValue: saved[2] });
+  form.textField("§7Coordenadas destino (x y z)", "Ej: 100 64 -200");
   form.submitButton(CommonTexts.submitButton);
   system.run(() => {
     form
@@ -64,6 +69,15 @@ export function showNormalSoldiersMenu(player: Player, faction: string): void {
           return;
         }
 
+        // Analizar coordenadas destino
+        const coordString = getCoordinateInputFromFormValues(response.formValues);
+        const destination = parseTeleportDestination(coordString, player);
+
+        if (!destination) {
+          player.sendMessage("§c[TELEPORT] Coordenadas inválidas. Usa formato x y z o x,y,z.");
+          return;
+        }
+
         // Usar system.run para la operación de teletransporte
         system.run(() => {
           try {
@@ -76,7 +90,7 @@ export function showNormalSoldiersMenu(player: Player, faction: string): void {
             }
 
             // Teletransportar
-            const result = teleportEntitiesToPlayer(entities, player);
+            const result = teleportEntitiesToPlayer(entities, player, destination);
             player.sendMessage(ResultMessages.success(result.count, faction));
           } catch (e) {
             console.warn(`Error en teletransporte normal: ${e}`);
