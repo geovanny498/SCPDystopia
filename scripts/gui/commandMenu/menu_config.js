@@ -530,6 +530,57 @@ export const systems = {
       },
     },
   },
+  invincible: {
+    id: "invincible",
+    displayName: "§cInvencibilidad",
+    description: "",
+    tooltip: "§7Hace invulnerable a la unidad. Usar con precaución.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
+    category: "advanced",
+    dynamicProperty: "scpd_system_invincible",
+    controlType: ControlType.TOGGLE,
+    supportsSpecials: true,
+    supportsHierarchy: true,
+    supportsGroups: true,
+
+    events: {
+      enable: {
+        true: "humanoid:start_invincible",
+        false: "humanoid:stop_invincible",
+      },
+    },
+
+    factions: {
+      [Factions.FOUNDATION]: {
+        label: "§lFoundation",
+      },
+      [Factions.CHAOS]: {
+        label: "§2§lChaos",
+      },
+    },
+
+    defaults: {
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
+      },
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
+      },
+    },
+  },
 };
 
 /**
@@ -555,13 +606,13 @@ export const categories = {
     id: "advanced",
     displayName: "§6Configuración avanzada",
     description: "",
-    systems: ["spawn", "health", "teleport"],
+    systems: ["spawn", "health", "teleport", "invincible"],
   },
   all: {
     id: "all",
     displayName: "§lTodos los Sistemas",
     description: "",
-    systems: ["movement", "fire", "spawn", "health", "teleport"],
+    systems: ["movement", "fire", "spawn", "health", "teleport", "invincible"],
   },
 };
 
@@ -625,6 +676,149 @@ export function getSystemsByCategory(categoryId) {
  */
 export function getOrderedCategories() {
   return menuConfig.categoryOrder.map((id) => categories[id]).filter(Boolean);
+}
+
+/**
+ * Obtiene el identificador de propiedad dinámica para un sistema.
+ * @param {string} systemId
+ * @returns {string|null}
+ */
+export function getSystemPropertyId(systemId) {
+  const sys = systems[systemId];
+  if (!sys || !sys.dynamicProperty) return null;
+  return sys.dynamicProperty;
+}
+
+function shouldParseJsonString(raw) {
+  return typeof raw === "string" && (raw.startsWith("{") || raw.startsWith("["));
+}
+
+function normalizeSystemStateValue(value) {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === "boolean" || typeof value === "number" || typeof value === "string") return value;
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+/**
+ * Guarda el estado actual de un sistema en la entidad.
+ * @param {Entity} entity
+ * @param {string} systemId
+ * @param {string|boolean|number} value
+ */
+export function setEntitySystemState(entity, systemId, value) {
+  const propertyId = getSystemPropertyId(systemId);
+  if (!propertyId || !entity) return;
+  try {
+    const normalized = normalizeSystemStateValue(value);
+    if (normalized === undefined) return;
+    entity.setDynamicProperty(propertyId, normalized);
+  } catch (err) {
+    console.warn(`[SCPDystopia] Error al guardar propiedad dinámica en entidad (${propertyId}): ${err}`);
+  }
+}
+
+/**
+ * Recupera el estado configurado de un sistema desde la entidad.
+ * @param {Entity} entity
+ * @param {string} systemId
+ * @returns {boolean|number|string|undefined}
+ */
+export function getEntitySystemState(entity, systemId) {
+  const propertyId = getSystemPropertyId(systemId);
+  if (!propertyId || !entity) return undefined;
+  try {
+    const raw = entity.getDynamicProperty(propertyId);
+    if (shouldParseJsonString(raw)) {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return raw;
+      }
+    }
+    return raw;
+  } catch (err) {
+    console.warn(`[SCPDystopia] Error al leer propiedad dinámica de entidad (${propertyId}): ${err}`);
+    return undefined;
+  }
+}
+
+/**
+ * Determina el sistema y valor que corresponde a un evento de menú.
+ * @param {string} eventName
+ * @returns {{systemId:string,value:boolean|string}|null}
+ */
+export function findSystemStateByEvent(eventName) {
+  if (!eventName) return null;
+  for (const systemId in systems) {
+    const sys = systems[systemId];
+    if (!sys) continue;
+    if (sys.controlType === ControlType.TOGGLE && sys.events?.enable) {
+      if (sys.events.enable.true === eventName) return { systemId, value: true };
+      if (sys.events.enable.false === eventName) return { systemId, value: false };
+    }
+    if (sys.controlType === ControlType.DROPDOWN && Array.isArray(sys.options)) {
+      for (const opt of sys.options) {
+        if (opt?.events?.start === eventName || opt?.events?.stop === eventName) {
+          return { systemId, value: opt.value };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Formatea el valor guardado de un sistema para mostrarlo en la interfaz.
+ * @param {string} systemId
+ * @param {boolean|number|string|undefined} value
+ * @returns {string}
+ */
+export function formatEntitySystemStateLabel(systemId, value) {
+  const sys = systems[systemId];
+  if (!sys) return String(value ?? "§7No configurado§r");
+
+  if (sys.controlType === ControlType.TOGGLE) {
+    return value ? "§aON§r" : "§cOFF§r";
+  }
+
+  if (sys.controlType === ControlType.DROPDOWN) {
+    const option = sys.options?.find((opt) => opt.value === value);
+    if (option?.label) return option.label;
+    return typeof value === "string" ? value : String(value ?? "§7No configurado§r");
+  }
+
+  return String(value ?? "§7No configurado§r");
+}
+
+/**
+ * Obtiene el estado actual de todos los sistemas guardados en la entidad.
+ * @param {Entity} entity
+ * @returns {{totalSystems:number,savedSystems:number,statuses:Array<{systemId:string,displayName:string,label:string,value:boolean|number|string|undefined}>}}
+ */
+export function getEntitySystemsStatus(entity) {
+  const result = [];
+  let totalSystems = 0;
+  for (const systemId in systems) {
+    totalSystems += 1;
+    const sys = systems[systemId];
+    const rawValue = getEntitySystemState(entity, systemId);
+    if (rawValue === undefined) continue;
+    result.push({
+      systemId,
+      displayName: sys.displayName,
+      value: rawValue,
+      label: formatEntitySystemStateLabel(systemId, rawValue),
+    });
+  }
+  return {
+    totalSystems,
+    savedSystems: result.length,
+    statuses: result,
+  };
 }
 
 /**

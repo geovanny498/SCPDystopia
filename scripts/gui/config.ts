@@ -8,7 +8,8 @@
 
 export interface MenuEntry {
   label: string;
-  event: string;
+  event?: string;
+  action?: string;
 }
 
 export interface MenuCategory {
@@ -133,6 +134,16 @@ const config: GuiConfig = {
           {
             label: "§eNeutral / Sigilo",
             event: "humanoid:fire_mode_hit",
+          },
+        ],
+      },
+      {
+        id: "entity_system_state",
+        category: "§2Estado y configuración",
+        entries: [
+          {
+            label: "Ver opciones configuradas",
+            action: "view_entity_system_state",
           },
         ],
       },

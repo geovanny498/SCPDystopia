@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/menu_apply.js
 import { world } from "@minecraft/server";
 import { debugMessage, debugWarn } from "../../../utils/debug.js";
-import { ControlType, getSystemEvents, SpecialGroups, UnitHierarchy } from "../menu_config.js";
+import { ControlType, getSystemEvents, setEntitySystemState, SpecialGroups, UnitHierarchy } from "../menu_config.js";
 import { canApplySystem } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
@@ -41,14 +41,16 @@ export function injectMenuEventAccessors(accessors) {
  * Trigger seguro de eventos en entidades
  */
 function safeTriggerEvent(ent, eventName, player = null) {
-  if (!ent || !eventName) return;
+  if (!ent || !eventName) return false;
   try {
     if (player && isAutoTameEvent(eventName)) {
       tryAutoTame(ent, player);
     }
     ent.triggerEvent(eventName);
+    return true;
   } catch (e) {
     debugWarn("menuApply:entity", `Error en evento ${eventName}: ${e}`, "red");
+    return false;
   }
 }
 
@@ -124,7 +126,8 @@ export function applySystemToEntity(
       const events = getSystemEvents(systemId, isEnabled);
 
       if (events.event) {
-        safeTriggerEvent(ent, events.event, player);
+        const triggered = safeTriggerEvent(ent, events.event, player);
+        if (triggered) setEntitySystemState(ent, systemId, isEnabled);
         debugWarn(
           "menuApply:entity",
           `${systemId} → ${entityLabel}: ${isEnabled ? "ON" : "OFF"}`,
@@ -142,9 +145,11 @@ export function applySystemToEntity(
 
       // Luego iniciar el nuevo modo
       if (events.start && mode !== "false" && mode !== "off") {
-        safeTriggerEvent(ent, events.start, player);
+        const triggered = safeTriggerEvent(ent, events.start, player);
+        if (triggered) setEntitySystemState(ent, systemId, mode);
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: modo=${mode}`, "green");
       } else {
+        if (events.stop) setEntitySystemState(ent, systemId, mode);
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: desactivado`, "gray");
       }
     }

@@ -507,7 +507,7 @@
           "broadcast_anger": false,
           "broadcast_anger_on_attack": true,
           "broadcast_anger_on_being_attacked": true,
-          "broadcast_range": 32,
+          "broadcast_range": 36,
           "broadcast_targets": ["dm"],
           "calm_event": {
             "event": "humanoid:on_calm",

@@ -5,8 +5,16 @@ import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
 import { debugWarn } from "../utils/debug.js";
 
 // Utilizar la misma configuración que el menú de comandos para detectar
-// qué eventos son de taming
-import { isAutoTameEvent } from "./commandMenu/menu_config.js";
+// qué eventos son de taming y mapear cambios de sistema en la entidad
+import {
+  isAutoTameEvent,
+  findSystemStateByEvent,
+  getEntitySystemsStatus,
+  setEntitySystemState,
+  SpecialGroupLabels,
+  UnitHierarchyLabels,
+} from "./commandMenu/menu_config.js";
+import { getEntityFactionInfo } from "./commandMenu/model/menu_faction.js";
 import { tryAutoTame } from "./commandMenu/core/menu_apply.js";
 
 interface EntityConfig {
@@ -276,6 +284,34 @@ function handleCategorySelection(
 /**
  * Muestra el menú de entries (acciones finales)
  */
+function buildSystemCategorySummary(entity: Entity, typeId: string, displayName: string): string[] {
+  const factionInfo = getEntityFactionInfo(entity);
+  const healthComp = entity.getComponent("health");
+  const currentHealth = healthComp?.currentValue;
+  const maxHealth = healthComp?.effectiveMax;
+  const dynamicProperties = entity.getDynamicPropertyIds?.() ?? [];
+
+  const bodyLines = [`§7Unidad:§r ${displayName}`, `§7Tipo:§r ${factionInfo?.isSpecial ? "Especial" : "Normal"}`];
+
+  if (factionInfo) {
+    bodyLines.push(`§7Facción:§r ${factionInfo.faction}`);
+    if (factionInfo.isSpecial) {
+      const groupId = factionInfo.group ?? "noGroup";
+      bodyLines.push(`§7Grupo especial:§r ${SpecialGroupLabels[groupId] || String(groupId)}`);
+    } else {
+      const hierarchyId = factionInfo.hierarchy ?? "basic";
+      bodyLines.push(`§7Jerarquía:§r ${UnitHierarchyLabels[hierarchyId] || String(hierarchyId)}`);
+    }
+  }
+
+  if (typeof currentHealth === "number" && typeof maxHealth === "number") {
+    bodyLines.push(`§7Salud:§r ${currentHealth} / ${maxHealth}`);
+  }
+
+  bodyLines.push("\n§rPulsa para ver las opciones configuradas:");
+  return bodyLines;
+}
+
 function showEntryMenu(
   player: Player,
   entity: Entity,
@@ -286,9 +322,14 @@ function showEntryMenu(
   typeId: string,
   parentSubmenu: MenuCategory | null
 ): void {
+  const isSystemStateCategory = category.id === "entity_system_state";
   const entryForm = new ActionFormData()
     .title(category.category)
-    .body(`§7Unidad:§r ${soldierName}\n§rSelecciona una acción:`);
+    .body(
+      isSystemStateCategory
+        ? buildSystemCategorySummary(entity, typeId, soldierName).join("\n")
+        : `§7Unidad:§r ${soldierName}\n§rSelecciona una acción:`
+    );
 
   if (!category.entries) return;
 
@@ -313,21 +354,70 @@ function showEntryMenu(
     if (!category.entries) return;
 
     const entry = category.entries[entryIndex];
-    if (!entry || !entry.event) return;
+    if (!entry) return;
 
+    if (entry.action === "view_entity_system_state") {
+      showEntitySystemStatus(player, entity, cfg, soldierName, displayName, typeId);
+      return;
+    }
+
+    if (!entry.event) return;
+
+    let triggeredEvent = false;
     try {
       // si el evento está marcado como de taming intentamos domesticar
       if (isAutoTameEvent(entry.event)) {
         tryAutoTame(entity, player);
       }
       entity.triggerEvent(entry.event);
+      triggeredEvent = true;
+    } catch (e) {
+      debugWarn("playerInteractWithEntity", `triggerEvent failed: ${e}`, "red");
+    }
+
+    const mapped = findSystemStateByEvent(entry.event);
+    if (mapped && triggeredEvent) {
+      setEntitySystemState(entity, mapped.systemId, mapped.value);
       world.sendMessage(
         `§8[§aMENU§8] §7${player.name} configuró a ${soldierName} §7-> §e${category.category}§7: §f${entry.label}`
       );
       debugWarn("playerInteractWithEntity", `triggered event ${entry.event}`, "green");
-    } catch (e) {
-      debugWarn("playerInteractWithEntity", `triggerEvent failed: ${e}`, "red");
     }
+  });
+}
+
+function showEntitySystemStatus(
+  player: Player,
+  entity: Entity,
+  cfg: EntityConfig,
+  soldierName: string,
+  displayName: string,
+  typeId: string
+): void {
+  const { totalSystems, savedSystems, statuses: systemStatuses } = getEntitySystemsStatus(entity);
+  const dynamicProperties = entity.getDynamicPropertyIds?.() ?? [];
+
+  const bodyLines = [
+    `§7Unidad:§r ${soldierName}`,
+    `§7TypeId:§r ${typeId}`,
+    `§7Propiedades dinámicas guardadas:§r ${dynamicProperties.length}`,
+    `§7Sistemas guardados:§r ${savedSystems} / ${totalSystems}`,
+  ];
+
+  if (systemStatuses.length) {
+    bodyLines.push("§8Configuración actual guardada en la entidad:");
+    for (const status of systemStatuses) {
+      bodyLines.push(`§6${status.displayName}§r: ${status.label}`);
+    }
+  } else {
+    bodyLines.push("§7No hay sistemas configurados para esta unidad.");
+  }
+
+  const statusForm = new ActionFormData().title("Estado de sistemas").body(bodyLines.join("\n"));
+
+  statusForm.button("§8Volver");
+  statusForm.show(player).then(() => {
+    showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
   });
 }
 

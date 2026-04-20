@@ -24,12 +24,12 @@ import { debugWarn } from "../../utils/debug.js";
 export const systemRules = {
   movement: {
     domain: "movement",
-    applyMode: "existing_only",
+    applyMode: "existing_only", // se utiliza "existing_only" para evitar colisiones con domesticación (tame)
   },
 
   fire: {
     domain: "combat",
-    applyMode: "all",
+    applyMode: "all", // Algunas unidades dependen de all para ser hostiles por defecto
   },
 
   // Ejemplo antiguo para requires:
@@ -58,6 +58,10 @@ export const systemRules = {
   teleport: {
     domain: "teleport",
     applyMode: "all",
+  },
+  invincible: {
+    domain: "invincible",
+    applyMode: "existing_only",
   },
 };
 
