@@ -139,9 +139,7 @@ export function applySystemToEntity(
       const events = getSystemEvents(systemId, mode);
 
       // Primero detener cualquier modo anterior
-      if (events.stop) {
-        safeTriggerEvent(ent, events.stop, player);
-      }
+      const stopped = events.stop ? safeTriggerEvent(ent, events.stop, player) : true;
 
       // Luego iniciar el nuevo modo
       if (events.start && mode !== "false" && mode !== "off") {
@@ -149,7 +147,9 @@ export function applySystemToEntity(
         if (triggered) setEntitySystemState(ent, systemId, mode);
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: modo=${mode}`, "green");
       } else {
-        if (events.stop) setEntitySystemState(ent, systemId, mode);
+        if (events.stop && stopped) {
+          setEntitySystemState(ent, systemId, mode);
+        }
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: desactivado`, "gray");
       }
     }
