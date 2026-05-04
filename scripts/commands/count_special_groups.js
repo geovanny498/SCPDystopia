@@ -127,7 +127,7 @@ system.beforeEvents.startup.subscribe((init) => {
             for (const name of sortedNames) {
               const quantity = nameCounts[name];
               const suffix = quantity > 1 ? ` x${quantity}` : "";
-              reportLines.push(`  §7- ${name}§r${suffix}`);
+              reportLines.push(`  §7- §r${name}§r${suffix}`);
             }
           }
         }
