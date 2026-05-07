@@ -587,20 +587,26 @@
       "tamed": {
         "minecraft:is_tamed": {},
         "minecraft:behavior.follow_owner": {
-          "priority": 2,
+          "priority": 7, // preferir atacar
           "speed_multiplier": 1.16,
           "start_distance": 8,
           "stop_distance": 5
         },
         "minecraft:behavior.teleport_to_owner": {
           "priority": 1,
-          "cooldown": 3.5,
+          "cooldown": 3.0,
           "filters": {
             "any_of": [
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 22
+                "value": 22 // Valor estándar en exploración
+              },
+              {
+                "all_of": [
+                  { "test": "has_target", "value": true },
+                  { "test": "owner_distance", "operator": ">", "value": 16 } // Valor reducido en combate
+                ]
               },
               {
                 "all_of": [
@@ -621,7 +627,7 @@
       "tamed_mid": {
         "minecraft:is_tamed": {},
         "minecraft:behavior.follow_owner": {
-          "priority": 2,
+          "priority": 7, // preferir atacar
           "speed_multiplier": 1.16,
           "start_distance": 15,
           "stop_distance": 12
@@ -634,7 +640,13 @@
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 34
+                "value": 34 // Valor estándar en exploración
+              },
+              {
+                "all_of": [
+                  { "test": "has_target", "value": true },
+                  { "test": "owner_distance", "operator": ">", "value": 21 } // Valor reducido en combate
+                ]
               },
               {
                 "all_of": [
@@ -657,12 +669,12 @@
         "minecraft:behavior.follow_owner": {
           "priority": 2,
           "speed_multiplier": 1.16,
-          "start_distance": 24,
-          "stop_distance": 21
+          "start_distance": 26,
+          "stop_distance": 23
         },
         "minecraft:behavior.teleport_to_owner": {
           "priority": 1,
-          "cooldown": 4.0,
+          "cooldown": 4.5,
           "filters": {
             "any_of": [
               {
@@ -673,7 +685,7 @@
               {
                 "all_of": [
                   { "test": "in_water", "value": true },
-                  { "test": "owner_distance", "operator": ">", "value": 22 }
+                  { "test": "owner_distance", "operator": ">", "value": 24 }
                 ]
               }
             ]
@@ -820,12 +832,23 @@
       },
       "humanoid:stealth_on": {
         "minecraft:type_family": {
-          "family": ["mob", "foundation", "scpfoundation", "player", "human", "alpha1", "mtf", "villager", "hidden"]
+          "family": [
+            "mob",
+            "foundation",
+            "scpfoundation",
+            "player",
+            "human",
+            "alpha1",
+            "mtf_alpha1",
+            "mtf",
+            "villager",
+            "hidden"
+          ]
         }
       },
       "humanoid:stealth_off": {
         "minecraft:type_family": {
-          "family": ["mob", "foundation", "scpfoundation", "player", "human", "alpha1", "mtf", "villager"]
+          "family": ["mob", "foundation", "scpfoundation", "player", "human", "alpha1", "mtf_alpha1", "mtf", "villager"]
         }
       }
     },

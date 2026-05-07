@@ -1,5 +1,5 @@
 // scripts/gui/commandMenu/menu_apply.js
-import { world } from "@minecraft/server";
+import { world, system } from "@minecraft/server";
 import { debugMessage, debugWarn } from "../../../utils/debug.js";
 import { ControlType, getSystemEvents, setEntitySystemState, SpecialGroups, UnitHierarchy } from "../menu_config.js";
 import { canApplySystem } from "../menu_rules.js";
@@ -17,13 +17,46 @@ import { isAutoTameEvent } from "../menu_config.js";
 
 export function tryAutoTame(ent, player) {
   if (!ent || !player) return;
+
   try {
     const comp = ent.getComponent("minecraft:tameable");
-    if (comp && !comp.isTamed) {
-      comp.tame(player);
+    if (comp) {
+      if (!comp.isTamed) {
+        comp.tame(player);
+        debugMessage("menuApply:entity", `autoTame normal: entidad domesticada ${ent.nameTag || ent.typeId}`, "green");
+      }
+
+      return;
     }
+
+    debugWarn(
+      "menuApply:entity",
+      "autoTame: componente minecraft:tameable no encontrado, ejecutando minecraft:on_calm",
+      "yellow"
+    );
+
+    try {
+      ent.triggerEvent("minecraft:on_calm");
+    } catch (calmError) {
+      debugWarn("menuApply:entity", `autoTame: minecraft:on_calm falló: ${calmError}`, "yellow");
+    }
+
+    system.runTimeout(() => {
+      try {
+        const delayedComp = ent.getComponent("minecraft:tameable");
+        if (delayedComp && !delayedComp.isTamed) {
+          delayedComp.tame(player);
+          debugMessage(
+            "menuApply:entity",
+            `autoTame tardío: entidad domesticada ${ent.nameTag || ent.typeId}`,
+            "green"
+          );
+        }
+      } catch (delayedError) {
+        debugWarn("menuApply:entity", `autoTame tardío falló: ${delayedError}`, "yellow");
+      }
+    }, 1);
   } catch (e) {
-    // no es crítico, sólo una ayuda
     debugWarn("menuApply:entity", `autoTame falló: ${e}`, "yellow");
   }
 }

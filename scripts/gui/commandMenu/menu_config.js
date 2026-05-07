@@ -84,6 +84,42 @@ export const normalUnits = {
   },
 };
 
+// Definición de familias internas para unidades normales usadas en listados y agrupación por MTF
+export const normalUnitFamilies = {
+  [Factions.FOUNDATION]: {
+    mtf_delta1: "§9§lMTF Delta-1§r",
+    mtf_alpha1: "§f§lMTF Alpha-1§r",
+    mtf_epsilon11: "§1§lMTF Epsilon-11§r",
+    mtf_eta10: "§b§lMTF Eta-10§r",
+    mtf_nu7: "§8§lMTF Nu-7§r",
+    mtf_beta7: "§6§lMTF Beta-7§r",
+    mtf_epsilon6: "§e§lMTF Epsilon-6§r",
+  },
+  [Factions.CHAOS]: {
+    chaos_member: "§a§lChaos Insurgency§r",
+    chaos_delta: "§2§lChaos Delta§r",
+  },
+};
+
+export function getNormalUnitFamilyOrder(faction) {
+  return Object.keys(normalUnitFamilies[faction] || {});
+}
+
+export function getNormalUnitFamilyLabel(faction, familyId) {
+  return normalUnitFamilies[faction]?.[familyId] || "§7Desconocido§r";
+}
+
+export function getNormalUnitFamilyLabelFromEntity(ent, faction) {
+  const familyMap = normalUnitFamilies[faction];
+  if (!familyMap || typeof ent?.matches !== "function") return "§7Desconocido§r";
+  for (const familyId of Object.keys(familyMap)) {
+    if (ent.matches({ families: [familyId] })) {
+      return familyMap[familyId];
+    }
+  }
+  return "§7Desconocido§r";
+}
+
 // Definición de unidades especiales por bando con subgrupos (por nametag)
 export const specialUnits = {
   [Factions.FOUNDATION]: {

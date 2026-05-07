@@ -17,6 +17,9 @@ import {
   SpecialGroupLabels,
   Factions,
   specialUnits,
+  getNormalUnitFamilyOrder,
+  getNormalUnitFamilyLabel,
+  getNormalUnitFamilyLabelFromEntity,
 } from "../gui/commandMenu/menu_config.js";
 import { getEntityFactionInfo, isValidSoldier } from "../gui/commandMenu/model/menu_faction.js";
 import { teamFamilies } from "../utils/teams.js";
@@ -98,7 +101,7 @@ system.beforeEvents.startup.subscribe((init) => {
         }
 
         const totalCount = Object.values(counts).reduce((sum, list) => sum + list.length, 0);
-        reportLines.push("§9§l[SCPDystopia] Conteo de especiales en simulación§r");
+        reportLines.push("§9§l[SCPDystopia] Conteo de especiales en simulación por facción y grupo§r");
         reportLines.push(`§fTotal: §e${totalCount} ${pluralizeUnit(totalCount)}§r`);
         for (const groupId of [
           SpecialGroups.GROUP_A,
@@ -151,6 +154,141 @@ system.beforeEvents.startup.subscribe((init) => {
         };
       }
     });
+
+    const countNormalMtfCmd = {
+      name: "scpd:count_normal_units",
+      description: "Cuenta las unidades no especiales en simulación por facción y jerarquía§r",
+      permissionLevel: CommandPermissionLevel.Any,
+      cheatsRequired: false,
+      mandatoryParameters: [{ name: factionEnumName, type: CustomCommandParamType.Enum }],
+      optionalParameters: [{ name: "showList", type: CustomCommandParamType.Boolean }],
+    };
+
+    const getMtfLabel = (ent, faction) => getNormalUnitFamilyLabelFromEntity(ent, faction);
+
+    try {
+      init.customCommandRegistry.registerCommand(countNormalMtfCmd, (origin, faction, showList) => {
+        try {
+          const normalizedFaction = String(faction || "").toLowerCase();
+          if (normalizedFaction !== Factions.FOUNDATION && normalizedFaction !== Factions.CHAOS) {
+            const validOptions = `${Factions.FOUNDATION} / ${Factions.CHAOS}`;
+            const errorMessage = `Faction inválida. Usa: ${validOptions}`;
+            if (origin.sourceType === CustomCommandSource.Entity && origin.sourceEntity) {
+              origin.sourceEntity.sendMessage(`§c${errorMessage}`);
+            } else {
+              world.sendMessage(`§c${errorMessage}`);
+            }
+            return {
+              status: CustomCommandStatus.Failure,
+              message: errorMessage,
+            };
+          }
+
+          const selectedFaction = normalizedFaction;
+          const pluralizeUnit = (count) => (count === 1 ? "unidad" : "unidades");
+          const hierarchyOrder = [UnitHierarchy.BASIC, UnitHierarchy.LEADER, UnitHierarchy.COMMANDER];
+          const mtfLabels = getNormalUnitFamilyOrder(selectedFaction).map((familyId) =>
+            getNormalUnitFamilyLabel(selectedFaction, familyId)
+          );
+          const unknownMtfLabel = "§7Desconocido§r";
+
+          const counts = {};
+          for (const hierarchy of hierarchyOrder) {
+            counts[hierarchy] = { groups: {}, total: 0 };
+            for (const label of mtfLabels) {
+              counts[hierarchy].groups[label] = [];
+            }
+            counts[hierarchy].groups[unknownMtfLabel] = [];
+          }
+
+          const validFamilies = selectedFaction === Factions.FOUNDATION ? teamFamilies.foundation : teamFamilies.chaos;
+          const dims = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
+          const seen = new Set();
+
+          for (const dim of dims) {
+            for (const family of validFamilies) {
+              const ents = dim.getEntities({ families: [family] });
+              for (const ent of ents) {
+                if (!ent || !ent.id || seen.has(ent.id)) continue;
+                seen.add(ent.id);
+                if (!isValidSoldier(ent)) continue;
+
+                const factionInfo = getEntityFactionInfo(ent);
+                if (!factionInfo || factionInfo.isSpecial || factionInfo.faction !== selectedFaction) continue;
+                if (!factionInfo.hierarchy || !hierarchyOrder.includes(factionInfo.hierarchy)) continue;
+
+                const label = getMtfLabel(ent, selectedFaction);
+                const displayName = ent.nameTag?.trim() || `§b${ent.typeId}§r`;
+                counts[factionInfo.hierarchy].groups[label].push(displayName);
+                counts[factionInfo.hierarchy].total += 1;
+              }
+            }
+          }
+
+          const totalCount = hierarchyOrder.reduce((sum, hierarchy) => sum + (counts[hierarchy]?.total || 0), 0);
+          const reportLines = [];
+          reportLines.push("§9§l[SCPDystopia] Conteo de NO especiales en simulación por facción y jerarquía§r");
+          reportLines.push(`§fTotal: §e${totalCount} ${pluralizeUnit(totalCount)}§r`);
+
+          for (const hierarchy of hierarchyOrder) {
+            const hierarchyTotal = counts[hierarchy].total;
+            if (hierarchyTotal === 0 && !showList) continue;
+            reportLines.push(
+              `§f${UnitHierarchyLabels[hierarchy]}: §e${hierarchyTotal} ${pluralizeUnit(hierarchyTotal)}§r`
+            );
+
+            for (const label of mtfLabels.concat([unknownMtfLabel])) {
+              const groupCount = counts[hierarchy].groups[label]?.length || 0;
+              if (groupCount === 0) continue;
+
+              if (showList && groupCount > 0) {
+                const nameCounts = counts[hierarchy].groups[label].reduce((acc, name) => {
+                  acc[name] = (acc[name] || 0) + 1;
+                  return acc;
+                }, {});
+                const sortedNames = Object.keys(nameCounts).sort((a, b) =>
+                  a.localeCompare(b, undefined, { sensitivity: "base" })
+                );
+
+                if (sortedNames.length === 1) {
+                  const onlyName = sortedNames[0];
+                  reportLines.push(`    §7${label}: §e${groupCount} ${pluralizeUnit(groupCount)}§r (${onlyName}§r)`);
+                } else {
+                  reportLines.push(`    §7${label}: §e${groupCount} ${pluralizeUnit(groupCount)}§r`);
+                  for (const name of sortedNames) {
+                    const quantity = nameCounts[name];
+                    const suffix = quantity > 1 ? ` x${quantity}` : "";
+                    reportLines.push(`      §7- §r${name}§r${suffix}`);
+                  }
+                }
+              } else {
+                reportLines.push(`    §7${label}: §e${groupCount} ${pluralizeUnit(groupCount)}§r`);
+              }
+            }
+          }
+
+          const message = reportLines.join("\n");
+          if (origin.sourceType === CustomCommandSource.Entity && origin.sourceEntity) {
+            origin.sourceEntity.sendMessage(message);
+          } else {
+            world.sendMessage(message);
+          }
+
+          return {
+            status: CustomCommandStatus.Success,
+            message: "Conteo de unidades no especiales generado",
+          };
+        } catch (e) {
+          console.warn("scpd:count_normal_mtf error:", e);
+          return {
+            status: CustomCommandStatus.Failure,
+            message: "Error al contar las unidades no especiales en simulación.",
+          };
+        }
+      });
+    } catch (e) {
+      console.warn(`Error registrando scpd:count_normal_mtf: ${e}`);
+    }
   } catch (e) {
     console.warn(`Error registrando scpd:count_special_groups: ${e}`);
   }

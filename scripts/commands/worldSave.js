@@ -1,6 +1,7 @@
 // scripts/commands/worldSave.js
 import { world } from "@minecraft/server";
 import { debugMessage, debugWarn } from "../utils/debug";
+import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
 
 /**
  * Guarda el estado de un sistema
@@ -30,6 +31,21 @@ export function loadSystemState(systemName) {
   } catch (err) {
     debugWarn("dynamicProperties", `[SCPDystopia] Error al cargar sistema ${systemName}: ${err}`, "red");
     return undefined;
+  }
+}
+
+/**
+ * Resetea solo las propiedades dinámicas de los sistemas a sus valores por defecto
+ */
+export function resetAllSystemStates() {
+  try {
+    for (const systemConfig of Object.values(menuSystems)) {
+      if (!systemConfig?.dynamicProperty) continue;
+      world.setDynamicProperty(systemConfig.dynamicProperty, undefined);
+    }
+    console.log("[SCPDystopia] Propiedades dinámicas de sistemas reiniciadas a valores por defecto");
+  } catch (err) {
+    console.warn(`[SCPDystopia] Error al reiniciar propiedades de sistemas: ${err}`);
   }
 }
 
