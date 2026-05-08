@@ -503,7 +503,7 @@
           "target": "self"
         },
         "minecraft:angry": {
-          "duration": 8,
+          "duration": 6,
           "broadcast_anger": false,
           "broadcast_anger_on_attack": true,
           "broadcast_anger_on_being_attacked": true,
@@ -551,7 +551,7 @@
               {
                 "all_of": [
                   { "test": "has_target", "value": true },
-                  { "test": "owner_distance", "operator": ">", "value": 18 } // Valor reducido en combate
+                  { "test": "owner_distance", "operator": ">", "value": 14 } // Valor reducido en combate
                 ]
               },
               {
@@ -591,7 +591,7 @@
               {
                 "all_of": [
                   { "test": "has_target", "value": true },
-                  { "test": "owner_distance", "operator": ">", "value": 22 } // Valor reducido en combate
+                  { "test": "owner_distance", "operator": ">", "value": 20 } // Valor reducido en combate
                 ]
               },
               {
