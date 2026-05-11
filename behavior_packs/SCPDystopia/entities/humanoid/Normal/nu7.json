@@ -511,7 +511,7 @@
           "broadcast_range": 36,
           "broadcast_targets": ["dm"],
           "calm_event": {
-            "event": "humanoid:on_calm",
+            "event": "minecraft:on_calm",
             "target": "self"
           },
           "angry_sound": "angry",
@@ -574,7 +574,7 @@
       "tamed_mid": {
         "minecraft:is_tamed": {},
         "minecraft:behavior.follow_owner": {
-          "priority": 7, // preferir atacar
+          "priority": 2,
           "speed_multiplier": 1.16,
           "start_distance": 16,
           "stop_distance": 13
@@ -587,13 +587,7 @@
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 36 // Valor estándar en exploración
-              },
-              {
-                "all_of": [
-                  { "test": "has_target", "value": true },
-                  { "test": "owner_distance", "operator": ">", "value": 20 } // Valor reducido en combate
-                ]
+                "value": 36
               },
               {
                 "all_of": [
@@ -616,8 +610,8 @@
         "minecraft:behavior.follow_owner": {
           "priority": 2,
           "speed_multiplier": 1.16,
-          "start_distance": 28,
-          "stop_distance": 25
+          "start_distance": 26,
+          "stop_distance": 23
         },
         "minecraft:behavior.teleport_to_owner": {
           "priority": 1,
@@ -632,7 +626,7 @@
               {
                 "all_of": [
                   { "test": "in_water", "value": true },
-                  { "test": "owner_distance", "operator": ">", "value": 26 }
+                  { "test": "owner_distance", "operator": ">", "value": 24 }
                 ]
               }
             ]
