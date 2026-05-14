@@ -17,9 +17,7 @@ function buildAndShowMenu(player) {
 
     const categories = getOrderedCategories();
 
-    const form = new ActionFormData()
-      .title("SCPDystopia | Panel de Comandos")
-      .body(`§7Selecciona una categoría para configurar:`);
+    const form = new ActionFormData().title("SCPDystopia | Panel de Comandos").body(`§7Selecciona una categoría:`);
 
     // Botón para configurar grupos de especiales
     form.button("§9Grupos de Especiales\n§8Asigna especiales a grupos A-D");

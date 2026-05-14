@@ -39,9 +39,9 @@ export function showCategoryMenu(player, categoryId) {
 
     // Solo agregar body si hay descripción
     if (category.description) {
-      form.body(`§7${category.description}\n\n§7Selecciona un sistema para configurar:`);
+      form.body(`§7${category.description}\n\n§7Selecciona una opción:`);
     } else {
-      form.body("§7Selecciona un sistema para configurar:");
+      form.body("§7Selecciona una opción:");
     }
 
     // Agregar botones para cada sistema
@@ -57,7 +57,7 @@ export function showCategoryMenu(player, categoryId) {
     // Si es la categoría "advanced", agregar botón de Alcance
     const isAdvanced = categoryId === "advanced";
     if (isAdvanced) {
-      form.button("§eConfigurar Alcance\n§8Define a quién se aplican los cambios");
+      form.button("§dPrioridad de Aplicación");
     }
 
     // Agregar botón de volver

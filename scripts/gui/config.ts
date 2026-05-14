@@ -247,6 +247,16 @@ const config: GuiConfig = {
             },
           ],
         },
+        {
+          id: "entity_protection",
+          category: "§dControl de Configuración",
+          entries: [
+            {
+              label: "Control de Configuración",
+              action: "toggle_entity_global_overwrite",
+            },
+          ],
+        },
       ],
     },
   },

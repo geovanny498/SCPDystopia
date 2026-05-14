@@ -77,61 +77,7 @@ Módulos de Sistemas Legacy:
 Otros:
 - dynamicProperties → Propiedades dinámicas del mundo
 */
-export const DEBUG_MODULES = [
-  // === PRUEBA DE GUI MIGRADO ===
-  "playerInteractWithEntity", // Interacción jugador-entidad (GUI)
-  // "projectileHitEntity",
-
-  // === PASO 2: VERIFICAR APLICACIÓN A ENTIDADES EXISTENTES ===
-  "menuScope", // Ver verificación de scope
-  "menuScope:check", // Ver cada verificación individual de entidad
-  "menuApply", // Ver aplicación general de sistemas
-  "menuApply:entity", // Ver aplicación detallada por entidad
-
-  // === NUEVO: GRUPOS Y JERARQUÍAS ===
-  "menuGroups", // Sistema de grupos de especiales
-  "menuGroups:ui",
-  // "menuGroups:ui",    // UI de asignación de grupos (detallado)
-  "menuFaction", // Determinación de facción/jerarquía/grupo
-
-  // === SISTEMA DE TELETRANSPORTE ===
-  "teleportMenu", // Flujo de menús de teletransporte
-  "teleportUtils", // Filtrado y obtención de entidades
-  "teleportLogic", // Lógica de teletransporte
-  "teleportCommand", // Comando /scpd:teleport
-
-  // === DEPURACIÓN DE APPLYMODE (existing_only) ===
-  // "menuEvents:spawn",   // Ver qué pasa cuando spawna una entidad
-  // "menuRules:apply",    // Ver verificación de applyMode
-
-  // === MENÚ: FLUJO GENERAL ===
-  // "commandMenu",        // Flujo general del menú
-  // "menuSystem",         // Formularios de sistemas
-  // "menuCategory",       // Menú de categorías
-  // "menuBuilder",        // Construcción de formularios
-
-  // === MENÚ: ESTADOS ===
-  // "menuState",          // Gestión de estados (guardar/cargar)
-
-  // === MENÚ: APLICACIÓN ===
-  // Ya activado arriba para Paso 2
-
-  // === MENÚ: EVENTOS ===
-  // "menuEvents",         // Eventos de spawn/load (general)
-  "menuEvents:spawn"
-
-  // === MENÚ: REGLAS (NUEVO) ===
-  // "menuRules",          // Verificación de reglas (general)
-  // "menuRules:compat",   // Solo verificación de compatibilidad
-
-  // === SISTEMAS LEGACY ===
-  // "applySystems",       // Sistema de aplicación antiguo
-  // "toggle_system",      // Sistema de toggle antiguo
-  // "toggle_entity",      // Interacción con entidades
-
-  // === OTROS ===
-  // "dynamicProperties"   // Propiedades dinámicas del mundo
-];
+export const DEBUG_MODULES = ["playerInteractWithEntity", "menuScope", "menuScope:check"];
 
 function isModuleEnabled(module) {
   return DEBUG_MODULES.includes("*") || DEBUG_MODULES.includes(module);

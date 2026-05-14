@@ -1,6 +1,6 @@
 // scripts/gui/gui.ts
 import { world, system, EquipmentSlot, Player, Entity } from "@minecraft/server";
-import { ActionFormData, ActionFormResponse } from "@minecraft/server-ui";
+import { ActionFormData, ActionFormResponse, ModalFormData } from "@minecraft/server-ui";
 import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
 import { debugWarn } from "../utils/debug.js";
 
@@ -39,7 +39,7 @@ function isAllowedByRule(sysId: string | null, typeId: string): boolean {
 
   const mode = rule.mode;
   const list = Array.isArray(rule.list) ? rule.list : [];
-  const inList = list.includes(typeId);
+  const inList = list.indexOf(typeId) !== -1;
 
   if (mode === "whitelist") return inList;
   if (mode === "blacklist") return !inList;
@@ -143,6 +143,8 @@ function getConfigForEntity(typeId: string): EntityConfig | null {
   };
 }
 
+const ENTITY_GLOBAL_OVERWRITE_PROPERTY = "scpd_menu_config_allow_global_overwrite";
+
 function itemMatches(mainId: string | null, opener: string): boolean {
   if (!mainId || !opener) return false;
   if (opener.includes(":")) return mainId === opener;
@@ -150,6 +152,41 @@ function itemMatches(mainId: string | null, opener: string): boolean {
   const parts = mainId.split(":");
   const short = parts.length > 1 ? parts[1] : parts[0];
   return short === opener || mainId === opener || mainId.endsWith(`:${opener}`);
+}
+
+function normalizeBooleanDynamicProperty(raw: unknown): boolean | undefined {
+  if (raw === undefined || raw === null) return undefined;
+  if (raw === true || raw === "true" || raw === 1 || raw === "1") return true;
+  if (raw === false || raw === "false" || raw === 0 || raw === "0") return false;
+  return undefined;
+}
+
+function isTruthyToggleValue(raw: unknown): boolean {
+  const normalized = normalizeBooleanDynamicProperty(raw);
+  return normalized === undefined ? false : normalized;
+}
+
+function isGlobalOverwriteAllowed(entity: Entity): boolean {
+  try {
+    const raw = entity.getDynamicProperty(ENTITY_GLOBAL_OVERWRITE_PROPERTY);
+    const normalized = normalizeBooleanDynamicProperty(raw);
+    return normalized === undefined ? true : normalized;
+  } catch (e) {
+    debugWarn("playerInteractWithEntity", `Error reading overwrite property: ${e}`, "yellow");
+    return true;
+  }
+}
+
+function setGlobalOverwriteAllowed(entity: Entity, value: boolean): void {
+  try {
+    entity.setDynamicProperty(ENTITY_GLOBAL_OVERWRITE_PROPERTY, value);
+  } catch (e) {
+    debugWarn("playerInteractWithEntity", `Error setting overwrite property: ${e}`, "red");
+  }
+}
+
+function buildEntityOverwriteStatus(entity: Entity): string {
+  return isGlobalOverwriteAllowed(entity) ? "permitir" : "bloquear";
 }
 
 /**
@@ -333,6 +370,14 @@ function showEntryMenu(
 
   if (!category.entries) return;
 
+  if (category.entries.length === 1) {
+    const singleEntry = category.entries[0];
+    if (singleEntry.action === "toggle_entity_global_overwrite") {
+      showEntityGlobalOverwriteToggle(player, entity, cfg, soldierName, displayName, typeId, parentSubmenu);
+      return;
+    }
+  }
+
   for (const e of category.entries) entryForm.button(e.label);
 
   entryForm.show(player).then((entryRes: ActionFormResponse) => {
@@ -396,16 +441,17 @@ function showEntitySystemStatus(
 ): void {
   const { totalSystems, savedSystems, statuses: systemStatuses } = getEntitySystemsStatus(entity);
   const dynamicProperties = entity.getDynamicPropertyIds?.() ?? [];
+  const unidadDisplay = !entity.nameTag ? `§b${typeId}` : `${soldierName} (${typeId})`;
 
   const bodyLines = [
-    `§7Unidad:§r ${soldierName}`,
-    `§7TypeId:§r ${typeId}`,
+    `§7Unidad:§r ${unidadDisplay}`,
+    `§7Tipo de Configuración:§r ${isGlobalOverwriteAllowed(entity) ? "§aGlobal" : "§cLocal"}`,
     `§7Propiedades dinámicas guardadas:§r ${dynamicProperties.length}`,
-    `§7Sistemas guardados:§r ${savedSystems} / ${totalSystems}`,
+    `§7Sistemas guardados:§r ${savedSystems}`,
   ];
 
   if (systemStatuses.length) {
-    bodyLines.push("§8Configuración actual guardada en la entidad:");
+    bodyLines.push("§7Configuración actual guardada en la entidad:");
     for (const status of systemStatuses) {
       bodyLines.push(`§6${status.displayName}§r: ${status.label}`);
     }
@@ -487,3 +533,49 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
     debugWarn("playerInteractWithEntity", `GUI error: ${err}`, "red");
   }
 });
+function showEntityGlobalOverwriteToggle(
+  player: Player,
+  entity: Entity,
+  cfg: EntityConfig,
+  soldierName: string,
+  displayName: string,
+  typeId: string,
+  parentSubmenu: MenuCategory | null
+): void {
+  const currentAllowed = isGlobalOverwriteAllowed(entity);
+  const form = new ModalFormData()
+    .title("§dControl de Configuración")
+    .label(
+      "§aActivado: §7La unidad usará la configuración global.\n§cDesactivado: §7La unidad ignora la configuración global (Ajuste local)."
+    )
+    .toggle("Usar configuración global", { defaultValue: currentAllowed })
+    .submitButton("§aGuardar");
+
+  form.show(player).then((res: any) => {
+    if (!res || res.canceled) {
+      system.run(() => {
+        if (parentSubmenu) {
+          handleCategorySelection(player, entity, parentSubmenu, cfg, soldierName, displayName, typeId);
+        } else {
+          showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
+        }
+      });
+      return;
+    }
+
+    const allowOverwrite = isTruthyToggleValue(res?.formValues?.[1]);
+    setGlobalOverwriteAllowed(entity, allowOverwrite);
+
+    player.sendMessage(
+      `§a[SCPD] Sobreescritura global ${allowOverwrite ? "permitida" : "bloqueada"} para ${soldierName}§r`
+    );
+
+    system.run(() => {
+      if (parentSubmenu) {
+        handleCategorySelection(player, entity, parentSubmenu, cfg, soldierName, displayName, typeId);
+      } else {
+        showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
+      }
+    });
+  });
+}
