@@ -57,6 +57,33 @@ function shouldIncludeCategoryForEntity(cat: MenuCategory, typeId: string): bool
  * - global: categorías globales
  * - merged: orden final según insertAt / replace
  */
+function getSpecificConfig(typeId: string): EntitySpecificConfig | undefined {
+  if (!config.specific || typeof config.specific !== "object") return undefined;
+  if (Object.prototype.hasOwnProperty.call(config.specific, typeId)) {
+    return config.specific[typeId];
+  }
+
+  for (const spec of Object.values(config.specific)) {
+    if (!spec || typeof spec !== "object") continue;
+    if (Array.isArray(spec.ids) && spec.ids.includes(typeId)) {
+      return spec;
+    }
+  }
+
+  for (const key of Object.keys(config.specific)) {
+    if (!key.includes(",")) continue;
+    const ids = key
+      .split(",")
+      .map((item) => item.trim())
+      .filter((item) => item);
+    if (ids.includes(typeId)) {
+      return config.specific[key];
+    }
+  }
+
+  return undefined;
+}
+
 function getConfigForEntity(typeId: string): EntityConfig | null {
   const globalCats = config.global && Array.isArray(config.global.categories) ? [...config.global.categories] : [];
 
@@ -95,7 +122,7 @@ function getConfigForEntity(typeId: string): EntityConfig | null {
     return null;
   }
 
-  const spec: EntitySpecificConfig | undefined = config.specific && config.specific[typeId];
+  const spec: EntitySpecificConfig | undefined = getSpecificConfig(typeId);
   const specificCats = spec && Array.isArray(spec.categories) ? [...spec.categories] : [];
 
   // Aplicar filtrado a las categorías globales según `global_rules`.
@@ -125,7 +152,7 @@ function getConfigForEntity(typeId: string): EntityConfig | null {
   if (spec && spec.replace) {
     merged = [...specificCats];
   } else if (specificCats.length) {
-    const insertAt = spec.insertAt === "start" ? "start" : "end";
+    const insertAt = spec && spec.insertAt === "start" ? "start" : "end";
     merged = insertAt === "start" ? specificCats.concat(filteredGlobalCats) : filteredGlobalCats.concat(specificCats);
   } else {
     merged = [...filteredGlobalCats];

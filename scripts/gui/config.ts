@@ -24,6 +24,7 @@ export interface SubmenuConfig {
 }
 
 export interface EntitySpecificConfig {
+  ids?: string[];
   replace: boolean;
   insertAt?: "start" | "end";
   categories: MenuCategory[];
@@ -264,6 +265,7 @@ const config: GuiConfig = {
   // Configuraciones específicas por entidad. Cada entrada puede tener:
   // - `replace: true` para reemplazar las categorías globales por las específicas
   // - `categories: [...]` para añadir o reemplazar
+  // - `ids: string[]` permite agrupar varias entidades bajo la misma configuración.
   specific: {
     "lc:dt_chara": {
       replace: false,
@@ -409,115 +411,8 @@ const config: GuiConfig = {
         },
       ],
     },
-    "lc:dt_epsilon11": {
-      replace: false,
-      insertAt: "end",
-      categories: [
-        {
-          category: "Variante",
-          entries: [
-            {
-              label: "Masculino 1",
-              event: "start_variant0",
-            },
-            {
-              label: "Masculino 2",
-              event: "start_variant1",
-            },
-            {
-              label: "Femenino 1",
-              event: "start_variant2",
-            },
-            {
-              label: "Femenino 2",
-              event: "start_variant3",
-            },
-          ],
-        },
-      ],
-    },
-    "lc:dt_nu7": {
-      replace: false,
-      insertAt: "end",
-      categories: [
-        {
-          category: "Variante",
-          entries: [
-            {
-              label: "Masculino 1",
-              event: "start_variant0",
-            },
-            {
-              label: "Masculino 2",
-              event: "start_variant1",
-            },
-            {
-              label: "Femenino 1",
-              event: "start_variant2",
-            },
-            {
-              label: "Femenino 2",
-              event: "start_variant3",
-            },
-          ],
-        },
-      ],
-    },
-    "lc:dt_eta10": {
-      replace: false,
-      insertAt: "end",
-      categories: [
-        {
-          category: "Variante",
-          entries: [
-            {
-              label: "Masculino 1",
-              event: "start_variant0",
-            },
-            {
-              label: "Masculino 2",
-              event: "start_variant1",
-            },
-            {
-              label: "Femenino 1",
-              event: "start_variant2",
-            },
-            {
-              label: "Femenino 2",
-              event: "start_variant3",
-            },
-          ],
-        },
-      ],
-    },
-    "lc:dt_beta7": {
-      replace: false,
-      insertAt: "end",
-      categories: [
-        {
-          category: "Variante",
-          entries: [
-            {
-              label: "Masculino 1",
-              event: "start_variant0",
-            },
-            {
-              label: "Masculino 2",
-              event: "start_variant1",
-            },
-            {
-              label: "Femenino 1",
-              event: "start_variant2",
-            },
-            {
-              label: "Femenino 2",
-              event: "start_variant3",
-            },
-          ],
-        },
-      ],
-    },
-    "lc:dt_epsilon6": {
+    normal: {
+      ids: ["lc:dt_epsilon11", "lc:dt_nu7", "lc:dt_eta10", "lc:dt_beta7", "lc:dt_epsilon6"],
       replace: false,
       insertAt: "end",
       categories: [
