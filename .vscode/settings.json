@@ -38,7 +38,8 @@
   "files.encoding": "utf8",
   "[bc-mcfunction]": {
     "editor.defaultFormatter": "BlockceptionLtd.blockceptionvscodeminecraftbedrockdevelopmentextension"
-  }
+  },
+  "js/ts.tsdk.path": "node_modules\\typescript\\lib"
   //   "prettier.requireConfig": true,
   //   "prettier.configPath": ".prettierrc.json"
 }

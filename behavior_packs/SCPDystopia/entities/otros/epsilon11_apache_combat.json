@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.80",
+  "format_version": "1.26.20",
   "minecraft:entity": {
     "description": {
       "identifier": "lc:dt_epsilon11_apache_combat",
@@ -427,10 +427,7 @@
         "has_gravity": true,
         "has_collision": true
       },
-      "minecraft:pushable": {
-        "is_pushable": false,
-        "is_pushable_by_piston": true
-      },
+      "minecraft:pushable_by_block": {},
       "minecraft:collision_box": {
         "width": 3,
         "height": 5

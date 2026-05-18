@@ -1,0 +1,18 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.normalUnits": {
+      "arrays": {
+        "geometries": {
+          "Array.geos": ["Geometry.normal_1", "Geometry.normal_2", "Geometry.normal_f1", "Geometry.normal_f2"]
+        },
+        "textures": {
+          "Array.skins": ["Texture.normal_1", "Texture.normal_2", "Texture.normal_f1", "Texture.normal_f2"]
+        }
+      },
+      "geometry": "Array.geos[query.variant]",
+      "materials": [{ "*": "Material.default" }],
+      "textures": ["Array.skins[query.variant]"]
+    }
+  }
+}

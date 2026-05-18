@@ -7,7 +7,7 @@
         "default": "npc"
       },
       "textures": {
-        "default": "textures/entity/humanoid/beta7c"
+        "default": "textures/entity/humanoid/Leaders/beta7c"
       },
       "geometry": {
         "default": "geometry.dt_chaos_insurgency_m16"
@@ -26,18 +26,12 @@
       },
       "scripts": {
         "scale": "0.9375",
-        "animate": [
-          "anim_cont",
-          "move",
-          "gun_resize"
-        ],
+        "animate": ["anim_cont", "move", "gun_resize"],
         "pre_animation": [
           "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
         ]
       },
-      "render_controllers": [
-        "controller.render.scp_dystopia"
-      ],
+      "render_controllers": ["controller.render.scp_dystopia"],
       "spawn_egg": {
         "base_color": "#abc400",
         "overlay_color": "#a9b71e"

@@ -7,7 +7,7 @@
         "default": "npc"
       },
       "textures": {
-        "default": "textures/entity/humanoid/cd_leader"
+        "default": "textures/entity/humanoid/Commanders/cd_leader"
       },
       "geometry": {
         "default": "geometry.alpha1"
@@ -26,18 +26,12 @@
       },
       "scripts": {
         "scale": "0.9375",
-        "animate": [
-          "anim_cont",
-          "move",
-          "gun_resize"
-        ],
+        "animate": ["anim_cont", "move", "gun_resize"],
         "pre_animation": [
           "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
         ]
       },
-      "render_controllers": [
-        "controller.render.scp_dystopia"
-      ],
+      "render_controllers": ["controller.render.scp_dystopia"],
       "spawn_egg": {
         "base_color": "#095700",
         "overlay_color": "#373737"

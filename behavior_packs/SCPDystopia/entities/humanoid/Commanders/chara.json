@@ -1,6 +1,6 @@
 // behavior_packs\SCPDystopia\entities\humanoid\Commanders\chara.json
 {
-  "format_version": "1.21.80",
+  "format_version": "1.26.20",
   "minecraft:entity": {
     "description": {
       "identifier": "lc:dt_chara",
@@ -28,10 +28,6 @@
           "value": 0
         },
         "minecraft:nameable": {
-          "default_trigger": {
-            "event": "",
-            "target": "self"
-          },
           "name_actions": [
             {
               "name_filter": "§c§lMTF Delta-1 Chara",
@@ -49,10 +45,6 @@
           "value": 1
         },
         "minecraft:nameable": {
-          "default_trigger": {
-            "event": "",
-            "target": "self"
-          },
           "name_actions": [
             {
               "name_filter": "§c§lMTF Delta-1 Chara",
@@ -70,10 +62,6 @@
           "value": 2
         },
         "minecraft:nameable": {
-          "default_trigger": {
-            "event": "",
-            "target": "self"
-          },
           "name_actions": [
             {
               "name_filter": "§c§lMTF Delta-1 Chara",
@@ -91,10 +79,6 @@
           "value": 3
         },
         "minecraft:nameable": {
-          "default_trigger": {
-            "event": "",
-            "target": "self"
-          },
           "name_actions": [
             {
               "name_filter": "§c§lMTF Delta-1 Chara",
@@ -694,10 +678,7 @@
         }
       },
       "stop_move": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.0
         },
@@ -709,10 +690,7 @@
         }
       },
       "start_move": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.3
         },
@@ -737,10 +715,7 @@
         }
       },
       "start_move_free": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.3
         },
@@ -1000,7 +975,7 @@
       "minecraft:attack": {
         "damage": 21
       },
-      "minecraft:fire_immune": true,
+      "minecraft:fire_immune": {},
       "minecraft:variable_max_auto_step": {
         "base_value": 1.0625,
         "jump_prevented_value": 0.5625
@@ -1013,10 +988,7 @@
         "max": 1024
       },
       "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": false,
-        "is_pushable_by_piston": true
-      },
+      "minecraft:pushable_by_block": {},
       "minecraft:preferred_path": {
         "max_fall_blocks": 7
       },

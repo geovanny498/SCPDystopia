@@ -409,6 +409,141 @@ const config: GuiConfig = {
         },
       ],
     },
+    "lc:dt_epsilon11": {
+      replace: false,
+      insertAt: "end",
+      categories: [
+        {
+          category: "Variante",
+          entries: [
+            {
+              label: "Masculino 1",
+              event: "start_variant0",
+            },
+            {
+              label: "Masculino 2",
+              event: "start_variant1",
+            },
+            {
+              label: "Femenino 1",
+              event: "start_variant2",
+            },
+            {
+              label: "Femenino 2",
+              event: "start_variant3",
+            },
+          ],
+        },
+      ],
+    },
+    "lc:dt_nu7": {
+      replace: false,
+      insertAt: "end",
+      categories: [
+        {
+          category: "Variante",
+          entries: [
+            {
+              label: "Masculino 1",
+              event: "start_variant0",
+            },
+            {
+              label: "Masculino 2",
+              event: "start_variant1",
+            },
+            {
+              label: "Femenino 1",
+              event: "start_variant2",
+            },
+            {
+              label: "Femenino 2",
+              event: "start_variant3",
+            },
+          ],
+        },
+      ],
+    },
+    "lc:dt_eta10": {
+      replace: false,
+      insertAt: "end",
+      categories: [
+        {
+          category: "Variante",
+          entries: [
+            {
+              label: "Masculino 1",
+              event: "start_variant0",
+            },
+            {
+              label: "Masculino 2",
+              event: "start_variant1",
+            },
+            {
+              label: "Femenino 1",
+              event: "start_variant2",
+            },
+            {
+              label: "Femenino 2",
+              event: "start_variant3",
+            },
+          ],
+        },
+      ],
+    },
+    "lc:dt_beta7": {
+      replace: false,
+      insertAt: "end",
+      categories: [
+        {
+          category: "Variante",
+          entries: [
+            {
+              label: "Masculino 1",
+              event: "start_variant0",
+            },
+            {
+              label: "Masculino 2",
+              event: "start_variant1",
+            },
+            {
+              label: "Femenino 1",
+              event: "start_variant2",
+            },
+            {
+              label: "Femenino 2",
+              event: "start_variant3",
+            },
+          ],
+        },
+      ],
+    },
+    "lc:dt_epsilon6": {
+      replace: false,
+      insertAt: "end",
+      categories: [
+        {
+          category: "Variante",
+          entries: [
+            {
+              label: "Masculino 1",
+              event: "start_variant0",
+            },
+            {
+              label: "Masculino 2",
+              event: "start_variant1",
+            },
+            {
+              label: "Femenino 1",
+              event: "start_variant2",
+            },
+            {
+              label: "Femenino 2",
+              event: "start_variant3",
+            },
+          ],
+        },
+      ],
+    },
   },
 };
 

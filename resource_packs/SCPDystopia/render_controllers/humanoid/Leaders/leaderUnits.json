@@ -1,0 +1,18 @@
+{
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.leaderUnits": {
+      "arrays": {
+        "geometries": {
+          "Array.geos": ["Geometry.leader_1", "Geometry.leader_2"]
+        },
+        "textures": {
+          "Array.skins": ["Texture.leader_1", "Texture.leader_2"]
+        }
+      },
+      "geometry": "Array.geos[query.variant]",
+      "materials": [{ "*": "Material.default" }],
+      "textures": ["Array.skins[query.variant]"]
+    }
+  }
+}

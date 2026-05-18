@@ -7,10 +7,10 @@
         "default": "npc"
       },
       "textures": {
-        "chara": "textures/entity/humanoid/chara",
-        "chara1": "textures/entity/humanoid/chara1",
-        "chara2": "textures/entity/humanoid/chara2",
-        "chara3": "textures/entity/humanoid/chara3"
+        "chara": "textures/entity/humanoid/Commanders/chara",
+        "chara1": "textures/entity/humanoid/Commanders/chara1",
+        "chara2": "textures/entity/humanoid/Commanders/chara2",
+        "chara3": "textures/entity/humanoid/Commanders/chara3"
       },
       "geometry": {
         "default": "geometry.chara"
@@ -29,18 +29,12 @@
       },
       "scripts": {
         "scale": "0.9375",
-        "animate": [
-          "anim_cont",
-          "move",
-          "gun_resize"
-        ],
+        "animate": ["anim_cont", "move", "gun_resize"],
         "pre_animation": [
           "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
         ]
       },
-      "render_controllers": [
-        "controller.render.chara"
-      ],
+      "render_controllers": ["controller.render.chara"],
       "spawn_egg": {
         "base_color": "#4a2c2c",
         "overlay_color": "#8400FF"

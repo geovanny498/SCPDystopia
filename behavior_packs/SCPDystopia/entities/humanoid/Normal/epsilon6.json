@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.80",
+  "format_version": "1.26.20",
   "minecraft:entity": {
     "description": {
       "identifier": "lc:dt_epsilon6",
@@ -40,16 +40,6 @@
       "variant3": {
         "minecraft:variant": {
           "value": 3
-        }
-      },
-      "variant4": {
-        "minecraft:variant": {
-          "value": 4
-        }
-      },
-      "variant5": {
-        "minecraft:variant": {
-          "value": 5
         }
       },
       "minecraft:mode_switcher": {
@@ -639,10 +629,7 @@
         }
       },
       "stop_move": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.0
         },
@@ -654,10 +641,7 @@
         }
       },
       "start_move": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.26
         },
@@ -682,10 +666,7 @@
         }
       },
       "start_move_free": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.26
         },
@@ -957,10 +938,7 @@
         "max": 1024
       },
       "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": false,
-        "is_pushable_by_piston": true
-      },
+      "minecraft:pushable_by_block": {},
       "minecraft:preferred_path": {
         "max_fall_blocks": 5
       },
@@ -1006,51 +984,29 @@
           {
             "randomize": [
               {
-                "weight": 30,
+                "weight": 25,
                 "add": {
                   "component_groups": ["variant0"]
                 }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": ["variant1"]
+                }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": ["variant2"]
+                }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": ["variant3"]
+                }
               }
-              // {
-              //     "weight": 20,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant1"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 15,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant2"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 15,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant3"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 10,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant4"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 10,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant5"
-              //         ]
-              //     }
-              // }
             ]
           },
           {
@@ -1075,12 +1031,24 @@
           "component_groups": ["minecraft:melee_attack"]
         }
       },
-      "minecraft:to_ranged_attack": {
-        "remove": {
-          "component_groups": ["minecraft:melee_attack"]
-        },
+      "start_variant0": {
         "add": {
-          "component_groups": ["minecraft:ranged_attack"]
+          "component_groups": ["variant0"]
+        }
+      },
+      "start_variant1": {
+        "add": {
+          "component_groups": ["variant1"]
+        }
+      },
+      "start_variant2": {
+        "add": {
+          "component_groups": ["variant2"]
+        }
+      },
+      "start_variant3": {
+        "add": {
+          "component_groups": ["variant3"]
         }
       },
       "humanoid:heal": {

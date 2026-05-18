@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.80",
+  "format_version": "1.26.20",
   "minecraft:entity": {
     "description": {
       "identifier": "lc:dt_chaos_insurgency",
@@ -27,15 +27,11 @@
           "value": 0
         },
         "minecraft:nameable": {
-          "default_trigger": {
-            "event": "",
-            "target": "self"
-          },
           "name_actions": [
             {
               "name_filter": "§a§l Chaos Insurgency",
               "on_named": {
-                "event": "start_chara1",
+                "event": "start_variant1",
                 "target": "self"
               }
             }
@@ -48,15 +44,11 @@
           "value": 1
         },
         "minecraft:nameable": {
-          "default_trigger": {
-            "event": "",
-            "target": "self"
-          },
           "name_actions": [
             {
               "name_filter": "§a§l Chaos Insurgency",
               "on_named": {
-                "event": "start_chara2",
+                "event": "start_variant2",
                 "target": "self"
               }
             }
@@ -69,15 +61,11 @@
           "value": 2
         },
         "minecraft:nameable": {
-          "default_trigger": {
-            "event": "",
-            "target": "self"
-          },
           "name_actions": [
             {
               "name_filter": "§a§l Chaos Insurgency",
               "on_named": {
-                "event": "start_chara3",
+                "event": "start_variant3",
                 "target": "self"
               }
             }
@@ -90,15 +78,11 @@
           "value": 3
         },
         "minecraft:nameable": {
-          "default_trigger": {
-            "event": "",
-            "target": "self"
-          },
           "name_actions": [
             {
               "name_filter": "§a§l Chaos Insurgency",
               "on_named": {
-                "event": "start_chara",
+                "event": "start_variant",
                 "target": "self"
               }
             }
@@ -804,10 +788,7 @@
         }
       },
       "stop_move": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.0
         },
@@ -819,10 +800,7 @@
         }
       },
       "start_move": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.26
         },
@@ -847,10 +825,7 @@
         }
       },
       "start_move_free": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.26
         },
@@ -1080,10 +1055,7 @@
         "max": 1024
       },
       "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": false,
-        "is_pushable_by_piston": true
-      },
+      "minecraft:pushable_by_block": {},
       "minecraft:preferred_path": {
         "max_fall_blocks": 5
       },
@@ -1190,22 +1162,22 @@
           "component_groups": ["minecraft:ranged_attack"]
         }
       },
-      "start_chara": {
+      "start_variant0": {
         "add": {
           "component_groups": ["variant0"]
         }
       },
-      "start_chara1": {
+      "start_variant1": {
         "add": {
           "component_groups": ["variant1"]
         }
       },
-      "start_chara2": {
+      "start_variant2": {
         "add": {
           "component_groups": ["variant2"]
         }
       },
-      "start_chara3": {
+      "start_variant3": {
         "add": {
           "component_groups": ["variant3"]
         }

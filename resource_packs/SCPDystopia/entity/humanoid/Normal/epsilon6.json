@@ -7,10 +7,16 @@
         "default": "npc"
       },
       "textures": {
-        "default": "textures/entity/humanoid/epsilon6"
+        "normal_1": "textures/entity/humanoid/Normal/epsilon6_1",
+        "normal_2": "textures/entity/humanoid/Normal/epsilon6_2",
+        "normal_f1": "textures/entity/humanoid/Normal/epsilon6_f1",
+        "normal_f2": "textures/entity/humanoid/Normal/epsilon6_f2"
       },
       "geometry": {
-        "default": "geometry.dt_eta10"
+        "normal_1": "geometry.dt_eta10",
+        "normal_2": "geometry.dt_eta10",
+        "normal_f1": "geometry.dt_eta10_f",
+        "normal_f2": "geometry.dt_eta10_f"
       },
       "animations": {
         "general": "animation.dt_chara.general",
@@ -26,18 +32,12 @@
       },
       "scripts": {
         "scale": "0.9375",
-        "animate": [
-          "anim_cont",
-          "move",
-          "gun_resize"
-        ],
+        "animate": ["anim_cont", "move", "gun_resize"],
         "pre_animation": [
           "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
         ]
       },
-      "render_controllers": [
-        "controller.render.scp_dystopia"
-      ],
+      "render_controllers": ["controller.render.normalUnits"],
       "spawn_egg": {
         "base_color": "#D20000",
         "overlay_color": "#444748"

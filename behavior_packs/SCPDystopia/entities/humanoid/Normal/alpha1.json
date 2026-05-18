@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.80",
+  "format_version": "1.26.20",
   "minecraft:entity": {
     "description": {
       "identifier": "lc:dt_alpha1",
@@ -639,10 +639,7 @@
         }
       },
       "stop_move": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.0
         },
@@ -654,10 +651,7 @@
         }
       },
       "start_move": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.26
         },
@@ -682,10 +676,7 @@
         }
       },
       "start_move_free": {
-        "minecraft:pushable": {
-          "is_pushable": false,
-          "is_pushable_by_piston": true
-        },
+        "minecraft:pushable_by_block": {},
         "minecraft:movement": {
           "value": 0.26
         },
@@ -957,10 +948,7 @@
         "max": 1024
       },
       "minecraft:physics": {},
-      "minecraft:pushable": {
-        "is_pushable": false,
-        "is_pushable_by_piston": true
-      },
+      "minecraft:pushable_by_block": {},
       "minecraft:preferred_path": {
         "max_fall_blocks": 5
       },

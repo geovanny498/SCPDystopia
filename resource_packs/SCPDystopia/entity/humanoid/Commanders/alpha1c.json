@@ -7,10 +7,10 @@
         "default": "npc"
       },
       "textures": {
-        "alpha1c": "textures/entity/humanoid/alpha1c",
-        "alpha2c": "textures/entity/humanoid/alpha2c",
-        "alpha1cf": "textures/entity/humanoid/alpha1cf",
-        "alpha2cf": "textures/entity/humanoid/alpha2cf"
+        "alpha1c": "textures/entity/humanoid/Commanders/alpha1c",
+        "alpha2c": "textures/entity/humanoid/Commanders/alpha2c",
+        "alpha1cf": "textures/entity/humanoid/Commanders/alpha1cf",
+        "alpha2cf": "textures/entity/humanoid/Commanders/alpha2cf"
       },
       "geometry": {
         "alpha1c": "geometry.thedeath",
@@ -32,18 +32,12 @@
       },
       "scripts": {
         "scale": "0.9375",
-        "animate": [
-          "anim_cont",
-          "move",
-          "gun_resize"
-        ],
+        "animate": ["anim_cont", "move", "gun_resize"],
         "pre_animation": [
           "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
         ]
       },
-      "render_controllers": [
-        "controller.render.alpha1c"
-      ],
+      "render_controllers": ["controller.render.alpha1c"],
       "spawn_egg": {
         "base_color": "#961CD4",
         "overlay_color": "#271D29"
