@@ -13,22 +13,9 @@ summon lc:dt_epsilon6c "§e§lMTF Epsilon-6 Leader"
 
 event entity @e[name="§lMTF Alpha-1 Leader"] start_variant3
 
-
-effect @e[name="§lMTF Alpha-1 Leader"] regeneration infinite 255 true
-effect @e[name="§lMTF Alpha-1 Leader"] resistance infinite 255 true
-
-
-effect @e[name="§1§lMTF Epsilon-11 Leader"] regeneration infinite 255 true
-effect @e[name="§1§lMTF Epsilon-11 Leader"] resistance infinite 255 true
-
-effect @e[name="§b§lMTF Eta-10 Leader"] regeneration infinite 255 true
-effect @e[name="§b§lMTF Eta-10 Leader"] resistance infinite 255 true
-
-effect @e[name="§8§lMTF Nu-7 Leader"] regeneration infinite 255 true
-effect @e[name="§8§lMTF Nu-7 Leader"] resistance infinite 255 true
-
-effect @e[name="§6§lMTF Beta-7 Leader"] regeneration infinite 255 true
-effect @e[name="§6§lMTF Beta-7 Leader"] resistance infinite 255 true
-
-effect @e[name="§e§lMTF Epsilon-6 Leader"] regeneration infinite 255 true
-effect @e[name="§e§lMTF Epsilon-6 Leader"] resistance infinite 255 true
+event entity @e[name="§lMTF Alpha-1 Leader"] humanoid:start_invincible
+event entity @e[name="§1§lMTF Epsilon-11 Leader"] humanoid:start_invincible
+event entity @e[name="§b§lMTF Eta-10 Leader"] humanoid:start_invincible
+event entity @e[name="§8§lMTF Nu-7 Leader"] humanoid:start_invincible
+event entity @e[name="§6§lMTF Beta-7 Leader"] humanoid:start_invincible
+event entity @e[name="§e§lMTF Epsilon-6 Leader"] humanoid:start_invincible

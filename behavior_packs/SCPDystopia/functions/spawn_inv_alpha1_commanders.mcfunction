@@ -8,11 +8,6 @@ event entity @e[name="§lMTF Alpha-1 Commander 2"] start_variant1
 event entity @e[name="§lMTF Alpha-1 Commander 3"] start_variant2
 
 
-effect @e[name="§lMTF Alpha-1 Commander"] regeneration infinite 255 true
-effect @e[name="§lMTF Alpha-1 Commander"] resistance infinite 255 true
-
-effect @e[name="§lMTF Alpha-1 Commander 2"] regeneration infinite 255 true
-effect @e[name="§lMTF Alpha-1 Commander 2"] resistance infinite 255 true
-
-effect @e[name="§lMTF Alpha-1 Commander 3"] regeneration infinite 255 true
-effect @e[name="§lMTF Alpha-1 Commander 3"] resistance infinite 255 true
+event entity @e[name="§lMTF Alpha-1 Commander"] humanoid:start_invincible
+event entity @e[name="§lMTF Alpha-1 Commander 2"] humanoid:start_invincible
+event entity @e[name="§lMTF Alpha-1 Commander 3"] humanoid:start_invincible

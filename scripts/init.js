@@ -8,6 +8,7 @@ import "./commands/register_systems.js";
 import "./gui/gui.js";
 import "./gui/commandMenu/builder/menu.js";
 import "./commands/config_command.js";
+import "./commands/count_special_groups.js";
 import "./commands/scope_commands.js";
 import "./commands/teleport_command.js";
 

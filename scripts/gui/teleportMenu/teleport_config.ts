@@ -5,7 +5,7 @@
  * Este archivo define todos los textos, títulos y mensajes del sistema
  */
 
-import { Factions } from "../commandMenu/menu_config.js";
+import { Factions, specialUnits } from "../commandMenu/menu_config.js";
 
 /**
  * Títulos principales del sistema de teletransporte
@@ -101,7 +101,7 @@ export const ResultMessages = {
   /** Mensaje cuando se teletransportan entidades exitosamente */
   success: (count: number, faction: string): string => {
     const factionLabel = faction === Factions.FOUNDATION ? "§lFundación" : "§2§lChaos";
-    return `§a[TELEPORT] §r${count} entidades de ${factionLabel}§r teletransportadas a tu posición.`;
+    return `§a[TELEPORT] §r${count} entidades de ${factionLabel}§r teletransportadas.`;
   },
 
   /** Mensaje cuando no se encuentran entidades */
@@ -121,39 +121,16 @@ export const ResultMessages = {
 };
 
 /**
- * Mapeo de subgrupos de especiales por facción
- */
-export const SpecialSubgroups = {
-  [Factions.FOUNDATION]: {
-    delta1: "delta1",
-    alpha1: "alpha1",
-    other_mtf: "other_mtf",
-  },
-  [Factions.CHAOS]: {
-    chaos_delta: "chaos_delta",
-  },
-};
-
-/**
  * Obtiene el nombre de un subgrupo para mensajes
  */
 export function getSubgroupLabel(faction: string, subgroup: string): string {
-  if (faction === Factions.FOUNDATION) {
-    switch (subgroup) {
-      case "delta1":
-        return "§9MTF Delta-1";
-      case "alpha1":
-        return "§fMTF Alpha-1";
-      case "other_mtf":
-        return "§6Otros MTF";
-    }
-  } else if (faction === Factions.CHAOS) {
-    switch (subgroup) {
-      case "chaos_delta":
-        return "§2Chaos Delta";
-    }
-  }
-  return "desconocido";
+  const factionData = (specialUnits as any)[faction];
+  if (!factionData || !factionData.subgroups) return "desconocido";
+
+  const subgroupData = factionData.subgroups[subgroup];
+  if (!subgroupData || typeof subgroupData.label !== "string") return "desconocido";
+
+  return subgroupData.label;
 }
 
 /**

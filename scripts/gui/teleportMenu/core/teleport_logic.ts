@@ -5,18 +5,21 @@
  * Maneja la operación de teletransporte y reporta resultados
  */
 
-import { Entity, Player } from "@minecraft/server";
+import { Entity, Player, Dimension, Vector3 } from "@minecraft/server";
 import { debugWarn } from "../../../utils/debug.js";
 import type { TeleportResult } from "./teleport_types.js";
 
 /**
- * Teletransporta un array de entidades hacia un jugador
- * IMPORTANTE: La dimensión siempre es la del jugador, no la de la entidad
+ * Teletransporta a un destino en una dimensión específica.
  * @param entities - Array de entidades a teletransportar
- * @param player - Jugador objetivo
- * @returns Resultado de la operación con conteo y errores
+ * @param destination - Coordenadas destino (Vector3)
+ * @param dimension - Dimensión destino
  */
-export function teleportEntitiesToPlayer(entities: Entity[], player: Player): TeleportResult {
+export function teleportEntitiesToLocation(
+  entities: Entity[],
+  destination: Vector3,
+  dimension: Dimension
+): TeleportResult {
   let count = 0;
   const errors: string[] = [];
 
@@ -29,15 +32,14 @@ export function teleportEntitiesToPlayer(entities: Entity[], player: Player): Te
         continue;
       }
 
-      // Teletransportar a la ubicación y dimensión del jugador
-      entity.teleport(player.location, {
-        dimension: player.dimension,
+      entity.teleport(destination, {
+        dimension,
       });
 
       count++;
       debugWarn(
         "teleportLogic:success",
-        `${entity.nameTag || entity.typeId} teletransportado a ${player.name}`,
+        `${entity.nameTag || entity.typeId} teletransportado a [${destination.x}, ${destination.y}, ${destination.z}]`,
         "green"
       );
     } catch (e) {
@@ -65,4 +67,13 @@ export function teleportEntitiesToPlayer(entities: Entity[], player: Player): Te
   }
 
   return result;
+}
+
+/**
+ * Conveniencia para teletransportar al jugador o a coordenadas dadas.
+ * Si `targetLocation` no se provee, usa la ubicación del jugador.
+ */
+export function teleportEntitiesToPlayer(entities: Entity[], player: Player, targetLocation?: Vector3): TeleportResult {
+  const destination = targetLocation ?? player.location;
+  return teleportEntitiesToLocation(entities, destination, player.dimension);
 }

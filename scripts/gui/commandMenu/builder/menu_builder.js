@@ -98,7 +98,7 @@ export function buildSystemForm(systems, loadedStates, selectedFaction = null) {
           const unitsInGroup = getUnitsInGroup(faction, groupId);
           const tooltip =
             unitsInGroup.length > 0
-              ? `Unidades en ${baseLabel}:\n§r${unitsInGroup.join("\n§r")}`
+              ? `§7Unidades en ${baseLabel}:\n§r${unitsInGroup.join("\n§r")}`
               : `${baseLabel} está vacío`;
 
           if (system.controlType === ControlType.TOGGLE) {

@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/menu_apply.js
-import { world } from "@minecraft/server";
+import { world, system } from "@minecraft/server";
 import { debugMessage, debugWarn } from "../../../utils/debug.js";
-import { ControlType, getSystemEvents, SpecialGroups, UnitHierarchy } from "../menu_config.js";
+import { ControlType, getSystemEvents, setEntitySystemState, SpecialGroups, UnitHierarchy } from "../menu_config.js";
 import { canApplySystem } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
@@ -17,13 +17,46 @@ import { isAutoTameEvent } from "../menu_config.js";
 
 export function tryAutoTame(ent, player) {
   if (!ent || !player) return;
+
   try {
     const comp = ent.getComponent("minecraft:tameable");
-    if (comp && !comp.isTamed) {
-      comp.tame(player);
+    if (comp) {
+      if (!comp.isTamed) {
+        comp.tame(player);
+        debugMessage("menuApply:entity", `autoTame normal: entidad domesticada ${ent.nameTag || ent.typeId}`, "green");
+      }
+
+      return;
     }
+
+    debugWarn(
+      "menuApply:entity",
+      "autoTame: componente minecraft:tameable no encontrado, ejecutando minecraft:on_calm",
+      "yellow"
+    );
+
+    try {
+      ent.triggerEvent("minecraft:on_calm");
+    } catch (calmError) {
+      debugWarn("menuApply:entity", `autoTame: minecraft:on_calm falló: ${calmError}`, "yellow");
+    }
+
+    system.runTimeout(() => {
+      try {
+        const delayedComp = ent.getComponent("minecraft:tameable");
+        if (delayedComp && !delayedComp.isTamed) {
+          delayedComp.tame(player);
+          debugMessage(
+            "menuApply:entity",
+            `autoTame tardío: entidad domesticada ${ent.nameTag || ent.typeId}`,
+            "green"
+          );
+        }
+      } catch (delayedError) {
+        debugWarn("menuApply:entity", `autoTame tardío falló: ${delayedError}`, "yellow");
+      }
+    }, 1);
   } catch (e) {
-    // no es crítico, sólo una ayuda
     debugWarn("menuApply:entity", `autoTame falló: ${e}`, "yellow");
   }
 }
@@ -41,14 +74,16 @@ export function injectMenuEventAccessors(accessors) {
  * Trigger seguro de eventos en entidades
  */
 function safeTriggerEvent(ent, eventName, player = null) {
-  if (!ent || !eventName) return;
+  if (!ent || !eventName) return false;
   try {
     if (player && isAutoTameEvent(eventName)) {
       tryAutoTame(ent, player);
     }
     ent.triggerEvent(eventName);
+    return true;
   } catch (e) {
     debugWarn("menuApply:entity", `Error en evento ${eventName}: ${e}`, "red");
+    return false;
   }
 }
 
@@ -124,7 +159,8 @@ export function applySystemToEntity(
       const events = getSystemEvents(systemId, isEnabled);
 
       if (events.event) {
-        safeTriggerEvent(ent, events.event, player);
+        const triggered = safeTriggerEvent(ent, events.event, player);
+        if (triggered) setEntitySystemState(ent, systemId, isEnabled);
         debugWarn(
           "menuApply:entity",
           `${systemId} → ${entityLabel}: ${isEnabled ? "ON" : "OFF"}`,
@@ -136,15 +172,17 @@ export function applySystemToEntity(
       const events = getSystemEvents(systemId, mode);
 
       // Primero detener cualquier modo anterior
-      if (events.stop) {
-        safeTriggerEvent(ent, events.stop, player);
-      }
+      const stopped = events.stop ? safeTriggerEvent(ent, events.stop, player) : true;
 
       // Luego iniciar el nuevo modo
       if (events.start && mode !== "false" && mode !== "off") {
-        safeTriggerEvent(ent, events.start, player);
+        const triggered = safeTriggerEvent(ent, events.start, player);
+        if (triggered) setEntitySystemState(ent, systemId, mode);
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: modo=${mode}`, "green");
       } else {
+        if (events.stop && stopped) {
+          setEntitySystemState(ent, systemId, mode);
+        }
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: desactivado`, "gray");
       }
     }

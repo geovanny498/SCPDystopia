@@ -14,17 +14,8 @@ event entity @e[name="§d§lMTF Delta-1 Mita"] start_variant3
 event entity @e[name="§d§lMTF Delta-1 Leader"] start_variant0
 
 
-effect @e[name="§c§lMTF Delta-1 Chara"] regeneration infinite 255 true
-effect @e[name="§c§lMTF Delta-1 Chara"] resistance infinite 255 true
-
-effect @e[name="§d§lMTF Delta-1 Frisk"] regeneration infinite 255 true
-effect @e[name="§d§lMTF Delta-1 Frisk"] resistance infinite 255 true
-
-effect @e[name="§d§lMTF Delta-1 Commander"] regeneration infinite 255 true
-effect @e[name="§d§lMTF Delta-1 Commander"] resistance infinite 255 true
-
-effect @e[name="§d§lMTF Delta-1 Mita"] regeneration infinite 255 true
-effect @e[name="§d§lMTF Delta-1 Mita"] resistance infinite 255 true
-
-effect @e[name="§d§lMTF Delta-1 Leader"] regeneration infinite 255 true
-effect @e[name="§d§lMTF Delta-1 Leader"] resistance infinite 255 true
+event entity @e[name="§c§lMTF Delta-1 Chara"] humanoid:start_invincible
+event entity @e[name="§d§lMTF Delta-1 Frisk"] humanoid:start_invincible
+event entity @e[name="§d§lMTF Delta-1 Commander"] humanoid:start_invincible
+event entity @e[name="§d§lMTF Delta-1 Mita"] humanoid:start_invincible
+event entity @e[name="§d§lMTF Delta-1 Leader"] humanoid:start_invincible

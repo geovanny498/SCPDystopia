@@ -84,6 +84,42 @@ export const normalUnits = {
   },
 };
 
+// Definición de familias internas para unidades normales usadas en listados y agrupación por MTF
+export const normalUnitFamilies = {
+  [Factions.FOUNDATION]: {
+    mtf_delta1: "§9§lMTF Delta-1§r",
+    mtf_alpha1: "§f§lMTF Alpha-1§r",
+    mtf_epsilon11: "§1§lMTF Epsilon-11§r",
+    mtf_eta10: "§b§lMTF Eta-10§r",
+    mtf_nu7: "§8§lMTF Nu-7§r",
+    mtf_beta7: "§6§lMTF Beta-7§r",
+    mtf_epsilon6: "§e§lMTF Epsilon-6§r",
+  },
+  [Factions.CHAOS]: {
+    chaos_member: "§a§lChaos Insurgency§r",
+    chaos_delta: "§2§lChaos Delta§r",
+  },
+};
+
+export function getNormalUnitFamilyOrder(faction) {
+  return Object.keys(normalUnitFamilies[faction] || {});
+}
+
+export function getNormalUnitFamilyLabel(faction, familyId) {
+  return normalUnitFamilies[faction]?.[familyId] || "§7Desconocido§r";
+}
+
+export function getNormalUnitFamilyLabelFromEntity(ent, faction) {
+  const familyMap = normalUnitFamilies[faction];
+  if (!familyMap || typeof ent?.matches !== "function") return "§7Desconocido§r";
+  for (const familyId of Object.keys(familyMap)) {
+    if (ent.matches({ families: [familyId] })) {
+      return familyMap[familyId];
+    }
+  }
+  return "§7Desconocido§r";
+}
+
 // Definición de unidades especiales por bando con subgrupos (por nametag)
 export const specialUnits = {
   [Factions.FOUNDATION]: {
@@ -182,8 +218,9 @@ export const systems = {
   movement: {
     id: "movement",
     displayName: "§1Movimiento / Patrulla",
-    description: "§8(Sólo entidades existentes)",
-    tooltip: "Controla cómo se mueven las unidades: seguir al jugador, caminar libremente o detenerse",
+    description: "§8(Sólo entidades existentes)", // descripción visible en el botón de la categoría
+    tooltip:
+      "§7Define cómo se desplazan las unidades en terreno.\n\nModos:\n- Seguir jugador (§aCerca/§eMedia/§6Lejos§7)\n- §9Caminar libremente\n§7- §cDetenerse",
     category: "movement_patrol",
     dynamicProperty: "scpd_system_movement",
     controlType: ControlType.DROPDOWN,
@@ -204,7 +241,7 @@ export const systems = {
       },
       {
         value: "follow_mid",
-        label: "§eSeguir jugador (Medio)",
+        label: "§eSeguir jugador (Media)",
         events: {
           start: "humanoid:set_tamed_mid",
         },
@@ -272,10 +309,10 @@ export const systems = {
 
   fire: {
     id: "fire",
-    displayName: "§cAtaque / Reglas de Disparo",
+    displayName: "§cIniciativa de Combate",
     description: "",
     tooltip:
-      "Define cuándo y cómo atacan las unidades: guerra abierta, presencia armada, defensivo, al recibir daño, etc.",
+      "§7Define el radio de conciencia y respuesta ante amenazas.\n\nModos:\n- §cMáxima\n§7- §9Avanzada\n§7- §aIntermedia\n§7- §bCercana\n§7- §eNeutral / Sigilo",
     category: "combat",
     dynamicProperty: "scpd_system_fire",
     controlType: ControlType.DROPDOWN,
@@ -285,29 +322,36 @@ export const systems = {
 
     options: [
       {
-        value: "open_warfare",
-        label: "§cGuerra Abierta",
+        value: "maximum",
+        label: "§cMáxima",
         events: {
           start: "humanoid:fire_open_warfare",
         },
       },
       {
-        value: "armed_presence",
-        label: "§aPresencia Armada",
+        value: "advanced",
+        label: "§9Avanzada",
+        events: {
+          start: "humanoid:fire_advanced",
+        },
+      },
+      {
+        value: "intermediate",
+        label: "§aIntermedia",
         events: {
           start: "humanoid:fire_armed_presence",
         },
       },
       {
-        value: "defensive",
-        label: "§9Defensivo (alcance reducido)",
+        value: "close",
+        label: "§bCercana",
         events: {
           start: "humanoid:fire_defensive",
         },
       },
       {
-        value: "on_hit",
-        label: "§6Al Recibir Daño",
+        value: "neutral",
+        label: "§eNeutral / Sigilo",
         events: {
           start: "humanoid:fire_mode_hit",
         },
@@ -325,24 +369,24 @@ export const systems = {
 
     defaults: {
       [Factions.FOUNDATION]: {
-        [UnitHierarchy.BASIC]: "armed_presence",
-        [UnitHierarchy.LEADER]: "armed_presence",
-        [UnitHierarchy.COMMANDER]: "armed_presence",
-        [SpecialGroups.GROUP_A]: "armed_presence",
-        [SpecialGroups.GROUP_B]: "armed_presence",
-        [SpecialGroups.GROUP_C]: "armed_presence",
-        [SpecialGroups.GROUP_D]: "armed_presence",
-        [SpecialGroups.NO_GROUP]: "armed_presence",
+        [UnitHierarchy.BASIC]: "intermediate",
+        [UnitHierarchy.LEADER]: "intermediate",
+        [UnitHierarchy.COMMANDER]: "intermediate",
+        [SpecialGroups.GROUP_A]: "intermediate",
+        [SpecialGroups.GROUP_B]: "intermediate",
+        [SpecialGroups.GROUP_C]: "intermediate",
+        [SpecialGroups.GROUP_D]: "intermediate",
+        [SpecialGroups.NO_GROUP]: "intermediate",
       },
       [Factions.CHAOS]: {
-        [UnitHierarchy.BASIC]: "armed_presence",
-        [UnitHierarchy.LEADER]: "armed_presence",
-        [UnitHierarchy.COMMANDER]: "armed_presence",
-        [SpecialGroups.GROUP_A]: "armed_presence",
-        [SpecialGroups.GROUP_B]: "armed_presence",
-        [SpecialGroups.GROUP_C]: "armed_presence",
-        [SpecialGroups.GROUP_D]: "armed_presence",
-        [SpecialGroups.NO_GROUP]: "armed_presence",
+        [UnitHierarchy.BASIC]: "intermediate",
+        [UnitHierarchy.LEADER]: "intermediate",
+        [UnitHierarchy.COMMANDER]: "intermediate",
+        [SpecialGroups.GROUP_A]: "intermediate",
+        [SpecialGroups.GROUP_B]: "intermediate",
+        [SpecialGroups.GROUP_C]: "intermediate",
+        [SpecialGroups.GROUP_D]: "intermediate",
+        [SpecialGroups.NO_GROUP]: "intermediate",
       },
     },
   },
@@ -351,7 +395,8 @@ export const systems = {
     id: "spawn",
     displayName: "§1Spawn de soldados",
     description: "",
-    tooltip: "Activa o desactiva la generación automática de soldados adicionales",
+    tooltip:
+      "§7Habilita la capacidad de generar refuerzos adicionales (Sólo líderes y algunos comandantes).\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
     category: "advanced",
     dynamicProperty: "scpd_system_spawn",
     controlType: ControlType.TOGGLE,
@@ -403,7 +448,8 @@ export const systems = {
     id: "health",
     displayName: "§cBarra de vida",
     description: "",
-    tooltip: "Muestra u oculta la barra de vida de las unidades en pantalla",
+    tooltip:
+      "§7Visualización de la salud de las unidades cercanas en la interfaz.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
     category: "advanced",
     dynamicProperty: "scpd_system_health",
     controlType: ControlType.TOGGLE,
@@ -455,7 +501,8 @@ export const systems = {
     id: "teleport",
     displayName: "§2Teletransportación",
     description: "",
-    tooltip: "Controla si las unidades pueden teletransportarse al enemigo cuando están lejos",
+    tooltip:
+      "§7Define la agresividad del teletransporte hacia el enemigo cuando hay distancia.\n\nModos:\n- §aNormal\n§7- §6Cercano\n§7- §cDesactivado",
     category: "advanced",
     dynamicProperty: "scpd_system_teleport",
     controlType: ControlType.DROPDOWN,
@@ -519,6 +566,57 @@ export const systems = {
       },
     },
   },
+  invincible: {
+    id: "invincible",
+    displayName: "§cInvencibilidad",
+    description: "",
+    tooltip: "§7Hace invulnerable a la unidad. Usar con precaución.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
+    category: "advanced",
+    dynamicProperty: "scpd_system_invincible",
+    controlType: ControlType.TOGGLE,
+    supportsSpecials: true,
+    supportsHierarchy: true,
+    supportsGroups: true,
+
+    events: {
+      enable: {
+        true: "humanoid:start_invincible",
+        false: "humanoid:stop_invincible",
+      },
+    },
+
+    factions: {
+      [Factions.FOUNDATION]: {
+        label: "§lFoundation",
+      },
+      [Factions.CHAOS]: {
+        label: "§2§lChaos",
+      },
+    },
+
+    defaults: {
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
+      },
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
+      },
+    },
+  },
 };
 
 /**
@@ -536,7 +634,7 @@ export const categories = {
   },
   combat: {
     id: "combat",
-    displayName: "§cAtaque / Reglas de disparo",
+    displayName: "§cIniciativa de Combate",
     description: "",
     systems: ["fire"],
   },
@@ -544,13 +642,13 @@ export const categories = {
     id: "advanced",
     displayName: "§6Configuración avanzada",
     description: "",
-    systems: ["spawn", "health", "teleport"],
+    systems: ["spawn", "health", "teleport", "invincible"],
   },
   all: {
     id: "all",
     displayName: "§lTodos los Sistemas",
     description: "",
-    systems: ["movement", "fire", "spawn", "health", "teleport"],
+    systems: ["movement", "fire", "spawn", "health", "teleport", "invincible"],
   },
 };
 
@@ -614,6 +712,149 @@ export function getSystemsByCategory(categoryId) {
  */
 export function getOrderedCategories() {
   return menuConfig.categoryOrder.map((id) => categories[id]).filter(Boolean);
+}
+
+/**
+ * Obtiene el identificador de propiedad dinámica para un sistema.
+ * @param {string} systemId
+ * @returns {string|null}
+ */
+export function getSystemPropertyId(systemId) {
+  const sys = systems[systemId];
+  if (!sys || !sys.dynamicProperty) return null;
+  return sys.dynamicProperty;
+}
+
+function shouldParseJsonString(raw) {
+  return typeof raw === "string" && (raw.startsWith("{") || raw.startsWith("["));
+}
+
+function normalizeSystemStateValue(value) {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value === "boolean" || typeof value === "number" || typeof value === "string") return value;
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+/**
+ * Guarda el estado actual de un sistema en la entidad.
+ * @param {Entity} entity
+ * @param {string} systemId
+ * @param {string|boolean|number} value
+ */
+export function setEntitySystemState(entity, systemId, value) {
+  const propertyId = getSystemPropertyId(systemId);
+  if (!propertyId || !entity) return;
+  try {
+    const normalized = normalizeSystemStateValue(value);
+    if (normalized === undefined) return;
+    entity.setDynamicProperty(propertyId, normalized);
+  } catch (err) {
+    console.warn(`[SCPDystopia] Error al guardar propiedad dinámica en entidad (${propertyId}): ${err}`);
+  }
+}
+
+/**
+ * Recupera el estado configurado de un sistema desde la entidad.
+ * @param {Entity} entity
+ * @param {string} systemId
+ * @returns {boolean|number|string|undefined}
+ */
+export function getEntitySystemState(entity, systemId) {
+  const propertyId = getSystemPropertyId(systemId);
+  if (!propertyId || !entity) return undefined;
+  try {
+    const raw = entity.getDynamicProperty(propertyId);
+    if (shouldParseJsonString(raw)) {
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return raw;
+      }
+    }
+    return raw;
+  } catch (err) {
+    console.warn(`[SCPDystopia] Error al leer propiedad dinámica de entidad (${propertyId}): ${err}`);
+    return undefined;
+  }
+}
+
+/**
+ * Determina el sistema y valor que corresponde a un evento de menú.
+ * @param {string} eventName
+ * @returns {{systemId:string,value:boolean|string}|null}
+ */
+export function findSystemStateByEvent(eventName) {
+  if (!eventName) return null;
+  for (const systemId in systems) {
+    const sys = systems[systemId];
+    if (!sys) continue;
+    if (sys.controlType === ControlType.TOGGLE && sys.events?.enable) {
+      if (sys.events.enable.true === eventName) return { systemId, value: true };
+      if (sys.events.enable.false === eventName) return { systemId, value: false };
+    }
+    if (sys.controlType === ControlType.DROPDOWN && Array.isArray(sys.options)) {
+      for (const opt of sys.options) {
+        if (opt?.events?.start === eventName || opt?.events?.stop === eventName) {
+          return { systemId, value: opt.value };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+/**
+ * Formatea el valor guardado de un sistema para mostrarlo en la interfaz.
+ * @param {string} systemId
+ * @param {boolean|number|string|undefined} value
+ * @returns {string}
+ */
+export function formatEntitySystemStateLabel(systemId, value) {
+  const sys = systems[systemId];
+  if (!sys) return String(value ?? "§7No configurado§r");
+
+  if (sys.controlType === ControlType.TOGGLE) {
+    return value ? "§aON§r" : "§cOFF§r";
+  }
+
+  if (sys.controlType === ControlType.DROPDOWN) {
+    const option = sys.options?.find((opt) => opt.value === value);
+    if (option?.label) return option.label;
+    return typeof value === "string" ? value : String(value ?? "§7No configurado§r");
+  }
+
+  return String(value ?? "§7No configurado§r");
+}
+
+/**
+ * Obtiene el estado actual de todos los sistemas guardados en la entidad.
+ * @param {Entity} entity
+ * @returns {{totalSystems:number,savedSystems:number,statuses:Array<{systemId:string,displayName:string,label:string,value:boolean|number|string|undefined}>}}
+ */
+export function getEntitySystemsStatus(entity) {
+  const result = [];
+  let totalSystems = 0;
+  for (const systemId in systems) {
+    totalSystems += 1;
+    const sys = systems[systemId];
+    const rawValue = getEntitySystemState(entity, systemId);
+    if (rawValue === undefined) continue;
+    result.push({
+      systemId,
+      displayName: sys.displayName,
+      value: rawValue,
+      label: formatEntitySystemStateLabel(systemId, rawValue),
+    });
+  }
+  return {
+    totalSystems,
+    savedSystems: result.length,
+    statuses: result,
+  };
 }
 
 /**

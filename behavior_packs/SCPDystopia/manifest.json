@@ -2,7 +2,7 @@
   "format_version": 2,
   "header": {
     "description": "§l§bCredits: From SCP: Dystopia v1.9.0 §b Oficial made by LC Studios MC. Helped by Kaiboi39 and RianDewa45.",
-    "name": "§g[DEV] §9§lSCP: Dystopia BP v1.1.0-beta.1",
+    "name": "§g[DEV] §9§lSCP: Dystopia BP v1.1.6",
     "uuid": "0b342e6a-74d1-4f0e-9ec1-44848741705c",
     "version": [1, 0, 1],
     "min_engine_version": [1, 21, 130]
@@ -31,7 +31,7 @@
     },
     {
       "module_name": "@minecraft/server",
-      "version": "2.4.0"
+      "version": "2.6.0"
     },
     {
       "module_name": "@minecraft/server-ui",
@@ -68,6 +68,11 @@
       "folder_name": "spawning_scp_ci",
       "memory_tier": 0,
       "name": "§l§cSpawn SCPs and Chaos Insurgency: §8True"
+    },
+    {
+      "folder_name": "spawn_warfare",
+      "memory_tier": 0,
+      "name": "§l§cWarfare Mode: §eTrue"
     },
     {
       "folder_name": "spawn_world_war",

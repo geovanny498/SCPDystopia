@@ -8,7 +8,8 @@
 
 export interface MenuEntry {
   label: string;
-  event: string;
+  event?: string;
+  action?: string;
 }
 
 export interface MenuCategory {
@@ -93,7 +94,7 @@ const config: GuiConfig = {
             event: "humanoid:set_tamed_close",
           },
           {
-            label: "§eSeguir jugador (Medio)",
+            label: "§eSeguir jugador (Media)",
             event: "humanoid:set_tamed_mid",
           },
           {
@@ -112,23 +113,37 @@ const config: GuiConfig = {
       },
       {
         id: "attack_rules",
-        category: "§cAtaque / Reglas de disparo§r",
+        category: "§cIniciativa de Combate§r",
         entries: [
           {
-            label: "§cGuerra Abierta",
+            label: "§cMáxima",
             event: "humanoid:fire_open_warfare",
           },
           {
-            label: "§aPresencia Armada",
+            label: "§9Avanzada",
+            event: "humanoid:fire_advanced",
+          },
+          {
+            label: "§aIntermedia",
             event: "humanoid:fire_armed_presence",
           },
           {
-            label: "§9Defensivo (alcance reducido)",
+            label: "§bCercana",
             event: "humanoid:fire_defensive",
           },
           {
-            label: "§6Solo al recibir daño",
+            label: "§eNeutral / Sigilo",
             event: "humanoid:fire_mode_hit",
+          },
+        ],
+      },
+      {
+        id: "entity_system_state",
+        category: "§2Estado y configuración",
+        entries: [
+          {
+            label: "Ver opciones configuradas",
+            action: "view_entity_system_state",
           },
         ],
       },

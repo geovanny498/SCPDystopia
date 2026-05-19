@@ -11,7 +11,12 @@ import { Player, system } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import { TeleportAllTexts, CommonTexts, getFactionLabel } from "../teleport_config.js";
 // Eliminado import estático para evitar ciclos
-import { getNormalEntitiesByHierarchy, getSpecialEntitiesByToggles } from "../core/teleport_utils.js";
+import {
+  getNormalEntitiesByHierarchy,
+  getSpecialEntitiesByToggles,
+  getCoordinateInputFromFormValues,
+  parseTeleportDestination,
+} from "../core/teleport_utils.js";
 import { teleportEntitiesToPlayer } from "../core/teleport_logic.js";
 import { Factions, UnitHierarchy, specialUnits } from "../../commandMenu/menu_config.js";
 import { debugMessage } from "../../../utils/debug.js";
@@ -62,6 +67,7 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
     });
   }
 
+  form.textField("§7Coordenadas destino (x y z)", "Ej: 100 64 -200");
   form.submitButton(CommonTexts.submitButton);
 
   system.run(() => {
@@ -141,6 +147,20 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
           return;
         }
 
+        // Obtener coordenadas destino del campo de texto
+        const coordString = getCoordinateInputFromFormValues(values);
+        const destination = parseTeleportDestination(coordString, player);
+
+        if (!destination) {
+          player.sendMessage("§c[TELEPORT] Coordenadas inválidas. Usa formato x y z o x,y,z.");
+          import("./teleport_type_menu.js")
+            .then((module) => {
+              module.showTypeSelectionMenu(player, faction);
+            })
+            .catch((err) => console.error(err));
+          return;
+        }
+
         debugMessage(
           "teleportLogic",
           `Teletransportando: Jerarquías=${selectedHierarchies.join(",")} Especiales=${selectedSpecialUnits.length}`,
@@ -153,7 +173,7 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
 
         if (selectedHierarchies.length > 0) {
           const normalEntities = getNormalEntitiesByHierarchy(faction, selectedHierarchies, player.dimension);
-          const normalResult = teleportEntitiesToPlayer(normalEntities, player);
+          const normalResult = teleportEntitiesToPlayer(normalEntities, player, destination);
           totalCount += normalResult.count;
           if (normalResult.hasErrors && normalResult.errors) {
             totalErrors += normalResult.errors.length;
@@ -163,7 +183,7 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
         // Obtener y teletransportar entidades especiales
         if (selectedSpecialUnits.length > 0) {
           const specialEntities = getSpecialEntitiesByToggles(faction, selectedSpecialUnits, player.dimension);
-          const specialResult = teleportEntitiesToPlayer(specialEntities, player);
+          const specialResult = teleportEntitiesToPlayer(specialEntities, player, destination);
           totalCount += specialResult.count;
           if (specialResult.hasErrors && specialResult.errors) {
             totalErrors += specialResult.errors.length;

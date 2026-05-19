@@ -8,7 +8,7 @@ import {
   SpecialGroups,
   SpecialGroupLabels,
 } from "../gui/commandMenu/menu_config.js";
-import { resetAllSystems } from "./worldSave.js";
+import { resetAllSystems, resetAllSystemStates } from "./worldSave.js";
 import { resetMenuSystemStates } from "../gui/commandMenu/core/menu_events.js";
 import { resetScope } from "../gui/commandMenu/model/menu_scope.js";
 import { resetGroups, loadGroups, getUnitsInGroup } from "../gui/commandMenu/model/menu_groups.js";
@@ -249,6 +249,61 @@ system.beforeEvents.startup.subscribe((init) => {
     );
   } catch (e) {
     console.warn(`Error registrando scpd:reset_groups: ${e}`);
+  }
+});
+
+// --- Comando reset_systems ---
+system.beforeEvents.startup.subscribe((init) => {
+  try {
+    init.customCommandRegistry.registerCommand(
+      {
+        name: "scpd:reset_systems",
+        description: "Resetea todos los sistemas a valores por defecto sin tocar scope ni grupos",
+        permissionLevel: CommandPermissionLevel.Any,
+        cheatsRequired: false,
+      },
+      (origin) => {
+        try {
+          // 1. Limpiar solo las propiedades dinámicas de sistemas
+          resetAllSystemStates();
+
+          // 2. Reiniciar estados del menú en memoria
+          resetMenuSystemStates();
+
+          // 3. Aplicar los sistemas reseteados a todas las entidades existentes
+          system.run(() => {
+            try {
+              const dimension =
+                origin && origin.sourceType === CustomCommandSource.Entity && origin.sourceEntity
+                  ? origin.sourceEntity.dimension
+                  : null;
+
+              const systemIds = Object.keys(menuSystems);
+              applySystemsToAll(systemIds, dimension, origin.sourceEntity || null);
+
+              console.log("[SCPDystopia] Sistemas reiniciados y aplicados a entidades existentes");
+            } catch (e) {
+              console.warn(`[SCPDystopia] Error aplicando sistemas: ${e}`);
+            }
+          });
+
+          world.sendMessage("§a[SCPDystopia] Sistemas reiniciados a valores por defecto");
+
+          return {
+            status: CustomCommandStatus.Success,
+            message: "Sistemas reseteados a valores por defecto",
+          };
+        } catch (e) {
+          console.warn(`[SCPDystopia] Error en reset_systems: ${e}`);
+          return {
+            status: CustomCommandStatus.Failure,
+            message: `Error al reiniciar sistemas: ${e}`,
+          };
+        }
+      }
+    );
+  } catch (e) {
+    console.warn(`Error registrando scpd:reset_systems: ${e}`);
   }
 });
 
