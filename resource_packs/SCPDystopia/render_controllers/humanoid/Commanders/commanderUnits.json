@@ -1,13 +1,13 @@
 {
   "format_version": "1.8.0",
   "render_controllers": {
-    "controller.render.leaderUnits": {
+    "controller.render.commanderUnits": {
       "arrays": {
         "geometries": {
-          "Array.geos": ["Geometry.leader_1", "Geometry.leader_2", "Geometry.leader_3"]
+          "Array.geos": ["Geometry.commander_1", "Geometry.commander_2"]
         },
         "textures": {
-          "Array.skins": ["Texture.leader_1", "Texture.leader_2", "Texture.leader_3"]
+          "Array.skins": ["Texture.commander_1", "Texture.commander_2"]
         }
       },
       "geometry": "Array.geos[query.variant]",

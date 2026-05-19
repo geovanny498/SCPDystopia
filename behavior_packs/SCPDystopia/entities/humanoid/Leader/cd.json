@@ -73,23 +73,6 @@
           "always_show": true
         }
       },
-      "variant3": {
-        "minecraft:variant": {
-          "value": 3
-        },
-        "minecraft:nameable": {
-          "name_actions": [
-            {
-              "name_filter": "§a§lChaos Delta Squad Leader",
-              "on_named": {
-                "event": "start_variant",
-                "target": "self"
-              }
-            }
-          ],
-          "always_show": true
-        }
-      },
       "minecraft:mode_switcher": {
         "minecraft:target_nearby_sensor": {
           "inside_range": 3.0,
@@ -1129,35 +1112,23 @@
           {
             "randomize": [
               {
-                "weight": 1,
+                "weight": 25,
                 "add": {
                   "component_groups": ["variant0"]
                 }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": ["variant1"]
+                }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": ["variant2"]
+                }
               }
-              // {
-              //     "weight": 50,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant1"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 15,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant2"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 5,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant3"
-              //         ]
-              //     }
-              // }
             ]
           },
           {
@@ -1190,7 +1161,7 @@
           "component_groups": ["minecraft:ranged_attack"]
         }
       },
-      "start_variant": {
+      "start_variant0": {
         "add": {
           "component_groups": ["variant0"]
         }
@@ -1203,11 +1174,6 @@
       "start_variant2": {
         "add": {
           "component_groups": ["variant2"]
-        }
-      },
-      "start_variant3": {
-        "add": {
-          "component_groups": ["variant3"]
         }
       },
       "humanoid:heal": {

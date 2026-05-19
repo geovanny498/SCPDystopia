@@ -18,7 +18,7 @@ summon lc:dt_beta7c "§6§lMTF Beta-7 Commander"
 summon lc:dt_epsilon6c "§e§lMTF Epsilon-6 Commander" 
 
 
-event entity @e[name="§c§lMTF Delta-1 Chara"] start_chara1
+event entity @e[name="§c§lMTF Delta-1 Chara"] start_variant1
 
 event entity @e[name="§d§lMTF Delta-1 Frisk"] start_variant2
 event entity @e[name="§d§lMTF Delta-1 Commander"] start_variant1

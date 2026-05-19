@@ -16,10 +16,19 @@ npm run package
 ### Desarrollo continuo (watch mode)
 
 ```bash
+# Desarrollo sin actualización automatica
 npm run local-deploy
 
-# Desarrollo con actualización automatica para ts y js
+# Con actualización automatica
 npx just-scripts local-deploy --watch
+npm run local-deploy -- --watch
+```
+
+### Desarrollo local sin debug (watch)
+
+```bash
+# Desarrollo con actualización automatica en modo producción
+npm run local-deploy:production
 ```
 
 Observa cambios en archivos y recompila automáticamente.
@@ -99,11 +108,13 @@ npm run enablemcpreviewloopback
 
 ## Diferencias entre modos
 
-| Comando                      | Debug incluido | Destino                           |
-| ---------------------------- | -------------- | --------------------------------- |
-| `npm run build`              | Sí             | dist/                             |
-| `npm run build:production`   | No             | dist/                             |
-| `npm run package`            | Sí             | behavior_packs/ y resource_packs/ |
-| `npm run deploy:production`  | No             | behavior_packs/ y resource_packs/ |
-| `npm run mcaddon`            | Sí             | dist/packages/\*.mcaddon          |
-| `npm run mcaddon:production` | No             | dist/packages/\*.mcaddon          |
+| Comando                           | Debug incluido | Destino                           |
+| --------------------------------- | -------------- | --------------------------------- |
+| `npm run build`                   | Sí             | dist/                             |
+| `npm run build:production`        | No             | dist/                             |
+| `npm run package`                 | Sí             | behavior_packs/ y resource_packs/ |
+| `npm run local-deploy`            | Sí             | behavior_packs/ y resource_packs/ |
+| `npm run local-deploy:production` | No             | behavior_packs/ y resource_packs/ |
+| `npm run deploy:production`       | No             | behavior_packs/ y resource_packs/ |
+| `npm run mcaddon`                 | Sí             | dist/packages/\*.mcaddon          |
+| `npm run mcaddon:production`      | No             | dist/packages/\*.mcaddon          |

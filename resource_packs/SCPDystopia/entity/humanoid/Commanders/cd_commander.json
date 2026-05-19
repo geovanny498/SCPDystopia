@@ -7,10 +7,12 @@
         "default": "npc"
       },
       "textures": {
-        "default": "textures/entity/humanoid/Commanders/cd_commander"
+        "commander_1": "textures/entity/humanoid/Commanders/cd_commander_1",
+        "commander_2": "textures/entity/humanoid/Commanders/cd_commander_2"
       },
       "geometry": {
-        "default": "geometry.thedeath"
+        "commander_1": "geometry.thedeath",
+        "commander_2": "geometry.chara"
       },
       "animations": {
         "general": "animation.dt_chara.general",
@@ -31,7 +33,7 @@
           "variable.tcos0 = (Math.cos(query.modified_distance_moved * 38.17) * query.modified_move_speed / variable.gliding_speed_value) * 57.3;"
         ]
       },
-      "render_controllers": ["controller.render.scp_dystopia"],
+      "render_controllers": ["controller.render.commanderUnits"],
       "spawn_egg": {
         "base_color": "#000000",
         "overlay_color": "#1AFF00"

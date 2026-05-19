@@ -1101,35 +1101,29 @@
           {
             "randomize": [
               {
-                "weight": 1,
+                "weight": 25,
                 "add": {
                   "component_groups": ["variant0"]
                 }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": ["variant1"]
+                }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": ["variant2"]
+                }
+              },
+              {
+                "weight": 25,
+                "add": {
+                  "component_groups": ["variant3"]
+                }
               }
-              // {
-              //     "weight": 50,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant1"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 15,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant2"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 5,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant3"
-              //         ]
-              //     }
-              // }
             ]
           },
           {

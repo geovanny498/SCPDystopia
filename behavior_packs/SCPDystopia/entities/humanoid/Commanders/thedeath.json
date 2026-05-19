@@ -31,7 +31,7 @@
             {
               "name_filter": "§5§lMTF Delta-1 Death",
               "on_named": {
-                "event": "start_death1",
+                "event": "start_variant1",
                 "target": "self"
               }
             }
@@ -48,7 +48,7 @@
             {
               "name_filter": "§5§lMTF Delta-1 Death",
               "on_named": {
-                "event": "start_death2",
+                "event": "start_variant2",
                 "target": "self"
               }
             }
@@ -65,7 +65,7 @@
             {
               "name_filter": "§5§lMTF Delta-1 Death",
               "on_named": {
-                "event": "start_death3",
+                "event": "start_variant3",
                 "target": "self"
               }
             }
@@ -82,7 +82,7 @@
             {
               "name_filter": "§5§lMTF Delta-1 Death",
               "on_named": {
-                "event": "start_death",
+                "event": "start_variant0",
                 "target": "self"
               }
             }
@@ -1089,22 +1089,22 @@
           "component_groups": ["minecraft:ranged_attack"]
         }
       },
-      "start_death": {
+      "start_variant0": {
         "add": {
           "component_groups": ["variant0"]
         }
       },
-      "start_death1": {
+      "start_variant1": {
         "add": {
           "component_groups": ["variant1"]
         }
       },
-      "start_death2": {
+      "start_variant2": {
         "add": {
           "component_groups": ["variant2"]
         }
       },
-      "start_death3": {
+      "start_variant3": {
         "add": {
           "component_groups": ["variant3"]
         }

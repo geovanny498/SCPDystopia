@@ -7,16 +7,14 @@
         "default": "npc"
       },
       "textures": {
-        "leader_1": "textures/entity/humanoid/Leaders/cd",
-        "leader_2": "textures/entity/humanoid/Leaders/cd",
-        "leader_3": "textures/entity/humanoid/Leaders/cd",
-        "leader_4": "textures/entity/humanoid/Leaders/cd"
+        "leader_1": "textures/entity/humanoid/Leaders/cd_1",
+        "leader_2": "textures/entity/humanoid/Leaders/cd_2",
+        "leader_3": "textures/entity/humanoid/Leaders/cd_f1"
       },
       "geometry": {
         "leader_1": "geometry.alpha1",
         "leader_2": "geometry.alpha1",
-        "leader_3": "geometry.alpha1",
-        "leader_4": "geometry.alpha1"
+        "leader_3": "geometry.alpha1f"
       },
       "animations": {
         "general": "animation.dt_chara.general",

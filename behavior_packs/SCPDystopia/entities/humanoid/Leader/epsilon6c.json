@@ -31,7 +31,7 @@
             {
               "name_filter": "§l§lMTF Alpha-1 Leader",
               "on_named": {
-                "event": "start_chara1",
+                "event": "start_variant1",
                 "target": "self"
               }
             }
@@ -48,7 +48,7 @@
             {
               "name_filter": "§l§lMTF Alpha-1 Leader",
               "on_named": {
-                "event": "start_chara2",
+                "event": "start_variant2",
                 "target": "self"
               }
             }
@@ -65,7 +65,7 @@
             {
               "name_filter": "§l§lMTF Alpha-1 Leader",
               "on_named": {
-                "event": "start_chara3",
+                "event": "start_variant3",
                 "target": "self"
               }
             }
@@ -82,7 +82,7 @@
             {
               "name_filter": "§l§lMTF Alpha-1 Leader",
               "on_named": {
-                "event": "start_chara",
+                "event": "start_variant0",
                 "target": "self"
               }
             }
@@ -1121,22 +1121,22 @@
           "component_groups": ["minecraft:ranged_attack"]
         }
       },
-      "start_chara": {
+      "start_variant0": {
         "add": {
           "component_groups": ["variant0"]
         }
       },
-      "start_chara1": {
+      "start_variant1": {
         "add": {
           "component_groups": ["variant1"]
         }
       },
-      "start_chara2": {
+      "start_variant2": {
         "add": {
           "component_groups": ["variant2"]
         }
       },
-      "start_chara3": {
+      "start_variant3": {
         "add": {
           "component_groups": ["variant3"]
         }

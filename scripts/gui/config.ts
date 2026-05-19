@@ -277,19 +277,19 @@ const config: GuiConfig = {
           entries: [
             {
               label: "Sin máscara",
-              event: "start_chara",
+              event: "start_variant0",
             },
             {
               label: "Con máscara",
-              event: "start_chara1",
+              event: "start_variant1",
             },
             {
               label: "Sin máscara (Sangre)",
-              event: "start_chara2",
+              event: "start_variant2",
             },
             {
               label: "Con máscara (Sangre)",
-              event: "start_chara3",
+              event: "start_variant3",
             },
           ],
         },
@@ -304,19 +304,19 @@ const config: GuiConfig = {
           entries: [
             {
               label: "Normal",
-              event: "start_death",
+              event: "start_variant",
             },
             {
               label: "Normal (Sangre)",
-              event: "start_death1",
+              event: "start_variant1",
             },
             {
               label: "Hazmat",
-              event: "start_death2",
+              event: "start_variant2",
             },
             {
               label: "Hazmat (Sangre)",
-              event: "start_death3",
+              event: "start_variant3",
             },
           ],
         },
@@ -412,7 +412,7 @@ const config: GuiConfig = {
       ],
     },
     normal: {
-      ids: ["lc:dt_epsilon11", "lc:dt_nu7", "lc:dt_eta10", "lc:dt_beta7", "lc:dt_epsilon6"],
+      ids: ["lc:dt_epsilon11", "lc:dt_nu7", "lc:dt_eta10", "lc:dt_beta7", "lc:dt_epsilon6", "lc:dt_chaos_insurgency"],
       replace: false,
       insertAt: "end",
       categories: [
@@ -434,6 +434,51 @@ const config: GuiConfig = {
             {
               label: "Femenino 2",
               event: "start_variant3",
+            },
+          ],
+        },
+      ],
+    },
+    leader: {
+      ids: ["lc:dt_cd"],
+      replace: false,
+      insertAt: "end",
+      categories: [
+        {
+          category: "Variante",
+          entries: [
+            {
+              label: "Masculino 1",
+              event: "start_variant0",
+            },
+            {
+              label: "Masculino 2",
+              event: "start_variant1",
+            },
+            {
+              label: "Femenino 1",
+              event: "start_variant2",
+            },
+          ],
+        },
+      ],
+    },
+
+    "lc:dt_cd_commander": {
+      replace: false,
+      // `insertAt`: "start" | "end" — dónde insertar las categorías específicas respecto a las globales
+      insertAt: "end",
+      categories: [
+        {
+          category: "Variante",
+          entries: [
+            {
+              label: "§2§lChaos Delta Commander 1",
+              event: "start_variant0",
+            },
+            {
+              label: "§b§lChaos Delta Commander 2",
+              event: "start_variant1",
             },
           ],
         },

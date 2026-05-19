@@ -65,7 +65,7 @@
             {
               "name_filter": "§d§lMTF Delta-1 Mita",
               "on_named": {
-                "event": "start_chara3",
+                "event": "start_variant3",
                 "target": "self"
               }
             }
@@ -82,7 +82,7 @@
             {
               "name_filter": "§d§lMTF Delta-1 Frisk",
               "on_named": {
-                "event": "start_chara",
+                "event": "start_variant0",
                 "target": "self"
               }
             }

@@ -82,7 +82,7 @@
             {
               "name_filter": "§l§lMTF Alpha-1 Leader",
               "on_named": {
-                "event": "start_variant",
+                "event": "start_variant0",
                 "target": "self"
               }
             }

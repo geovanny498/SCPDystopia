@@ -31,7 +31,7 @@
             {
               "name_filter": "§2§lChaos Delta Commander",
               "on_named": {
-                "event": "start_chara1",
+                "event": "start_variant1",
                 "target": "self"
               }
             }
@@ -48,41 +48,7 @@
             {
               "name_filter": "§2§lChaos Delta Commander",
               "on_named": {
-                "event": "start_chara2",
-                "target": "self"
-              }
-            }
-          ],
-          "always_show": true
-        }
-      },
-      "variant2": {
-        "minecraft:variant": {
-          "value": 2
-        },
-        "minecraft:nameable": {
-          "name_actions": [
-            {
-              "name_filter": "§2§lChaos Delta Commander",
-              "on_named": {
-                "event": "start_chara3",
-                "target": "self"
-              }
-            }
-          ],
-          "always_show": true
-        }
-      },
-      "variant3": {
-        "minecraft:variant": {
-          "value": 3
-        },
-        "minecraft:nameable": {
-          "name_actions": [
-            {
-              "name_filter": "§2§lChaos Delta Commander",
-              "on_named": {
-                "event": "start_chara",
+                "event": "start_variant0",
                 "target": "self"
               }
             }
@@ -1140,35 +1106,17 @@
           {
             "randomize": [
               {
-                "weight": 1,
+                "weight": 50,
                 "add": {
                   "component_groups": ["variant0"]
                 }
+              },
+              {
+                "weight": 50,
+                "add": {
+                  "component_groups": ["variant1"]
+                }
               }
-              // {
-              //     "weight": 50,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant1"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 15,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant2"
-              //         ]
-              //     }
-              // },
-              // {
-              //     "weight": 5,
-              //     "add": {
-              //         "component_groups": [
-              //             "variant3"
-              //         ]
-              //     }
-              // }
             ]
           },
           {
@@ -1202,24 +1150,14 @@
           "component_groups": ["minecraft:ranged_attack"]
         }
       },
-      "start_chara": {
+      "start_variant0": {
         "add": {
           "component_groups": ["variant0"]
         }
       },
-      "start_chara1": {
+      "start_variant1": {
         "add": {
           "component_groups": ["variant1"]
-        }
-      },
-      "start_chara2": {
-        "add": {
-          "component_groups": ["variant2"]
-        }
-      },
-      "start_chara3": {
-        "add": {
-          "component_groups": ["variant3"]
         }
       },
       "humanoid:heal": {

@@ -8,15 +8,15 @@
       },
       "textures": {
         "normal_1": "textures/entity/humanoid/Normal/ci_member_1",
-        "normal_2": "textures/entity/humanoid/Normal/ci_member_1",
-        "normal_f1": "textures/entity/humanoid/Normal/ci_member_1",
-        "normal_f2": "textures/entity/humanoid/Normal/ci_member_1"
+        "normal_2": "textures/entity/humanoid/Normal/ci_member_2",
+        "normal_f1": "textures/entity/humanoid/Normal/ci_member_f1",
+        "normal_f2": "textures/entity/humanoid/Normal/ci_member_f2"
       },
       "geometry": {
         "normal_1": "geometry.dt_chaos_insurgency",
         "normal_2": "geometry.dt_chaos_insurgency",
-        "normal_f1": "geometry.dt_chaos_insurgency",
-        "normal_f2": "geometry.dt_chaos_insurgency"
+        "normal_f1": "geometry.dt_chaos_insurgency_f",
+        "normal_f2": "geometry.dt_chaos_insurgency_f"
       },
       "animations": {
         "general": "animation.dt_chara.general",
