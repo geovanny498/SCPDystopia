@@ -781,6 +781,7 @@
             "scpfoundation",
             "player",
             "human",
+            "hierarchy_commander",
             "alpha1",
             "mtf_delta1",
             "mtf",
@@ -791,7 +792,18 @@
       },
       "humanoid:stealth_off": {
         "minecraft:type_family": {
-          "family": ["mob", "foundation", "scpfoundation", "player", "human", "alpha1", "mtf_delta1", "mtf", "villager"]
+          "family": [
+            "mob",
+            "foundation",
+            "scpfoundation",
+            "player",
+            "human",
+            "hierarchy_commander",
+            "alpha1",
+            "mtf_delta1",
+            "mtf",
+            "villager"
+          ]
         }
       }
     },

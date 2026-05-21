@@ -85,7 +85,6 @@ export const entityDamageConfig = {
     knockback: false,
   },
 
-
   "tzap:lead_zombie": {
     damage: true,
     knockback: false,

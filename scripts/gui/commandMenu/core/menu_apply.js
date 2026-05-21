@@ -123,6 +123,12 @@ export function applySystemToEntity(
     const { faction, isSpecial, hierarchy, group } = factionInfo;
     const nameTag = ent.nameTag ?? "";
 
+    // usar NO_GROUP como fallback para que los sistemas se apliquen de todas formas.
+    if (isSpecial && !group) {
+      factionInfo.group = SpecialGroups.NO_GROUP;
+    }
+    // Para no-especiales la jerarquía (hierarchy) ya está validada en getEntityFactionInfo
+
     // Verificar compatibilidad con otros sistemas
     if (!skipCompatibilityCheck) {
       const allStates = stateOverride ? { ...systemStates, [systemId]: stateOverride } : systemStates;
@@ -229,6 +235,13 @@ export function applySystemWithEvents(systemId, systemConfig, dimension = null, 
           // Obtener información de facción
           const factionInfo = getEntityFactionInfo(ent, specials);
           if (!factionInfo) continue;
+
+          // Guardia de especialidad: especial sin grupo asignado (null) → omitir
+          // NO_GROUP es un grupo válido y SÍ ejecuta sistemas
+          if (factionInfo.isSpecial && !factionInfo.group) {
+            skippedCount++;
+            continue;
+          }
 
           const { faction, isSpecial } = factionInfo;
           const nameTag = ent.nameTag ?? "";

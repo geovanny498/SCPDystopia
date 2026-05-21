@@ -1,6 +1,6 @@
 // scripts\utils\weapons.js
 import { world, system } from "@minecraft/server";
-import { debugMessage, debugWarn } from "./debug.js";
+import { debugMessage, debugWarn } from "./debug.ts";
 import * as mc from "@minecraft/server";
 
 // Mapeo de armas con propiedades (Sólo Aplok Guns)

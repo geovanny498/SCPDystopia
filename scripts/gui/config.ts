@@ -477,7 +477,7 @@ const config: GuiConfig = {
               event: "start_variant0",
             },
             {
-              label: "§b§lChaos Delta Commander 2",
+              label: "§2§lChaos Delta Commander 2",
               event: "start_variant1",
             },
           ],

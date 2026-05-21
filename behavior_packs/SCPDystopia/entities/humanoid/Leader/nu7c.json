@@ -120,7 +120,7 @@
           "charge_shoot_trigger": 1.0,
           "attack_interval_min": 1.0,
           "attack_interval_max": 1.0,
-          "attack_radius": 50.0,
+          "attack_radius": 55.0,
           "speed_multiplier": 1.0
         }
       },
@@ -808,6 +808,7 @@
             "scpfoundation",
             "player",
             "human",
+            "hierarchy_leader",
             "dm",
             "mtf_nu7",
             "mtf",
@@ -818,7 +819,18 @@
       },
       "humanoid:stealth_off": {
         "minecraft:type_family": {
-          "family": ["mob", "foundation", "scpfoundation", "player", "human", "dm", "mtf_nu7", "mtf", "villager"]
+          "family": [
+            "mob",
+            "foundation",
+            "scpfoundation",
+            "player",
+            "human",
+            "hierarchy_leader",
+            "dm",
+            "mtf_nu7",
+            "mtf",
+            "villager"
+          ]
         }
       }
     },

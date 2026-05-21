@@ -1,7 +1,7 @@
 // scripts\utils\teams.js
 import * as mc from "@minecraft/server";
 
-export const teamGroups = {
+export const teamGroups: Record<string, Set<string>> = {
   chaos: new Set(["lc:dt_cd_commander", "lc:dt_cd_leader", "lc:dt_cd", "lc:dt_chaos_insurgency"]),
   foundation: new Set([
     "lc:dt_chara",
@@ -27,12 +27,12 @@ export const teamGroups = {
  * Familias de entidades para filtrado eficiente con EntityQueryOptions
  * Estas familias se definen en los archivos de entidades (minecraft:type_family)
  */
-export const teamFamilies = {
+export const teamFamilies: Record<string, string[]> = {
   chaos: ["chaos_insurgency", "chaos"],
   foundation: ["scpfoundation", "foundation"],
 };
 
-const helmetTeams = {
+const helmetTeams: Record<string, string> = {
   "minecraft:golden_helmet": "chaos",
   "minecraft:netherite_helmet": "foundation",
   "minecraft:diamond_helmet": "foundation",
@@ -40,7 +40,11 @@ const helmetTeams = {
   "gabrielaplok:nv_goggles": "foundation",
 };
 
-export function getTeam(entityOrTypeId) {
+/**
+ * @param entityOrTypeId - Entidad o string con el typeId
+ * @returns "chaos" | "foundation" | null
+ */
+export function getTeam(entityOrTypeId: any): string | null {
   if (!entityOrTypeId) return null;
 
   let typeId;

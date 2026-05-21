@@ -1,6 +1,6 @@
 // scripts/gui/commandMenu/menu_state.js
 import { saveSystemState, loadSystemState } from "../../../commands/worldSave.js";
-import { getSystemConfig, getSystemDefaults } from "../menu_config.js";
+import { getSystemConfig, getSystemDefaults, Factions, UnitHierarchy, SpecialGroups } from "../menu_config.js";
 import { applySystemWithEvents } from "./menu_apply.js";
 import { updateMenuSystemState } from "./menu_events.js";
 import { debugWarn } from "../../../utils/debug.js";
@@ -29,16 +29,60 @@ export function loadSystemStates(systemIds) {
 }
 
 /**
+ * Fusiona el estado parcial del formulario con el estado ya guardado en el DP
+ * y con los defaults como último recurso.
+ *
+ * Garantiza que todas las jerarquías y grupos queden presentes en el objeto final,
+ * incluso si el formulario no mostró algunos grupos (por no tener entidades activas).
+ *
+ * Prioridad: formulario > DP guardado > defaults
+ */
+function mergeSavedState(systemId, partialState) {
+  const saved = loadSystemState(systemId) || {};
+  const defaults = getSystemDefaults(systemId);
+  const completed = {};
+
+  for (const faction of [Factions.FOUNDATION, Factions.CHAOS]) {
+    completed[faction] = {};
+
+    const sourceGroups = [
+      UnitHierarchy.BASIC,
+      UnitHierarchy.LEADER,
+      UnitHierarchy.COMMANDER,
+      SpecialGroups.GROUP_A,
+      SpecialGroups.GROUP_B,
+      SpecialGroups.GROUP_C,
+      SpecialGroups.GROUP_D,
+      SpecialGroups.NO_GROUP,
+    ];
+
+    for (const key of sourceGroups) {
+      completed[faction][key] =
+        partialState[faction]?.[key] !== undefined
+          ? partialState[faction][key] // 1. Valor del formulario (jugador lo cambió)
+          : saved[faction]?.[key] !== undefined
+            ? saved[faction][key] // 2. Valor ya guardado en DP (mantener último)
+            : defaults[faction]?.[key]; // 3. Default (nunca configurado)
+    }
+  }
+
+  return completed;
+}
+
+/**
  * Guarda el estado de un sistema en propiedades dinámicas
  * y actualiza el estado compartido en memoria
  */
 export function saveSystemAndUpdateMemory(systemId, state) {
   try {
-    // Guardar en propiedades dinámicas
-    saveSystemState(systemId, state);
+    // Fusionar con estado guardado en DP para preservar valores de grupos sin entidades
+    const completeState = mergeSavedState(systemId, state);
 
-    // Actualizar estado en memoria del menú
-    updateMenuSystemState(systemId, state);
+    // Guardar en propiedades dinámicas (estado COMPLETO)
+    saveSystemState(systemId, completeState);
+
+    // Actualizar estado en memoria del menú (estado COMPLETO)
+    updateMenuSystemState(systemId, completeState);
 
     debugWarn("menuState", `Sistema ${systemId} guardado y actualizado en memoria`, "green");
   } catch (e) {

@@ -1,148 +1,175 @@
 // scripts/gui/commandMenu/menu_faction.ts
-import { Entity } from "@minecraft/server";
-import { getTeam } from "../../../utils/teams.js";
-import { Factions, UnitHierarchy, SpecialGroups, specialUnits, getUnitHierarchy } from "../menu_config.js";
-import { getUnitGroup } from "./menu_groups.js";
-import { debugWarn } from "../../../utils/debug.js";
-
 /**
- * Módulo centralizado para determinar el bando, facción, jerarquía y grupo de una entidad
+ * Módulo centralizado para determinar el bando, facción, jerarquía y grupo de una entidad.
  *
- * Este módulo evita duplicación de código en menu_events.js y menu_apply.js
+ * v4.0 — Sin listas hardcodeadas de unidades.
+ * Especialidad: nametag no vacío + familias de facción válidas.
+ * No especialidad: nametag vacío + familias de facción válidas.
+ * Jerarquía de no especiales: familias type_family (hierarchy_basic/leader/commander)
+ *   agregadas a los paquetes de comportamiento de cada entidad.
  */
+
+import { Entity, EntityComponentTypes } from "@minecraft/server";
+import { Factions, UnitHierarchy, SpecialGroups } from "../menu_config.js";
+import { getUnitGroup } from "./menu_groups.js";
+import { getTeam, teamFamilies } from "../../../utils/teams.js";
+import { debugWarn } from "../../../utils/debug.js";
 
 export interface EntityFactionInfo {
   faction: string;
   isSpecial: boolean;
-  hierarchy: string | null; // Para no especiales: basic, leader, commander
-  group: string | null; // Para especiales: groupA, groupB, groupC, groupD, noGroup
+  nametag: string;
+  hierarchy: string | null;
+  group: string | null;
 }
 
-interface SpecialUnitsData {
-  all: string[];
-  subgroups: Record<string, { label: string; units: string[] }>;
+// ── Familias de jerarquía reconocidas ────────────────────────────────────────
+
+const HIERARCHY_FAMILIES: Record<string, string> = {
+  hierarchy_commander: UnitHierarchy.COMMANDER,
+  hierarchy_leader: UnitHierarchy.LEADER,
+  hierarchy_basic: UnitHierarchy.BASIC,
+};
+
+// ── Detección de facción por familias ───────────────────────────────────────
+
+function detectFactionByFamilies(ent: Entity): string | null {
+  const typeFamilies = ent.getComponent(EntityComponentTypes.TypeFamily);
+  if (!typeFamilies) return null;
+
+  const families = typeFamilies.getTypeFamilies();
+
+  for (const fam of teamFamilies.foundation) {
+    if (families.includes(fam)) return Factions.FOUNDATION;
+  }
+  for (const fam of teamFamilies.chaos) {
+    if (families.includes(fam)) return Factions.CHAOS;
+  }
+
+  return null;
 }
 
-interface SpecialUnitsConfig {
-  foundation: SpecialUnitsData;
-  chaos: SpecialUnitsData;
-}
+// ── Detección de jerarquía por type_family de la entidad ────────────────────
+// Lee directamente del type_family de la entidad (sin depender de typeId ni nametag).
+// Las familias hierarchy_basic / hierarchy_leader / hierarchy_commander se agregan
+// a los paquetes de comportamiento de cada entidad según su carpeta
+// (Normal/, Leaders/, Commanders/).
 
-/**
- * Determina toda la información de facción de una entidad
- */
-export function getEntityFactionInfo(ent: Entity, specials?: SpecialUnitsConfig): EntityFactionInfo | null {
-  if (!ent) return null;
+function detectHierarchyByEntity(ent: Entity): string | null {
+  const typeFamilies = ent.getComponent(EntityComponentTypes.TypeFamily);
+  if (!typeFamilies) return null;
 
-  const name = ent.nameTag ?? "";
-  const typeId = ent.typeId;
-  const effectiveSpecials = (specials || specialUnits) as SpecialUnitsConfig;
-
-  // Verificar si es especial (por nametag)
-  const isSpecialFoundation = effectiveSpecials?.foundation?.all?.includes(name);
-  const isSpecialChaos = effectiveSpecials?.chaos?.all?.includes(name);
-
-  if (isSpecialFoundation) {
-    const group = getUnitGroup(name, Factions.FOUNDATION);
-    debugWarn("menuFaction", `${name}: Especial Foundation, grupo=${group}`, "cyan");
-    return {
-      faction: Factions.FOUNDATION,
-      isSpecial: true,
-      hierarchy: null,
-      group: group || SpecialGroups.NO_GROUP,
-    };
-  }
-
-  if (isSpecialChaos) {
-    const group = getUnitGroup(name, Factions.CHAOS);
-    debugWarn("menuFaction", `${name}: Especial Chaos, grupo=${group}`, "cyan");
-    return {
-      faction: Factions.CHAOS,
-      isSpecial: true,
-      hierarchy: null,
-      group: group || SpecialGroups.NO_GROUP,
-    };
-  }
-
-  // No es especial, verificar si es normal por typeId
-  const foundationHierarchy = getUnitHierarchy(typeId, Factions.FOUNDATION);
-  if (foundationHierarchy) {
-    debugWarn("menuFaction", `${typeId}: Normal Foundation, jerarquía=${foundationHierarchy}`, "green");
-    return {
-      faction: Factions.FOUNDATION,
-      isSpecial: false,
-      hierarchy: foundationHierarchy,
-      group: null,
-    };
-  }
-
-  const chaosHierarchy = getUnitHierarchy(typeId, Factions.CHAOS);
-  if (chaosHierarchy) {
-    debugWarn("menuFaction", `${typeId}: Normal Chaos, jerarquía=${chaosHierarchy}`, "green");
-    return {
-      faction: Factions.CHAOS,
-      isSpecial: false,
-      hierarchy: chaosHierarchy,
-      group: null,
-    };
-  }
-
-  // Fallback: usar getTeam para determinar facción
-  const team = getTeam(ent);
-  if (team === "foundation" || team === "chaos") {
-    debugWarn("menuFaction", `${typeId}: Fallback a team=${team}, jerarquía=basic`, "yellow");
-    return {
-      faction: team,
-      isSpecial: false,
-      hierarchy: UnitHierarchy.BASIC, // Default a básico si no se encuentra en la lista
-      group: null,
-    };
+  const families = typeFamilies.getTypeFamilies();
+  for (const fam of families) {
+    if (HIERARCHY_FAMILIES[fam]) return HIERARCHY_FAMILIES[fam];
   }
 
   return null;
 }
 
 /**
- * Verifica si una entidad es un soldado válido
+ * Determina toda la información de facción de una entidad.
+ * Sin listas hardcodeadas de unidades.
  */
-export function isValidSoldier(ent: Entity, specials?: SpecialUnitsConfig): boolean {
+export function getEntityFactionInfo(ent: Entity): EntityFactionInfo | null {
+  if (!ent) return null;
+
+  const nametag = (ent.nameTag ?? "").trim();
+  const typeId = ent.typeId;
+
+  // 1. Determinar facción por familias
+  const faction = detectFactionByFamilies(ent);
+  if (!faction) {
+    // Fallback: usar getTeam()
+    const team = getTeam(ent);
+    if (team !== "foundation" && team !== "chaos") return null;
+    // Entidad sin familias de facción pero sí team → intentar jerarquía por type_family
+    const hierarchy = detectHierarchyByEntity(ent) || detectHierarchyFallback(typeId);
+    debugWarn("menuFaction", `${typeId}: Fallback team=${team}, jerarquía=${hierarchy}`, "yellow");
+    return { faction: team, isSpecial: false, nametag: "", hierarchy, group: null };
+  }
+
+  // 2. Determinar especialidad por nametag (sin patrones restrictivos)
+  const isSpecial = nametag !== "";
+
+  if (isSpecial) {
+    // Especial: nametag no vacío + familias de facción
+    const group = getUnitGroup(ent);
+    debugWarn("menuFaction", `${nametag}: Especial ${faction}, grupo=${group}`, "cyan");
+    return {
+      faction,
+      isSpecial: true,
+      nametag,
+      hierarchy: null,
+      group: group || SpecialGroups.NO_GROUP,
+    };
+  }
+
+  // No especial: nametag vacío + familias de facción → detectar jerarquía
+  const hierarchy = detectHierarchyByEntity(ent) || detectHierarchyFallback(typeId);
+  debugWarn("menuFaction", `${typeId}: No especial ${faction}, jerarquía=${hierarchy}`, "green");
+  return {
+    faction,
+    isSpecial: false,
+    nametag: "",
+    hierarchy,
+    group: null,
+  };
+}
+
+/**
+ * Fallback de jerarquía por typeId cuando type_family no incluye familias de jerarquía.
+ * Usa sufijos: c → commander, l → leader, resto → basic.
+ * Los namespaces (ej: "lc:") se eliminan antes de comprobar el sufijo.
+ */
+function detectHierarchyFallback(typeId: string): string {
+  const base = (typeId ?? "").toLowerCase();
+  const clean = base.indexOf(":") >= 0 ? base.substring(base.indexOf(":") + 1) : base;
+  if (clean.endsWith("c")) return UnitHierarchy.COMMANDER;
+  if (clean.endsWith("l")) return UnitHierarchy.LEADER;
+  return UnitHierarchy.BASIC;
+}
+
+/**
+ * Verifica si una entidad es un soldado válido.
+ * v4.0 — sin listas de unidades hardcodeadas.
+ */
+export function isValidSoldier(ent: Entity): boolean {
   if (!ent) return false;
   if (ent.typeId === "minecraft:player") return false;
 
-  const name = ent.nameTag ?? "";
-  const typeId = ent.typeId;
-  const effectiveSpecials = (specials || specialUnits) as SpecialUnitsConfig;
+  // Especial: nametag no vacío y familias de facción válidas
+  if ((ent.nameTag ?? "").trim() !== "" && detectFactionByFamilies(ent)) return true;
 
-  // Verificar si es especial usando la lista plana .all
-  if (effectiveSpecials?.foundation?.all?.includes(name)) return true;
-  if (effectiveSpecials?.chaos?.all?.includes(name)) return true;
+  // No especial: solo familias de facción válidas
+  if (detectFactionByFamilies(ent)) return true;
 
-  // Verificar si es normal por typeId
-  if (getUnitHierarchy(typeId, Factions.FOUNDATION)) return true;
-  if (getUnitHierarchy(typeId, Factions.CHAOS)) return true;
-
-  // Fallback: verificar si pertenece a un bando
+  // Fallback: verificar si pertenece a un bando por equipo
   const team = getTeam(ent);
   return team === "foundation" || team === "chaos";
 }
 
 /**
- * Obtiene el valor de configuración que aplica a una entidad según su jerarquía/grupo
- * @param systemState - Estado del sistema para la facción
- * @param factionInfo - Información de facción de la entidad
- * @returns El valor de configuración que aplica
+ * Obtiene el valor de configuración que aplica a una entidad según su jerarquía/grupo.
+ * systemState tiene la forma: { faction: { grupo_o_jerarquia: valor, ... }, ... }
  */
 export function getEntityConfigValue(systemState: Record<string, unknown>, factionInfo: EntityFactionInfo): unknown {
   if (!systemState) return undefined;
 
-  if (factionInfo.isSpecial && factionInfo.group) {
-    // Especial: usar el valor del grupo
-    return systemState[factionInfo.group];
-  } else if (!factionInfo.isSpecial && factionInfo.hierarchy) {
-    // No especial: usar el valor de la jerarquía
+  // systemState es el objeto de la facción: { basic/leader/commander/groupA-D/noGroup: valor }
+  // Para especiales: buscar primero por nametag, luego por grupo (noGroup/groupA-D)
+  if (factionInfo.isSpecial && factionInfo.nametag) {
+    var byName = systemState[factionInfo.nametag];
+    if (byName !== undefined) return byName;
+    if (factionInfo.group) return systemState[factionInfo.group];
+    return undefined;
+  }
+
+  // Para no-especiales: buscar por jerarquía
+  if (!factionInfo.isSpecial && factionInfo.hierarchy) {
     return systemState[factionInfo.hierarchy];
   }
 
-  // Fallback: intentar con basic o noGroup
+  // Fallback final
   return systemState[UnitHierarchy.BASIC] ?? systemState[SpecialGroups.NO_GROUP];
 }

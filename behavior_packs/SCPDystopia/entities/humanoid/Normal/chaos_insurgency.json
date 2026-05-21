@@ -119,7 +119,7 @@
           "charge_shoot_trigger": 1.35,
           "attack_interval_min": 1.35,
           "attack_interval_max": 1.35,
-          "attack_radius": 40.0,
+          "attack_radius": 45.0,
           "speed_multiplier": 1.0
         }
       },
@@ -885,12 +885,12 @@
       },
       "humanoid:stealth_on": {
         "minecraft:type_family": {
-          "family": ["human", "player", "chaos_insurgency", "chaos", "chaos_member", "mob", "hidden"]
+          "family": ["human", "hierarchy_basic", "player", "chaos_insurgency", "chaos", "chaos_member", "mob", "hidden"]
         }
       },
       "humanoid:stealth_off": {
         "minecraft:type_family": {
-          "family": ["human", "player", "chaos_insurgency", "chaos", "chaos_member", "mob"]
+          "family": ["human", "hierarchy_basic", "player", "chaos_insurgency", "chaos", "chaos_member", "mob"]
         }
       }
     },

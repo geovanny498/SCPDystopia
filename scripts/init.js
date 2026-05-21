@@ -4,13 +4,14 @@ import "./components/maxDamage.js";
 import "./components/killTarget.js";
 import "./components/removeTarget.js";
 import "./utils/weapons.js";
-import "./commands/register_systems.js";
+import "./commands/register_systems.ts";
+import "./commands/register_test_commands.ts";
 import "./gui/gui.js";
 import "./gui/commandMenu/builder/menu.js";
 import "./commands/config_command.js";
-import "./commands/count_special_groups.js";
+import "./commands/count_special_groups.ts";
 import "./commands/scope_commands.js";
-import "./commands/teleport_command.js";
+// import "./commands/teleport_command.js";  // TEMPORALMENTE DESHABILITADO — ver scripts/gui/teleportMenu/teleport_config.ts
 
 // Importar funciones de inicialización del menú
 import {

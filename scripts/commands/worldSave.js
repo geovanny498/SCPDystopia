@@ -35,6 +35,22 @@ export function loadSystemState(systemName) {
 }
 
 /**
+ * Resetea las propiedades dinámicas de un único sistema a sus valores por defecto
+ * @param {string} systemName
+ */
+export function resetOneSystemState(systemName) {
+  try {
+    const systemConfig = menuSystems[systemName];
+    if (!systemConfig?.dynamicProperty) return false;
+    world.setDynamicProperty(systemConfig.dynamicProperty, undefined);
+    return true;
+  } catch (err) {
+    console.warn(`[SCPDystopia] Error al reiniciar sistema ${systemName}: ${err}`);
+    return false;
+  }
+}
+
+/**
  * Resetea solo las propiedades dinámicas de los sistemas a sus valores por defecto
  */
 export function resetAllSystemStates() {

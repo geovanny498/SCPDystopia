@@ -1,15 +1,44 @@
 // scripts/gui/commandMenu/menu_groups_ui.ts
-import { Player, system } from "@minecraft/server";
+import { Player, system, world, Entity } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
-import { debugWarn } from "../../../utils/debug.js";
+import { debugWarn, debugMessage } from "../../../utils/debug.js";
 import {
   Factions,
   SpecialGroups,
   SpecialGroupLabels,
-  specialUnits,
   getGroupsOrderForAssignment,
+  scanActiveUnits,
+  invalidateScanCache,
 } from "../menu_config.js";
-import { loadGroups, saveGroups, getGroupsSummary } from "../model/menu_groups.js";
+import { setUnitGroup, getUnitGroup } from "../model/menu_groups.js";
+
+import type { ScannedEntity } from "../model/menu_entity_scanner.js";
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// §  DETECCIÓN DE NAMETAG  (se suscribe en el arranque del módulo)
+// ═══════════════════════════════════════════════════════════════════════════════
+
+world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
+  try {
+    const entity = ev.target;
+    if (!entity) return;
+
+    const currNametag = (entity.nameTag ?? "").trim();
+    const prevTag = String(entity.getDynamicProperty("scpd:prev_nametag") ?? "").trim();
+
+    if (currNametag !== prevTag) {
+      // El nametag cambió: invalidar cache — el TTL se encarga del refrescado al abrir menú
+      invalidateScanCache();
+      entity.setDynamicProperty("scpd:prev_nametag", currNametag);
+    }
+  } catch (e) {
+    // Silencioso: esta detección es un refuerzo, no crítico
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// §  MENÚ PRINCIPAL DE GRUPOS
+// ═══════════════════════════════════════════════════════════════════════════════
 
 /**
  * Muestra el menú principal de configuración de grupos de especiales
@@ -31,7 +60,6 @@ export function showGroupsMenu(player: Player): void {
         .show(player)
         .then((res) => {
           if (!res || res.canceled) {
-            // Volver al menú principal
             import("../builder/menu.js").then((module) => {
               system.run(() => {
                 module.buildAndShowMenu(player);
@@ -61,161 +89,296 @@ export function showGroupsMenu(player: Player): void {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// §  MENÚ POR FACCION — familias MTF detectadas dinámicamente
+// ═══════════════════════════════════════════════════════════════════════════════
+
 /**
- * Muestra el menú de grupos para una facción específica
+ * Muestra el menú de grupos para una facción específica.
+ * Usa scanActiveUnits para detectar familias MTF con entidades activas.
  */
 function showFactionGroupsMenu(player: Player, faction: string): void {
   try {
     const factionLabel = faction === Factions.FOUNDATION ? "§lFoundation" : "§2§lChaos";
-    const factionData = specialUnits[faction as keyof typeof specialUnits];
 
-    if (!factionData?.subgroups) {
-      player.sendMessage("§c[GRUPOS] No hay subgrupos definidos para esta facción");
-      showGroupsMenu(player);
+    invalidateScanCache();
+
+    // Escanear entidades activas en la dimensión del jugador
+    const scanResult = scanActiveUnits(player.dimension, faction);
+    const buckets = scanResult.buckets;
+
+    // Resumen de grupos: contar entidades ESPECIALES vivas por grupo en la facción
+    var _groupCounts: Record<string, number> = {};
+    var allGroupsOrder = getGroupsOrderForAssignment();
+    for (var gi = 0; gi < allGroupsOrder.length; gi++) {
+      _groupCounts[allGroupsOrder[gi]] = 0;
+    }
+
+    var activeEntities = scanResult.entities;
+    for (var si = 0; si < activeEntities.length; si++) {
+      var e = activeEntities[si];
+      if (!e.isSpecial) continue;
+      if (e.faction !== faction) continue;
+      var gid = e.group || SpecialGroups.NO_GROUP;
+      if (_groupCounts[gid] !== undefined) {
+        _groupCounts[gid] += 1;
+      }
+    }
+
+    // Construir resumen de grupos
+    var summaryText = "§7Resumen de grupos:\n";
+    for (var li = 0; li < allGroupsOrder.length; li++) {
+      var gid2 = allGroupsOrder[li];
+      var lbl = SpecialGroupLabels[gid2 as keyof typeof SpecialGroupLabels];
+      summaryText += lbl + "§r: §f" + _groupCounts[gid2] + " unidades\n";
+    }
+
+    // Orden fijo de buckets para Nivel 1
+    var bucketOrder = [
+      "commander_alpha1",
+      "commander_delta1",
+      "commander_other",
+      "leader_any",
+      "basic_any",
+      "other_units",
+    ];
+    // @ts-ignore — arreglo tipado inline por limitación de TS en archivo JS-ish
+    var nonEmptyBuckets: any[] = [];
+    for (var bi = 0; bi < bucketOrder.length; bi++) {
+      var bkey = bucketOrder[bi];
+      if (buckets[bkey] && buckets[bkey].unitCount > 0) {
+        nonEmptyBuckets.push({ id: bkey, data: buckets[bkey] });
+      }
+    }
+
+    if (nonEmptyBuckets.length === 0) {
+      var emptyForm2 = new ActionFormData()
+        .title("§9Grupos§r - " + factionLabel)
+        .body(summaryText + "\n§8No hay unidades especiales activas en esta facción.");
+      emptyForm2.button("§8« Volver");
+
+      system.run(function () {
+        emptyForm2.show(player).then(function (res) {
+          if (!res || res.canceled || res.selection === 0) {
+            showGroupsMenu(player);
+          } else {
+            showGroupsMenu(player);
+          }
+        });
+      });
       return;
     }
 
-    const summary = getGroupsSummary(faction);
+    var form2 = new ActionFormData().title("§9Grupos§r - " + factionLabel).body(summaryText);
 
-    // Construir resumen de grupos
-    let summaryText = "§7Resumen de grupos:\n";
-    for (const [groupId, label] of Object.entries(SpecialGroupLabels)) {
-      const count = summary[groupId] || 0;
-      summaryText += `${label}§r: §f${count} unidades\n`;
+    // Un botón por bucket (jerarquía + familia MTF principal)
+    for (var ni = 0; ni < nonEmptyBuckets.length; ni++) {
+      var bucket = nonEmptyBuckets[ni];
+      var ntCount = Object.keys(bucket.data.nametags).length;
+      var btnLabel = bucket.data.label + " §8(" + ntCount + " nametags)";
+      form2.button(btnLabel);
     }
 
-    const form = new ActionFormData().title(`§9Grupos§r - ${factionLabel}`).body(summaryText);
+    form2.button("§8« Volver");
 
-    // Botones para cada subgrupo de especiales
-    const subgroupIds = Object.keys(factionData.subgroups);
-    for (const subgroupId of subgroupIds) {
-      const subgroup = (factionData.subgroups as unknown as Record<string, { label: string; units: string[] }>)[
-        subgroupId
-      ];
-      form.button(`${subgroup.label}\n§8${subgroup.units.length} unidades`);
-    }
-
-    form.button("§8« Volver");
-
-    system.run(() => {
-      form
+    system.run(function () {
+      form2
         .show(player)
-        .then((res) => {
+        .then(function (res) {
           if (!res || res.canceled) {
             showGroupsMenu(player);
             return;
           }
 
-          const selection = res.selection!;
-
-          if (selection < subgroupIds.length) {
-            const subgroupId = subgroupIds[selection];
-            showSubgroupAssignmentModal(player, faction, subgroupId);
-          } else {
-            showGroupsMenu(player);
+          var selection = res.selection;
+          if (typeof selection !== "number") {
+            showFactionGroupsMenu(player, faction);
+            return;
           }
+
+          if (selection >= 0 && selection < nonEmptyBuckets.length) {
+            var bucketEntry = nonEmptyBuckets[selection];
+            if (bucketEntry && bucketEntry.id) {
+              showBucketAssignmentModal(player, faction, bucketEntry.id, scanResult);
+              return;
+            }
+          }
+          showFactionGroupsMenu(player, faction);
         })
-        .catch((err) => {
-          debugWarn("menuGroups", `Error en showFactionGroupsMenu: ${err}`, "red");
+        .catch(function (err) {
+          debugWarn("menuGroups", "Error en showFactionGroupsMenu: " + err, "red");
         });
     });
   } catch (e) {
-    debugWarn("menuGroups", `Error en showFactionGroupsMenu: ${e}`, "red");
+    debugWarn("menuGroups", "Error en showFactionGroupsMenu: " + e, "red");
   }
 }
 
-/**
- * Muestra el modal para asignar grupos a un subgrupo de especiales
- */
-function showSubgroupAssignmentModal(player: Player, faction: string, subgroupId: string): void {
-  try {
-    const factionData = specialUnits[faction as keyof typeof specialUnits];
-    const subgroup = (factionData?.subgroups as unknown as Record<string, { label: string; units: string[] }>)?.[
-      subgroupId
-    ];
+// ═══════════════════════════════════════════════════════════════════════════════
+// §  MODAL DE ASIGNACIÓN DE GRUPOS  —  1 dropdown por nametag único
+// ═══════════════════════════════════════════════════════════════════════════════
 
-    if (!subgroup) {
-      debugWarn("menuGroups", `Subgrupo no encontrado: ${subgroupId}`, "red");
+/**
+ * Muestra el modal para asignar grupos a un bucket específico
+ * (jerarquía + familia MTF principal). 1 dropdown por cada nametag único
+ * encontrado en ese bucket.
+ */
+function showBucketAssignmentModal(player: Player, faction: string, bucketId: string, scanResult: any): void {
+  try {
+    debugWarn("menuGroups:ui", "=== showBucketAssignmentModal: faction=" + faction + ", bucketId=" + bucketId, "cyan");
+
+    var bucketData = scanResult.buckets[bucketId];
+    if (!bucketData) {
+      player.sendMessage("§c[GRUPOS] Bucket no encontrado: " + bucketId);
+      debugWarn(
+        "menuGroups:ui",
+        "Bucket " +
+          bucketId +
+          " no encontrado en scanResult.buckets. keys=" +
+          JSON.stringify(Object.keys(scanResult.buckets)),
+        "red"
+      );
+      showFactionGroupsMenu(player, faction);
+      return;
+    }
+    debugWarn(
+      "menuGroups:ui",
+      "bucketData: label=" +
+        bucketData.label +
+        " unitCount=" +
+        bucketData.unitCount +
+        " nametags=" +
+        JSON.stringify(Object.keys(bucketData.nametags)),
+      "dark_gray"
+    );
+
+    var bucketNametags = bucketData.nametags;
+
+    // Construir ntBucketEntities usando scanResult.bucketIdMap (pre-computado en el scanner).
+    // bucketIdMap[bucketId] = [entityId, ...] de solo las entidades de ESTE bucket
+    // (dedup cross-bucket ya aplicado por el scanner).
+    var ntBucketEntities: Record<string, Entity[]> = {};
+    var bucketEntityIds = scanResult.bucketIdMap[bucketId] || [];
+    var idToScanned: Record<string, ScannedEntity> = {};
+    for (var eiMap = 0; eiMap < scanResult.entities.length; eiMap++) {
+      idToScanned[scanResult.entities[eiMap].entity.id] = scanResult.entities[eiMap];
+    }
+    for (var eidI = 0; eidI < bucketEntityIds.length; eidI++) {
+      var eid = bucketEntityIds[eidI];
+      var sc = idToScanned[eid];
+      if (!sc || !sc.isSpecial) continue;
+      if (sc.faction !== faction) continue;
+      var nt = (sc.nametag || "").trim();
+      if (!nt) continue;
+      if (!ntBucketEntities[nt]) ntBucketEntities[nt] = [];
+      ntBucketEntities[nt].push(sc.entity);
+    }
+
+    // Armar la lista de nametags para el dropdown usando las entidades de este bucket
+    var uniqueNametags: { nametag: string; entities: Entity[] }[] = [];
+    var bucketNtKeys = Object.keys(bucketNametags);
+    for (var bi2 = 0; bi2 < bucketNtKeys.length; bi2++) {
+      var nt2 = bucketNtKeys[bi2];
+      var ents = ntBucketEntities[nt2];
+      if (!ents || ents.length === 0) continue;
+
+      uniqueNametags.push({ nametag: nt2, entities: ents.slice(0) });
+    }
+
+    debugWarn("menuGroups:ui", "bucket " + bucketId + ": " + uniqueNametags.length + " nametags únicos", "gray");
+
+    if (uniqueNametags.length === 0) {
+      player.sendMessage("§c[GRUPOS] No hay unidades con nametag en este bucket.");
+      debugWarn(
+        "menuGroups:ui",
+        "bucket " +
+          bucketId +
+          ": uniqueNametags vacío. bucketNametags=" +
+          JSON.stringify(bucketNametags) +
+          " ntBucketEntities=" +
+          JSON.stringify(Object.keys(ntBucketEntities)),
+        "red"
+      );
       showFactionGroupsMenu(player, faction);
       return;
     }
 
-    // Cargar grupos frescos
-    const groups = loadGroups(true); // Forzar recarga
-    const factionGroups = groups[faction as keyof typeof groups] || {};
+    // Opciones de grupos para los dropdowns
+    var groupOptions = getGroupsOrderForAssignment();
+    var groupLabels = groupOptions.map(function (g) {
+      return SpecialGroupLabels[g] ?? g;
+    });
 
-    // Opciones de grupos para el dropdown (Sin grupo primero para usabilidad)
-    const groupOptions = getGroupsOrderForAssignment();
-    const groupLabels = groupOptions.map((g) => SpecialGroupLabels[g as keyof typeof SpecialGroupLabels]);
+    // Label del bucket
+    var bucketLabel = bucketData.label;
 
-    const form = new ModalFormData().title(`${subgroup.label}`);
+    var modalForm = new ModalFormData().title(bucketLabel + "§r §8(" + uniqueNametags.length + " nametags)");
 
-    // Agregar label informativo
-    form.label("§7Selecciona el grupo para cada unidad:");
+    modalForm.label("§7Asigna grupo a cada nametag:");
 
-    // Agregar un dropdown por cada unidad
-    for (const unitName of subgroup.units) {
-      const currentGroup = factionGroups[unitName] || SpecialGroups.NO_GROUP;
-      const currentIndex = groupOptions.indexOf(currentGroup);
-
-      debugWarn("menuGroups:ui", `${unitName}: grupo actual=${currentGroup}, index=${currentIndex}`, "gray");
-
-      form.dropdown(unitName, groupLabels, { defaultValueIndex: Math.max(0, currentIndex) });
+    // Agregar un dropdown por cada nametag único (sin límite — other_units recibe el overflow)
+    for (var di = 0; di < uniqueNametags.length; di++) {
+      var entry = uniqueNametags[di];
+      var currentGroup = getUnitGroup(entry.entities[0]) || SpecialGroups.NO_GROUP;
+      var currentIndex = groupOptions.indexOf(currentGroup);
+      var unitCount2 = entry.entities.length;
+      var label2 = unitCount2 > 1 ? "§f" + entry.nametag + "§r §8(" + unitCount2 + ")" : "§f" + entry.nametag + "§r";
+      modalForm.dropdown(label2, groupLabels, { defaultValueIndex: Math.max(0, currentIndex) });
     }
 
-    form.submitButton("§aGuardar");
+    modalForm.submitButton("§aGuardar");
 
-    system.run(() => {
-      form
+    system.run(function () {
+      modalForm
         .show(player)
-        .then((res) => {
+        .then(function (res) {
           if (!res || res.canceled) {
             showFactionGroupsMenu(player, faction);
             return;
           }
 
-          const rawValues = res.formValues!;
+          var rawValues2 = res.formValues || [];
+          // Filtrar solo valores numéricos
+          var dropdownValues2 = rawValues2.filter(function (v) {
+            return typeof v === "number";
+          });
 
-          debugWarn("menuGroups:ui", `formValues raw: ${JSON.stringify(rawValues)}`, "cyan");
+          // Actualizar DP individual de cada entidad viva
+          for (var si2 = 0; si2 < uniqueNametags.length; si2++) {
+            var entry2 = uniqueNametags[si2];
+            var selectedIndex2 = dropdownValues2[si2];
 
-          // Filtrar solo los valores numéricos (dropdowns), ignorando undefined del label
-          const dropdownValues = rawValues.filter((v): v is number => typeof v === "number");
-
-          debugWarn("menuGroups:ui", `dropdownValues filtrados: ${JSON.stringify(dropdownValues)}`, "cyan");
-
-          // Recargar grupos para no perder datos de otros subgrupos
-          const freshGroups = loadGroups(true);
-
-          if (!freshGroups[faction as keyof typeof freshGroups]) {
-            freshGroups[faction as keyof typeof freshGroups] = {};
-          }
-
-          // Actualizar grupos - usar los valores filtrados
-          for (let i = 0; i < subgroup.units.length; i++) {
-            const unitName = subgroup.units[i];
-            const selectedIndex = dropdownValues[i];
-
-            if (typeof selectedIndex === "number" && selectedIndex >= 0 && selectedIndex < groupOptions.length) {
-              const selectedGroup = groupOptions[selectedIndex];
-              freshGroups[faction as keyof typeof freshGroups][unitName] = selectedGroup;
-              debugWarn("menuGroups:ui", `${unitName} -> ${selectedGroup} (index ${selectedIndex})`, "green");
+            if (typeof selectedIndex2 === "number" && selectedIndex2 >= 0 && selectedIndex2 < groupOptions.length) {
+              var selectedGroup2 = groupOptions[selectedIndex2];
+              // Aplicar el grupo a TODAS las instancias vivas con este nametag
+              for (var ei2 = 0; ei2 < entry2.entities.length; ei2++) {
+                setUnitGroup(entry2.entities[ei2], selectedGroup2);
+              }
+              debugWarn(
+                "menuGroups:ui",
+                entry2.nametag + " -> " + selectedGroup2 + " (index " + selectedIndex2 + ")",
+                "green"
+              );
             } else {
-              debugWarn("menuGroups:ui", `${unitName}: índice inválido ${selectedIndex}`, "red");
+              debugWarn("menuGroups:ui", entry2.nametag + ": índice inválido " + selectedIndex2, "red");
             }
           }
 
-          saveGroups(freshGroups);
+          player.sendMessage("§a[GRUPOS] " + bucketLabel + " actualizado (" + uniqueNametags.length + " nametags)");
+          debugWarn("menuGroups:ui", "Bucket " + bucketId + " actualizado", "green");
 
-          player.sendMessage(`§a[GRUPOS] ${subgroup.label} actualizado`);
-          debugWarn("menuGroups:ui", `Subgrupo ${subgroupId} actualizado`, "green");
+          // Forzar scan fresco antes de volver al menú para evitar valores cacheados desactualizados
+          invalidateScanCache();
+          scanActiveUnits(player.dimension, faction);
 
+          // Volver al menú de grupos de la facción
           showFactionGroupsMenu(player, faction);
         })
-        .catch((err) => {
-          debugWarn("menuGroups:ui", `Error en showSubgroupAssignmentModal: ${err}`, "red");
+        .catch(function (err) {
+          debugWarn("menuGroups", "Error en showBucketAssignmentModal: " + err, "red");
         });
     });
   } catch (e) {
-    debugWarn("menuGroups:ui", `Error en showSubgroupAssignmentModal: ${e}`, "red");
+    debugWarn("menuGroups", "Error en showBucketAssignmentModal: " + e, "red");
   }
 }

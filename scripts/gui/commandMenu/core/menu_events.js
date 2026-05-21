@@ -1,12 +1,13 @@
 // scripts/gui/commandMenu/menu_events.js
 import { world } from "@minecraft/server";
 import { debugWarn } from "../../../utils/debug.js";
-import { systems, specialUnits } from "../menu_config.js";
+import { systems, invalidateScanCache } from "../menu_config.js";
 import { loadSystemOrDefault } from "./menu_state.js";
 import { shouldApplyToFutureEntities, canApplySystem } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
 import { applySystemToEntity } from "./menu_apply.js";
+import { teamFamilies } from "../../../utils/teams.js";
 
 /**
  * Lista de soldados conocidos (independiente de toggle_system)
@@ -47,9 +48,11 @@ export function getMenuSoldiers() {
 
 /**
  * Obtiene las unidades especiales (para menu_apply.js)
+ * v4.0 — sin listas estáticas. Devuelve estructura vacía; la validación real
+ * se hace por familias de facción en isValidSoldier / getEntityFactionInfo.
  */
 export function getMenuSpecialSoldiers() {
-  return specialUnits;
+  return { foundation: { all: [] }, chaos: { all: [] } };
 }
 
 /**
@@ -60,18 +63,108 @@ export function getMenuSpecialSoldiers() {
  */
 function handleSoldierEntity(ent, { forceApply = false } = {}) {
   try {
-    if (!ent || !isValidSoldier(ent, specialUnits)) return;
+    if (!ent || !isValidSoldier(ent)) return;
 
     // Agregar a la lista si no está
     if (!menuSoldiers.includes(ent.id)) {
       menuSoldiers.push(ent.id);
     }
 
+    // Invalidar cache de escaneo si el nametag cambió (v4.0 detección de conversión)
+    const currentNametag = ent.nameTag ?? "";
+    const prevNametag = ent.getDynamicProperty("scpd:prev_nametag") ?? "";
+    if (currentNametag !== prevNametag) {
+      invalidateScanCache();
+      ent.setDynamicProperty("scpd:prev_nametag", currentNametag);
+    }
+
     // Determinar faction e info usando el módulo centralizado
-    const factionInfo = getEntityFactionInfo(ent, specialUnits);
+    const factionInfo = getEntityFactionInfo(ent);
     if (!factionInfo) return;
 
-    const { faction, isSpecial, hierarchy, group } = factionInfo;
+    const { faction } = factionInfo;
+
+    // Si la entidad no tiene typeFamilies (spawneada por mcfunction:
+    // entitySpawn dispara antes que minecraft:entity_spawned agregue
+    // los component_groups con typeFamilies), deferir 2 ticks.
+    const hasTypeFamilies = !!ent.getComponent("minecraft:type_family");
+    debugWarn(
+      "menuEvents:spawn",
+      `[typeFamilyCheck] ${currentNametag || ent.typeId} faction=${faction} hasTypeFamilies=${hasTypeFamilies}`,
+      "dark_gray"
+    );
+    if (!hasTypeFamilies) {
+      debugWarn(
+        "menuEvents:spawn",
+        `[DEFER] ${currentNametag || ent.typeId}: sin typeFamilies, difiriendo 2 ticks`,
+        "yellow"
+      );
+      system.runTimeout(() => {
+        handleSoldierEntity(ent, { forceApply });
+      }, 2);
+      return;
+    }
+
+    // Sincronizar grupo: si la entidad es especial y no tiene grupo asignado,
+    // buscar otra entidad con el mismo nametag que SÍ tenga grupo y copiárselo.
+    // Se filtra por las familias de la facción de la entidad para no recorrer
+    // todo el mundo.
+    if (currentNametag) {
+      try {
+        const existingGroup = ent.getDynamicProperty("scpd:group");
+        debugWarn(
+          "menuEvents:spawn",
+          `[sync] ${currentNametag}: existingGroup="${existingGroup}" faction=${faction}`,
+          "dark_gray"
+        );
+        if (!existingGroup) {
+          // Usar ent.dimension.getEntities con filtro de familias (mismo patrón que
+          // menu_entity_scanner.ts, probado exitosamente). world.getEntities falla
+          // en esta versión de Bedrock.
+          const factionFamilies = teamFamilies[faction] ?? [];
+          debugWarn("menuEvents:spawn", `[sync] factionFamilies=${JSON.stringify(factionFamilies)}`, "dark_gray");
+          const rawAll =
+            factionFamilies.length > 0
+              ? ent.dimension.getEntities({ families: factionFamilies })
+              : ent.dimension.getEntities({});
+          const allForTag = [];
+          for (const e of rawAll) {
+            allForTag.push(e);
+          }
+          debugWarn("menuEvents:spawn", `[sync] allForTag.length=${allForTag.length}`, "dark_gray");
+          for (var i = 0; i < allForTag.length; i++) {
+            var other = allForTag[i];
+            if (other.id === ent.id) continue;
+            var otherNametag = (other.nameTag ?? "").trim();
+            if (otherNametag !== currentNametag) continue;
+            var otherGroup = other.getDynamicProperty("scpd:group");
+            debugWarn(
+              "menuEvents:spawn",
+              `[sync] match found: other=${other.typeId} otherGroup="${otherGroup}"`,
+              "dark_gray"
+            );
+            if (otherGroup) {
+              ent.setDynamicProperty("scpd:group", otherGroup);
+              debugWarn(
+                "menuEvents:spawn",
+                `${currentNametag}: grupo sincronizado desde entidad existente -> ${otherGroup}`,
+                "green"
+              );
+              break;
+            }
+          }
+          debugWarn(
+            "menuEvents:spawn",
+            `[sync] ${currentNametag}: sync completado, group final=${ent.getDynamicProperty("scpd:group")}`,
+            "cyan"
+          );
+        }
+      } catch (syncErr) {
+        debugWarn("menuEvents:spawn", `Error sincronizando grupo: ${syncErr} stack=${syncErr.stack}`, "red");
+      }
+    }
+
+    const { isSpecial, hierarchy, group } = factionInfo;
     const nameTag = ent.nameTag ?? "";
 
     const entityLabel = isSpecial
@@ -148,6 +241,13 @@ export function initializeMenuEvents() {
       const idx = menuSoldiers.indexOf(ev.removedEntityId);
       if (idx !== -1) {
         menuSoldiers.splice(idx, 1);
+      }
+      // Invalidar cache de escaneo para que el menú de sistemas y grupos
+      // no muestre entidades que ya fueron eliminadas del mundo.
+      try {
+        invalidateScanCache();
+      } catch (e) {
+        debugWarn("menuEvents:remove", "Error invalidando cache al remover entidad: " + e, "yellow");
       }
     });
 

@@ -144,7 +144,7 @@ Configuración de armas Aplok Guns:
 
 ```json
 {
-  "@minecraft/server": "^2.4.0",
+  "@minecraft/server": "^2.6.0",
   "@minecraft/server-ui": "^2.0.0",
   "@minecraft/math": "^2.2.11",
   "@minecraft/vanilla-data": "^1.21.90"
@@ -153,7 +153,7 @@ Configuración de armas Aplok Guns:
 
 ## Requisitos
 
-- Minecraft Bedrock Edition 1.21.130 o superior
+- Minecraft Bedrock Edition v26.20 o superior
 
 ## Desarrollo
 
@@ -166,13 +166,25 @@ Para ver todos los comandos disponibles, consulta [COMANDOS.md](./COMANDOS.md).
 npm run build
 npm run local-deploy
 
-# Desarrollo con actualización automatica para ts y js
+# Con actualización automatica
 npx just-scripts local-deploy --watch
+npm run local-deploy -- --watch
+```
+
+### Desarrollo local sin debug (watch)
+
+```bash
+# Desarrollo con actualización automatica en modo producción
+npm run local-deploy:production
+```
 
 # Producción (sin debug)
+
+```
 npm run build:production
 npm run deploy:production
 npm run mcaddon:production
+
 ```
 
 ## Comandos de formateo

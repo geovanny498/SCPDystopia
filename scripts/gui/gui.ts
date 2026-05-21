@@ -353,20 +353,24 @@ function buildSystemCategorySummary(entity: Entity, typeId: string, displayName:
   const healthComp = entity.getComponent("health");
   const currentHealth = healthComp?.currentValue;
   const maxHealth = healthComp?.effectiveMax;
-  const dynamicProperties = entity.getDynamicPropertyIds?.() ?? [];
+  const { totalSystems, savedSystems, statuses: systemStatuses } = getEntitySystemsStatus(entity);
 
-  const bodyLines = [`§7Unidad:§r ${displayName}`, `§7Tipo:§r ${factionInfo?.isSpecial ? "Especial" : "Normal"}`];
+  // v4.0 — El resumen de sistemas lee desde DPs individuales de entidad
+  // escritas por setEntitySystemState, no desde los grupos estables globales.
+  const bodyLines = [`§7Unidad:§r ${displayName}`];
 
   if (factionInfo) {
     bodyLines.push(`§7Facción:§r ${factionInfo.faction}`);
     if (factionInfo.isSpecial) {
       const groupId = factionInfo.group ?? "noGroup";
-      bodyLines.push(`§7Grupo especial:§r ${SpecialGroupLabels[groupId] || String(groupId)}`);
+      bodyLines.push(`§7Grupo estable:§r ${SpecialGroupLabels[groupId] || String(groupId)}`);
     } else {
       const hierarchyId = factionInfo.hierarchy ?? "basic";
       bodyLines.push(`§7Jerarquía:§r ${UnitHierarchyLabels[hierarchyId] || String(hierarchyId)}`);
     }
   }
+
+  bodyLines.push(`§7Sistemas en entidad:§r ${savedSystems} de ${totalSystems}`);
 
   if (typeof currentHealth === "number" && typeof maxHealth === "number") {
     bodyLines.push(`§7Salud:§r ${currentHealth} / ${maxHealth}`);

@@ -1,41 +1,37 @@
-// scripts\utils\knockback.js
-import { debugMessage, debugWarn } from "./debug.js";
-import { entityDamageConfig } from "./entityConfig.js";
+// scripts\utils\knockback.ts
+import { debugMessage, debugWarn } from "./debug";
+import { entityDamageConfig } from "./entityConfig";
 
-export function applyKnockback(entity, projectile, kb) {
+export function applyKnockback(entity: any, projectile: any, kb: number) {
   try {
     if (entity.typeId === "minecraft:player") return;
     const projectileLocation = projectile?.location;
     const entityLocation = entity?.location;
 
     if (!projectileLocation) {
-      debugWarn("Error: El proyectil fue eliminado o no tiene ubicación.", "green");
+      debugWarn("knockback", "Error: El proyectil fue eliminado o no tiene ubicación.", "green");
       return;
     }
 
     if (!entityLocation) {
-      debugWarn("Error: La entidad no tiene ubicación.", "green");
+      debugWarn("knockback", "Error: La entidad no tiene ubicación.", "green");
       return;
     }
 
     // Actualmente no obtenible
-    const compKbRes = entity.getComponent("minecraft:knockback_resistance")?.value;
+    const compKbRes = (entity as any).getComponent("minecraft:knockback_resistance")?.value;
 
     if (compKbRes == undefined) {
-      debugWarn(
-        "applyKnockback",
-        `Entidad ${entity.typeId} no se encontró knockback_resistance=${compKbRes}`,
-        "purple"
-      );
+      debugWarn("knockback", `Entidad ${entity.typeId} no se encontró knockback_resistance=${compKbRes}`, "purple");
     }
 
     // Valor por defecto desde componente (o 0). Si en entityDamageConfig está knockback: false, forzar 1.
-    const config = entityDamageConfig?.[entity.typeId];
+    const config = (entityDamageConfig as any)?.[entity.typeId];
     let knockbackRes = compKbRes ?? 0;
     if (config && config.knockback === false) {
       knockbackRes = 1;
       debugWarn(
-        "applyKnockback",
+        "knockback",
         `Entidad ${entity.typeId} está configurada como inmune a knockback en entityDamageConfig — forzando knockback_resistance=1`,
         "purple"
       );
@@ -43,7 +39,7 @@ export function applyKnockback(entity, projectile, kb) {
 
     if (knockbackRes >= 1) {
       debugWarn(
-        "applyKnockback",
+        "knockback",
         `Entidad ${entity.typeId} tiene knockback_resistance = ${knockbackRes}(inmune) — no se aplicará knockback.`,
         "purple"
       );
@@ -84,9 +80,10 @@ export function applyKnockback(entity, projectile, kb) {
     const entityName = entity.nameTag || entity.typeId || "Entidad desconocida";
 
     debugMessage(
+      "knockback",
       `Se aplicó knockback a ${entityName}.Ubicación del proyectil: (x: ${projectileLocation.x.toFixed(2)}, y: ${projectileLocation.y.toFixed(2)}, z: ${projectileLocation.z.toFixed(2)})`
     );
   } catch (error) {
-    debugWarn("Error en applyKnockback: " + error, "red");
+    debugWarn("knockback", "Error en applyKnockback: " + error, "red");
   }
 }

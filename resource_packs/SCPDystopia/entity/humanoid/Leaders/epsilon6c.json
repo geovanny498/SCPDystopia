@@ -7,7 +7,7 @@
         "default": "npc"
       },
       "textures": {
-        "default": "textures/entity/humanoid/Leaders/epsilon6c"
+        "default": "textures/entity/humanoid/Leaders/epsilon6_l1"
       },
       "geometry": {
         "default": "geometry.dt_eta10"

@@ -889,12 +889,21 @@
       },
       "humanoid:stealth_on": {
         "minecraft:type_family": {
-          "family": ["human", "player", "chaos_insurgency", "chaos", "chaos_delta", "mob", "hidden"]
+          "family": [
+            "human",
+            "hierarchy_commander",
+            "player",
+            "chaos_insurgency",
+            "chaos",
+            "chaos_delta",
+            "mob",
+            "hidden"
+          ]
         }
       },
       "humanoid:stealth_off": {
         "minecraft:type_family": {
-          "family": ["human", "player", "chaos_insurgency", "chaos", "chaos_delta", "mob"]
+          "family": ["human", "hierarchy_commander", "player", "chaos_insurgency", "chaos", "chaos_delta", "mob"]
         }
       }
     },

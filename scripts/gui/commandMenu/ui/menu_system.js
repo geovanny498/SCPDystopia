@@ -2,7 +2,13 @@
 import { world, system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
-import { Factions } from "../menu_config.js";
+import {
+  Factions,
+  SpecialGroups,
+  getGroupsOrderForSystems,
+  scanActiveUnits,
+  invalidateScanCache,
+} from "../menu_config.js";
 import { buildSystemForm, parseSystemFormValues, getConfirmationMessage } from "../builder/menu_builder.js";
 import { loadSystemStates, saveSystemStates, applySystemsToAll } from "../core/menu_state.js";
 
@@ -63,64 +69,115 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
     const systemIds = systems.map((s) => s.id);
     const loadedStates = loadSystemStates(systemIds);
 
-    // 2. Construir el formulario para la facción seleccionada
-    const form = buildSystemForm(systems, loadedStates, selectedFaction);
+    invalidateScanCache();
+
+    // 2. Escanear entidades activas en la dimensión del jugador
+    const scanResult = scanActiveUnits(player.dimension, selectedFaction);
+
+    // 2.1. Grupos activos: sincroniza buildSystemForm ↔ parseSystemFormValues
+    // Calcular antes de buildSystemForm para que ambos usen la misma lista
+    var _allGroups = getGroupsOrderForSystems();
+    var _groupCounts = {};
+    for (var _gi = 0; _gi < _allGroups.length; _gi++) _groupCounts[_allGroups[_gi]] = 0;
+    var _ents = scanResult.entities || [];
+    for (var _si = 0; _si < _ents.length; _si++) {
+      var _sc = _ents[_si];
+      if (!_sc.isSpecial) continue;
+      if (_sc.faction !== selectedFaction) continue;
+      var _gid = _sc.group || SpecialGroups.NO_GROUP;
+      debugWarn("menuSystem", `[count] type="${_sc.typeId}" nametag="${_sc.nametag}" group="${_gid}"`, "dark_gray");
+      if (_groupCounts[_gid] !== undefined) _groupCounts[_gid]++;
+    }
+    debugWarn("menuSystem", `[activeGroups] faction=${selectedFaction} counts=${JSON.stringify(_groupCounts)}`, "cyan");
+    var activeGroups = _allGroups.filter(function (g) {
+      return _groupCounts[g] > 0;
+    });
+    debugWarn(
+      "menuSystem",
+      `[activeGroups] faction=${selectedFaction} activeGroups=${JSON.stringify(activeGroups)}`,
+      "green"
+    );
+
+    // 3. Construir el formulario solo con entidades activas
+    let form;
+    try {
+      debugWarn("menuSystem", `[buildForm] calling buildSystemForm...`, "cyan");
+      form = buildSystemForm(
+        systems,
+        loadedStates,
+        selectedFaction,
+        scanResult.activeHierarchies,
+        scanResult.activeFamilyTags,
+        scanResult.entities,
+        activeGroups
+      );
+      debugWarn("menuSystem", `[buildForm] buildSystemForm OK`, "green");
+    } catch (formErr) {
+      debugWarn("menuSystem", `[buildForm] ERROR: ${formErr} stack=${formErr.stack}`, "red");
+      player.sendMessage("§c[ERROR] No se pudo construir el formulario de sistemas.");
+      return;
+    }
 
     // 3. Mostrar el formulario
     system.run(() => {
-      form
-        .show(player)
-        .then((res) => {
-          debugWarn("commandMenu", `System menu result: ${JSON.stringify(res)}`, "cyan");
+      try {
+        form
+          .show(player)
+          .then((res) => {
+            debugWarn("menuSystem", `System menu result: ${JSON.stringify(res)}`, "cyan");
 
-          if (!res || res.canceled) {
-            // Volver al selector de facción
-            showSystemMenu(player, systems, isAllCategory, categoryId);
-            return;
-          }
+            if (!res || res.canceled) {
+              // Volver al selector de facción
+              showSystemMenu(player, systems, isAllCategory, categoryId);
+              return;
+            }
 
-          const vals = res.formValues;
-          debugWarn("commandMenu", `formValues array: ${JSON.stringify(vals)}`, "cyan");
+            const vals = res.formValues;
+            debugWarn("commandMenu", `formValues array: ${JSON.stringify(vals)}`, "cyan");
 
-          if (!Array.isArray(vals)) return;
+            if (!Array.isArray(vals)) return;
 
-          // 4. Parsear los valores del formulario
-          const parsedStates = parseSystemFormValues(systems, vals, selectedFaction);
+            // 4. Parsear los valores del formulario (pasar activeGroups para sincronizar índices)
+            const parsedStates = parseSystemFormValues(systems, vals, selectedFaction, activeGroups);
 
-          // 5. Merge con estados existentes para mantener la otra facción
-          for (const systemId of systemIds) {
-            const existingState = loadedStates[systemId];
-            if (existingState) {
-              const otherFaction = selectedFaction === Factions.FOUNDATION ? Factions.CHAOS : Factions.FOUNDATION;
-              if (existingState[otherFaction]) {
-                parsedStates[systemId][otherFaction] = existingState[otherFaction];
+            // 5. Merge con estados existentes para mantener la otra facción
+            for (const systemId of systemIds) {
+              const existingState = loadedStates[systemId];
+              if (existingState) {
+                const otherFaction = selectedFaction === Factions.FOUNDATION ? Factions.CHAOS : Factions.FOUNDATION;
+                if (existingState[otherFaction]) {
+                  parsedStates[systemId][otherFaction] = existingState[otherFaction];
+                }
               }
             }
-          }
 
-          debugWarn("commandMenu", `Parsed states: ${JSON.stringify(parsedStates)}`, "cyan");
+            debugWarn("commandMenu", `Parsed states: ${JSON.stringify(parsedStates)}`, "cyan");
 
-          // 6. Guardar todos los estados
-          saveSystemStates(parsedStates);
+            // 6. Guardar todos los estados
+            saveSystemStates(parsedStates);
 
-          // 7. Aplicar todos los sistemas (pasamos jugador para posibles auto-tame)
-          applySystemsToAll(systemIds, player.dimension, player);
+            // 7. Aplicar todos los sistemas (pasamos jugador para posibles auto-tame)
+            applySystemsToAll(systemIds, player.dimension, player);
 
-          // 8. Mensaje de confirmación
-          try {
-            const factionLabel = selectedFaction === Factions.FOUNDATION ? "Foundation" : "Chaos";
-            const msg = `§a[SISTEMAS] ${player.name} configuró ${factionLabel}: ${systems.map((s) => s.displayName).join(", ")}`;
-            world.sendMessage(msg);
-          } catch (e) {
-            debugWarn("commandMenu", `Error enviando mensaje de confirmacion: ${e}`, "red");
-          }
+            // 8. Mensaje de confirmación
+            try {
+              const factionLabel = selectedFaction === Factions.FOUNDATION ? "Foundation" : "Chaos";
+              const msg = `§a[SISTEMAS] ${player.name} configuró ${factionLabel}: ${systems.map((s) => s.displayName).join(", ")}`;
+              world.sendMessage(msg);
+            } catch (e) {
+              debugWarn("commandMenu", `Error enviando mensaje de confirmacion: ${e}`, "red");
+            }
 
-          // 9. Preguntar si quiere configurar el otro bando
-          askConfigureOtherFaction(player, systems, selectedFaction, isAllCategory, categoryId);
-        })
-        .catch((err) => {
-          debugWarn("commandMenu", `Error en formulario de sistema: ${err}`, "red");
-        });
+            // 9. Preguntar si quiere configurar el otro bando
+            askConfigureOtherFaction(player, systems, selectedFaction, isAllCategory, categoryId);
+          })
+          .catch((err) => {
+            debugWarn("menuSystem", `Error en formulario de sistema: ${err}`, "red");
+          });
+      } catch (showErr) {
+        debugWarn("menuSystem", `Error mostrando formulario: ${showErr}`, "red");
+        player.sendMessage("§c[ERROR] No se pudo mostrar el formulario de sistemas.");
+      }
     });
   } catch (e) {
     debugWarn("commandMenu", `Error mostrando formulario de sistema: ${e}`, "red");

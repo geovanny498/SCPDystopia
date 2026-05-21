@@ -1,9 +1,9 @@
 // main.js
 import { world, system } from "@minecraft/server";
-import { getTeam } from "./utils/teams.js";
+import { getTeam } from "./utils/teams.ts";
 import { projectileConfig } from "./utils/projectileConfig.js";
 import { applyDamageAndKnockback } from "./utils/damage.js";
-import { debugMessage, debugWarn } from "./utils/debug.js";
+import { debugMessage, debugWarn } from "./utils/debug.ts";
 
 const projectilePierceMap = new WeakMap();
 
