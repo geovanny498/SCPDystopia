@@ -4,7 +4,7 @@ import { world } from "@minecraft/server";
 // Configuración global
 // =====================
 
-export const DEBUG = false; // Mensajes en el chata
+export const DEBUG = false; // Mensajes en el chat
 export const DEBUG_CONSOLE = true; // Mensajes en consola
 
 /**
@@ -19,6 +19,9 @@ export const DEBUG_MODULES: string[] = [
   "menuFaction",
   "menuEvents:spawn",
   "commandMenu",
+  "playerInteract:group",
+  "playerInteract:system",
+  "playerInteract:specific",
 ];
 
 function isModuleEnabled(module: string): boolean {

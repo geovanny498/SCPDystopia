@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/menu_events.js
 import { world } from "@minecraft/server";
 import { debugWarn } from "../../../utils/debug.js";
-import { systems, invalidateScanCache } from "../menu_config.js";
+import { systems, invalidateScanCache, invalidateEntityQueryCache, getEntitiesCached } from "../menu_config.js";
 import { loadSystemOrDefault } from "./menu_state.js";
 import { shouldApplyToFutureEntities, canApplySystem } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier } from "../model/menu_faction.js";
@@ -18,6 +18,10 @@ const menuSoldiers = [];
  * Estados de sistemas en memoria (independiente de toggle_system)
  */
 const menuSystemStates = {};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// §  ESTADOS DE SISTEMAS
+// ═══════════════════════════════════════════════════════════════════════════════
 
 /**
  * Carga todos los estados de sistemas desde propiedades dinámicas
@@ -118,19 +122,8 @@ function handleSoldierEntity(ent, { forceApply = false } = {}) {
           "dark_gray"
         );
         if (!existingGroup) {
-          // Usar ent.dimension.getEntities con filtro de familias (mismo patrón que
-          // menu_entity_scanner.ts, probado exitosamente). world.getEntities falla
-          // en esta versión de Bedrock.
-          const factionFamilies = teamFamilies[faction] ?? [];
-          debugWarn("menuEvents:spawn", `[sync] factionFamilies=${JSON.stringify(factionFamilies)}`, "dark_gray");
-          const rawAll =
-            factionFamilies.length > 0
-              ? ent.dimension.getEntities({ families: factionFamilies })
-              : ent.dimension.getEntities({});
-          const allForTag = [];
-          for (const e of rawAll) {
-            allForTag.push(e);
-          }
+          // Usar cache por dimensión+facción: getEntities se llama una sola vez por ráfaga de spawn
+          const allForTag = getEntitiesCached(ent.dimension, faction);
           debugWarn("menuEvents:spawn", `[sync] allForTag.length=${allForTag.length}`, "dark_gray");
           for (var i = 0; i < allForTag.length; i++) {
             var other = allForTag[i];
@@ -242,10 +235,10 @@ export function initializeMenuEvents() {
       if (idx !== -1) {
         menuSoldiers.splice(idx, 1);
       }
-      // Invalidar cache de escaneo para que el menú de sistemas y grupos
-      // no muestre entidades que ya fueron eliminadas del mundo.
+      // Invalidar cache de escaneo y de consultas de entidades
       try {
         invalidateScanCache();
+        invalidateEntityQueryCache();
       } catch (e) {
         debugWarn("menuEvents:remove", "Error invalidando cache al remover entidad: " + e, "yellow");
       }

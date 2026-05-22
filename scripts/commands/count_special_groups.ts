@@ -58,8 +58,11 @@ system.beforeEvents.startup.subscribe((init) => {
         const selectedFaction = normalizedFaction as "foundation" | "chaos";
         const pluralizeUnit = (count: number) => (count === 1 ? "unidad" : "unidades");
 
-        // Escanear en todas las dimensiones
-        const dims = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
+        // Escanear solo la dimensión del jugador para que el cache TTL sea funcional
+        const playerDim = origin.sourceEntity?.dimension.id || "overworld";
+        const dims = [world.getDimension(playerDim)].filter(Boolean);
+
+        // TODO: cuando se necesite conteo multi-dimensión, usar una cache keyed por dimension
 
         const counts: Record<string, string[]> = {
           [SpecialGroups.GROUP_A]: [],
@@ -177,7 +180,11 @@ system.beforeEvents.startup.subscribe((init) => {
         const pluralizeUnit = (count: number) => (count === 1 ? "unidad" : "unidades");
         const hierarchyOrder = [UnitHierarchy.BASIC, UnitHierarchy.LEADER, UnitHierarchy.COMMANDER];
 
-        const dims = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
+        // Escanear solo la dimensión del jugador para que el cache TTL sea funcional
+        const playerDim = origin.sourceEntity?.dimension.id || "overworld";
+        const dims = [world.getDimension(playerDim)].filter(Boolean);
+
+        // TODO: cuando se necesite conteo multi-dimensión, usar una cache keyed por dimension
 
         const counts: Record<string, { groups: Record<string, string[]>; total: number }> = {};
         for (const h of hierarchyOrder) {

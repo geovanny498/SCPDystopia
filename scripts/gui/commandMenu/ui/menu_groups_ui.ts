@@ -9,6 +9,7 @@ import {
   getGroupsOrderForAssignment,
   scanActiveUnits,
   invalidateScanCache,
+  invalidateEntityQueryCache,
 } from "../menu_config.js";
 import { setUnitGroup, getUnitGroup } from "../model/menu_groups.js";
 
@@ -27,8 +28,9 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
     const prevTag = String(entity.getDynamicProperty("scpd:prev_nametag") ?? "").trim();
 
     if (currNametag !== prevTag) {
-      // El nametag cambió: invalidar cache — el TTL se encarga del refrescado al abrir menú
+      // El nametag cambió: invalidar ambos caches
       invalidateScanCache();
+      invalidateEntityQueryCache();
       entity.setDynamicProperty("scpd:prev_nametag", currNametag);
     }
   } catch (e) {
@@ -102,6 +104,7 @@ function showFactionGroupsMenu(player: Player, faction: string): void {
     const factionLabel = faction === Factions.FOUNDATION ? "§lFoundation" : "§2§lChaos";
 
     invalidateScanCache();
+    invalidateEntityQueryCache();
 
     // Escanear entidades activas en la dimensión del jugador
     const scanResult = scanActiveUnits(player.dimension, faction);
@@ -369,6 +372,7 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
 
           // Forzar scan fresco antes de volver al menú para evitar valores cacheados desactualizados
           invalidateScanCache();
+          invalidateEntityQueryCache();
           scanActiveUnits(player.dimension, faction);
 
           // Volver al menú de grupos de la facción

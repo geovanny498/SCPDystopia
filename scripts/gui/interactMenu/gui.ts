@@ -2,7 +2,7 @@
 import { world, system, EquipmentSlot, Player, Entity } from "@minecraft/server";
 import { ActionFormData, ActionFormResponse, ModalFormData } from "@minecraft/server-ui";
 import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
-import { debugWarn } from "../utils/debug.js";
+import { debugWarn } from "../../utils/debug.js";
 
 // Utilizar la misma configuración que el menú de comandos para detectar
 // qué eventos son de taming y mapear cambios de sistema en la entidad
@@ -11,11 +11,14 @@ import {
   findSystemStateByEvent,
   getEntitySystemsStatus,
   setEntitySystemState,
+  getSystemConfig,
+  formatEntitySystemStateLabel,
   SpecialGroupLabels,
   UnitHierarchyLabels,
-} from "./commandMenu/menu_config.js";
-import { getEntityFactionInfo } from "./commandMenu/model/menu_faction.js";
-import { tryAutoTame } from "./commandMenu/core/menu_apply.js";
+} from "../commandMenu/menu_config.js";
+import { getEntityFactionInfo } from "../commandMenu/model/menu_faction.js";
+import { tryAutoTame } from "../commandMenu/core/menu_apply.js";
+import { setUnitGroup } from "../commandMenu/model/menu_groups.js";
 
 interface EntityConfig {
   specific: MenuCategory[];
@@ -433,7 +436,23 @@ function showEntryMenu(
     if (!entry) return;
 
     if (entry.action === "view_entity_system_state") {
-      showEntitySystemStatus(player, entity, cfg, soldierName, displayName, typeId);
+      showEntitySystemStatus(player, entity, cfg, soldierName, displayName, typeId, category);
+      return;
+    }
+
+    if (entry.action === "assign_group") {
+      const groupId = String(entry.value ?? "");
+      setUnitGroup(entity, groupId);
+      const groupLabel = SpecialGroupLabels[groupId] || groupId;
+      player.sendMessage(`§d[SCPD] Grupo §r${groupLabel}§d asignado a ${soldierName}§r`);
+      debugWarn(
+        "playerInteract:group",
+        `Jugador: ${player.name} | Unidad: ${soldierName} (${typeId}) | Grupo: ${groupLabel}`,
+        "green"
+      );
+      system.run(() => {
+        showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
+      });
       return;
     }
 
@@ -454,10 +473,27 @@ function showEntryMenu(
     const mapped = findSystemStateByEvent(entry.event);
     if (mapped && triggeredEvent) {
       setEntitySystemState(entity, mapped.systemId, mapped.value);
-      world.sendMessage(
-        `§8[§aMENU§8] §7${player.name} configuró a ${soldierName} §7-> §e${category.category}§7: §f${entry.label}`
+      const sysConfig = getSystemConfig(mapped.systemId);
+      const sysDisplay = sysConfig?.displayName || mapped.systemId;
+      const valueLabel = formatEntitySystemStateLabel(mapped.systemId, mapped.value);
+      player.sendMessage(
+        `§8[§aMENU§8] §7${player.name} configuró a ${soldierName} §7-> §e${sysDisplay}§7: §f${valueLabel}`
       );
-      debugWarn("playerInteractWithEntity", `triggered event ${entry.event}`, "green");
+      debugWarn(
+        "playerInteract:system",
+        `jugador=${player.name} | typeId=${typeId} | sistema=${mapped.systemId} | valor=${valueLabel} | key=${mapped.value}`,
+        "green"
+      );
+    } else if (entry.event && triggeredEvent && !mapped) {
+      // Evento disparado que NO corresponde a un sistema registrado (ej: variante específica)
+      debugWarn(
+        "playerInteract:specific",
+        `jugador=${player.name} | typeId=${typeId} | evento=${entry.event} | label=${entry.label}`,
+        "cyan"
+      );
+      player.sendMessage(
+        `§8[§aMENU§8] §7${player.name} aplicó a ${soldierName} §7-> §f${entry.label}`
+      );
     }
   });
 }
@@ -468,7 +504,8 @@ function showEntitySystemStatus(
   cfg: EntityConfig,
   soldierName: string,
   displayName: string,
-  typeId: string
+  typeId: string,
+  parentCategory?: MenuCategory | null
 ): void {
   const { totalSystems, savedSystems, statuses: systemStatuses } = getEntitySystemsStatus(entity);
   const dynamicProperties = entity.getDynamicPropertyIds?.() ?? [];
@@ -494,7 +531,13 @@ function showEntitySystemStatus(
 
   statusForm.button("§8Volver");
   statusForm.show(player).then(() => {
-    showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
+    if (parentCategory) {
+      // Volver a la categoría desde donde se abrió el estado de sistemas
+      showEntryMenu(player, entity, parentCategory, soldierName, displayName, cfg, typeId, null);
+    } else {
+      // Sin contexto de categoría → volver al menú principal
+      showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
+    }
   });
 }
 

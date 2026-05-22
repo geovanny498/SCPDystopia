@@ -3,9 +3,8 @@
 Comandos del proyecto:
 
 - `npm run build` — Compilar TypeScript
-- `npm run lint` — Ejecutar linter
 
-Build y lint deben pasar sin errores antes de considerar completado un cambio relevantes.
+Build debe pasar sin errores antes de considerar completado un cambio relevantes.
 Pon siempre fecha y hora en la que se escribió o se hizo la ultima modificación de los planes
 
 Siempre responde en español.
@@ -18,3 +17,5 @@ Se busca que todo lo relacionado a SCPDystopia sea escalable y modular para faci
 Hay funciones de depuración en scripts/utils/debug.ts para mejor personalización y depuración, cuando quieras que las use añade el modulo a debug.ts para que se puedan ver.
 
 El proyecto está adaptandose de javascript a typescript, por lo que es posible que algunos archivos estén en javascript y otros en typescript, se recomienda usar typescript para los nuevos archivos.
+
+Registra siempre fecha y hora en la que se escribió o se hizo la ultima modificación de los planes. También registra si el plan fue implementado o si está pendiente de implementación.

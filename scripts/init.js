@@ -6,7 +6,7 @@ import "./components/removeTarget.js";
 import "./utils/weapons.js";
 import "./commands/register_systems.ts";
 import "./commands/register_test_commands.ts";
-import "./gui/gui.js";
+import "./gui/interactMenu/gui.js";
 import "./gui/commandMenu/builder/menu.js";
 import "./commands/config_command.js";
 import "./commands/count_special_groups.ts";

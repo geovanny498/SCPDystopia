@@ -10,6 +10,7 @@ export interface MenuEntry {
   label: string;
   event?: string;
   action?: string;
+  value?: string;
 }
 
 export interface MenuCategory {
@@ -139,18 +140,13 @@ const config: GuiConfig = {
         ],
       },
       {
-        id: "entity_system_state",
-        category: "§2Estado y configuración",
-        entries: [
-          {
-            label: "Ver opciones configuradas",
-            action: "view_entity_system_state",
-          },
-        ],
+        id: "unit_management",
+        category: "§dGestión de Unidad",
+        submenu: "unit_management",
       },
       {
         id: "advanced_menu",
-        category: "Configuración avanzada",
+        category: "§6Más sistemas",
         submenu: "advanced",
       },
     ],
@@ -245,6 +241,53 @@ const config: GuiConfig = {
             {
               label: "§cDesactivar",
               event: "humanoid:stop_invincible",
+            },
+          ],
+        },
+      ],
+    },
+
+    // submenu id: "unit_management"
+    unit_management: {
+      categories: [
+        {
+          id: "entity_system_state",
+          category: "§2Estado y configuración",
+          entries: [
+            {
+              label: "Ver opciones configuradas",
+              action: "view_entity_system_state",
+            },
+          ],
+        },
+        {
+          id: "group_assignment",
+          category: "§9Asignar Grupo",
+          entries: [
+            {
+              label: "§9Grupo A",
+              action: "assign_group",
+              value: "groupA",
+            },
+            {
+              label: "§aGrupo B",
+              action: "assign_group",
+              value: "groupB",
+            },
+            {
+              label: "§6Grupo C",
+              action: "assign_group",
+              value: "groupC",
+            },
+            {
+              label: "§dGrupo D",
+              action: "assign_group",
+              value: "groupD",
+            },
+            {
+              label: "§8Sin grupo",
+              action: "assign_group",
+              value: "noGroup",
             },
           ],
         },

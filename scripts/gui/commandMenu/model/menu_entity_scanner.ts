@@ -32,6 +32,65 @@ export function getScanCache(): ScanResult | null {
   return _scanCache;
 }
 
+// ── Cache de getEntities por dimensión + facción ───────────────────────────────
+// Evita llamadas repetidas a dimension.getEntities durante ráfagas de spawn
+// (EntitySpawn se dispara una vez por entidad → sin cache: N llamadas para N entidades).
+
+interface _EntityQueryCacheEntry {
+  entities: any[];
+  tick: number;
+}
+
+const _entityQueryCache = new Map<string, _EntityQueryCacheEntry>();
+const ENTITY_QUERY_CACHE_TTL = 5; // 5 ticks ~ 250ms: solo cubre la ráfaga de spawn
+
+/**
+ * Invalida el cache de consultas de entidades.
+ * Se llama junto con invalidateScanCache en eventos que modifican el mundo.
+ */
+export function invalidateEntityQueryCache(): void {
+  _entityQueryCache.clear();
+}
+
+/**
+ * Obtiene entidades filtradas por familias de facción, con cache de 250ms
+ * para evitar getEntities repetidas dentro de la misma ráfaga de spawn.
+ */
+export function getEntitiesCached(dimension: Dimension, faction: string): any[] {
+  const key = `${dimension.id}:${faction}`;
+  const now = Date.now();
+
+  const cached = _entityQueryCache.get(key);
+  if (cached && now - cached.tick < ENTITY_QUERY_CACHE_TTL * 50) {
+    debugWarn(
+      "menuScanner",
+      `[entityQueryCache HIT] ${key} age=${now - cached.tick}ms count=${cached.entities.length}`,
+      "blue"
+    );
+    return cached.entities;
+  }
+
+  const factionFamilies = teamFamilies[faction as keyof typeof teamFamilies] ?? [];
+  const rawAll =
+    factionFamilies.length > 0
+      ? dimension.getEntities({ families: factionFamilies })
+      : dimension.getEntities({});
+
+  const result: any[] = [];
+  for (const e of rawAll) {
+    result.push(e);
+  }
+
+  _entityQueryCache.set(key, { entities: result, tick: now });
+  debugWarn(
+    "menuScanner",
+    `[entityQueryCache MISS] ${key} count=${result.length}`,
+    "yellow"
+  );
+
+  return result;
+}
+
 // ── Interfaces ──────────────────────────────────────────────────────────────
 
 export interface ScannedEntity {
@@ -112,10 +171,6 @@ function extractMtfFamily(families: string[]): string {
 // donde bucketId combina jerarquía y familia MTF para crear agrupaciones
 // sin duplicar nametags aunque aparezcan en múltiples familias.
 
-interface FamilyInfo {
-  familyId: string;
-  count: number;
-}
 interface BucketData {
   label: string;
   nametags: Record<string, number>; // nametag -> cantidad de instancias
@@ -126,18 +181,20 @@ function groupNametagsByBucket(
   entities: ScannedEntity[],
   nametagGroups: Record<string, ScannedEntity[]>
 ): { buckets: Record<string, BucketData>; bucketEntityMap: Record<string, string[]> } {
-  // Acumulador: bucketKey -> BucketData
-  var buckets: Record<string, BucketData> = {};
+  const bucketDiagnostic = debugWarn;
 
+  var buckets: Record<string, BucketData> = {};
+  // nameTagBuckets: cada nametag → buckets en los que aparece (para dedup cross-bucket)
+  var nameTagBuckets: Map<string, Set<string>> = new Map();
+
+  // ── PASADA 1: clasificación inicial + construcción de nameTagBuckets ──────────
   for (var i = 0; i < entities.length; i++) {
     var e = entities[i];
     if (!e.isSpecial) continue;
     if (!e.nametag) continue;
 
-    // Determinar bucketKey según jerarquía + familia MTF
     var bucketKey: string;
     if (e.hierarchy === UnitHierarchy.COMMANDER) {
-      // Comandantes: separar alpha1, delta1 y "otros"
       if (e.nametagFamilyId === "mtf_alpha1") {
         bucketKey = "commander_alpha1";
       } else if (e.nametagFamilyId === "mtf_delta1") {
@@ -152,7 +209,6 @@ function groupNametagsByBucket(
     }
 
     if (!buckets[bucketKey]) {
-      // Label según bucketKey
       var bucketLabel: string;
       switch (bucketKey) {
         case "commander_delta1":
@@ -181,102 +237,41 @@ function groupNametagsByBucket(
       buckets[bucketKey].nametags[e.nametag] = 0;
     }
     buckets[bucketKey].nametags[e.nametag] += 1;
+
+    // Rastrear en qué buckets aparece cada nametag (reemplaza Fases 2+3 enteras)
+    if (!nameTagBuckets.has(e.nametag)) {
+      nameTagBuckets.set(e.nametag, new Set());
+    }
+    nameTagBuckets.get(e.nametag)!.add(bucketKey);
   }
 
-  // ── Cross-bucket dedup ─────────────────────────────────────────────────────
-  // Construir allNametags = { nametag → { firstBucketKey, count, bucketCount } }
-  // rastrea en cuántos buckets distintos aparece cada nametag.
-  var allNametagInfo: Record<string, { firstBucketKey: string; count: number; bucketCount: number }> = {};
-  var bucketOrderDedup = ["commander_alpha1", "commander_delta1", "commander_other", "leader_any", "basic_any"];
-  for (var boD = 0; boD < bucketOrderDedup.length; boD++) {
-    var bkD = bucketOrderDedup[boD];
-    if (!buckets[bkD]) continue;
-    var ntKeysD = Object.keys(buckets[bkD].nametags);
-    for (var nD = 0; nD < ntKeysD.length; nD++) {
-      var ntD = ntKeysD[nD];
-      var cntD = buckets[bkD].nametags[ntD];
-      if (!allNametagInfo[ntD]) {
-        allNametagInfo[ntD] = { firstBucketKey: bkD, count: cntD, bucketCount: 1 };
-      } else {
-        allNametagInfo[ntD].count += cntD;
-        allNametagInfo[ntD].bucketCount += 1;
+  // Nametags cross-bucket: marcar cuáles lo son (sin construir other_units aquí)
+  // other_units se construye completamente en Pasada 2 desde mixedEntries
+  var mixedEntries: [string, number][] = [];
+  var mixedTotalCount = 0;
+  for (var [nt, sets] of nameTagBuckets) {
+    if (sets.size > 1) {
+      // Contar total de instancias de este nametag en todos los buckets originales
+      var rawTotal = 0;
+      for (var s of sets) {
+        rawTotal += buckets[s].nametags[nt] ?? 0;
       }
+      mixedEntries.push([nt, rawTotal]);
+      mixedTotalCount += rawTotal;
     }
   }
 
-  // Separar nametags:
-  // exclusivos  → bucketCount === 1 → van a su bucket original
-  // duplicados  → bucketCount > 1   → TODOS van a mixed_hierarchy, NINGUNO en buckets originales
-  var mixedNametags: Record<string, number> = {};
-  for (var ntCheck in allNametagInfo) {
-    if (allNametagInfo[ntCheck].bucketCount > 1) {
-      mixedNametags[ntCheck] = allNametagInfo[ntCheck].count;
+  // Diagnostic logging
+  if (mixedEntries.length > 0) {
+    bucketDiagnostic("menuScanner", `[dedupCrossBucket] ${mixedEntries.length} nametags cruzaron buckets → other_units`, "yellow");
+    for (var mei = 0; mei < mixedEntries.length; mei++) {
+      bucketDiagnostic("menuScanner", `  "${mixedEntries[mei][0]}" (${mixedEntries[mei][1]} unidades)`, "yellow");
     }
   }
 
-  // Armar resultBuckets: buckets individuales con nametags exclusivos solamente
-  var resultBuckets: Record<string, BucketData> = {};
-  for (var bo2 = 0; bo2 < bucketOrderDedup.length; bo2++) {
-    var bk2 = bucketOrderDedup[bo2];
-    if (!buckets[bk2]) continue;
-    var ntKeys2 = Object.keys(buckets[bk2].nametags);
-    if (ntKeys2.length === 0) continue;
-
-    var finalNt2: Record<string, number> = {};
-    var finalCount2 = 0;
-    for (var n2 = 0; n2 < ntKeys2.length; n2++) {
-      var nt2 = ntKeys2[n2];
-      // Solo incluir si NO es duplicado (no está en mixedNametags)
-      if (!mixedNametags[nt2]) {
-        finalNt2[nt2] = buckets[bk2].nametags[nt2];
-        finalCount2 += buckets[bk2].nametags[nt2];
-      }
-    }
-
-    if (Object.keys(finalNt2).length > 0) {
-      resultBuckets[bk2] = {
-        label: buckets[bk2].label,
-        nametags: finalNt2,
-        unitCount: finalCount2,
-      };
-    }
-  }
-
-  // Transferir nametags sobrantes (>10 por bucket) a other_units
+  // ── PASADA 2: límite maxDropdowns + orden final + entity map ──────────────────
   var maxDropdowns = 10;
-  for (var bkOver of Object.keys(resultBuckets)) {
-    if (bkOver === "other_units") continue; // ya fue procesado o se crea después
-    var ntKeys = Object.keys(resultBuckets[bkOver].nametags);
-    if (ntKeys.length <= maxDropdowns) continue;
-    var excess = ntKeys.slice(maxDropdowns);
-    for (var i = 0; i < excess.length; i++) {
-      var nt = excess[i];
-      var cnt = resultBuckets[bkOver].nametags[nt];
-      delete resultBuckets[bkOver].nametags[nt];
-      resultBuckets[bkOver].unitCount -= cnt;
-      if (!resultBuckets["other_units"]) {
-        resultBuckets["other_units"] = { label: "§8§lOtras unidades", nametags: {}, unitCount: 0 };
-      }
-      if (!resultBuckets["other_units"].nametags[nt]) resultBuckets["other_units"].nametags[nt] = 0;
-      resultBuckets["other_units"].nametags[nt] += cnt;
-      resultBuckets["other_units"].unitCount += cnt;
-    }
-  }
-
-  // Agregar other_units si hay duplicados cross-bucket (ya existentes en mixedNametags)
-  if (Object.keys(mixedNametags).length > 0) {
-    resultBuckets["other_units"] = {
-      label: "§8§lOtras unidades",
-      nametags: mixedNametags,
-      unitCount: Object.values(mixedNametags).reduce(function (a, b) {
-        return a + b;
-      }, 0),
-    };
-  }
-
-  // Armar resultado final: buckets de jerarquía primero, other_units al final
-  var result: Record<string, BucketData> = {};
-  var finalBucketOrder = [
+  var finalBucketOrder: string[] = [
     "commander_alpha1",
     "commander_delta1",
     "commander_other",
@@ -284,32 +279,86 @@ function groupNametagsByBucket(
     "basic_any",
     "other_units",
   ];
-  for (var fi = 0; fi < finalBucketOrder.length; fi++) {
-    var fk = finalBucketOrder[fi];
-    if (resultBuckets[fk]) {
-      result[fk] = resultBuckets[fk];
-    }
-  }
 
-  // ── Mapa bucketId → IDs de entidades  (para el build del modal) ───────────
-  // Construido DESPUÉS de la dedup cross-bucket: cada bucket ya tiene sus
-  // nametags finales (incluyendo mixed_hierarchy), así que bucketEntityMap
-  // contiene las entidades correctas para cada bucket sin duplicar.
-  var bucketEntityMap: Record<string, string[]> = {};
-  var allResultKeys = Object.keys(resultBuckets);
-  for (var mk = 0; mk < allResultKeys.length; mk++) {
-    var bkMap = allResultKeys[mk];
-    var bkNts = Object.keys(resultBuckets[bkMap].nametags);
-    for (var ntM = 0; ntM < bkNts.length; ntM++) {
-      var scEntsM = nametagGroups[bkNts[ntM]] || [];
-      for (var se = 0; se < scEntsM.length; se++) {
-        var eidM = scEntsM[se].entity.id;
-        if (!bucketEntityMap[bkMap]) bucketEntityMap[bkMap] = [];
-        bucketEntityMap[bkMap].push(eidM);
+  var result: Record<string, BucketData> = {};
+  // Acumula entity IDs por bucket final: evita iteración duplicada en skipFlag dedup
+  var resultEntityMap: Record<string, string[]> = {};
+
+  // Nametags que sobran de maxDropdowns en buckets originales → van a other_units
+  var overflowEntries: [string, number][] = [];
+
+  for (var fo = 0; fo < finalBucketOrder.length; fo++) {
+    var fk = finalBucketOrder[fo];
+    var ntKeysFo: string[];
+    var label: string;
+
+    if (fk === "other_units") {
+      // other_units = cross-bucket dedup + overflow de maxDropdowns de todos los buckets
+      ntKeysFo = mixedEntries.map(function(e: [string, number]) { return e[0]; });
+      // Agregar nametags de overflow que no estén ya en mixedEntries
+      for (var ov = 0; ov < overflowEntries.length; ov++) {
+        var ovNt = overflowEntries[ov][0];
+        var alreadyInMixed = false;
+        for (var me = 0; me < mixedEntries.length; me++) {
+          if (mixedEntries[me][0] === ovNt) { alreadyInMixed = true; break; }
+        }
+        if (!alreadyInMixed) ntKeysFo.push(ovNt);
+      }
+      label = "§8§lOtras unidades";
+    } else {
+      var src = buckets[fk];
+      if (!src || Object.keys(src.nametags).length === 0) continue;
+      ntKeysFo = Object.keys(src.nametags);
+      label = src.label;
+    }
+
+    var finalNt: Record<string, number> = {};
+    var finalCount = 0;
+    for (var nf = 0; nf < ntKeysFo.length; nf++) {
+      var nt = ntKeysFo[nf];
+      var cnt: number;
+
+    if (fk === "other_units") {
+      // En other_units el count viene de mixedEntries o overflowEntries
+      cnt = 0;
+      for (var mei = 0; mei < mixedEntries.length; mei++) {
+        if (mixedEntries[mei][0] === nt) { cnt = mixedEntries[mei][1]; break; }
+      }
+      if (cnt === 0) {
+        for (var ov2 = 0; ov2 < overflowEntries.length; ov2++) {
+          if (overflowEntries[ov2][0] === nt) { cnt = overflowEntries[ov2][1]; break; }
+        }
+      }
+    } else {
+        cnt = buckets[fk].nametags[nt] ?? 0;
+      }
+
+      // Saltar en buckets originales: los nametags cross-bucket van exclusivamente a other_units
+      if (nameTagBuckets.get(nt)!.size > 1 && fk !== "other_units") continue;
+
+      // Aplicar límite de maxDropdowns (no aplica a other_units)
+      // Los nametags que sobran se envían a overflow → other_units
+      if (nf >= maxDropdowns && fk !== "other_units") {
+        overflowEntries.push([nt, cnt]);
+        continue;
+      }
+
+      finalNt[nt] = cnt;
+      finalCount += cnt;
+
+      // Acumular entityIds por bucket final (se usa directamente como bucketEntityMap)
+      if (!resultEntityMap[fk]) resultEntityMap[fk] = [];
+      var entsForTag = nametagGroups[nt] || [];
+      for (var se = 0; se < entsForTag.length; se++) {
+        var eid = entsForTag[se].entity.id;
+        resultEntityMap[fk].push(eid);
       }
     }
+
+    result[fk] = { label: label, nametags: finalNt, unitCount: finalCount };
   }
-  return { buckets: result, bucketEntityMap };
+
+  return { buckets: result, bucketEntityMap: resultEntityMap };
 }
 
 // ── Escaneo principal ─────────────────────────────────────────────────────────
@@ -319,8 +368,19 @@ export function scanActiveUnits(dimension: Dimension, faction: string): ScanResu
 
   // Verificar cache por TTL
   if (_scanCache && _scanCache.dimension === dimension.id && now - _scanCacheTick < CACHE_TTL_TICKS * 50) {
+    debugWarn(
+      "menuScanner",
+      `[CACHE HIT] Reusando scan de ${_scanCacheTick} (${now - _scanCacheTick}ms < ${CACHE_TTL_TICKS * 50}ms TTL), dimension=${_scanCache.dimension} entities=${_scanCache.entities.length}`,
+      "blue"
+    );
     return _scanCache;
   }
+
+  debugWarn(
+    "menuScanner",
+    `[CACHE MISS] TTL expirado o sin cache (tick=${_scanCacheTick} age=${now - (_scanCacheTick || 0)}ms TTL=${CACHE_TTL_TICKS * 50}ms dim=${_scanCache?.dimension || "none"} vs ${dimension.id})`,
+    "yellow"
+  );
 
   const entities: ScannedEntity[] = [];
   const byHierarchy: Record<string, ScannedEntity[]> = {};

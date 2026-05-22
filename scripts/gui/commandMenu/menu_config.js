@@ -96,7 +96,7 @@ export function getFamilyTagOrder(familyId) {
 
 // ── Re-exportar scanner ─────────────────────────────────────────────────────
 
-export { scanActiveUnits, invalidateScanCache, getScanCache } from "./model/menu_entity_scanner.js";
+export { scanActiveUnits, invalidateScanCache, getScanCache, invalidateEntityQueryCache, getEntitiesCached } from "./model/menu_entity_scanner.js";
 
 // ── Definición de sistemas ─────────────────────────────────────────────────
 

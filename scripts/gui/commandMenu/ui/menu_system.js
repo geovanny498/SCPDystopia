@@ -8,6 +8,7 @@ import {
   getGroupsOrderForSystems,
   scanActiveUnits,
   invalidateScanCache,
+  invalidateEntityQueryCache,
 } from "../menu_config.js";
 import { buildSystemForm, parseSystemFormValues, getConfirmationMessage } from "../builder/menu_builder.js";
 import { loadSystemStates, saveSystemStates, applySystemsToAll } from "../core/menu_state.js";
@@ -70,6 +71,7 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
     const loadedStates = loadSystemStates(systemIds);
 
     invalidateScanCache();
+    invalidateEntityQueryCache();
 
     // 2. Escanear entidades activas en la dimensión del jugador
     const scanResult = scanActiveUnits(player.dimension, selectedFaction);
