@@ -18,9 +18,10 @@ Thumbs.db
 
 # .kilo internals are ignored; keep only plans/ tracked
 .kilo/*
+codigo_original/*
 # Comentar cuando ya no se necesite mantener el historial de cambios de los planes
-!.kilo/plans/
-!.kilo/plans/**
+# !.kilo/plans/
+# !.kilo/plans/**
 
 # Environment variables (si tienes datos sensibles)
 # .env.local

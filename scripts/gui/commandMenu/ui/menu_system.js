@@ -153,7 +153,48 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
               }
             }
 
-            debugWarn("commandMenu", `Parsed states: ${JSON.stringify(parsedStates)}`, "cyan");
+            // Log mejorado: separar jerarquías (no especiales) de grupos (especiales)
+            debugWarn("commandMenu", `=== Parsed States (${selectedFaction}) ===`, "yellow");
+            for (const systemId of systemIds) {
+              const systemState = parsedStates[systemId];
+              if (!systemState) continue;
+
+              debugWarn("commandMenu", `[${systemId}]`, "cyan");
+
+              for (const faction of [Factions.FOUNDATION, Factions.CHAOS]) {
+                const factionState = systemState[faction];
+                if (!factionState || Object.keys(factionState).length === 0) continue;
+
+                const hierarchies = {};
+                const groups = {};
+
+                // Separar jerarquías de grupos
+                for (const key in factionState) {
+                  if (key === "basic" || key === "leader" || key === "commander") {
+                    hierarchies[key] = factionState[key];
+                  } else {
+                    groups[key] = factionState[key];
+                  }
+                }
+
+                const factionLabel = faction === Factions.FOUNDATION ? "Foundation" : "Chaos";
+
+                // Mostrar jerarquías (no especiales)
+                if (Object.keys(hierarchies).length > 0) {
+                  debugWarn(
+                    "commandMenu",
+                    `  ${factionLabel} [No Especiales]: ${JSON.stringify(hierarchies)}`,
+                    "dark_gray"
+                  );
+                }
+
+                // Mostrar grupos (especiales)
+                if (Object.keys(groups).length > 0) {
+                  debugWarn("commandMenu", `  ${factionLabel} [Especiales]: ${JSON.stringify(groups)}`, "green");
+                }
+              }
+            }
+            debugWarn("commandMenu", `=== End Parsed States ===`, "yellow");
 
             // 6. Guardar todos los estados
             saveSystemStates(parsedStates);

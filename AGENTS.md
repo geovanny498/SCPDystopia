@@ -16,6 +16,6 @@ Se busca que todo lo relacionado a SCPDystopia sea escalable y modular para faci
 
 Hay funciones de depuración en scripts/utils/debug.ts para mejor personalización y depuración, cuando quieras que las use añade el modulo a debug.ts para que se puedan ver.
 
-El proyecto está adaptandose de javascript a typescript, por lo que es posible que algunos archivos estén en javascript y otros en typescript, se recomienda usar typescript para los nuevos archivos.
+El proyecto está adaptandose de javascript a typescript, se recomienda usar typescript para los nuevos archivos.
 
 Registra siempre fecha y hora en la que se escribió o se hizo la ultima modificación de los planes. También registra si el plan fue implementado o si está pendiente de implementación.

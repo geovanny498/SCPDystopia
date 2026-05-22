@@ -6,14 +6,7 @@
  */
 
 import { world, Entity, Dimension, EntityComponentTypes } from "@minecraft/server";
-import {
-  Factions,
-  UnitHierarchy,
-  NAMETAG_FAMILY_MAP,
-  getFamilyTagLabel,
-  getFamilyTagOrder,
-  SpecialGroups,
-} from "../menu_config.js";
+import { Factions, UnitHierarchy, NAMETAG_FAMILY_MAP, SpecialGroups } from "../menu_config.js";
 import { teamFamilies } from "../../../utils/teams.js";
 import { debugWarn } from "../../../utils/debug.js";
 import { getUnitGroup } from "./menu_groups.js";
@@ -72,9 +65,7 @@ export function getEntitiesCached(dimension: Dimension, faction: string): any[] 
 
   const factionFamilies = teamFamilies[faction as keyof typeof teamFamilies] ?? [];
   const rawAll =
-    factionFamilies.length > 0
-      ? dimension.getEntities({ families: factionFamilies })
-      : dimension.getEntities({});
+    factionFamilies.length > 0 ? dimension.getEntities({ families: factionFamilies }) : dimension.getEntities({});
 
   const result: any[] = [];
   for (const e of rawAll) {
@@ -82,11 +73,7 @@ export function getEntitiesCached(dimension: Dimension, faction: string): any[] 
   }
 
   _entityQueryCache.set(key, { entities: result, tick: now });
-  debugWarn(
-    "menuScanner",
-    `[entityQueryCache MISS] ${key} count=${result.length}`,
-    "yellow"
-  );
+  debugWarn("menuScanner", `[entityQueryCache MISS] ${key} count=${result.length}`, "yellow");
 
   return result;
 }
@@ -263,7 +250,11 @@ function groupNametagsByBucket(
 
   // Diagnostic logging
   if (mixedEntries.length > 0) {
-    bucketDiagnostic("menuScanner", `[dedupCrossBucket] ${mixedEntries.length} nametags cruzaron buckets → other_units`, "yellow");
+    bucketDiagnostic(
+      "menuScanner",
+      `[dedupCrossBucket] ${mixedEntries.length} nametags cruzaron buckets → other_units`,
+      "yellow"
+    );
     for (var mei = 0; mei < mixedEntries.length; mei++) {
       bucketDiagnostic("menuScanner", `  "${mixedEntries[mei][0]}" (${mixedEntries[mei][1]} unidades)`, "yellow");
     }
@@ -294,13 +285,18 @@ function groupNametagsByBucket(
 
     if (fk === "other_units") {
       // other_units = cross-bucket dedup + overflow de maxDropdowns de todos los buckets
-      ntKeysFo = mixedEntries.map(function(e: [string, number]) { return e[0]; });
+      ntKeysFo = mixedEntries.map(function (e: [string, number]) {
+        return e[0];
+      });
       // Agregar nametags de overflow que no estén ya en mixedEntries
       for (var ov = 0; ov < overflowEntries.length; ov++) {
         var ovNt = overflowEntries[ov][0];
         var alreadyInMixed = false;
         for (var me = 0; me < mixedEntries.length; me++) {
-          if (mixedEntries[me][0] === ovNt) { alreadyInMixed = true; break; }
+          if (mixedEntries[me][0] === ovNt) {
+            alreadyInMixed = true;
+            break;
+          }
         }
         if (!alreadyInMixed) ntKeysFo.push(ovNt);
       }
@@ -314,27 +310,34 @@ function groupNametagsByBucket(
 
     var finalNt: Record<string, number> = {};
     var finalCount = 0;
+
+    // Pre-construir map de counts para other_units (optimización)
+    var otherUnitsCounts: Record<string, number> = {};
+    if (fk === "other_units") {
+      for (var mei = 0; mei < mixedEntries.length; mei++) {
+        otherUnitsCounts[mixedEntries[mei][0]] = mixedEntries[mei][1];
+      }
+      for (var ov2 = 0; ov2 < overflowEntries.length; ov2++) {
+        if (!otherUnitsCounts[overflowEntries[ov2][0]]) {
+          otherUnitsCounts[overflowEntries[ov2][0]] = overflowEntries[ov2][1];
+        }
+      }
+    }
+
     for (var nf = 0; nf < ntKeysFo.length; nf++) {
       var nt = ntKeysFo[nf];
       var cnt: number;
 
-    if (fk === "other_units") {
-      // En other_units el count viene de mixedEntries o overflowEntries
-      cnt = 0;
-      for (var mei = 0; mei < mixedEntries.length; mei++) {
-        if (mixedEntries[mei][0] === nt) { cnt = mixedEntries[mei][1]; break; }
-      }
-      if (cnt === 0) {
-        for (var ov2 = 0; ov2 < overflowEntries.length; ov2++) {
-          if (overflowEntries[ov2][0] === nt) { cnt = overflowEntries[ov2][1]; break; }
-        }
-      }
-    } else {
+      if (fk === "other_units") {
+        // Usar el map pre-construido
+        cnt = otherUnitsCounts[nt] ?? 0;
+      } else {
         cnt = buckets[fk].nametags[nt] ?? 0;
       }
 
       // Saltar en buckets originales: los nametags cross-bucket van exclusivamente a other_units
-      if (nameTagBuckets.get(nt)!.size > 1 && fk !== "other_units") continue;
+      const bucketSet = nameTagBuckets.get(nt);
+      if (bucketSet && bucketSet.size > 1 && fk !== "other_units") continue;
 
       // Aplicar límite de maxDropdowns (no aplica a other_units)
       // Los nametags que sobran se envían a overflow → other_units

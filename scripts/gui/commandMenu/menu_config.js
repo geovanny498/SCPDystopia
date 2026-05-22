@@ -11,13 +11,13 @@
  */
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// §  EXPORTS DE COMPATIBILIDAD  (vacíos, sin datos)
+// §  EXPORTS DE COMPATIBILIDAD  (vacíos, para teleportMenu - eliminar cuando se migre)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /** @deprecated Usar scanActiveUnits() en su lugar. Eliminar cuando teleportMenu se migre. */
 export const specialUnits = Object.create(null);
 
-/** @deprecated La detección de jerarquía se hace por typeId en menu_faction.ts. Eliminar cuando teleportMenu se migre. */
+/** @deprecated La detección de jerarquía se hace por type_family en menu_faction.ts. Eliminar cuando teleportMenu se migre. */
 export const normalUnits = Object.create(null);
 
 /** @deprecated Usar NAMETAG_FAMILY_MAP en su lugar. Eliminar cuando teleportMenu se migre. */
@@ -96,7 +96,13 @@ export function getFamilyTagOrder(familyId) {
 
 // ── Re-exportar scanner ─────────────────────────────────────────────────────
 
-export { scanActiveUnits, invalidateScanCache, getScanCache, invalidateEntityQueryCache, getEntitiesCached } from "./model/menu_entity_scanner.js";
+export {
+  scanActiveUnits,
+  invalidateScanCache,
+  getScanCache,
+  invalidateEntityQueryCache,
+  getEntitiesCached,
+} from "./model/menu_entity_scanner.js";
 
 // ── Definición de sistemas ─────────────────────────────────────────────────
 
@@ -462,7 +468,7 @@ export const menuConfig = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// §  FUNCIONES DE COMPATIBILIDAD  (para módulos externos no migrados aún)
+// §  FUNCIONES DE COMPATIBILIDAD  (para teleportMenu - eliminar cuando se migre)
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
@@ -487,7 +493,7 @@ export function getNormalUnitFamilyLabelFromEntity(_ent, _faction) {
 }
 
 /**
- * @deprecated Usar detectHierarchyByTypeId() de menu_faction.ts en su lugar.
+ * @deprecated Usar detectHierarchyFromFamilies() de menu_entity_scanner.ts en su lugar.
  * Eliminar cuando teleportMenu se migre.
  */
 export function getUnitHierarchy(typeId, _faction) {
@@ -542,21 +548,24 @@ function shouldParseJsonString(raw) {
   return typeof raw === "string" && (raw.startsWith("{") || raw.startsWith("["));
 }
 
-function normalizeSystemStateValue(value) {
-  if (value === undefined || value === null) return undefined;
-  if (typeof value === "boolean" || typeof value === "number" || typeof value === "string") return value;
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return String(value);
-  }
-}
-
 export function setEntitySystemState(entity, systemId, value) {
   const propertyId = getSystemPropertyId(systemId);
   if (!propertyId || !entity) return;
   try {
-    const normalized = normalizeSystemStateValue(value);
+    // Normalizar valor inline (función eliminada por no uso)
+    let normalized = value;
+    if (value !== undefined && value !== null) {
+      if (typeof value === "boolean" || typeof value === "number" || typeof value === "string") {
+        normalized = value;
+      } else {
+        try {
+          normalized = JSON.stringify(value);
+        } catch {
+          normalized = String(value);
+        }
+      }
+    }
+
     if (normalized === undefined) return;
     entity.setDynamicProperty(propertyId, normalized);
   } catch (err) {
@@ -679,11 +688,11 @@ export function isAutoTameEvent(eventName) {
   return false;
 }
 
-// ── Jerarquía de unidades (solo constantes, sin listas) ─────────────────────
+// ── Jerarquía de unidades (solo constantes) ─────────────────────────────────
 
 /**
- * La detección de jerarquía por typeId se hace en menu_faction.ts
- * (función detectHierarchyByTypeId). Aquí solo se mantienen las constantes.
+ * La detección de jerarquía por type_family se hace en menu_entity_scanner.ts
+ * (función detectHierarchyFromFamilies). Aquí solo se mantienen las constantes.
  */
 export function getHierarchyList() {
   return Object.entries(UnitHierarchyLabels).map(([id, label]) => ({ id, label }));
