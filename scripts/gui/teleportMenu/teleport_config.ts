@@ -1,28 +1,136 @@
 // scripts/gui/teleportMenu/teleport_config.ts
-// ═══════════════════════════════════════════════════════════════════════════════════════
-// §  TELEPORT MENU — DESHABILITADO TEMPORALMENTE
-// ═══════════════════════════════════════════════════════════════════════════════════════
-// Este módulo fue deshabilitado en la refactoring v4.0 del menú de comandos.
-// Dependía de `specialUnits` y `normalUnits` que fueron eliminados.
-// Usa scanActiveUnits() cuando lo migres.
-// ═══════════════════════════════════════════════════════════════════════════════════════
 
-// Stubs de exportación para que los archivos que importan de este módulo no fallen
-// durante la compilación. Eliminar estos stubs cuando se migre el teleportMenu.
+/**
+ * Configuración centralizada del menú de teletransporte
+ * Este archivo define todos los textos, títulos y mensajes del sistema
+ */
 
-export const TeleportTitles = Object.create(null);
-export const MainMenuButtons = Object.create(null);
-export const TypeSelectionTexts = Object.create(null);
-export const NormalSoldiersTexts = Object.create(null);
-export const SpecialSoldiersTexts = Object.create(null);
-export const CommonTexts = Object.create(null);
-export const TeleportAllTexts = Object.create(null);
-export const ResultMessages = Object.create(null);
+import { Factions } from "../commandMenu/menu_config.js";
 
+/**
+ * Títulos principales del sistema de teletransporte
+ */
+export const TeleportTitles = {
+  main: "SCPDystopia | Teletransporte",
+  foundation: "§lFundación SCP",
+  chaos: "§2§lInsurgencia del Caos",
+};
+
+/**
+ * Textos de botones para el menú principal
+ */
+export const MainMenuButtons = {
+  foundation: "§lFundación SCP",
+  foundationDesc: "Unidades de la Fundación",
+  chaos: "§2§lInsurgencia del Caos",
+  chaosDesc: "Unidades del Caos",
+};
+
+/**
+ * Textos para el menú de selección de tipo
+ */
+export const TypeSelectionTexts = {
+  normal: "§8Soldados NO especiales",
+  normalDesc: "Básicos, Líderes y Comandantes",
+  special: "§6Soldados ESPECIALES",
+  specialDesc: "MTF especiales y unidades élite",
+  all: "§c§lTELETRANSPORTAR TODAS",
+  allDesc: "Todas las unidades",
+};
+
+/**
+ * Textos para el menú de soldados NO especiales
+ */
+export const NormalSoldiersTexts = {
+  title: {
+    [Factions.FOUNDATION]: "§lFundación | Soldados No especiales",
+    [Factions.CHAOS]: "§2§lChaos | Soldados No especiales",
+  },
+  description: "§7Selecciona las jerarquías a teletransportar:",
+  toggleBasic: "§7Teletransportar Básicos",
+  toggleLeader: "§eTeletransportar Líderes",
+  toggleCommander: "§6Teletransportar Comandantes",
+};
+
+/**
+ * Textos para el menú de soldados ESPECIALES
+ */
+export const SpecialSoldiersTexts = {
+  title: {
+    [Factions.FOUNDATION]: "§lFundación | Soldados Especiales",
+    [Factions.CHAOS]: "§2§lChaos | Soldados Especiales",
+  },
+  description: "§7Selecciona el grupo de especiales:",
+  // Foundation
+  delta1: "§9§lMTF Delta-1",
+  delta1Desc: "Teletransportar Delta-1",
+  alpha1: "§f§lMTF Alpha-1",
+  alpha1Desc: "Teletransportar Alpha-1",
+  otherMtf: "§6§lOtros MTF",
+  otherMtfDesc: "Epsilon-11, Eta-10, Nu-7, Beta-7, Epsilon-6",
+  // Chaos
+  chaosDelta: "§2§lChaos Delta",
+  chaosDeltaDesc: "Teletransportar Chaos Delta",
+};
+
+/**
+ * Textos comunes para submit buttons y navegación
+ */
+export const CommonTexts = {
+  submitButton: "§aTeletransportar Seleccionadas",
+  backButton: "§8« Volver",
+  cancelButton: "§cCancelar",
+  toggleLabel: "§7Selecciona las unidades a teletransportar:",
+};
+
+/**
+ * Textos para el menú de confirmación "TODAS"
+ */
+export const TeleportAllTexts = {
+  title: {
+    [Factions.FOUNDATION]: "§lFundación | §cTODAS las Unidades",
+    [Factions.CHAOS]: "§2§lChaos | §cTODAS las Unidades",
+  },
+  label: "§7Selecciona todas las unidades a teletransportar:",
+};
+
+/**
+ * Mensajes de resultado
+ */
+export const ResultMessages = {
+  /** Mensaje cuando se teletransportan entidades exitosamente */
+  success: (count: number, faction: string): string => {
+    const factionLabel = faction === Factions.FOUNDATION ? "§lFundación" : "§2§lChaos";
+    return `§a[TELEPORT] §r${count} entidades de ${factionLabel}§r teletransportadas.`;
+  },
+
+  /** Mensaje cuando no se encuentran entidades */
+  noEntities: (faction: string): string => {
+    const factionLabel = faction === Factions.FOUNDATION ? "§lFundación" : "§2§lChaos";
+    return `§c[TELEPORT] §rNo se encontraron entidades de ${factionLabel}§r en esta dimensión.`;
+  },
+
+  /** Mensaje cuando se cancela una operación */
+  cancelled: "§e[TELEPORT] §rOperación cancelada.",
+
+  /** Mensaje cuando no se selecciona ninguna jerarquía */
+  noSelection: "§c[TELEPORT] Debes seleccionar al menos una jerarquía.",
+
+  /** Mensaje de error genérico */
+  error: "§c[TELEPORT] §rError al teletransportar entidades. Revisa la consola.",
+};
+
+/**
+ * Obtiene el nombre de un subgrupo para mensajes
+ * @deprecated Esta función se mantiene por compatibilidad pero ya no se usa en el nuevo flujo de buckets
+ */
 export function getSubgroupLabel(_faction: string, _subgroup: string): string {
   return "desconocido";
 }
 
+/**
+ * Obtiene la etiqueta de una facción
+ */
 export function getFactionLabel(faction: string): string {
-  return faction === "foundation" ? "§lFundación SCP" : "§2§lInsurgencia del Caos";
+  return faction === Factions.FOUNDATION ? "§lFundación SCP" : "§2§lInsurgencia del Caos";
 }

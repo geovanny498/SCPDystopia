@@ -4,6 +4,8 @@
  * Se reinicia cuando el servidor se recarga (al salir del mundo).
  */
 
+import { world } from "@minecraft/server";
+
 // Estructura de datos para un jugador
 interface PlayerSessionData {
   // Estado para Menú Soldados Normales
@@ -11,7 +13,9 @@ interface PlayerSessionData {
   normalSelection: Map<string, boolean[]>;
 
   // Estado para Menú Soldados Especiales
-  // Key: faction_subgroup, Value: string[] (nombres de unidades seleccionadas)
+  // Key: faction, Value: string[] (nametags seleccionados)
+  // Guardamos por nametag global sin bucketId para evitar bugs cuando
+  // las entidades cambian de bucket por overflow o entrada/salida de simulación
   specialSelection: Map<string, string[]>;
 
   // Estado para Menú TODAS
@@ -61,28 +65,49 @@ export function getNormalSelection(playerName: string, faction: string): boolean
 }
 
 /**
- * Guarda la selección de un subgrupo de especiales
+ * Guarda la selección de especiales para un bucket específico
+ * @param playerName - Nombre del jugador
+ * @param faction - Facción seleccionada
+ * @param bucketId - ID del bucket (para identificar qué bucket se está guardando)
+ * @param selectedNametags - Array de nametags seleccionados en este bucket
+ * @param allNametagsInBucket - Array de todos los nametags disponibles en este bucket
+ *
+ * Nota: Fusiona la selección del bucket actual con las selecciones de otros buckets
+ * para evitar sobrescribir cuando el usuario navega entre buckets
  */
-export function saveSpecialSelection(playerName: string, faction: string, subgroupId: string, selectedUnits: string[]) {
-  const key = `${faction}:${subgroupId}`;
+export function saveSpecialSelection(
+  playerName: string,
+  faction: string,
+  bucketId: string,
+  selectedNametags: string[],
+  allNametagsInBucket: string[]
+) {
   const session = getPlayerSession(playerName);
-  session.specialSelection.set(key, selectedUnits);
+  const currentSelection = session.specialSelection.get(faction) || [];
+
+  // Remover nametags de este bucket que ya no están seleccionados
+  const filteredSelection = currentSelection.filter((nt) => !allNametagsInBucket.includes(nt));
+
+  // Agregar nametags seleccionados de este bucket
+  const mergedSelection = [...filteredSelection, ...selectedNametags];
+
+  session.specialSelection.set(faction, mergedSelection);
 }
 
 /**
- * Obtiene si una unidad específica estaba seleccionada en su subgrupo
+ * Obtiene si un nametag específico estaba seleccionado
+ * @param playerName - Nombre del jugador
+ * @param faction - Facción seleccionada
+ * @param nametag - Nametag de la unidad
+ *
+ * Nota: Buscamos por facción sin bucketId para que la selección persista
+ * incluso si el nametag cambia de bucket
  */
-export function isSpecialUnitSelected(
-  playerName: string,
-  faction: string,
-  subgroupId: string,
-  unitName: string
-): boolean {
-  const key = `${faction}:${subgroupId}`;
+export function isSpecialUnitSelected(playerName: string, faction: string, nametag: string): boolean {
   const session = getPlayerSession(playerName);
-  const selection = session.specialSelection.get(key);
+  const selection = session.specialSelection.get(faction);
   if (!selection) return false;
-  return selection.includes(unitName);
+  return selection.includes(nametag);
 }
 
 /**
@@ -106,3 +131,10 @@ export function getAllMenuSelection(playerName: string, faction: string) {
   const session = getPlayerSession(playerName);
   return session.allMenuSelection.get(faction) || null;
 }
+
+world.beforeEvents.playerLeave.subscribe((event) => {
+  const playerName = event.player.name;
+  if (sessionStore.has(playerName)) {
+    sessionStore.delete(playerName);
+  }
+});

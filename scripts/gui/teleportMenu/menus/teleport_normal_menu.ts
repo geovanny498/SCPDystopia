@@ -84,6 +84,12 @@ export function showNormalSoldiersMenu(player: Player, faction: string): void {
             // Obtener entidades filtradas
             const entities = getNormalEntitiesByHierarchy(faction, hierarchies, player.dimension);
 
+            // Debug: Mostrar entidades encontradas
+            debugMessage("teleportLogic", `Entidades normales encontradas: ${entities.length}`, "cyan");
+            entities.forEach((ent, idx) => {
+              debugMessage("teleportLogic", `  [${idx + 1}] ${ent.typeId} - ID: ${ent.id}`, "dark_gray");
+            });
+
             if (entities.length === 0) {
               player.sendMessage(ResultMessages.noEntities(faction));
               return;

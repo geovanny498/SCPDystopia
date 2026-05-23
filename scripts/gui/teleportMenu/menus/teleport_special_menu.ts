@@ -1,58 +1,90 @@
-// scripts/gui/teleportMenu/teleport_special_menu.ts
+// scripts/gui/teleportMenu/menus/teleport_special_menu.ts
 
 /**
  * Menú de soldados ESPECIALES
- * Usa ActionFormData para navegación de subgrupos
- * Usa ModalFormData para toggles individuales de cada unidad
+ * Refactorizado para usar buckets dinámicos de scanActiveUnits()
+ * en lugar de subgrupos hardcodeados
  */
 
 import { Player, system } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
-import { SpecialSoldiersTexts, CommonTexts, getSubgroupLabel } from "../teleport_config.js";
-// Import dinámico para evitar ciclos: import { showTypeSelectionMenu } from "./teleport_type_menu.js";
+import { SpecialSoldiersTexts, CommonTexts } from "../teleport_config.js";
 import {
-  getSpecialEntitiesByToggles,
+  getSpecialEntitiesByNametags,
   getCoordinateInputFromFormValues,
   parseTeleportDestination,
 } from "../core/teleport_utils.js";
 import { teleportEntitiesToPlayer } from "../core/teleport_logic.js";
-import { Factions, specialUnits } from "../../commandMenu/menu_config.js";
+import { scanActiveUnits } from "../../commandMenu/menu_config.js";
 import { debugMessage } from "../../../utils/debug.js";
 import { isSpecialUnitSelected, saveSpecialSelection } from "../core/teleport_session_store.js";
 
+import type { ScanResult } from "../../commandMenu/model/menu_entity_scanner.js";
+
 /**
- * Muestra el menú de navegación de subgrupos de especiales
+ * Muestra el menú de navegación de buckets de especiales
  * @param player - Jugador que ejecuta el comando
  * @param faction - Facción seleccionada
  */
 export function showSpecialSoldiersMenu(player: Player, faction: string): void {
   debugMessage("teleportMenu", `Mostrando menú de especiales para facción ${faction}`, "cyan");
 
+  // 1. Escanear entidades activas
+  const scanResult = scanActiveUnits(player.dimension, faction);
+  const buckets = scanResult.buckets;
+
+  // 2. Orden fijo de buckets
+  const bucketOrder = [
+    "commander_alpha1",
+    "commander_delta1",
+    "commander_other",
+    "leader_any",
+    "basic_any",
+    "other_units",
+  ];
+
+  // 3. Filtrar buckets no vacíos
+  const nonEmptyBuckets = bucketOrder
+    .filter((bucketId) => buckets[bucketId] && buckets[bucketId].unitCount > 0)
+    .map((bucketId) => ({ id: bucketId, data: buckets[bucketId] }));
+
+  if (nonEmptyBuckets.length === 0) {
+    // Mostrar un menú informativo en lugar de volver directamente
+    const emptyForm = new ActionFormData();
+    const factionTitle = (SpecialSoldiersTexts.title as any)[faction];
+    emptyForm.title(factionTitle);
+    emptyForm.body(
+      "§c§lNo hay unidades especiales activas en esta facción\n\n§7No se encontraron unidades con nametag en esta dimensión."
+    );
+    emptyForm.button(CommonTexts.backButton);
+
+    system.run(() => {
+      emptyForm
+        .show(player)
+        .then((response) => {
+          import("./teleport_type_menu.js")
+            .then((m) => m.showTypeSelectionMenu(player, faction))
+            .catch((err) => console.error(err));
+        })
+        .catch((err) => console.error(err));
+    });
+    return;
+  }
+
+  // 4. Construir ActionFormData
   const form = new ActionFormData();
   const factionTitle = (SpecialSoldiersTexts.title as any)[faction];
   form.title(factionTitle);
   form.body(SpecialSoldiersTexts.description);
 
-  // Obtener subgrupos de la facción
-  const factionData = (specialUnits as any)[faction];
-  if (!factionData || !factionData.subgroups) {
-    player.sendMessage("§c[ERROR] Datos de facción no encontrados");
-    return;
-  }
-
-  const subgroupIds = Object.keys(factionData.subgroups);
-
-  // Añadir botón para cada subgrupo
-  subgroupIds.forEach((subgroupId: string) => {
-    const subgroup = factionData.subgroups[subgroupId];
-    const label = subgroup.label;
-    const desc = `${subgroup.units.length} unidades disponibles`;
-    form.button(`${label}\n§8${desc}`);
+  nonEmptyBuckets.forEach((bucket) => {
+    const nametagCount = Object.keys(bucket.data.nametags).length;
+    form.button(`${bucket.data.label}\n§8${nametagCount} nametags`);
   });
 
-  // Botón volver
   form.button(CommonTexts.backButton);
 
+  // 5. Mostrar y manejar respuesta
   system.run(() => {
     form
       .show(player)
@@ -60,9 +92,7 @@ export function showSpecialSoldiersMenu(player: Player, faction: string): void {
         if (!response || response.canceled) {
           debugMessage("teleportMenu", `${player.name} canceló el menú de especiales, volviendo atrás`, "yellow");
           import("./teleport_type_menu.js")
-            .then((module) => {
-              module.showTypeSelectionMenu(player, faction);
-            })
+            .then((m) => m.showTypeSelectionMenu(player, faction))
             .catch((err) => console.error(err));
           return;
         }
@@ -70,19 +100,17 @@ export function showSpecialSoldiersMenu(player: Player, faction: string): void {
         const selection = response.selection;
         if (selection === undefined) return;
 
-        // Si presionó "Volver"
-        if (selection === subgroupIds.length) {
+        if (selection === nonEmptyBuckets.length) {
+          // Botón "Volver"
           import("./teleport_type_menu.js")
-            .then((module) => {
-              module.showTypeSelectionMenu(player, faction);
-            })
+            .then((m) => m.showTypeSelectionMenu(player, faction))
             .catch((err) => console.error(err));
           return;
         }
 
-        // Mostrar modal de toggles para el subgrupo seleccionado
-        const subgroupId = subgroupIds[selection];
-        showSubgroupTogglesMenu(player, faction, subgroupId);
+        // Mostrar toggles del bucket seleccionado
+        const bucketId = nonEmptyBuckets[selection].id;
+        showBucketTogglesMenu(player, faction, bucketId, scanResult);
       })
       .catch((e) => {
         debugMessage("teleportMenu", `Error en menú de especiales: ${e}`, "red");
@@ -92,81 +120,80 @@ export function showSpecialSoldiersMenu(player: Player, faction: string): void {
 }
 
 /**
- * Muestra modal con toggles individuales para cada unidad del subgrupo
+ * Muestra modal con toggles individuales para cada nametag del bucket
  * @param player - Jugador que ejecuta el comando
  * @param faction - Facción seleccionada
- * @param sub groupId - ID del subgrupo (delta1, alpha1, etc.)
+ * @param bucketId - ID del bucket (commander_alpha1, leader_any, etc.)
+ * @param scanResult - Resultado del escaneo de entidades
  */
-function showSubgroupTogglesMenu(player: Player, faction: string, subgroupId: string): void {
-  const factionData = (specialUnits as any)[faction];
-  const subgroup = factionData.subgroups[subgroupId];
-
-  if (!subgroup) {
-    debugMessage("teleportMenu", `Subgrupo no encontrado: ${subgroupId}`, "red");
+function showBucketTogglesMenu(player: Player, faction: string, bucketId: string, scanResult: ScanResult): void {
+  const bucketData = scanResult.buckets[bucketId];
+  if (!bucketData) {
+    player.sendMessage("§c[TELEPORT] Bucket no encontrado");
+    showSpecialSoldiersMenu(player, faction);
     return;
   }
 
-  debugMessage("teleportMenu", `Mostrando toggles para ${subgroupId}: ${subgroup.units.length} unidades`, "cyan");
+  // 1. Obtener nametags únicos del bucket
+  const uniqueNametags = Object.keys(bucketData.nametags);
 
+  debugMessage("teleportMenu", `Mostrando toggles para ${bucketId}: ${uniqueNametags.length} nametags`, "cyan");
+
+  // 2. Construir ModalFormData
   const form = new ModalFormData();
-  form.title(`${subgroup.label}${"§r | Teletransporte"}`);
+  form.title(`${bucketData.label}§r | Teletransporte`);
   form.label(CommonTexts.toggleLabel);
 
-  // Añadir toggle para cada unidad del subgrupo
-  subgroup.units.forEach((unitName: string) => {
-    const isSelected = isSpecialUnitSelected(player.name, faction, subgroupId, unitName);
-    form.toggle(unitName, { defaultValue: isSelected });
+  uniqueNametags.forEach((nametag) => {
+    const isSelected = isSpecialUnitSelected(player.name, faction, nametag);
+    form.toggle(nametag, { defaultValue: isSelected });
   });
 
   form.textField("§7Coordenadas destino (x y z)", "Ej: 100 64 -200");
   form.submitButton(CommonTexts.submitButton);
 
+  // 3. Mostrar y manejar respuesta
   system.run(() => {
     form
       .show(player)
       .then((response) => {
         if (!response || response.canceled) {
-          debugMessage("teleportMenu", `${player.name} canceló el modal de toggles, volviendo atras`, "yellow");
-          // Volver al menú de navegación de subgrupos
+          debugMessage("teleportMenu", `${player.name} canceló el modal de toggles, volviendo atrás`, "yellow");
           showSpecialSoldiersMenu(player, faction);
           return;
         }
 
-        // Obtener valores de los toggles
         const values = response.formValues;
         if (!values) {
           player.sendMessage("§c[TELEPORT] Error leyendo formulario");
           return;
         }
 
-        // Filtrar valores undefined (del label) y obtener unidades seleccionadas
-        const selectedUnits: string[] = [];
-        let toggleIndex = 0;
+        // 4. Filtrar nametags seleccionados
+        const selectedNametags: string[] = [];
+        let idx = 0;
 
         // Saltar label inicial
-        let idx = 0;
-        while (idx < values.length && values[idx] === undefined) {
-          idx++;
-        }
+        while (idx < values.length && values[idx] === undefined) idx++;
 
         // Leer toggles
-        subgroup.units.forEach((unitName: string) => {
+        uniqueNametags.forEach((nametag) => {
           if (idx < values.length && values[idx] === true) {
-            selectedUnits.push(unitName);
+            selectedNametags.push(nametag);
           }
           idx++;
         });
 
-        // Guardar selección en sesión
-        saveSpecialSelection(player.name, faction, subgroupId, selectedUnits);
+        // Guardar selección (fusionando con otros buckets)
+        saveSpecialSelection(player.name, faction, bucketId, selectedNametags, uniqueNametags);
 
-        if (selectedUnits.length === 0) {
+        if (selectedNametags.length === 0) {
           player.sendMessage("§c[TELEPORT] No seleccionaste ninguna unidad");
           showSpecialSoldiersMenu(player, faction);
           return;
         }
 
-        // Obtener coordenadas destino del campo de texto
+        // 5. Obtener coordenadas
         const coordString = getCoordinateInputFromFormValues(values);
         const destination = parseTeleportDestination(coordString, player);
 
@@ -176,34 +203,44 @@ function showSubgroupTogglesMenu(player: Player, faction: string, subgroupId: st
           return;
         }
 
+        // 6. Teletransportar
         debugMessage(
           "teleportLogic",
-          `Teletransportando ${selectedUnits.length} unidades especiales: ${selectedUnits.join(", ")}`,
+          `Teletransportando ${selectedNametags.length} unidades especiales: ${selectedNametags.join(", ")}`,
           "green"
         );
 
-        // Obtener entidades y teletransportar
-        const entities = getSpecialEntitiesByToggles(faction, selectedUnits, player.dimension);
+        const entities = getSpecialEntitiesByNametags(faction, selectedNametags, player.dimension);
+
+        // Debug: Mostrar entidades encontradas
+        debugMessage("teleportLogic", `Entidades encontradas: ${entities.length}`, "cyan");
+        entities.forEach((ent, idx) => {
+          debugMessage(
+            "teleportLogic",
+            `  [${idx + 1}] ${ent.nameTag || "sin nombre"} (${ent.typeId}) - ID: ${ent.id}`,
+            "dark_gray"
+          );
+        });
+
         const result = teleportEntitiesToPlayer(entities, player, destination);
 
-        // Mensaje al jugador
-        const subgroupLabel = getSubgroupLabel(faction, subgroupId);
+        // 7. Mensaje al jugador
         if (result.count > 0) {
-          player.sendMessage(`§a[TELEPORT] ${result.count} unidades de ${subgroupLabel}§r teletransportadas`);
+          player.sendMessage(`§a[TELEPORT] ${result.count} unidades de ${bucketData.label}§r teletransportadas`);
         } else {
-          player.sendMessage(`§c[TELEPORT] No se encontraron unidades de ${subgroupLabel}§r en esta dimensión`);
+          player.sendMessage(`§c[TELEPORT] No se encontraron unidades en esta dimensión`);
         }
 
         if (result.hasErrors && result.errors) {
-          player.sendMessage(`§e[TELEPORT] Se produjeron ${result.errors.length} errores (ver consola)`);
+          player.sendMessage(`§e[TELEPORT] ${result.errors.length} errores (ver consola)`);
         }
 
-        // Volver al menú de navegación de subgrupos
+        // Volver al menú de buckets
         showSpecialSoldiersMenu(player, faction);
       })
       .catch((e) => {
         debugMessage("teleportMenu", `Error en modal de toggles: ${e}`, "red");
-        console.warn(`Error en modal de toggles de subgrupo: ${e}`);
+        console.warn(`Error en modal de toggles: ${e}`);
       });
   });
 }

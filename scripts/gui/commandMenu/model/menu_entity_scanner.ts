@@ -98,7 +98,7 @@ interface BucketData {
   unitCount: number;
 }
 
-interface ScanResult {
+export interface ScanResult {
   entities: ScannedEntity[];
   byHierarchy: Record<string, ScannedEntity[]>;
   byFamilyTag: Record<string, ScannedEntity[]>;
@@ -304,14 +304,14 @@ function groupNametagsByBucket(
     } else {
       var src = buckets[fk];
       if (!src || Object.keys(src.nametags).length === 0) continue;
-      ntKeysFo = Object.keys(src.nametags);
+      ntKeysFo = Object.keys(src.nametags).sort();
       label = src.label;
     }
 
     var finalNt: Record<string, number> = {};
     var finalCount = 0;
 
-    // Pre-construir map de counts para other_units (optimización)
+    // Map pre-construido de counts para other_units (optimización)
     var otherUnitsCounts: Record<string, number> = {};
     if (fk === "other_units") {
       for (var mei = 0; mei < mixedEntries.length; mei++) {

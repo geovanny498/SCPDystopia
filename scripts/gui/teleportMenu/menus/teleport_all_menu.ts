@@ -10,15 +10,14 @@
 import { Player, system } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import { TeleportAllTexts, CommonTexts, getFactionLabel } from "../teleport_config.js";
-// Eliminado import estático para evitar ciclos
 import {
   getNormalEntitiesByHierarchy,
-  getSpecialEntitiesByToggles,
+  getSpecialEntitiesByNametags,
   getCoordinateInputFromFormValues,
   parseTeleportDestination,
 } from "../core/teleport_utils.js";
 import { teleportEntitiesToPlayer } from "../core/teleport_logic.js";
-import { Factions, UnitHierarchy, specialUnits } from "../../commandMenu/menu_config.js";
+import { Factions, UnitHierarchy, scanActiveUnits } from "../../commandMenu/menu_config.js";
 import { debugMessage } from "../../../utils/debug.js";
 import { getAllMenuSelection, saveAllMenuSelection } from "../core/teleport_session_store.js";
 
@@ -46,26 +45,40 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
 
   // ===== SECCIÓN 2: Unidades Especiales Individuales =====
   form.label("§e─── Soldados Especiales ───");
-  const factionData = (specialUnits as any)[faction];
-  const allSpecialUnits: string[] = [];
 
-  if (factionData && factionData.subgroups) {
-    const subgroupIds = Object.keys(factionData.subgroups);
+  // Escanear entidades activas para obtener buckets dinámicos
+  const scanResult = scanActiveUnits(player.dimension, faction);
+  const buckets = scanResult.buckets;
 
-    subgroupIds.forEach((subgroupId: string) => {
-      const subgroup = factionData.subgroups[subgroupId];
+  // Orden fijo de buckets
+  const bucketOrder = [
+    "commander_alpha1",
+    "commander_delta1",
+    "commander_other",
+    "leader_any",
+    "basic_any",
+    "other_units",
+  ];
 
-      // Label para el subgrupo
-      form.label(`${subgroup.label}§r`);
+  // Construir toggles por bucket
+  const allSpecialNametags: string[] = [];
 
-      // Toggle para cada unidad del subgrupo
-      subgroup.units.forEach((unitName: string) => {
-        allSpecialUnits.push(unitName);
-        const isSelected = saved?.specialUnits.includes(unitName) ?? true;
-        form.toggle(unitName, { defaultValue: isSelected });
-      });
+  bucketOrder.forEach((bucketId) => {
+    const bucket = buckets[bucketId];
+    if (!bucket || bucket.unitCount === 0) return;
+
+    // Label del bucket
+    form.label(`${bucket.label}§r`);
+
+    // Toggle por cada nametag único del bucket
+    const nametags = Object.keys(bucket.nametags);
+    nametags.forEach((nametag) => {
+      allSpecialNametags.push(nametag);
+      // Si hay sesión guardada, usar esa selección; si no, activar por defecto
+      const isSelected = saved ? saved.specialUnits.includes(nametag) : true;
+      form.toggle(nametag, { defaultValue: isSelected });
     });
-  }
+  });
 
   form.textField("§7Coordenadas destino (x y z)", "Ej: 100 64 -200");
   form.submitButton(CommonTexts.submitButton);
@@ -115,29 +128,31 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
         idx++;
 
         // Leer toggles de unidades especiales
-        const selectedSpecialUnits: string[] = [];
-        const subgroupIds = Object.keys(factionData.subgroups);
+        const selectedSpecialNametags: string[] = [];
 
-        subgroupIds.forEach((subgroupId: string) => {
-          // Saltar label del subgrupo
+        bucketOrder.forEach((bucketId) => {
+          const bucket = buckets[bucketId];
+          if (!bucket || bucket.unitCount === 0) return;
+
+          // Saltar label del bucket
           while (idx < values.length && values[idx] === undefined) {
             idx++;
           }
 
-          const subgroup = factionData.subgroups[subgroupId];
-          subgroup.units.forEach((unitName: string) => {
+          const nametags = Object.keys(bucket.nametags);
+          nametags.forEach((nametag) => {
             if (idx < values.length && values[idx] === true) {
-              selectedSpecialUnits.push(unitName);
+              selectedSpecialNametags.push(nametag);
             }
             idx++;
           });
         });
 
         // Guardar estado completo
-        saveAllMenuSelection(player.name, faction, [h1, h2, h3], selectedSpecialUnits);
+        saveAllMenuSelection(player.name, faction, [h1, h2, h3], selectedSpecialNametags);
 
         // Validar que al menos algo esté seleccionado
-        if (selectedHierarchies.length === 0 && selectedSpecialUnits.length === 0) {
+        if (selectedHierarchies.length === 0 && selectedSpecialNametags.length === 0) {
           player.sendMessage("§c[TELEPORT] Debes seleccionar al menos una opción");
           import("./teleport_type_menu.js")
             .then((module) => {
@@ -163,7 +178,7 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
 
         debugMessage(
           "teleportLogic",
-          `Teletransportando: Jerarquías=${selectedHierarchies.join(",")} Especiales=${selectedSpecialUnits.length}`,
+          `Teletransportando: Jerarquías=${selectedHierarchies.join(",")} Especiales=${selectedSpecialNametags.length}`,
           "green"
         );
 
@@ -173,6 +188,13 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
 
         if (selectedHierarchies.length > 0) {
           const normalEntities = getNormalEntitiesByHierarchy(faction, selectedHierarchies, player.dimension);
+
+          // Debug: Mostrar entidades normales encontradas
+          debugMessage("teleportLogic", `Entidades normales encontradas: ${normalEntities.length}`, "cyan");
+          normalEntities.forEach((ent, idx) => {
+            debugMessage("teleportLogic", `  [N${idx + 1}] ${ent.typeId} - ID: ${ent.id}`, "dark_gray");
+          });
+
           const normalResult = teleportEntitiesToPlayer(normalEntities, player, destination);
           totalCount += normalResult.count;
           if (normalResult.hasErrors && normalResult.errors) {
@@ -181,8 +203,19 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
         }
 
         // Obtener y teletransportar entidades especiales
-        if (selectedSpecialUnits.length > 0) {
-          const specialEntities = getSpecialEntitiesByToggles(faction, selectedSpecialUnits, player.dimension);
+        if (selectedSpecialNametags.length > 0) {
+          const specialEntities = getSpecialEntitiesByNametags(faction, selectedSpecialNametags, player.dimension);
+
+          // Debug: Mostrar entidades especiales encontradas
+          debugMessage("teleportLogic", `Entidades especiales encontradas: ${specialEntities.length}`, "cyan");
+          specialEntities.forEach((ent, idx) => {
+            debugMessage(
+              "teleportLogic",
+              `  [E${idx + 1}] ${ent.nameTag || "sin nombre"} (${ent.typeId}) - ID: ${ent.id}`,
+              "dark_gray"
+            );
+          });
+
           const specialResult = teleportEntitiesToPlayer(specialEntities, player, destination);
           totalCount += specialResult.count;
           if (specialResult.hasErrors && specialResult.errors) {
