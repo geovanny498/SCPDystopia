@@ -7,9 +7,10 @@
 
 import { world, Entity, Dimension, EntityComponentTypes } from "@minecraft/server";
 import { Factions, UnitHierarchy, NAMETAG_FAMILY_MAP, SpecialGroups } from "../menu_config.js";
-import { teamFamilies } from "../../../utils/teams.js";
 import { debugWarn } from "../../../utils/debug.js";
 import { getUnitGroup } from "./menu_groups.js";
+import { getEntitiesByFaction } from "../../../utils/entityQuery.js";
+import { teamFamilies } from "../../../utils/teams.js";
 
 // ── Cache TTL ────────────────────────────────────────────────────────────────
 
@@ -63,9 +64,8 @@ export function getEntitiesCached(dimension: Dimension, faction: string): any[] 
     return cached.entities;
   }
 
-  const factionFamilies = teamFamilies[faction as keyof typeof teamFamilies] ?? [];
-  const rawAll =
-    factionFamilies.length > 0 ? dimension.getEntities({ families: factionFamilies }) : dimension.getEntities({});
+  // Optimización O1-Extended: usar función centralizada
+  const rawAll = getEntitiesByFaction(dimension, faction as "foundation" | "chaos");
 
   const result: any[] = [];
   for (const e of rawAll) {
@@ -390,16 +390,10 @@ export function scanActiveUnits(dimension: Dimension, faction: string): ScanResu
   const byFamilyTag: Record<string, ScannedEntity[]> = {};
   const nametagGroups: Record<string, ScannedEntity[]> = {};
 
-  const targetFamilies = teamFamilies[faction as keyof typeof teamFamilies] ?? [];
+  // Optimización O1-Extended: usar función centralizada
+  const rawEntities = getEntitiesByFaction(dimension, faction as "foundation" | "chaos");
 
-  const rawEntities =
-    targetFamilies.length > 0 ? dimension.getEntities({ families: targetFamilies }) : dimension.getEntities({});
-
-  debugWarn(
-    "menuScanner",
-    `Scan START: faction=${faction} targetFamilies=${JSON.stringify(targetFamilies)} rawEntities=${rawEntities.length}`,
-    "dark_gray"
-  );
+  debugWarn("menuScanner", `Scan START: faction=${faction} rawEntities=${rawEntities.length}`, "dark_gray");
 
   for (const ent of rawEntities) {
     try {

@@ -5,7 +5,7 @@ import { ControlType, getSystemEvents, setEntitySystemState, SpecialGroups, Unit
 import { canApplySystem } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
-import { teamFamilies } from "../../../utils/teams.js";
+import { getAllAddonEntitiesInDimensions } from "../../../utils/entityQuery.js";
 
 // Importar funciones de menu_events (se inyectarán para evitar ciclos)
 let getMenuSystemStates = null;
@@ -214,48 +214,42 @@ export function applySystemWithEvents(systemId, systemConfig, dimension = null, 
 
     debugWarn("menuApply", `=== Aplicando sistema ${systemId} ===`, "cyan");
 
-    // Construir array de familias válidas desde teamFamilies
-    const validFamilies = [...teamFamilies.chaos, ...teamFamilies.foundation];
-
     // Escanear entidades en la dimensión solicitada o en todas
     const dims = dimension
       ? [dimension]
       : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
 
-    for (const dim of dims) {
-      for (const family of validFamilies) {
-        const ents = dim.getEntities({ families: [family] });
+    // Optimización: 2 llamadas a getEntities por dimensión (Foundation + Chaos) en lugar de 4
+    const allEnts = getAllAddonEntitiesInDimensions(dims);
 
-        for (const ent of ents) {
-          if (!ent || !ent.id) continue;
-          if (seen.has(ent.id)) continue;
-          seen.add(ent.id);
-          if (!isValidSoldier(ent, specials)) continue;
+    for (const ent of allEnts) {
+      if (!ent || !ent.id) continue;
+      if (seen.has(ent.id)) continue;
+      seen.add(ent.id);
+      if (!isValidSoldier(ent, specials)) continue;
 
-          // Obtener información de facción
-          const factionInfo = getEntityFactionInfo(ent, specials);
-          if (!factionInfo) continue;
+      // Obtener información de facción
+      const factionInfo = getEntityFactionInfo(ent, specials);
+      if (!factionInfo) continue;
 
-          // Guardia de especialidad: especial sin grupo asignado (null) → omitir
-          // NO_GROUP es un grupo válido y SÍ ejecuta sistemas
-          if (factionInfo.isSpecial && !factionInfo.group) {
-            skippedCount++;
-            continue;
-          }
-
-          const { faction, isSpecial } = factionInfo;
-          const nameTag = ent.nameTag ?? "";
-
-          // Verificar scope (pasando jerarquía para no especiales)
-          if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, factionInfo.hierarchy)) {
-            skippedCount++;
-            continue;
-          }
-
-          applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo, player);
-          appliedCount += 1;
-        }
+      // Guardia de especialidad: especial sin grupo asignado (null) → omitir
+      // NO_GROUP es un grupo válido y SÍ ejecuta sistemas
+      if (factionInfo.isSpecial && !factionInfo.group) {
+        skippedCount++;
+        continue;
       }
+
+      const { faction, isSpecial } = factionInfo;
+      const nameTag = ent.nameTag ?? "";
+
+      // Verificar scope (pasando jerarquía para no especiales)
+      if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, factionInfo.hierarchy)) {
+        skippedCount++;
+        continue;
+      }
+
+      applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo, player);
+      appliedCount += 1;
     }
 
     // Procesar lista auxiliar de soldados conocida

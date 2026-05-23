@@ -21,7 +21,7 @@ import { resetMenuSystemStates } from "../gui/commandMenu/core/menu_events.js";
 import { resetScope } from "../gui/commandMenu/model/menu_scope.js";
 import { setUnitGroup } from "../gui/commandMenu/model/menu_groups.js";
 import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
-import { teamFamilies } from "../utils/teams.js";
+import { getAllAddonEntities, getAllAddonEntitiesInDimensions } from "../utils/entityQuery.js";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // §  Utilidades
@@ -204,14 +204,12 @@ system.beforeEvents.startup.subscribe((init) => {
           const SPECIAL_GROUP_DP = "scpd:group";
           let cleared = 0;
           try {
-            const allFamilies = [...(teamFamilies.foundation || []), ...(teamFamilies.chaos || [])];
-            for (const family of allFamilies) {
-              const ents = playerDimension.getEntities({ families: [family] });
-              for (const ent of ents) {
-                if (ent.getDynamicProperty(SPECIAL_GROUP_DP) !== undefined) {
-                  ent.setDynamicProperty(SPECIAL_GROUP_DP, undefined);
-                  cleared++;
-                }
+            // Optimización: 2 llamadas a getEntities en lugar de 4
+            const allEnts = getAllAddonEntities(playerDimension);
+            for (const ent of allEnts) {
+              if (ent.getDynamicProperty(SPECIAL_GROUP_DP) !== undefined) {
+                ent.setDynamicProperty(SPECIAL_GROUP_DP, undefined);
+                cleared++;
               }
             }
           } catch (e) {
@@ -386,16 +384,12 @@ system.beforeEvents.startup.subscribe((init) => {
             const SPECIAL_GROUP_DP = "scpd:group";
             let cleared = 0;
             const dims = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
-            const allFamilies = [...(teamFamilies.foundation || []), ...(teamFamilies.chaos || [])];
-            for (const dim of dims) {
-              for (const family of allFamilies) {
-                const ents = dim.getEntities({ families: [family] });
-                for (const ent of ents) {
-                  if (ent.getDynamicProperty(SPECIAL_GROUP_DP) !== undefined) {
-                    ent.setDynamicProperty(SPECIAL_GROUP_DP, undefined);
-                    cleared++;
-                  }
-                }
+            // Optimización: 2 llamadas a getEntities por dimensión en lugar de 4
+            const allEnts = getAllAddonEntitiesInDimensions(dims);
+            for (const ent of allEnts) {
+              if (ent.getDynamicProperty(SPECIAL_GROUP_DP) !== undefined) {
+                ent.setDynamicProperty(SPECIAL_GROUP_DP, undefined);
+                cleared++;
               }
             }
             console.log(`[SCPDystopia] Grupos reseteados (${cleared} DPs eliminados)`);

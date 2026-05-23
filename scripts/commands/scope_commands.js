@@ -4,7 +4,7 @@ import { loadScope, resetScope, getScopeSummary, isEntityInScope } from "../gui/
 import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
 import { getEntityFactionInfo, isValidSoldier } from "../gui/commandMenu/model/menu_faction.js";
 import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
-import { teamFamilies } from "../utils/teams.js";
+import { getAllAddonEntitiesInDimensions } from "../utils/entityQuery.js";
 
 /**
  * Comandos para gestionar el scope del menú
@@ -144,40 +144,37 @@ system.beforeEvents.startup.subscribe((init) => {
 });
 
 function getBlockedEntitiesReport(scope) {
-  const validFamilies = [...teamFamilies.foundation, ...teamFamilies.chaos];
   const dims = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
   const seen = new Set();
   const blockedSpecials = {};
   const blockedNormals = {};
   let blockedTotal = 0;
 
-  for (const dim of dims) {
-    for (const family of validFamilies) {
-      const ents = dim.getEntities({ families: [family] });
-      for (const ent of ents) {
-        if (!ent || !ent.id || seen.has(ent.id)) continue;
-        seen.add(ent.id);
-        if (!isValidSoldier(ent)) continue;
+  // Optimización: 2 llamadas a getEntities por dimensión en lugar de 4
+  const allEnts = getAllAddonEntitiesInDimensions(dims);
 
-        const factionInfo = getEntityFactionInfo(ent);
-        if (!factionInfo) continue;
+  for (const ent of allEnts) {
+    if (!ent || !ent.id || seen.has(ent.id)) continue;
+    seen.add(ent.id);
+    if (!isValidSoldier(ent)) continue;
 
-        const inScope = isEntityInScope(
-          ent,
-          factionInfo.faction,
-          factionInfo.isSpecial,
-          ent.nameTag ?? "",
-          scope,
-          factionInfo.hierarchy
-        );
-        if (inScope) continue;
+    const factionInfo = getEntityFactionInfo(ent);
+    if (!factionInfo) continue;
 
-        blockedTotal += 1;
-        const label = factionInfo.isSpecial ? ent.nameTag?.trim() || ent.typeId : ent.typeId;
-        const bucket = factionInfo.isSpecial ? blockedSpecials : blockedNormals;
-        bucket[label] = (bucket[label] || 0) + 1;
-      }
-    }
+    const inScope = isEntityInScope(
+      ent,
+      factionInfo.faction,
+      factionInfo.isSpecial,
+      ent.nameTag ?? "",
+      scope,
+      factionInfo.hierarchy
+    );
+    if (inScope) continue;
+
+    blockedTotal += 1;
+    const label = factionInfo.isSpecial ? ent.nameTag?.trim() || ent.typeId : ent.typeId;
+    const bucket = factionInfo.isSpecial ? blockedSpecials : blockedNormals;
+    bucket[label] = (bucket[label] || 0) + 1;
   }
 
   const reportLines = [
