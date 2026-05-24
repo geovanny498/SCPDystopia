@@ -310,6 +310,7 @@ function groupNametagsByBucket(
 
     var finalNt: Record<string, number> = {};
     var finalCount = 0;
+    var includedCount = 0;
 
     // Map pre-construido de counts para other_units (optimización)
     var otherUnitsCounts: Record<string, number> = {};
@@ -341,13 +342,14 @@ function groupNametagsByBucket(
 
       // Aplicar límite de maxDropdowns (no aplica a other_units)
       // Los nametags que sobran se envían a overflow → other_units
-      if (nf >= maxDropdowns && fk !== "other_units") {
+      if (includedCount >= maxDropdowns && fk !== "other_units") {
         overflowEntries.push([nt, cnt]);
         continue;
       }
 
       finalNt[nt] = cnt;
       finalCount += cnt;
+      includedCount++;
 
       // Acumular entityIds por bucket final (se usa directamente como bucketEntityMap)
       if (!resultEntityMap[fk]) resultEntityMap[fk] = [];

@@ -120,9 +120,10 @@ export function buildSystemForm(
             if (_grpId2 !== _gid) continue;
 
             var _nt = (_scanned2.nametag || "").trim();
-            if (_nt && !seenThisGroup[_nt]) {
-              _groupInfo.nametags[_nt] = 1;
-              seenThisGroup[_nt] = true;
+            if (_nt) {
+              var prev = _groupInfo.nametags[_nt] || 0;
+              if (prev === 0) seenThisGroup[_nt] = true;
+              _groupInfo.nametags[_nt] = prev + 1;
             }
             _groupInfo.unitCount++;
           }
@@ -142,14 +143,15 @@ export function buildSystemForm(
           var stateKey = _gid;
           var currentValue = state[stateKey];
 
-          // Tooltip: nametags únicos en el grupo (cada nametag aparece una sola vez)
+          // Tooltip: nametags únicos en el grupo con contador §8xN
           var tooltip;
           var _uniqueNtNames = Object.keys(_groupInfo.nametags).sort();
           if (_uniqueNtNames.length > 0) {
             var _ntLines2 = [];
             for (var ni2 = 0; ni2 < _uniqueNtNames.length; ni2++) {
               var _nt2 = _uniqueNtNames[ni2];
-              _ntLines2.push(_nt2);
+              var count = _groupInfo.nametags[_nt2];
+              _ntLines2.push(count > 1 ? "§f" + _nt2 + "§r §8x" + count : "§f" + _nt2 + "§r");
             }
             tooltip = "§7Unidades en " + SpecialGroupLabels[_gid] + ":\n§r" + _ntLines2.join("\n§r");
           } else {

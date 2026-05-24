@@ -18,4 +18,6 @@ Hay funciones de depuración en scripts/utils/debug.ts para mejor personalizaci�
 
 El proyecto está adaptandose de javascript a typescript, se recomienda usar typescript para los nuevos archivos.
 
-Registra siempre fecha y hora en la que se escribió o se hizo la ultima modificación de los planes. También registra si el plan fue implementado o si está pendiente de implementación.
+Registra siempre fecha y hora en la que se escribió o se hizo la ultima modificación de los planes con el formato dd/mm/yyyy. También registra si el plan fue implementado o si está pendiente de implementación.
+
+Nunca implementes los planes sin aprobación explícita del usuario, y cuando lo hagas actualiza el plan poniendo que si se implementó.

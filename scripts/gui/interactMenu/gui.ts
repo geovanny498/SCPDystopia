@@ -87,7 +87,7 @@ function getSpecificConfig(typeId: string): EntitySpecificConfig | undefined {
   return undefined;
 }
 
-function getConfigForEntity(typeId: string): EntityConfig | null {
+function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null {
   const globalCats = config.global && Array.isArray(config.global.categories) ? [...config.global.categories] : [];
 
   // Resolver si la entidad está permitida
@@ -140,13 +140,26 @@ function getConfigForEntity(typeId: string): EntityConfig | null {
 
       const submenuCfg = config.submenus && config.submenus[c.submenu];
       const submenuCats = submenuCfg && Array.isArray(submenuCfg.categories) ? submenuCfg.categories : [];
-      const filteredSub = submenuCats.filter((sc) => shouldIncludeCategoryForEntity(sc, typeId));
+      const factionInfo = getEntityFactionInfo(entity);
+      const isSpecial = factionInfo?.isSpecial ?? false;
+      const filteredSub = submenuCats.filter((sc) => {
+        if (!shouldIncludeCategoryForEntity(sc, typeId)) return false;
+        if (sc.requiresSpecial && !isSpecial) return false;
+        return true;
+      });
       if (!filteredSub.length) continue; // submenu vacío -> ocultar la categoría
 
       // mantener la categoría (no modificar objeto original)
       filteredGlobalCats.push({ ...c });
     } else {
-      if (shouldIncludeCategoryForEntity(c, typeId)) filteredGlobalCats.push({ ...c });
+      if (shouldIncludeCategoryForEntity(c, typeId)) {
+        // Filtrar categorías top-level con requiresSpecial
+        if (c.requiresSpecial) {
+          const factionInfo = getEntityFactionInfo(entity);
+          if (!(factionInfo?.isSpecial ?? false)) continue;
+        }
+        filteredGlobalCats.push({ ...c });
+      }
     }
   }
 
@@ -301,8 +314,14 @@ function handleCategorySelection(
       return;
     }
 
-    const rawSubCats = Array.isArray(submenuCfg.categories) ? submenuCfg.categories : [];
-    const filteredSubCats = rawSubCats.filter((sc) => shouldIncludeCategoryForEntity(sc, typeId));
+     const rawSubCats = Array.isArray(submenuCfg.categories) ? submenuCfg.categories : [];
+      const factionInfo = getEntityFactionInfo(entity);
+      const isSpecial = factionInfo?.isSpecial ?? false;
+      const filteredSubCats = rawSubCats.filter((sc) => {
+        if (!shouldIncludeCategoryForEntity(sc, typeId)) return false;
+        if (sc.requiresSpecial && !isSpecial) return false;
+        return true;
+      });
 
     if (!filteredSubCats.length) {
       debugWarn("playerInteractWithEntity", `submenu ${submenuId} empty after filtering`, "blue");
@@ -587,7 +606,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
 
     const typeId = entity.typeId;
 
-    const cfg = getConfigForEntity(typeId);
+    const cfg = getConfigForEntity(typeId, entity);
     if (!cfg) {
       debugWarn("playerInteractWithEntity", `no config for ${typeId}`, "blue");
       return;

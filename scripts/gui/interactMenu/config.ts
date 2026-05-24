@@ -18,6 +18,7 @@ export interface MenuCategory {
   category: string;
   entries?: MenuEntry[];
   submenu?: string;
+  requiresSpecial?: boolean;
 }
 
 export interface SubmenuConfig {
@@ -263,6 +264,7 @@ const config: GuiConfig = {
         {
           id: "group_assignment",
           category: "§9Asignar Grupo",
+          requiresSpecial: true,
           entries: [
             {
               label: "§9Grupo A",

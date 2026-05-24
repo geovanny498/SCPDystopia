@@ -325,7 +325,7 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
       var currentGroup = getUnitGroup(entry.entities[0]) || SpecialGroups.NO_GROUP;
       var currentIndex = groupOptions.indexOf(currentGroup);
       var unitCount2 = entry.entities.length;
-      var label2 = unitCount2 > 1 ? "§f" + entry.nametag + "§r §8(" + unitCount2 + ")" : "§f" + entry.nametag + "§r";
+      var label2 = unitCount2 > 1 ? "§f" + entry.nametag + "§r §8x" + unitCount2 : "§f" + entry.nametag + "§r";
       modalForm.dropdown(label2, groupLabels, { defaultValueIndex: Math.max(0, currentIndex) });
     }
 

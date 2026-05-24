@@ -134,8 +134,24 @@ function showBucketTogglesMenu(player: Player, faction: string, bucketId: string
     return;
   }
 
-  // 1. Obtener nametags únicos del bucket
+  // 1. Obtener nametags únicos del bucket y contar entidades por nametag
   const uniqueNametags = Object.keys(bucketData.nametags);
+
+  // Mapa pre construido de entidades por nametag usando bucketIdMap del scanner
+  const bucketEntityIds = scanResult.bucketIdMap[bucketId] || [];
+  const idToScanned: Record<string, any> = {};
+  for (let i = 0; i < scanResult.entities.length; i++) {
+    idToScanned[scanResult.entities[i].entity.id] = scanResult.entities[i];
+  }
+  const bucketEntitiesByNametag: Record<string, any[]> = {};
+  for (let j = 0; j < bucketEntityIds.length; j++) {
+    const sc = idToScanned[bucketEntityIds[j]];
+    if (!sc || !sc.isSpecial || sc.faction !== faction) continue;
+    const nt = (sc.nametag || "").trim();
+    if (!nt) continue;
+    if (!bucketEntitiesByNametag[nt]) bucketEntitiesByNametag[nt] = [];
+    bucketEntitiesByNametag[nt].push(sc.entity);
+  }
 
   debugMessage("teleportMenu", `Mostrando toggles para ${bucketId}: ${uniqueNametags.length} nametags`, "cyan");
 
@@ -146,7 +162,9 @@ function showBucketTogglesMenu(player: Player, faction: string, bucketId: string
 
   uniqueNametags.forEach((nametag) => {
     const isSelected = isSpecialUnitSelected(player.name, faction, nametag);
-    form.toggle(nametag, { defaultValue: isSelected });
+    const unitCount = bucketEntitiesByNametag[nametag]?.length || 1;
+    const label = unitCount > 1 ? "§f" + nametag + "§r §8x" + unitCount : "§f" + nametag + "§r";
+    form.toggle(label, { defaultValue: isSelected });
   });
 
   form.textField("§7Coordenadas destino (x y z)", "Ej: 100 64 -200");

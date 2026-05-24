@@ -63,20 +63,40 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
   // Construir toggles por bucket
   const allSpecialNametags: string[] = [];
 
+  // Mapa pre-construido de entidades por nametag usando bucketIdMap del scanner
+  const idToScannedAll: Record<string, any> = {};
+  for (let i = 0; i < scanResult.entities.length; i++) {
+    idToScannedAll[scanResult.entities[i].entity.id] = scanResult.entities[i];
+  }
+
   bucketOrder.forEach((bucketId) => {
     const bucket = buckets[bucketId];
     if (!bucket || bucket.unitCount === 0) return;
 
+    // Construir conteo de entidades por nametag para este bucket
+    const bucketEntityIds = scanResult.bucketIdMap[bucketId] || [];
+    const bucketEntitiesByNametag: Record<string, any[]> = {};
+    for (let j = 0; j < bucketEntityIds.length; j++) {
+      const sc = idToScannedAll[bucketEntityIds[j]];
+      if (!sc || !sc.isSpecial || sc.faction !== faction) continue;
+      const nt = (sc.nametag || "").trim();
+      if (!nt) continue;
+      if (!bucketEntitiesByNametag[nt]) bucketEntitiesByNametag[nt] = [];
+      bucketEntitiesByNametag[nt].push(sc.entity);
+    }
+
     // Label del bucket
     form.label(`${bucket.label}§r`);
 
-    // Toggle por cada nametag único del bucket
+    // Toggle por cada nametag único del bucket, con contador §8xN
     const nametags = Object.keys(bucket.nametags);
     nametags.forEach((nametag) => {
       allSpecialNametags.push(nametag);
       // Si hay sesión guardada, usar esa selección; si no, activar por defecto
       const isSelected = saved ? saved.specialUnits.includes(nametag) : true;
-      form.toggle(nametag, { defaultValue: isSelected });
+      const unitCount = bucketEntitiesByNametag[nametag]?.length || 1;
+      const label = unitCount > 1 ? "§f" + nametag + "§r §8x" + unitCount : "§f" + nametag + "§r";
+      form.toggle(label, { defaultValue: isSelected });
     });
   });
 
