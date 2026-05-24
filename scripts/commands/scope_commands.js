@@ -5,7 +5,7 @@ import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
 import { getEntityFactionInfo, isValidSoldier } from "../gui/commandMenu/model/menu_faction.js";
 import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
 import { getAllAddonEntitiesInDimensions } from "../utils/entityQuery.js";
-
+import { compareNametags } from "../utils/nametagSort.js";
 /**
  * Comandos para gestionar el scope del menú
  */
@@ -184,7 +184,7 @@ function getBlockedEntitiesReport(scope) {
 
   if (Object.keys(blockedNormals).length) {
     reportLines.push("§7No especiales:");
-    for (const typeId of Object.keys(blockedNormals).sort()) {
+    for (const typeId of Object.keys(blockedNormals).sort(compareNametags)) {
       const count = blockedNormals[typeId];
       reportLines.push(`  §7- §r${typeId}${count > 1 ? ` x${count}` : ""}`);
     }
@@ -192,7 +192,7 @@ function getBlockedEntitiesReport(scope) {
 
   if (Object.keys(blockedSpecials).length) {
     reportLines.push("§7Especiales:");
-    for (const nameTag of Object.keys(blockedSpecials).sort()) {
+    for (const nameTag of Object.keys(blockedSpecials).sort(compareNametags)) {
       const count = blockedSpecials[nameTag];
       reportLines.push(`  §7- §r${nameTag}${count > 1 ? ` x${count}` : ""}`);
     }

@@ -11,6 +11,7 @@ import {
   menuConfig,
   getGroupsOrderForSystems,
 } from "../menu_config.js";
+import { compareNametags } from "../../../utils/nametagSort.js";
 
 /**
  * Construye el formulario para uno o más sistemas
@@ -145,7 +146,7 @@ export function buildSystemForm(
 
           // Tooltip: nametags únicos en el grupo con contador §8xN
           var tooltip;
-          var _uniqueNtNames = Object.keys(_groupInfo.nametags).sort();
+          var _uniqueNtNames = Object.keys(_groupInfo.nametags).sort(compareNametags);
           if (_uniqueNtNames.length > 0) {
             var _ntLines2 = [];
             for (var ni2 = 0; ni2 < _uniqueNtNames.length; ni2++) {

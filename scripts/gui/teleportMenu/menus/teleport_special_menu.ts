@@ -16,6 +16,7 @@ import {
 } from "../core/teleport_utils.js";
 import { teleportEntitiesToPlayer } from "../core/teleport_logic.js";
 import { scanActiveUnits } from "../../commandMenu/menu_config.js";
+import { compareNametags } from "../../../utils/nametagSort.js";
 import { debugMessage } from "../../../utils/debug.js";
 import { isSpecialUnitSelected, saveSpecialSelection } from "../core/teleport_session_store.js";
 
@@ -135,7 +136,7 @@ function showBucketTogglesMenu(player: Player, faction: string, bucketId: string
   }
 
   // 1. Obtener nametags únicos del bucket y contar entidades por nametag
-  const uniqueNametags = Object.keys(bucketData.nametags);
+  const uniqueNametags = Object.keys(bucketData.nametags).sort(compareNametags);
 
   // Mapa pre construido de entidades por nametag usando bucketIdMap del scanner
   const bucketEntityIds = scanResult.bucketIdMap[bucketId] || [];

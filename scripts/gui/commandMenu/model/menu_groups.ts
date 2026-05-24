@@ -11,8 +11,8 @@ import { SpecialGroups } from "../menu_config.js";
  * v5.0 — sin dependencia de world DP ni listas estáticas.
  */
 
-// Constante de DP de entidad
-const ENTITY_GROUP_DP = "scpd:group";
+// Constante de DP de entidad (exportada para casos especiales como sincronización)
+export const ENTITY_GROUP_DP = "scpd:group";
 
 /**
  * Obtiene el grupo asignado a una entidad.

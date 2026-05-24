@@ -8,6 +8,7 @@ import { getEntityFactionInfo, isValidSoldier } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
 import { applySystemToEntity } from "./menu_apply.js";
 import { teamFamilies } from "../../../utils/teams.js";
+import { ENTITY_GROUP_DP } from "../model/menu_groups.js";
 
 /**
  * Lista de soldados conocidos (independiente de toggle_system)
@@ -115,7 +116,7 @@ function handleSoldierEntity(ent, { forceApply = false } = {}) {
     // todo el mundo.
     if (currentNametag) {
       try {
-        const existingGroup = ent.getDynamicProperty("scpd:group");
+        const existingGroup = ent.getDynamicProperty(ENTITY_GROUP_DP);
         debugWarn(
           "menuEvents:spawn",
           `[sync] ${currentNametag}: existingGroup="${existingGroup}" faction=${faction}`,
@@ -130,14 +131,14 @@ function handleSoldierEntity(ent, { forceApply = false } = {}) {
             if (other.id === ent.id) continue;
             var otherNametag = (other.nameTag ?? "").trim();
             if (otherNametag !== currentNametag) continue;
-            var otherGroup = other.getDynamicProperty("scpd:group");
+            var otherGroup = other.getDynamicProperty(ENTITY_GROUP_DP);
             debugWarn(
               "menuEvents:spawn",
               `[sync] match found: other=${other.typeId} otherGroup="${otherGroup}"`,
               "dark_gray"
             );
             if (otherGroup) {
-              ent.setDynamicProperty("scpd:group", otherGroup);
+              ent.setDynamicProperty(ENTITY_GROUP_DP, otherGroup);
               debugWarn(
                 "menuEvents:spawn",
                 `${currentNametag}: grupo sincronizado desde entidad existente -> ${otherGroup}`,
@@ -148,7 +149,7 @@ function handleSoldierEntity(ent, { forceApply = false } = {}) {
           }
           debugWarn(
             "menuEvents:spawn",
-            `[sync] ${currentNametag}: sync completado, group final=${ent.getDynamicProperty("scpd:group")}`,
+            `[sync] ${currentNametag}: sync completado, group final=${ent.getDynamicProperty(ENTITY_GROUP_DP)}`,
             "cyan"
           );
         }

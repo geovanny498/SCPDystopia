@@ -18,6 +18,7 @@ import {
 } from "../core/teleport_utils.js";
 import { teleportEntitiesToPlayer } from "../core/teleport_logic.js";
 import { Factions, UnitHierarchy, scanActiveUnits } from "../../commandMenu/menu_config.js";
+import { compareNametags } from "../../../utils/nametagSort.js";
 import { debugMessage } from "../../../utils/debug.js";
 import { getAllMenuSelection, saveAllMenuSelection } from "../core/teleport_session_store.js";
 
@@ -89,7 +90,7 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
     form.label(`${bucket.label}§r`);
 
     // Toggle por cada nametag único del bucket, con contador §8xN
-    const nametags = Object.keys(bucket.nametags);
+    const nametags = Object.keys(bucket.nametags).sort(compareNametags);
     nametags.forEach((nametag) => {
       allSpecialNametags.push(nametag);
       // Si hay sesión guardada, usar esa selección; si no, activar por defecto
@@ -159,7 +160,7 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
             idx++;
           }
 
-          const nametags = Object.keys(bucket.nametags);
+          const nametags = Object.keys(bucket.nametags).sort(compareNametags);
           nametags.forEach((nametag) => {
             if (idx < values.length && values[idx] === true) {
               selectedSpecialNametags.push(nametag);

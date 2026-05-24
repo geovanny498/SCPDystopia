@@ -23,29 +23,33 @@ export const DEBUG_MODULES: string[] = [
   // ═══════════════════════════════════════════════════════════════════════════
   // ACTIVOS — Scope y aplicación de sistemas
   // ═══════════════════════════════════════════════════════════════════════════
-  "menuScope",         // Carga/guardado del scope global
-  "menuScope:check",   // Verificación isEntityInScope por cada entidad
-  "menuApply",         // Aplicación de sistemas (resumen)
-  "menuApply:entity",  // Aplicación de sistemas por entidad individual
-  "menuState",         // Guardado/fusión de estados de sistemas
-  "menuRules",         // Reglas de compatibilidad (resumen)
-  "menuRules:apply",   // shouldApplyToFutureEntities por sistema
-  "menuRules:compat",  // canApplySystem verificación de requisitos
-  "menuGroups",        // Asignación y lectura de grupos de especiales
-  "menuGroups:ui",     // UI del menú de grupos
+  "menuScope", // Carga/guardado del scope global
+  "menuScope:check", // Verificación isEntityInScope por cada entidad
+  "menuApply", // Aplicación de sistemas (resumen)
+  "menuApply:entity", // Aplicación de sistemas por entidad individual
+  "menuState", // Guardado/fusión de estados de sistemas
+  "menuRules", // Reglas de compatibilidad (resumen)
+  "menuRules:apply", // shouldApplyToFutureEntities por sistema
+  "menuRules:compat", // canApplySystem verificación de requisitos
+  "menuGroups", // Asignación y lectura de grupos de especiales
+  "menuGroups:ui", // UI del menú de grupos
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // ACTIVOS PARA PRUEBAS DE OPTIMIZACIÓN — Verificar scanner y sincronización
+  // ═══════════════════════════════════════════════════════════════════════════
+  "menuScanner", // Escaneo de entidades (cache hits/misses, contadores)
+  // "menuScanner:ent",   // Detalle por entidad (COMENTAR: muy verboso)
+  "menuEvents:spawn", // Sincronización de grupos en spawn (crítico para pruebas)
+  "menuSystem", // Construcción de formularios y buckets
+  "menuFaction", // Detección de facción/jerarquía (verificar clasificación)
 
   // ═══════════════════════════════════════════════════════════════════════════
   // COMENTADOS — Alto volumen, descomentar solo para depuración específica
   // ═══════════════════════════════════════════════════════════════════════════
 
   // Formularios y construcción de menús
-  // "menuScanner",       // Escaneo de entidades (volumen muy alto en spawns/ticks)
-  // "menuScanner:ent",   // Detalle por entidad en el scan
-  // "menuSystem",        // Formularios de sistemas (selector de facción + formularios)
   // "menuBuilder",       // Construcción de formularios (buildSystemForm / parseSystemFormValues)
-  // "menuFaction",       // Detección de facción/jerarquía por type_family
   // "menuEvents",        // Event listeners generales del menú
-  // "menuEvents:spawn",  // Eventos de entitySpawn / entityLoad
   // "menuEvents:remove", // Evento de entityRemove
   // "commandMenu",       // Menú principal de ActionForm
 

@@ -19,7 +19,7 @@ import {
 import { resetAllSystems, resetAllSystemStates, resetOneSystemState } from "./worldSave.js";
 import { resetMenuSystemStates } from "../gui/commandMenu/core/menu_events.js";
 import { resetScope } from "../gui/commandMenu/model/menu_scope.js";
-import { setUnitGroup } from "../gui/commandMenu/model/menu_groups.js";
+import { setUnitGroup, ENTITY_GROUP_DP } from "../gui/commandMenu/model/menu_groups.js";
 import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
 import { getAllAddonEntities, getAllAddonEntitiesInDimensions } from "../utils/entityQuery.js";
 
@@ -201,14 +201,13 @@ system.beforeEvents.startup.subscribe((init) => {
           }
 
           const playerDimension = origin.sourceEntity.dimension;
-          const SPECIAL_GROUP_DP = "scpd:group";
           let cleared = 0;
           try {
             // Optimización: 2 llamadas a getEntities en lugar de 4
             const allEnts = getAllAddonEntities(playerDimension);
             for (const ent of allEnts) {
-              if (ent.getDynamicProperty(SPECIAL_GROUP_DP) !== undefined) {
-                ent.setDynamicProperty(SPECIAL_GROUP_DP, undefined);
+              if (ent.getDynamicProperty(ENTITY_GROUP_DP) !== undefined) {
+                ent.setDynamicProperty(ENTITY_GROUP_DP, undefined);
                 cleared++;
               }
             }
@@ -381,14 +380,13 @@ system.beforeEvents.startup.subscribe((init) => {
           resetScope();
 
           try {
-            const SPECIAL_GROUP_DP = "scpd:group";
             let cleared = 0;
             const dims = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
             // Optimización: 2 llamadas a getEntities por dimensión en lugar de 4
             const allEnts = getAllAddonEntitiesInDimensions(dims);
             for (const ent of allEnts) {
-              if (ent.getDynamicProperty(SPECIAL_GROUP_DP) !== undefined) {
-                ent.setDynamicProperty(SPECIAL_GROUP_DP, undefined);
+              if (ent.getDynamicProperty(ENTITY_GROUP_DP) !== undefined) {
+                ent.setDynamicProperty(ENTITY_GROUP_DP, undefined);
                 cleared++;
               }
             }

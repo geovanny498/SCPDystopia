@@ -20,6 +20,7 @@ import {
   getFamilyTagOrder,
 } from "../gui/commandMenu/menu_config.js";
 import { getEntityFactionInfo } from "../gui/commandMenu/model/menu_faction.js";
+import { compareNametags } from "../utils/nametagSort.js";
 import { teamFamilies } from "../utils/teams.js";
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -114,7 +115,7 @@ system.beforeEvents.startup.subscribe((init) => {
               const orderA = getFamilyTagOrder(a) || Number.MAX_SAFE_INTEGER;
               const orderB = getFamilyTagOrder(b) || Number.MAX_SAFE_INTEGER;
               if (orderA !== orderB) return orderA - orderB;
-              return a.localeCompare(b, undefined, { sensitivity: "base" });
+              return compareNametags(a, b);
             });
 
             for (const name of sortedNames) {
@@ -237,9 +238,7 @@ system.beforeEvents.startup.subscribe((init) => {
                 {}
               );
 
-              const sortedNames = Object.keys(nameCounts).sort((a, b) =>
-                a.localeCompare(b, undefined, { sensitivity: "base" })
-              );
+              const sortedNames = Object.keys(nameCounts).sort(compareNametags);
 
               if (sortedNames.length === 1) {
                 const onlyName = sortedNames[0];

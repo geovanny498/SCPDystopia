@@ -2,6 +2,7 @@
 import { Player, system, world, Entity } from "@minecraft/server";
 import { ActionFormData, ModalFormData } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
+import { compareNametags } from "../../../utils/nametagSort.js";
 import {
   Factions,
   SpecialGroups,
@@ -103,10 +104,8 @@ function showFactionGroupsMenu(player: Player, faction: string): void {
   try {
     const factionLabel = faction === Factions.FOUNDATION ? "§lFoundation" : "§2§lChaos";
 
-    invalidateScanCache();
-    invalidateEntityQueryCache();
-
     // Escanear entidades activas en la dimensión del jugador
+    // El cache TTL (2s) maneja la expiración natural - no forzar invalidación en navegación UI
     const scanResult = scanActiveUnits(player.dimension, faction);
     const buckets = scanResult.buckets;
 
@@ -199,6 +198,7 @@ function showFactionGroupsMenu(player: Player, faction: string): void {
             return;
           }
 
+          // Verificar si seleccionó un bucket o el botón "Volver"
           if (selection >= 0 && selection < nonEmptyBuckets.length) {
             var bucketEntry = nonEmptyBuckets[selection];
             if (bucketEntry && bucketEntry.id) {
@@ -206,7 +206,9 @@ function showFactionGroupsMenu(player: Player, faction: string): void {
               return;
             }
           }
-          showFactionGroupsMenu(player, faction);
+
+          // Botón "Volver" (último botón = nonEmptyBuckets.length)
+          showGroupsMenu(player);
         })
         .catch(function (err) {
           debugWarn("menuGroups", "Error en showFactionGroupsMenu: " + err, "red");
@@ -279,7 +281,7 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
 
     // Armar la lista de nametags para el dropdown usando las entidades de este bucket
     var uniqueNametags: { nametag: string; entities: Entity[] }[] = [];
-    var bucketNtKeys = Object.keys(bucketNametags);
+    var bucketNtKeys = Object.keys(bucketNametags).sort(compareNametags);
     for (var bi2 = 0; bi2 < bucketNtKeys.length; bi2++) {
       var nt2 = bucketNtKeys[bi2];
       var ents = ntBucketEntities[nt2];
@@ -370,12 +372,8 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
           player.sendMessage("§a[GRUPOS] " + bucketLabel + " actualizado (" + uniqueNametags.length + " nametags)");
           debugWarn("menuGroups:ui", "Bucket " + bucketId + " actualizado", "green");
 
-          // Forzar scan fresco antes de volver al menú para evitar valores cacheados desactualizados
-          invalidateScanCache();
-          invalidateEntityQueryCache();
-          scanActiveUnits(player.dimension, faction);
-
           // Volver al menú de grupos de la facción
+          // showFactionGroupsMenu escaneará con cache si <2s, o refrescará si >2s (TTL natural)
           showFactionGroupsMenu(player, faction);
         })
         .catch(function (err) {
