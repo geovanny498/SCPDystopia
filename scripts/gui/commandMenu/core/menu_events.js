@@ -110,54 +110,6 @@ function handleSoldierEntity(ent, { forceApply = false } = {}) {
       return;
     }
 
-    // Sincronizar grupo: si la entidad es especial y no tiene grupo asignado,
-    // buscar otra entidad con el mismo nametag que SÍ tenga grupo y copiárselo.
-    // Se filtra por las familias de la facción de la entidad para no recorrer
-    // todo el mundo.
-    if (currentNametag) {
-      try {
-        const existingGroup = ent.getDynamicProperty(ENTITY_GROUP_DP);
-        debugWarn(
-          "menuEvents:spawn",
-          `[sync] ${currentNametag}: existingGroup="${existingGroup}" faction=${faction}`,
-          "dark_gray"
-        );
-        if (!existingGroup) {
-          // Usar cache por dimensión+facción: getEntities se llama una sola vez por ráfaga de spawn
-          const allForTag = getEntitiesCached(ent.dimension, faction);
-          debugWarn("menuEvents:spawn", `[sync] allForTag.length=${allForTag.length}`, "dark_gray");
-          for (var i = 0; i < allForTag.length; i++) {
-            var other = allForTag[i];
-            if (other.id === ent.id) continue;
-            var otherNametag = (other.nameTag ?? "").trim();
-            if (otherNametag !== currentNametag) continue;
-            var otherGroup = other.getDynamicProperty(ENTITY_GROUP_DP);
-            debugWarn(
-              "menuEvents:spawn",
-              `[sync] match found: other=${other.typeId} otherGroup="${otherGroup}"`,
-              "dark_gray"
-            );
-            if (otherGroup) {
-              ent.setDynamicProperty(ENTITY_GROUP_DP, otherGroup);
-              debugWarn(
-                "menuEvents:spawn",
-                `${currentNametag}: grupo sincronizado desde entidad existente -> ${otherGroup}`,
-                "green"
-              );
-              break;
-            }
-          }
-          debugWarn(
-            "menuEvents:spawn",
-            `[sync] ${currentNametag}: sync completado, group final=${ent.getDynamicProperty(ENTITY_GROUP_DP)}`,
-            "cyan"
-          );
-        }
-      } catch (syncErr) {
-        debugWarn("menuEvents:spawn", `Error sincronizando grupo: ${syncErr} stack=${syncErr.stack}`, "red");
-      }
-    }
-
     const { isSpecial, hierarchy, group } = factionInfo;
     const nameTag = ent.nameTag ?? "";
 

@@ -431,44 +431,7 @@ export function scanActiveUnits(dimension: Dimension, faction: string): ScanResu
     }
   }
 
-  // ── BUCLE 2: Construir mapa de grupos de referencia (sin anidación) ──────────
-  // Primera pasada sobre entities: encontrar el primer grupo válido para cada nametag
-  const nametagToRefGroup = new Map<string, string>();
 
-  for (let i = 0; i < entities.length; i++) {
-    const scanned = entities[i];
-    if (!scanned.isSpecial || !scanned.nametag) continue;
-
-    // Si ya encontramos un grupo para este nametag, skip
-    if (nametagToRefGroup.has(scanned.nametag)) continue;
-
-    // IMPORTANTE: Usar getDynamicProperty directo, NO getUnitGroup()
-    // getUnitGroup() convierte undefined → NO_GROUP, perdiendo la distinción entre:
-    // - undefined: entidad nueva sin asignar (debe sincronizarse)
-    // - NO_GROUP: entidad explícitamente asignada a "Sin grupo" (NO debe sincronizarse)
-    const g = scanned.entity.getDynamicProperty(ENTITY_GROUP_DP);
-    if (g) {
-      nametagToRefGroup.set(scanned.nametag, String(g));
-    }
-  }
-
-  // ── BUCLE 3: Aplicar sincronización de grupos (sin anidación) ────────────────
-  // Segunda pasada sobre entities: aplicar grupos de referencia a entidades sin grupo
-  for (let i = 0; i < entities.length; i++) {
-    const scanned = entities[i];
-    if (!scanned.isSpecial || !scanned.nametag) continue;
-
-    const refGroup = nametagToRefGroup.get(scanned.nametag);
-    if (!refGroup) continue;
-
-    // Solo actualizar si NO tiene propiedad dinámica (undefined)
-    // NO usar getUnitGroup() aquí por la misma razón
-    if (!scanned.entity.getDynamicProperty(ENTITY_GROUP_DP)) {
-      scanned.entity.setDynamicProperty(ENTITY_GROUP_DP, refGroup);
-      scanned.group = refGroup; // Actualizar inmediatamente (elimina bucle de re-lectura)
-      debugWarn("menuScanner", `Sync nametag '${scanned.nametag}' -> ${refGroup}`, "cyan");
-    }
-  }
 
   const activeHierarchies = Object.keys(byHierarchy).filter((h) => (byHierarchy[h]?.length ?? 0) > 0);
 
