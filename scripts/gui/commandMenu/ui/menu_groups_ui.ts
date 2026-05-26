@@ -18,29 +18,6 @@ import { setUnitGroup, getUnitGroup } from "../model/menu_groups.js";
 import type { ScannedEntity } from "../model/menu_entity_scanner.js";
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// §  DETECCIÓN DE NAMETAG  (se suscribe en el arranque del módulo)
-// ═══════════════════════════════════════════════════════════════════════════════
-
-world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
-  try {
-    const entity = ev.target;
-    if (!entity) return;
-
-    const currNametag = (entity.nameTag ?? "").trim();
-    const prevTag = String(entity.getDynamicProperty("scpd:prev_nametag") ?? "").trim();
-
-    if (currNametag !== prevTag) {
-      // El nametag cambió: invalidar ambos caches
-      invalidateScanCache();
-      invalidateEntityQueryCache();
-      entity.setDynamicProperty("scpd:prev_nametag", currNametag);
-    }
-  } catch (e) {
-    // Silencioso: esta detección es un refuerzo, no crítico
-  }
-});
-
-// ═══════════════════════════════════════════════════════════════════════════════
 // §  MENÚ PRINCIPAL DE GRUPOS
 // ═══════════════════════════════════════════════════════════════════════════════
 

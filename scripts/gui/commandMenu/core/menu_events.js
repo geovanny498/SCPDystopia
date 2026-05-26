@@ -75,13 +75,7 @@ function handleSoldierEntity(ent, { forceApply = false } = {}) {
       menuSoldiers.push(ent.id);
     }
 
-    // Invalidar cache de escaneo si el nametag cambió (v4.0 detección de conversión)
     const currentNametag = ent.nameTag ?? "";
-    const prevNametag = ent.getDynamicProperty("scpd:prev_nametag") ?? "";
-    if (currentNametag !== prevNametag) {
-      invalidateScanCache();
-      ent.setDynamicProperty("scpd:prev_nametag", currentNametag);
-    }
 
     // Determinar faction e info usando el módulo centralizado
     const factionInfo = getEntityFactionInfo(ent);
@@ -91,7 +85,7 @@ function handleSoldierEntity(ent, { forceApply = false } = {}) {
 
     // Si la entidad no tiene typeFamilies (spawneada por mcfunction:
     // entitySpawn dispara antes que minecraft:entity_spawned agregue
-    // los component_groups con typeFamilies), deferir 2 ticks.
+    // los component_groups con typeFamilies), diferir 2 ticks.
     const hasTypeFamilies = !!ent.getComponent("minecraft:type_family");
     debugWarn(
       "menuEvents:spawn",

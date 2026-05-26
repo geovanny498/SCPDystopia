@@ -1,6 +1,7 @@
 // scripts/gui/commandMenu/menu_scope.js
 import { world } from "@minecraft/server";
 import { debugWarn } from "../../../utils/debug.js";
+import { ENTITY_GLOBAL_OVERWRITE_PROPERTY } from "../../interactMenu/gui.js";
 
 /**
  * Sistema de Prioridad de Aplicación (Scope)
@@ -123,7 +124,7 @@ export function isEntityInScope(ent, faction, isSpecial, nameTag, scope = null, 
   }
 
   try {
-    const raw = ent.getDynamicProperty("scpd_menu_config_allow_global_overwrite");
+    const raw = ent.getDynamicProperty(ENTITY_GLOBAL_OVERWRITE_PROPERTY);
     const allowGlobalOverwrite = normalizeBooleanDynamicProperty(raw);
     const blocked = allowGlobalOverwrite === false;
     debugWarn(

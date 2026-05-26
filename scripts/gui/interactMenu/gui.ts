@@ -186,7 +186,7 @@ function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null
   };
 }
 
-const ENTITY_GLOBAL_OVERWRITE_PROPERTY = "scpd_menu_config_allow_global_overwrite";
+export const ENTITY_GLOBAL_OVERWRITE_PROPERTY = "scpd_menu_config_allow_global_overwrite";
 
 function itemMatches(mainId: string | null, opener: string): boolean {
   if (!mainId || !opener) return false;
@@ -314,14 +314,14 @@ function handleCategorySelection(
       return;
     }
 
-     const rawSubCats = Array.isArray(submenuCfg.categories) ? submenuCfg.categories : [];
-      const factionInfo = getEntityFactionInfo(entity);
-      const isSpecial = factionInfo?.isSpecial ?? false;
-      const filteredSubCats = rawSubCats.filter((sc) => {
-        if (!shouldIncludeCategoryForEntity(sc, typeId)) return false;
-        if (sc.requiresSpecial && !isSpecial) return false;
-        return true;
-      });
+    const rawSubCats = Array.isArray(submenuCfg.categories) ? submenuCfg.categories : [];
+    const factionInfo = getEntityFactionInfo(entity);
+    const isSpecial = factionInfo?.isSpecial ?? false;
+    const filteredSubCats = rawSubCats.filter((sc) => {
+      if (!shouldIncludeCategoryForEntity(sc, typeId)) return false;
+      if (sc.requiresSpecial && !isSpecial) return false;
+      return true;
+    });
 
     if (!filteredSubCats.length) {
       debugWarn("playerInteractWithEntity", `submenu ${submenuId} empty after filtering`, "blue");
@@ -510,9 +510,7 @@ function showEntryMenu(
         `jugador=${player.name} | typeId=${typeId} | evento=${entry.event} | label=${entry.label}`,
         "cyan"
       );
-      player.sendMessage(
-        `§8[§aMENU§8] §7${player.name} aplicó a ${soldierName} §7-> §f${entry.label}`
-      );
+      player.sendMessage(`§8[§aMENU§8] §7${player.name} aplicó a ${soldierName} §7-> §f${entry.label}`);
     }
   });
 }
