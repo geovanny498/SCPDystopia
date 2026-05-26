@@ -234,11 +234,11 @@ export const systems: MenuSystems = {
     supportsGroups: true,
 
     options: [
-      { value: "maximum", label: "§cMáxima", events: { start: "humanoid:fire_open_warfare" } },
+      { value: "maximum", label: "§cMáxima", events: { start: "humanoid:fire_maximum" } },
       { value: "advanced", label: "§9Avanzada", events: { start: "humanoid:fire_advanced" } },
-      { value: "intermediate", label: "§aIntermedia", events: { start: "humanoid:fire_armed_presence" } },
-      { value: "close", label: "§bCercana", events: { start: "humanoid:fire_defensive" } },
-      { value: "neutral", label: "§eNeutral / Sigilo", events: { start: "humanoid:fire_mode_hit" } },
+      { value: "intermediate", label: "§aIntermedia", events: { start: "humanoid:fire_intermediate" } },
+      { value: "close", label: "§bCercana", events: { start: "humanoid:fire_close" } },
+      { value: "neutral", label: "§eNeutral / Sigilo", events: { start: "humanoid:fire_neutral" } },
     ],
 
     factions: {

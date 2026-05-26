@@ -120,7 +120,7 @@ const config: GuiConfig = {
         entries: [
           {
             label: "§cMáxima",
-            event: "humanoid:fire_open_warfare",
+            event: "humanoid:fire_maximum",
           },
           {
             label: "§9Avanzada",
@@ -128,15 +128,15 @@ const config: GuiConfig = {
           },
           {
             label: "§aIntermedia",
-            event: "humanoid:fire_armed_presence",
+            event: "humanoid:fire_intermediate",
           },
           {
             label: "§bCercana",
-            event: "humanoid:fire_defensive",
+            event: "humanoid:fire_close",
           },
           {
             label: "§eNeutral / Sigilo",
-            event: "humanoid:fire_mode_hit",
+            event: "humanoid:fire_neutral",
           },
         ],
       },

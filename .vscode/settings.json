@@ -42,7 +42,9 @@
   "js/ts.tsdk.path": "node_modules\\typescript\\lib",
   "[markdown]": {
     "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
-  }
+  },
+  "js/ts.referencesCodeLens.enabled": true,
+  "editor.wordWrap": "on"
   //   "prettier.requireConfig": true,
   //   "prettier.configPath": ".prettierrc.json"
 }

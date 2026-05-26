@@ -144,7 +144,7 @@
           "damage": 18
         }
       },
-      "open_warfare": {
+      "maximum": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 4,
           "within_radius": 64,
@@ -230,7 +230,7 @@
               "max_dist": 64
             },
             {
-              // Amenazas no relevantes: Rango Superior a iniciativa intermedia (armed_presence)
+              // Amenazas no relevantes: Rango Superior a iniciativa intermedia (intermediate)
               "filters": {
                 "all_of": [
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp096" },
@@ -343,7 +343,7 @@
               "max_dist": 48
             },
             {
-              // Amenazas no relevantes: Rango Superior a iniciativa intermedia (armed_presence)
+              // Amenazas no relevantes: Rango Superior a iniciativa intermedia (intermediate)
               "filters": {
                 "all_of": [
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp096" },
@@ -370,7 +370,7 @@
           "must_see": true
         }
       },
-      "armed_presence": {
+      "intermediate": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 4,
           "within_radius": 34,
@@ -481,7 +481,7 @@
           "must_see": true
         }
       },
-      "defensive": {
+      "close": {
         "minecraft:behavior.nearest_attackable_target": {
           "priority": 4,
           "within_radius": 22,
@@ -593,7 +593,7 @@
         }
       },
       // Hurt by target compartido para todos los modos de iniciativa de combate, usarlo sin el resto activo lo convierte en iniciativa de combate "neutral / sigilo"
-      "fire_mode_hit": {
+      "neutral": {
         "minecraft:behavior.hurt_by_target": {
           "priority": 6,
           "entity_types": [
@@ -1177,8 +1177,8 @@
                 "start_move",
                 "calm",
                 "humanoid:stealth_off",
-                "fire_mode_hit",
-                "armed_presence" // menos agresivo por defecto
+                "neutral",
+                "intermediate" // menos agresivo por defecto
               ]
             }
           }
@@ -1315,60 +1315,60 @@
           "command": ["title @p actionbar §9Caminar libremente"]
         }
       },
-      "humanoid:fire_open_warfare": {
+      "humanoid:fire_maximum": {
         "add": {
           "component_groups": [
-            "open_warfare",
-            "fire_mode_hit",
+            "maximum",
+            "neutral",
             "humanoid:stealth_off" // Visibilidad normal
           ]
         },
         "remove": {
           "component_groups": [
             "advanced",
-            "armed_presence",
-            "defensive",
+            "intermediate",
+            "close",
             "humanoid:stealth_on" // Quita sigilo
           ]
         }
       },
       "humanoid:fire_advanced": {
         "add": {
-          "component_groups": ["advanced", "fire_mode_hit", "humanoid:stealth_off"]
+          "component_groups": ["advanced", "neutral", "humanoid:stealth_off"]
         },
         "remove": {
-          "component_groups": ["open_warfare", "armed_presence", "defensive", "humanoid:stealth_on"]
+          "component_groups": ["maximum", "intermediate", "close", "humanoid:stealth_on"]
         }
       },
-      "humanoid:fire_armed_presence": {
+      "humanoid:fire_intermediate": {
         "add": {
-          "component_groups": ["armed_presence", "fire_mode_hit", "humanoid:stealth_off"]
+          "component_groups": ["intermediate", "neutral", "humanoid:stealth_off"]
         },
         "remove": {
-          "component_groups": ["open_warfare", "advanced", "defensive", "humanoid:stealth_on"]
+          "component_groups": ["maximum", "advanced", "close", "humanoid:stealth_on"]
         }
       },
-      "humanoid:fire_defensive": {
+      "humanoid:fire_close": {
         "add": {
-          "component_groups": ["defensive", "fire_mode_hit", "humanoid:stealth_off"]
+          "component_groups": ["close", "neutral", "humanoid:stealth_off"]
         },
         "remove": {
-          "component_groups": ["open_warfare", "advanced", "armed_presence", "humanoid:stealth_on"]
+          "component_groups": ["maximum", "advanced", "intermediate", "humanoid:stealth_on"]
         }
       },
-      "humanoid:fire_mode_hit": {
+      "humanoid:fire_neutral": {
         "add": {
           "component_groups": [
-            "fire_mode_hit",
+            "neutral",
             "humanoid:stealth_on" // Activa el sigilo
           ]
         },
         "remove": {
           "component_groups": [
-            "open_warfare",
+            "maximum",
             "advanced",
-            "armed_presence",
-            "defensive",
+            "intermediate",
+            "close",
             "humanoid:stealth_off" // Quita visibilidad normal
           ]
         }
