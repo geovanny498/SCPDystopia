@@ -10,6 +10,7 @@
     "oderwat.indent-rainbow",
     "ms-ceintl.vscode-language-pack-es",
     "github.copilot",
-    "github.copilot-chat"
+    "github.copilot-chat",
+    "yzhang.markdown-all-in-one"
   ]
 }

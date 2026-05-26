@@ -4,26 +4,13 @@
  * Configuración centralizada del menú de comandos
  * Este archivo define todas las categorías, sistemas y sus comportamientos
  *
- * v4.0 — Las listas especialUnits, normalUnits y normalUnitFamilies fueron eliminadas
- * del plan y sustituidas por detección dinámica (menu_entity_scanner.ts / menu_faction.ts).
- * Se mantienen exports de compatibilidad vacíos para módulos externos que aún no hayan
- * sido migrados (ej: teleportMenu). Suprimir estos exports una vez finalizada la migración.
+ * v4.0 — Detección dinámica de unidades mediante nametags.
+ * Especiales: entidades con nametag no vacío.
+ * No especiales: detección por jerarquía mediante type_family.
+ * Grupos (A-D + Sin grupo): asignados dinámicamente vía propiedades dinámicas.
  */
 
 import type { Entity } from "@minecraft/server";
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// §  EXPORTS DE COMPATIBILIDAD  (vacíos, para teleportMenu - eliminar cuando se migre)
-// ═══════════════════════════════════════════════════════════════════════════════
-
-/** @deprecated Usar scanActiveUnits() en su lugar. Eliminar cuando teleportMenu se migre. */
-export const specialUnits = Object.create(null);
-
-/** @deprecated La detección de jerarquía se hace por type_family en menu_faction.ts. Eliminar cuando teleportMenu se migre. */
-export const normalUnits = Object.create(null);
-
-/** @deprecated Usar NAMETAG_FAMILY_MAP en su lugar. Eliminar cuando teleportMenu se migre. */
-export const normalUnitFamilies = Object.create(null);
 
 // ── Tipos de control ────────────────────────────────────────────────────────
 
@@ -519,57 +506,6 @@ export const menuConfig = {
     specificSystems: "§8[MENU] §7{player} §rconfiguró: §6{systems}§r.",
   },
 };
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// §  FUNCIONES DE COMPATIBILIDAD  (para teleportMenu - eliminar cuando se migre)
-// ═══════════════════════════════════════════════════════════════════════════════
-
-/**
- * @deprecated Usar NAMETAG_FAMILY_MAP en su lugar. Eliminar cuando teleportMenu se migre.
- */
-export function getNormalUnitFamilyOrder(_faction: string) {
-  return Object.keys(NAMETAG_FAMILY_MAP);
-}
-
-/**
- * @deprecated Usar getFamilyTagLabel() en su lugar. Eliminar cuando teleportMenu se migre.
- */
-export function getNormalUnitFamilyLabel(_faction: string, familyId: string) {
-  return getFamilyTagLabel(familyId);
-}
-
-/**
- * @deprecated Usar scanActiveUnits para detectar familias por entidad. Eliminar cuando teleportMenu se migre.
- */
-export function getNormalUnitFamilyLabelFromEntity(_ent: Entity, _faction: string) {
-  return "§7Desconocido§r";
-}
-
-/**
- * @deprecated Usar detectHierarchyFromFamilies() de menu_entity_scanner.ts en su lugar.
- * Eliminar cuando teleportMenu se migre.
- */
-export function getUnitHierarchy(typeId: string, _faction: string) {
-  const lower = (typeId ?? "").toLowerCase();
-  if (lower.endsWith("c")) return UnitHierarchy.COMMANDER;
-  if (lower.endsWith("l")) return UnitHierarchy.LEADER;
-  return UnitHierarchy.BASIC;
-}
-
-/**
- * @deprecated Usar isValidSoldier() de menu_faction.ts en su lugar.
- * Eliminar cuando teleportMenu se migre.
- */
-export function isNormalUnit(typeId: string, _faction: string) {
-  return getUnitHierarchy(typeId, _faction) !== null;
-}
-
-/**
- * @deprecated Eliminar cuando teleportMenu se migre.
- */
-export function getAllNormalTypeIds(_faction: string) {
-  return [];
-}
 
 // ── Funciones utilitarias de sistema ────────────────────────────────────────
 
