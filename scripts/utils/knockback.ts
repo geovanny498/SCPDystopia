@@ -1,8 +1,9 @@
 // scripts\utils\knockback.ts
+import type { Entity } from "@minecraft/server";
 import { debugMessage, debugWarn } from "./debug";
 import { entityDamageConfig } from "./entityConfig";
 
-export function applyKnockback(entity: any, projectile: any, kb: number) {
+export function applyKnockback(entity: Entity, projectile: Entity, kb: number) {
   try {
     if (entity.typeId === "minecraft:player") return;
     const projectileLocation = projectile?.location;
@@ -19,14 +20,15 @@ export function applyKnockback(entity: any, projectile: any, kb: number) {
     }
 
     // Actualmente no obtenible
-    const compKbRes = (entity as any).getComponent("minecraft:knockback_resistance")?.value;
+    const kbComp = entity.getComponent("minecraft:knockback_resistance") as { value?: number } | null;
+    const compKbRes = kbComp?.value;
 
     if (compKbRes == undefined) {
       debugWarn("knockback", `Entidad ${entity.typeId} no se encontró knockback_resistance=${compKbRes}`, "purple");
     }
 
     // Valor por defecto desde componente (o 0). Si en entityDamageConfig está knockback: false, forzar 1.
-    const config = (entityDamageConfig as any)?.[entity.typeId];
+    const config = entityDamageConfig[entity.typeId];
     let knockbackRes = compKbRes ?? 0;
     if (config && config.knockback === false) {
       knockbackRes = 1;

@@ -1,10 +1,17 @@
 // scripts\utils\weapons.js
-import { world, system } from "@minecraft/server";
-import { debugMessage, debugWarn } from "./debug.ts";
+import { world, system, Entity } from "@minecraft/server";
+import { debugMessage, debugWarn } from "./debug.js";
 import * as mc from "@minecraft/server";
 
-// Mapeo de armas con propiedades (Sólo Aplok Guns)
-const weaponData = {
+export type WeaponData = {
+  projectile: string;
+  speed: number;
+  fireRate: number;
+  isAutomatic: boolean;
+  onEntryCommands: string[];
+};
+
+const weaponData: Record<string, WeaponData> = {
   "gabrielaplok:m4a1": {
     projectile: "lc:dt_hk416_player_bullet",
     speed: 25.0,
@@ -48,7 +55,7 @@ const cooldownMap = new Map(); // Para semiautomáticas: player.id -> tick
 // Como respaldo de proyectil -> jugador
 // export const projectileShooterMap = new Map();
 
-function shoot(player, itemId) {
+function shoot(player: Entity, itemId: string) {
   const data = weaponData[itemId];
   if (!data) {
     debugWarn("player", `No se encontró la configuración del arma: ${itemId}`, "yellow");
@@ -79,7 +86,10 @@ function shoot(player, itemId) {
     // projectileShooterMap.set(projectile.id, player);
 
     // Asignar propietario nativo
-    const projComp = projectile.getComponent("minecraft:projectile");
+    const projComp = projectile.getComponent("minecraft:projectile") as {
+      owner?: Entity;
+      shoot?: (velocity: { x: number; y: number; z: number }) => void;
+    } | null;
     if (projComp) {
       projComp.owner = player;
     }
@@ -90,8 +100,9 @@ function shoot(player, itemId) {
       z: direction.z * data.speed,
     };
 
-    // if (projComp && projComp.shoot) {
-    projComp.shoot(velocity);
+    if (projComp?.shoot) {
+      projComp.shoot(velocity);
+    }
     // } else {
     //     projectile.applyImpulse(velocity);
     // }
@@ -186,7 +197,7 @@ world.afterEvents.itemReleaseUse.subscribe((event) => {
   stopShooting(player.id);
 });
 
-function stopShooting(playerId) {
+function stopShooting(playerId: string) {
   const intervalId = firingPlayers.get(playerId);
   if (intervalId !== undefined) {
     system.clearRun(intervalId);

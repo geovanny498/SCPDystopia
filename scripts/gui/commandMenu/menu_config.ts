@@ -10,6 +10,8 @@
  * sido migrados (ej: teleportMenu). Suprimir estos exports una vez finalizada la migración.
  */
 
+import type { Entity } from "@minecraft/server";
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // §  EXPORTS DE COMPATIBILIDAD  (vacíos, para teleportMenu - eliminar cuando se migre)
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -29,6 +31,55 @@ export const ControlType = {
   TOGGLE: "toggle",
   DROPDOWN: "dropdown",
 };
+
+export type MenuControlType = (typeof ControlType)[keyof typeof ControlType];
+
+export type MenuOption = {
+  value: string;
+  label: string;
+  events?: {
+    start?: string;
+    [key: string]: string | undefined;
+  };
+  autoTame?: boolean;
+};
+
+export type MenuSystemBase = {
+  id: string;
+  displayName: string;
+  description: string;
+  tooltip: string;
+  category: string;
+  dynamicProperty: string;
+  controlType: MenuControlType;
+  supportsSpecials: boolean;
+  supportsHierarchy: boolean;
+  supportsGroups: boolean;
+  factions: Record<string, unknown>;
+  defaults: Record<string, unknown>;
+};
+
+export type DropdownMenuSystem = MenuSystemBase & {
+  controlType: typeof ControlType.DROPDOWN;
+  options: MenuOption[];
+};
+
+export type ToggleMenuSystem = MenuSystemBase & {
+  controlType: typeof ControlType.TOGGLE;
+  events?: { enable?: Record<string, string> };
+  autoTame?: boolean;
+};
+
+export type MenuSystem = DropdownMenuSystem | ToggleMenuSystem;
+export type MenuSystems = Record<string, MenuSystem>;
+
+export function isToggleSystem(sys: MenuSystem): sys is ToggleMenuSystem {
+  return sys.controlType === ControlType.TOGGLE;
+}
+
+export function isDropdownSystem(sys: MenuSystem): sys is DropdownMenuSystem {
+  return sys.controlType === ControlType.DROPDOWN;
+}
 
 // ── Bandos ──────────────────────────────────────────────────────────────────
 
@@ -86,12 +137,14 @@ export const NAMETAG_FAMILY_MAP = {
   chaos_delta: { label: "§2§lChaos Delta", order: 10 },
 };
 
-export function getFamilyTagLabel(familyId) {
-  return NAMETAG_FAMILY_MAP[familyId]?.label ?? familyId;
+export function getFamilyTagLabel(familyId: string) {
+  const family = NAMETAG_FAMILY_MAP[familyId as keyof typeof NAMETAG_FAMILY_MAP];
+  return family?.label ?? familyId;
 }
 
-export function getFamilyTagOrder(familyId) {
-  return NAMETAG_FAMILY_MAP[familyId]?.order ?? 999;
+export function getFamilyTagOrder(familyId: string) {
+  const family = NAMETAG_FAMILY_MAP[familyId as keyof typeof NAMETAG_FAMILY_MAP];
+  return family?.order ?? 999;
 }
 
 // ── Re-exportar scanner ─────────────────────────────────────────────────────
@@ -106,7 +159,7 @@ export {
 
 // ── Definición de sistemas ─────────────────────────────────────────────────
 
-export const systems = {
+export const systems: MenuSystems = {
   movement: {
     id: "movement",
     displayName: "§1Movimiento / Patrulla",
@@ -427,7 +480,7 @@ export const systems = {
 
 // ── Categorías ───────────────────────────────────────────────────────────────
 
-export const categories = {
+export const categories: Record<string, { id: string; displayName: string; description: string; systems: string[] }> = {
   movement_patrol: {
     id: "movement_patrol",
     displayName: "§1Movimiento / Patrulla",
@@ -474,21 +527,21 @@ export const menuConfig = {
 /**
  * @deprecated Usar NAMETAG_FAMILY_MAP en su lugar. Eliminar cuando teleportMenu se migre.
  */
-export function getNormalUnitFamilyOrder(_faction) {
+export function getNormalUnitFamilyOrder(_faction: string) {
   return Object.keys(NAMETAG_FAMILY_MAP);
 }
 
 /**
  * @deprecated Usar getFamilyTagLabel() en su lugar. Eliminar cuando teleportMenu se migre.
  */
-export function getNormalUnitFamilyLabel(_faction, familyId) {
+export function getNormalUnitFamilyLabel(_faction: string, familyId: string) {
   return getFamilyTagLabel(familyId);
 }
 
 /**
  * @deprecated Usar scanActiveUnits para detectar familias por entidad. Eliminar cuando teleportMenu se migre.
  */
-export function getNormalUnitFamilyLabelFromEntity(_ent, _faction) {
+export function getNormalUnitFamilyLabelFromEntity(_ent: Entity, _faction: string) {
   return "§7Desconocido§r";
 }
 
@@ -496,7 +549,7 @@ export function getNormalUnitFamilyLabelFromEntity(_ent, _faction) {
  * @deprecated Usar detectHierarchyFromFamilies() de menu_entity_scanner.ts en su lugar.
  * Eliminar cuando teleportMenu se migre.
  */
-export function getUnitHierarchy(typeId, _faction) {
+export function getUnitHierarchy(typeId: string, _faction: string) {
   const lower = (typeId ?? "").toLowerCase();
   if (lower.endsWith("c")) return UnitHierarchy.COMMANDER;
   if (lower.endsWith("l")) return UnitHierarchy.LEADER;
@@ -507,48 +560,48 @@ export function getUnitHierarchy(typeId, _faction) {
  * @deprecated Usar isValidSoldier() de menu_faction.ts en su lugar.
  * Eliminar cuando teleportMenu se migre.
  */
-export function isNormalUnit(typeId, _faction) {
+export function isNormalUnit(typeId: string, _faction: string) {
   return getUnitHierarchy(typeId, _faction) !== null;
 }
 
 /**
  * @deprecated Eliminar cuando teleportMenu se migre.
  */
-export function getAllNormalTypeIds(_faction) {
+export function getAllNormalTypeIds(_faction: string) {
   return [];
 }
 
 // ── Funciones utilitarias de sistema ────────────────────────────────────────
 
-export function getSystemConfig(systemId) {
+export function getSystemConfig(systemId: string) {
   return systems[systemId] || null;
 }
 
-export function getCategoryConfig(categoryId) {
+export function getCategoryConfig(categoryId: string) {
   return categories[categoryId] || null;
 }
 
-export function getSystemsByCategory(categoryId) {
+export function getSystemsByCategory(categoryId: string) {
   const category = categories[categoryId];
   if (!category) return [];
-  return category.systems.map((id) => systems[id]).filter(Boolean);
+  return category.systems.map((id: string) => systems[id]).filter(Boolean);
 }
 
 export function getOrderedCategories() {
-  return menuConfig.categoryOrder.map((id) => categories[id]).filter(Boolean);
+  return menuConfig.categoryOrder.map((id: string) => categories[id]).filter(Boolean);
 }
 
-export function getSystemPropertyId(systemId) {
+export function getSystemPropertyId(systemId: string) {
   const sys = systems[systemId];
   if (!sys || !sys.dynamicProperty) return null;
   return sys.dynamicProperty;
 }
 
-function shouldParseJsonString(raw) {
+function shouldParseJsonString(raw: any): raw is string {
   return typeof raw === "string" && (raw.startsWith("{") || raw.startsWith("["));
 }
 
-export function setEntitySystemState(entity, systemId, value) {
+export function setEntitySystemState(entity: Entity, systemId: string, value: any) {
   const propertyId = getSystemPropertyId(systemId);
   if (!propertyId || !entity) return;
   try {
@@ -573,7 +626,7 @@ export function setEntitySystemState(entity, systemId, value) {
   }
 }
 
-export function getEntitySystemState(entity, systemId) {
+export function getEntitySystemState(entity: Entity, systemId: string) {
   const propertyId = getSystemPropertyId(systemId);
   if (!propertyId || !entity) return undefined;
   try {
@@ -592,16 +645,16 @@ export function getEntitySystemState(entity, systemId) {
   }
 }
 
-export function findSystemStateByEvent(eventName) {
+export function findSystemStateByEvent(eventName: string) {
   if (!eventName) return null;
   for (const systemId in systems) {
     const sys = systems[systemId];
     if (!sys) continue;
-    if (sys.controlType === ControlType.TOGGLE && sys.events?.enable) {
+    if (isToggleSystem(sys) && sys.events?.enable) {
       if (sys.events.enable.true === eventName) return { systemId, value: true };
       if (sys.events.enable.false === eventName) return { systemId, value: false };
     }
-    if (sys.controlType === ControlType.DROPDOWN && Array.isArray(sys.options)) {
+    if (isDropdownSystem(sys) && Array.isArray(sys.options)) {
       for (const opt of sys.options) {
         if (opt?.events?.start === eventName || opt?.events?.stop === eventName) {
           return { systemId, value: opt.value };
@@ -612,7 +665,7 @@ export function findSystemStateByEvent(eventName) {
   return null;
 }
 
-export function formatEntitySystemStateLabel(systemId, value) {
+export function formatEntitySystemStateLabel(systemId: string, value: any) {
   const sys = systems[systemId];
   if (!sys) return String(value ?? "§7No configurado§r");
 
@@ -620,8 +673,8 @@ export function formatEntitySystemStateLabel(systemId, value) {
     return value ? "§aON§r" : "§cOFF§r";
   }
 
-  if (sys.controlType === ControlType.DROPDOWN) {
-    const option = sys.options?.find((opt) => opt.value === value);
+  if (isDropdownSystem(sys)) {
+    const option = sys.options?.find((opt: any) => opt.value === value);
     if (option?.label) return option.label;
     return typeof value === "string" ? value : String(value ?? "§7No configurado§r");
   }
@@ -629,7 +682,7 @@ export function formatEntitySystemStateLabel(systemId, value) {
   return String(value ?? "§7No configurado§r");
 }
 
-export function getEntitySystemsStatus(entity) {
+export function getEntitySystemsStatus(entity: Entity) {
   const result = [];
   let totalSystems = 0;
   for (const systemId in systems) {
@@ -647,23 +700,23 @@ export function getEntitySystemsStatus(entity) {
   return { totalSystems, savedSystems: result.length, statuses: result };
 }
 
-export function getSystemDefaults(systemId) {
+export function getSystemDefaults(systemId: string) {
   const sys = systems[systemId];
   if (!sys) return {};
   return sys.defaults;
 }
 
-export function getSystemEvents(systemId, value) {
+export function getSystemEvents(systemId: string, value: string) {
   const sys = systems[systemId];
   if (!sys) return {};
 
-  if (sys.controlType === ControlType.TOGGLE) {
+  if (isToggleSystem(sys)) {
     const ev = sys.events?.enable?.[value];
     return ev ? { event: ev } : {};
-  } else if (sys.controlType === ControlType.DROPDOWN) {
-    const option = sys.options?.find((opt) => opt.value === value);
+  } else if (isDropdownSystem(sys)) {
+    const option = sys.options?.find((opt: any) => opt.value === value);
     if (!option) return {};
-    const result = { ...(option.events || {}) };
+    const result: Record<string, string | boolean | undefined> = { ...(option.events || {}) };
     if (option.autoTame) result.autoTame = true;
     return result;
   }
@@ -671,15 +724,15 @@ export function getSystemEvents(systemId, value) {
   return {};
 }
 
-export function isAutoTameEvent(eventName) {
+export function isAutoTameEvent(eventName: string) {
   if (!eventName) return false;
   for (const sys of Object.values(systems)) {
-    if (sys.controlType === ControlType.DROPDOWN && Array.isArray(sys.options)) {
+    if (isDropdownSystem(sys) && Array.isArray(sys.options)) {
       for (const opt of sys.options) {
         if (opt.autoTame && opt.events && opt.events.start === eventName) return true;
       }
     }
-    if (sys.controlType === ControlType.TOGGLE && sys.events && sys.events.enable) {
+    if (isToggleSystem(sys) && sys.events && sys.events.enable) {
       for (const key in sys.events.enable) {
         if (sys.events.enable[key] === eventName && sys.autoTame) return true;
       }

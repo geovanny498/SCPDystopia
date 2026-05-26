@@ -1,10 +1,16 @@
 // scripts\utils\damage.js
 import * as mc from "@minecraft/server";
+import type { Entity } from "@minecraft/server";
 import { applyKnockback } from "./knockback";
 import { debugMessage, debugWarn } from "./debug.js";
 import { entityDamageConfig } from "./entityConfig.js";
 
-export function applyDamageAndKnockback(projectile, target, cfg, shooter) {
+export function applyDamageAndKnockback(
+  projectile: Entity,
+  target: Entity,
+  cfg: { damage?: number; knockback?: number },
+  shooter: Entity
+) {
   debugWarn(
     `damage`,
     `Proyectil disparado por: ${shooter.typeId}, impacta objetivo: ${target.typeId}, proyectil: ${projectile.typeId}`,
@@ -40,13 +46,14 @@ export function applyDamageAndKnockback(projectile, target, cfg, shooter) {
     );
   } catch (e) {
     // no bloquear ejecución si falla el stringify o algo raro
-    debugWarn(`damage`, `Error al loggear entityCfg: ${e?.message ?? e}`, "red");
+    const err = e as Error;
+    debugWarn(`damage`, `Error al loggear entityCfg: ${err?.message ?? String(e)}`, "red");
   }
 
   if (!canDamage) {
     debugWarn(`damage`, `Daño bloqueado para ${target.typeId}`, "purple");
   } else if ((cfg.damage ?? 0) > 0) {
-    const dmg = getModifiedDamageNumber(cfg.damage, target);
+    const dmg = getModifiedDamageNumber(cfg.damage ?? 0, target);
     if (dmg > 0) {
       target.applyDamage(dmg, {
         cause: mc.EntityDamageCause.override,
@@ -59,12 +66,12 @@ export function applyDamageAndKnockback(projectile, target, cfg, shooter) {
   if (!canKnockback) {
     debugWarn(`applyKnockback`, `Knockback bloqueado para ${target.typeId}`, "purple");
   } else {
-    applyKnockback(target, projectile, cfg.knockback);
+    applyKnockback(target, projectile, cfg.knockback ?? 0);
   }
 }
 
 // Función de cálculo de daño, la dejé igual
-export function getModifiedDamageNumber(damage, entity) {
+export function getModifiedDamageNumber(damage: number, entity: Entity) {
   if (damage <= 0) {
     debugMessage("modifiedDamageNumber", "Daño negativo o nulo, no se aplicará.");
     return 0;
@@ -103,7 +110,7 @@ export function getModifiedDamageNumber(damage, entity) {
       const item = equippable.getEquipment(slot);
       if (!item) continue;
 
-      const eqComp = item.getComponent("equippable");
+      const eqComp = item.getComponent("equippable") as { defense?: number; armorToughness?: number } | null;
       defensePoints += eqComp?.defense ?? 0;
       armorToughness += eqComp?.armorToughness ?? 0;
 
@@ -125,7 +132,8 @@ export function getModifiedDamageNumber(damage, entity) {
     debugMessage("modifiedDamageNumber", `Daño final tras armadura/encantamientos: ${damage}`);
     return damage;
   } catch (error) {
-    debugWarn("modifiedDamageNumber", `Error al calcular el daño: ${error.message}`, "red");
+    const err = error as Error;
+    debugWarn("modifiedDamageNumber", `Error al calcular el daño: ${err?.message ?? String(error)}`, "red");
     return damage; // Devolver el daño sin cambios en caso de error
   }
 }

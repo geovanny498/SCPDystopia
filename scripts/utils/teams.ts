@@ -1,4 +1,5 @@
 // scripts\utils\teams.js
+import type { Entity } from "@minecraft/server";
 import * as mc from "@minecraft/server";
 
 export const teamGroups: Record<string, Set<string>> = {
@@ -44,12 +45,12 @@ const helmetTeams: Record<string, string> = {
  * @param entityOrTypeId - Entidad o string con el typeId
  * @returns "chaos" | "foundation" | null
  */
-export function getTeam(entityOrTypeId: any): string | null {
+export function getTeam(entityOrTypeId: Entity | string): string | null {
   if (!entityOrTypeId) return null;
 
   let typeId;
 
-  if (entityOrTypeId.typeId === "minecraft:player") {
+  if (typeof entityOrTypeId !== "string" && entityOrTypeId.typeId === "minecraft:player") {
     const equippable = entityOrTypeId.getComponent("equippable");
     const helmet = equippable?.getEquipment(mc.EquipmentSlot.Head);
     if (helmet) return helmetTeams[helmet.typeId] || null;

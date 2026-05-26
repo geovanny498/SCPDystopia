@@ -431,8 +431,6 @@ export function scanActiveUnits(dimension: Dimension, faction: string): ScanResu
     }
   }
 
-
-
   const activeHierarchies = Object.keys(byHierarchy).filter((h) => (byHierarchy[h]?.length ?? 0) > 0);
 
   const bucketResult = groupNametagsByBucket(entities, nametagGroups);

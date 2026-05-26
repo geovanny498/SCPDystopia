@@ -8,6 +8,7 @@ import {
   SpecialGroups,
   SpecialGroupLabels,
   getGroupsOrderForAssignment,
+  getGroupsOrderForSystems, // Importado para manejar prioridades del sistema
   scanActiveUnits,
   invalidateScanCache,
   invalidateEntityQueryCache,
@@ -220,7 +221,7 @@ function showFactionGroupsMenu(player: Player, faction: string): void {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// §  MODAL DE ASIGNACIÓN DE GRUPOS  —  1 dropdown por nametag único
+//   MODAL DE ASIGNACIÓN DE GRUPOS  —  1 dropdown por nametag único
 // ═══════════════════════════════════════════════════════════════════════════════
 
 /**
@@ -235,39 +236,33 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
     var bucketData = scanResult.buckets[bucketId];
     if (!bucketData) {
       player.sendMessage("§c[GRUPOS] Bucket no encontrado: " + bucketId);
-      debugWarn(
-        "menuGroups:ui",
-        "Bucket " +
-          bucketId +
-          " no encontrado en scanResult.buckets. keys=" +
-          JSON.stringify(Object.keys(scanResult.buckets)),
-        "red"
-      );
       showFactionGroupsMenu(player, faction);
       return;
     }
-    debugWarn(
-      "menuGroups:ui",
-      "bucketData: label=" +
-        bucketData.label +
-        " unitCount=" +
-        bucketData.unitCount +
-        " nametags=" +
-        JSON.stringify(Object.keys(bucketData.nametags)),
-      "dark_gray"
-    );
 
     var bucketNametags = bucketData.nametags;
 
-    // Construir ntBucketEntities usando scanResult.bucketIdMap (pre-computado en el scanner).
-    // bucketIdMap[bucketId] = [entityId, ...] de solo las entidades de ESTE bucket
-    // (dedup cross-bucket ya aplicado por el scanner).
     var ntBucketEntities: Record<string, Entity[]> = {};
+
+    // Registros en memoria para precalcular prioridades en el bucle plano
+    var ntPreferredGroup: Record<string, string> = {};
+    var ntMaxPriority: Record<string, number> = {};
+
     var bucketEntityIds = scanResult.bucketIdMap[bucketId] || [];
     var idToScanned: Record<string, ScannedEntity> = {};
     for (var eiMap = 0; eiMap < scanResult.entities.length; eiMap++) {
       idToScanned[scanResult.entities[eiMap].entity.id] = scanResult.entities[eiMap];
     }
+
+    var prioritySystemOrder = getGroupsOrderForSystems();
+
+    // Esto creará un objeto: { "groupA": 5, "groupB": 4, "groupC": 3, "groupD": 2, "noGroup": 1 }
+    var priorityMap: Record<string, number> = {};
+    for (var p = 0; p < prioritySystemOrder.length; p++) {
+      priorityMap[prioritySystemOrder[p]] = prioritySystemOrder.length - p;
+    }
+
+    // PASO 1: Agrupar entidades y calcular prioridades simultáneamente (Bucle Lineal Único)
     for (var eidI = 0; eidI < bucketEntityIds.length; eidI++) {
       var eid = bucketEntityIds[eidI];
       var sc = idToScanned[eid];
@@ -275,35 +270,44 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
       if (sc.faction !== faction) continue;
       var nt = (sc.nametag || "").trim();
       if (!nt) continue;
-      if (!ntBucketEntities[nt]) ntBucketEntities[nt] = [];
+
+      // Inicialización limpia
+      if (!ntBucketEntities[nt]) {
+        ntBucketEntities[nt] = [];
+        ntPreferredGroup[nt] = SpecialGroups.NO_GROUP;
+        ntMaxPriority[nt] = 0;
+      }
       ntBucketEntities[nt].push(sc.entity);
+
+      var entityGroup = sc.group || SpecialGroups.NO_GROUP;
+
+      var currentPriority = priorityMap[entityGroup] || 1;
+
+      if (currentPriority > ntMaxPriority[nt]) {
+        ntMaxPriority[nt] = currentPriority;
+        ntPreferredGroup[nt] = entityGroup;
+      }
     }
 
-    // Armar la lista de nametags para el dropdown usando las entidades de este bucket
-    var uniqueNametags: { nametag: string; entities: Entity[] }[] = [];
+    // Armar la lista de nametags finales para el dropdown
+    var uniqueNametags: { nametag: string; entities: Entity[]; preferredGroup: string }[] = [];
     var bucketNtKeys = Object.keys(bucketNametags).sort(compareNametags);
     for (var bi2 = 0; bi2 < bucketNtKeys.length; bi2++) {
       var nt2 = bucketNtKeys[bi2];
       var ents = ntBucketEntities[nt2];
       if (!ents || ents.length === 0) continue;
 
-      uniqueNametags.push({ nametag: nt2, entities: ents.slice(0) });
+      uniqueNametags.push({
+        nametag: nt2,
+        entities: ents.slice(0),
+        preferredGroup: ntPreferredGroup[nt2] || SpecialGroups.NO_GROUP, // Guardamos el veredicto
+      });
     }
 
     debugWarn("menuGroups:ui", "bucket " + bucketId + ": " + uniqueNametags.length + " nametags únicos", "gray");
 
     if (uniqueNametags.length === 0) {
       player.sendMessage("§c[GRUPOS] No hay unidades con nametag en este bucket.");
-      debugWarn(
-        "menuGroups:ui",
-        "bucket " +
-          bucketId +
-          ": uniqueNametags vacío. bucketNametags=" +
-          JSON.stringify(bucketNametags) +
-          " ntBucketEntities=" +
-          JSON.stringify(Object.keys(ntBucketEntities)),
-        "red"
-      );
       showFactionGroupsMenu(player, faction);
       return;
     }
@@ -314,18 +318,17 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
       return SpecialGroupLabels[g] ?? g;
     });
 
-    // Label del bucket
     var bucketLabel = bucketData.label;
-
     var modalForm = new ModalFormData().title(bucketLabel + "§r §8(" + uniqueNametags.length + " nametags)");
-
     modalForm.label("§7Asigna grupo a cada nametag:");
 
-    // Agregar un dropdown por cada nametag único (sin límite — other_units recibe el overflow)
+    // PASO 2: Agregar un dropdown por cada nametag único (sin límite — other_units recibe el overflow)
     for (var di = 0; di < uniqueNametags.length; di++) {
       var entry = uniqueNametags[di];
-      var currentGroup = getUnitGroup(entry.entities[0]) || SpecialGroups.NO_GROUP;
-      var currentIndex = groupOptions.indexOf(currentGroup);
+
+      // La resolución ya se hizo en el Paso 1; la lectura aquí es instantánea O(1)
+      var currentIndex = groupOptions.indexOf(entry.preferredGroup);
+
       var unitCount2 = entry.entities.length;
       var label2 = unitCount2 > 1 ? "§f" + entry.nametag + "§r §8x" + unitCount2 : "§f" + entry.nametag + "§r";
       modalForm.dropdown(label2, groupLabels, { defaultValueIndex: Math.max(0, currentIndex) });
@@ -343,7 +346,6 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
           }
 
           var rawValues2 = res.formValues || [];
-          // Filtrar solo valores numéricos
           var dropdownValues2 = rawValues2.filter(function (v) {
             return typeof v === "number";
           });
@@ -355,25 +357,14 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
 
             if (typeof selectedIndex2 === "number" && selectedIndex2 >= 0 && selectedIndex2 < groupOptions.length) {
               var selectedGroup2 = groupOptions[selectedIndex2];
-              // Aplicar el grupo a TODAS las instancias vivas con este nametag
               for (var ei2 = 0; ei2 < entry2.entities.length; ei2++) {
                 setUnitGroup(entry2.entities[ei2], selectedGroup2);
               }
-              debugWarn(
-                "menuGroups:ui",
-                entry2.nametag + " -> " + selectedGroup2 + " (index " + selectedIndex2 + ")",
-                "green"
-              );
-            } else {
-              debugWarn("menuGroups:ui", entry2.nametag + ": índice inválido " + selectedIndex2, "red");
+              debugWarn("menuGroups:ui", entry2.nametag + " -> " + selectedGroup2, "green");
             }
           }
 
           player.sendMessage("§a[GRUPOS] " + bucketLabel + " actualizado (" + uniqueNametags.length + " nametags)");
-          debugWarn("menuGroups:ui", "Bucket " + bucketId + " actualizado", "green");
-
-          // Volver al menú de grupos de la facción
-          // showFactionGroupsMenu escaneará con cache si <2s, o refrescará si >2s (TTL natural)
           showFactionGroupsMenu(player, faction);
         })
         .catch(function (err) {

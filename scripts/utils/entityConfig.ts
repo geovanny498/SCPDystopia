@@ -8,16 +8,23 @@
 
 // Si no está definido, se asume que recibe ambos del script
 // Debido a que no se puede leer knockback_resistance, se usa esta configuración para forzar inmunidad
+import type { Entity } from "@minecraft/server";
 import { EntityComponentTypes } from "@minecraft/server";
 import { debugWarn } from "./debug";
 
-export const entityDamageConfig = {
+export type EntityDamageDecision = boolean | ((entity: Entity) => boolean);
+export type EntityDamageRule = {
+  damage: EntityDamageDecision;
+  knockback: EntityDamageDecision;
+};
+
+export const entityDamageConfig: Record<string, EntityDamageRule> = {
   "minecraft:ender_dragon": {
     damage: true,
     knockback: false,
   },
   "minecraft:wither": {
-    damage: (entity) => {
+    damage: (entity: Entity) => {
       const health = entity.getComponent("health");
       if (!health) return false;
       const maxHealth = health.effectiveMax;
@@ -43,7 +50,7 @@ export const entityDamageConfig = {
     knockback: false,
   },
   "lc:dt_scp682": {
-    damage: (entity) => {
+    damage: (entity: Entity) => {
       const health = entity.getComponent("health");
       if (!health) return false;
       const maxHealth = health.effectiveMax;
@@ -54,7 +61,7 @@ export const entityDamageConfig = {
         return true;
       }
     },
-    knockback: (entity) => {
+    knockback: (entity: Entity) => {
       const health = entity.getComponent("health");
       if (!health) return false;
       const maxHealth = health.effectiveMax;
@@ -67,7 +74,7 @@ export const entityDamageConfig = {
     },
   },
   "lc:dt_scp096": {
-    damage: (entity) => {
+    damage: (entity: Entity) => {
       const health = entity.getComponent("health");
       if (!health) return false;
       const maxHealth = health.effectiveMax;

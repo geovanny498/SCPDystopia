@@ -10,6 +10,14 @@
 
 import { debugWarn } from "../../utils/debug.js";
 
+type SystemState = {
+  mode?: string;
+  enable?: boolean;
+  includeSpecial?: boolean;
+};
+
+export type AllSystemStates = Record<string, Record<string, SystemState>>;
+
 /**
  * Definición de reglas de compatibilidad para cada sistema
  *
@@ -21,7 +29,15 @@ import { debugWarn } from "../../utils/debug.js";
  *   - "all": Se aplica a entidades existentes Y futuras (spawn/load/existing_only)
  *   - "existing_only": Solo se aplica a entidades existentes al enviar el formulario
  */
-export const systemRules = {
+export const systemRules: Record<
+  string,
+  {
+    domain: string;
+    applyMode: "all" | "existing_only";
+    requires?: Record<string, string[] | string>;
+    locks?: string[];
+  }
+> = {
   movement: {
     domain: "movement",
     applyMode: "existing_only", // se utiliza "existing_only" para evitar colisiones con domesticación (tame)
@@ -70,7 +86,7 @@ export const systemRules = {
  * @param {string} systemId
  * @returns {Object|null}
  */
-export function getSystemRules(systemId) {
+export function getSystemRules(systemId: string) {
   return systemRules[systemId] || null;
 }
 
@@ -82,7 +98,12 @@ export function getSystemRules(systemId) {
  * @param {boolean} isSpecial - Si la entidad es especial
  * @returns {Object} - { canApply: boolean, reason: string }
  */
-export function canApplySystem(systemId, allSystemStates, faction, isSpecial) {
+export function canApplySystem(
+  systemId: string,
+  allSystemStates: AllSystemStates,
+  faction: string,
+  isSpecial: boolean
+) {
   const rules = getSystemRules(systemId);
 
   // Si no hay reglas, el sistema siempre se puede aplicar
@@ -128,7 +149,7 @@ export function canApplySystem(systemId, allSystemStates, faction, isSpecial) {
 
     // Verificar si el valor actual está en los valores permitidos
     const isAllowed = Array.isArray(allowedValues)
-      ? allowedValues.includes(currentValue)
+      ? typeof currentValue === "string" && allowedValues.includes(currentValue)
       : allowedValues === currentValue;
 
     if (!isAllowed) {
@@ -152,7 +173,7 @@ export function canApplySystem(systemId, allSystemStates, faction, isSpecial) {
  * @param {string} domain
  * @returns {string|null}
  */
-function findSystemByDomain(domain) {
+function findSystemByDomain(domain: string) {
   for (const [systemId, rules] of Object.entries(systemRules)) {
     if (rules.domain === domain) {
       return systemId;
@@ -166,7 +187,7 @@ function findSystemByDomain(domain) {
  * @param {string} systemId
  * @returns {boolean}
  */
-export function shouldApplyToFutureEntities(systemId) {
+export function shouldApplyToFutureEntities(systemId: string) {
   const rules = getSystemRules(systemId);
 
   if (!rules) {
@@ -192,7 +213,12 @@ export function shouldApplyToFutureEntities(systemId) {
  * @param {boolean} isSpecial - Si la entidad es especial
  * @returns {Array<string>} - IDs de sistemas que pueden aplicarse
  */
-export function filterApplicableSystems(systemIds, allSystemStates, faction, isSpecial) {
+export function filterApplicableSystems(
+  systemIds: string[],
+  allSystemStates: AllSystemStates,
+  faction: string,
+  isSpecial: boolean
+) {
   return systemIds.filter((systemId) => {
     const result = canApplySystem(systemId, allSystemStates, faction, isSpecial);
     return result.canApply;
