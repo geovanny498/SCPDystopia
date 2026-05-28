@@ -98,6 +98,7 @@ function safeTriggerEvent(ent, eventName, player = null) {
 
 /**
  * Aplica un sistema a una entidad específica usando eventos de la configuración
+ * @returns boolean indicando si el sistema se aplicó exitosamente
  */
 export function applySystemToEntity(
   systemId,
@@ -177,12 +178,23 @@ export function applySystemToEntity(
 
       if (events.event) {
         const triggered = safeTriggerEvent(ent, events.event, player);
-        if (triggered) setEntitySystemState(ent, systemId, isEnabled);
-        debugWarn(
-          "menuApply:entity",
-          `${systemId} → ${entityLabel}: ${isEnabled ? "ON" : "OFF"}`,
-          isEnabled ? "green" : "gray"
-        );
+        if (triggered) {
+          setEntitySystemState(ent, systemId, isEnabled);
+          debugWarn(
+            "menuApply:entity",
+            `${systemId} → ${entityLabel}: ${isEnabled ? "ON" : "OFF"}`,
+            isEnabled ? "green" : "gray"
+          );
+          return true; // Aplicado exitosamente
+        } else {
+          // Evento no existe para esta entidad - contar como error, no como aplicado
+          debugWarn(
+            "menuApply:entity",
+            `${systemId} → ${entityLabel}: evento "${events.event}" no disponible`,
+            "yellow"
+          );
+          return false; // No aplicado
+        }
       }
     } else if (systemConfig.controlType === ControlType.DROPDOWN) {
       const mode = configValue;
@@ -194,15 +206,27 @@ export function applySystemToEntity(
       // Luego iniciar el nuevo modo
       if (events.start && mode !== "false" && mode !== "off") {
         const triggered = safeTriggerEvent(ent, events.start, player);
-        if (triggered) setEntitySystemState(ent, systemId, mode);
-        debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: modo=${mode}`, "green");
+        if (triggered) {
+          setEntitySystemState(ent, systemId, mode);
+          debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: modo=${mode}`, "green");
+          return true; // Aplicado exitosamente
+        } else {
+          debugWarn(
+            "menuApply:entity",
+            `${systemId} → ${entityLabel}: evento "${events.start}" no disponible`,
+            "yellow"
+          );
+          return false; // No aplicado
+        }
       } else {
         if (events.stop && stopped) {
           setEntitySystemState(ent, systemId, mode);
         }
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: desactivado`, "gray");
+        return true; // Para el caso de "desactivado" sin evento start, se considera aplicado
       }
     }
+    return false; // Caso por defecto: no se aplicó
   } catch (e) {
     debugWarn("menuApply:entity", `Error aplicando ${systemId} a ${ent?.nameTag || "<noName>"}: ${e}`, "red");
   }
@@ -305,10 +329,19 @@ export function applySystemsToEntities(eligibleSoldiers, systemIds, options = {}
         continue;
       }
 
-      applySystemToEntity(systemId, systemConfig, entity, null, skipCompatibilityCheck, factionInfo, player, {
-        systemStates,
-      });
-      appliedCount++;
+      const applied = applySystemToEntity(
+        systemId,
+        systemConfig,
+        entity,
+        null,
+        skipCompatibilityCheck,
+        factionInfo,
+        player,
+        {
+          systemStates,
+        }
+      );
+      if (applied) appliedCount++;
     }
   }
 

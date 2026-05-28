@@ -24,6 +24,7 @@ interface EntityConfig {
   specific: MenuCategory[];
   global: MenuCategory[];
   merged: MenuCategory[];
+  isSpecial: boolean;
 }
 
 // Helpers de sistema/ids para filtrado por `config.global_rules`.
@@ -133,6 +134,8 @@ function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null
   // salvo que la categoría principal tenga su propia `id` denegada o
   // todas las categorías del submenu queden filtradas.
   const filteredGlobalCats: MenuCategory[] = [];
+  const factionInfo = getEntityFactionInfo(entity);
+  const isSpecial = factionInfo?.isSpecial ?? false;
   for (const c of globalCats) {
     if (c && c.submenu) {
       // Si la categoría principal tiene id y está denegada, excluirla
@@ -140,8 +143,6 @@ function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null
 
       const submenuCfg = config.submenus && config.submenus[c.submenu];
       const submenuCats = submenuCfg && Array.isArray(submenuCfg.categories) ? submenuCfg.categories : [];
-      const factionInfo = getEntityFactionInfo(entity);
-      const isSpecial = factionInfo?.isSpecial ?? false;
       const filteredSub = submenuCats.filter((sc) => {
         if (!shouldIncludeCategoryForEntity(sc, typeId)) return false;
         if (sc.requiresSpecial && !isSpecial) return false;
@@ -154,10 +155,7 @@ function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null
     } else {
       if (shouldIncludeCategoryForEntity(c, typeId)) {
         // Filtrar categorías top-level con requiresSpecial
-        if (c.requiresSpecial) {
-          const factionInfo = getEntityFactionInfo(entity);
-          if (!(factionInfo?.isSpecial ?? false)) continue;
-        }
+        if (c.requiresSpecial && !isSpecial) continue;
         filteredGlobalCats.push({ ...c });
       }
     }
@@ -183,6 +181,7 @@ function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null
     specific: specificCats,
     global: spec && spec.replace ? [] : filteredGlobalCats,
     merged,
+    isSpecial,
   };
 }
 
@@ -315,11 +314,9 @@ function handleCategorySelection(
     }
 
     const rawSubCats = Array.isArray(submenuCfg.categories) ? submenuCfg.categories : [];
-    const factionInfo = getEntityFactionInfo(entity);
-    const isSpecial = factionInfo?.isSpecial ?? false;
     const filteredSubCats = rawSubCats.filter((sc) => {
       if (!shouldIncludeCategoryForEntity(sc, typeId)) return false;
-      if (sc.requiresSpecial && !isSpecial) return false;
+      if (sc.requiresSpecial && !cfg.isSpecial) return false;
       return true;
     });
 
@@ -463,15 +460,12 @@ function showEntryMenu(
       const groupId = String(entry.value ?? "");
       setUnitGroup(entity, groupId);
       const groupLabel = SpecialGroupLabels[groupId] || groupId;
-      player.sendMessage(`§d[SCPD] Grupo §r${groupLabel}§d asignado a ${soldierName}§r`);
+      player.sendMessage(`§8[§aMENU§8] §7${soldierName} §7-> Grupo: §r${groupLabel}`);
       debugWarn(
         "playerInteract:group",
-        `Jugador: ${player.name} | Unidad: ${soldierName} (${typeId}) | Grupo: ${groupLabel}`,
+        `jugador=${player.name} | typeId=${typeId} | grupo=${groupLabel} | nametag=${soldierName}`,
         "green"
       );
-      system.run(() => {
-        showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
-      });
       return;
     }
 
@@ -496,7 +490,7 @@ function showEntryMenu(
       const sysDisplay = sysConfig?.displayName || mapped.systemId;
       const valueLabel = formatEntitySystemStateLabel(mapped.systemId, mapped.value);
       player.sendMessage(
-        `§8[§aMENU§8] §7${player.name} configuró a ${soldierName} §7-> §e${sysDisplay}§7: §f${valueLabel}`
+        `§8[§aMENU§8] §7${soldierName} §7-> §e${sysDisplay}§7: §f${valueLabel}`
       );
       debugWarn(
         "playerInteract:system",
@@ -510,7 +504,7 @@ function showEntryMenu(
         `jugador=${player.name} | typeId=${typeId} | evento=${entry.event} | label=${entry.label}`,
         "cyan"
       );
-      player.sendMessage(`§8[§aMENU§8] §7${player.name} aplicó a ${soldierName} §7-> §f${entry.label}`);
+      player.sendMessage(`§8[§aMENU§8] §7${soldierName} §7-> §f${entry.label}`);
     }
   });
 }
