@@ -45,22 +45,6 @@ export function getMenuSystemStates() {
 }
 
 /**
- * Obtiene la lista de soldados (para menu_apply.js)
- */
-export function getMenuSoldiers() {
-  return menuSoldiers;
-}
-
-/**
- * Obtiene las unidades especiales (para menu_apply.js)
- * v4.0 — sin listas estáticas. Devuelve estructura vacía; la validación real
- * se hace por familias de facción en isValidSoldier / getEntityFactionInfo.
- */
-export function getMenuSpecialSoldiers() {
-  return { foundation: { all: [] }, chaos: { all: [] } };
-}
-
-/**
  * Maneja una entidad cuando spawna o se carga
  * @param {Entity} ent
  * @param {Object} options

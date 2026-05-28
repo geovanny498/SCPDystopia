@@ -17,8 +17,6 @@ import "./commands/teleport_command.js"; // TEMPORALMENTE DESHABILITADO — ver 
 import {
   initializeMenuEvents,
   getMenuSystemStates,
-  getMenuSoldiers,
-  getMenuSpecialSoldiers,
 } from "./gui/commandMenu/core/menu_events.js";
 import { injectMenuEventAccessors } from "./gui/commandMenu/core/menu_apply.js";
 
@@ -30,8 +28,6 @@ system.runTimeout(() => {
     // Inyectar accessors para evitar importaciones circulares
     injectMenuEventAccessors({
       getMenuSystemStates,
-      getMenuSoldiers,
-      getMenuSpecialSoldiers,
     });
 
     // Inicializar event listeners del menú

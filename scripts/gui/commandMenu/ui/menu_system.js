@@ -126,7 +126,11 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
         form
           .show(player)
           .then((res) => {
-            debugWarn("menuSystem", `System menu result: ${JSON.stringify(res)}`, "cyan");
+            debugWarn(
+              "menuSystem",
+              `System menu - canceled=${res.canceled}, formValues length=${res.formValues?.length || 0}`,
+              "cyan"
+            );
 
             if (!res || res.canceled) {
               // Volver al selector de facción

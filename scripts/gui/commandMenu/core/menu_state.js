@@ -1,9 +1,11 @@
 // scripts/gui/commandMenu/menu_state.js
+import { world } from "@minecraft/server";
 import { saveSystemState, loadSystemState } from "../../../commands/worldSave.js";
 import { getSystemConfig, getSystemDefaults, Factions, UnitHierarchy, SpecialGroups } from "../menu_config.js";
-import { applySystemWithEvents } from "./menu_apply.js";
+import { applySystemWithEvents, getEligibleSoldiers, applySystemsToEntities, getMenuSystemStates } from "./menu_apply.js";
 import { updateMenuSystemState } from "./menu_events.js";
 import { debugWarn } from "../../../utils/debug.js";
+import { loadScope } from "../model/menu_scope.js";
 
 /**
  * Carga el estado de un sistema desde propiedades dinámicas
@@ -118,10 +120,34 @@ export function applySystemToAll(systemId, dimension, player = null) {
 }
 
 /**
- * Aplica múltiples sistemas
+ * Aplica múltiples sistemas de forma optimizada usando una única consulta de entidades
  */
 export function applySystemsToAll(systemIds, dimension, player = null) {
-  systemIds.forEach((systemId) => {
-    applySystemToAll(systemId, dimension, player);
-  });
+  try {
+    const dims = dimension
+      ? [dimension]
+      : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
+    const scope = loadScope();
+
+    // Log para diagnosticar estados
+    const cachedStates = getMenuSystemStates ? getMenuSystemStates() : {};
+    debugWarn("menuState", `[applySystemsToAll] systemIds=${JSON.stringify(systemIds)}`, "yellow");
+    debugWarn("menuState", `[applySystemsToAll] cachedStates keys=${JSON.stringify(Object.keys(cachedStates))}`, "dark_gray");
+
+    // PRECOMPUTAR ESTADOS PARA OPTIMIZACIÓN MASIVA
+    const cached = {
+      systemStates: cachedStates,
+    };
+
+    // 1. Obtener soldados elegibles (una sola vez)
+    const eligible = getEligibleSoldiers(dims, scope);
+    debugWarn("menuState", `[applySystemsToAll] eligible=${eligible.length} entidades`, "cyan");
+
+    // 2. Aplicar todos los sistemas elegidos (en un solo pase) con caché precomputado
+    applySystemsToEntities(eligible, systemIds, { player, cached });
+
+    debugWarn("menuState", `Sistemas ${systemIds.join(", ")} aplicados a ${eligible.length} entidades`, "green");
+  } catch (e) {
+    debugWarn("menuState", `Error en applySystemsToAll: ${e}`, "red");
+  }
 }

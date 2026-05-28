@@ -1,16 +1,27 @@
 // scripts/gui/commandMenu/menu_apply.js
 import { world, system } from "@minecraft/server";
 import { debugMessage, debugWarn } from "../../../utils/debug.js";
-import { ControlType, getSystemEvents, setEntitySystemState, SpecialGroups, UnitHierarchy } from "../menu_config.js";
+import {
+  ControlType,
+  getSystemEvents,
+  setEntitySystemState,
+  getEntitySystemState,
+  SpecialGroups,
+  UnitHierarchy,
+  getSystemConfig,
+} from "../menu_config.js";
 import { canApplySystem } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
 import { getAllAddonEntitiesInDimensions } from "../../../utils/entityQuery.js";
 
 // Importar funciones de menu_events (se inyectarán para evitar ciclos)
-let getMenuSystemStates = null;
-let getMenuSoldiers = null;
-let getMenuSpecialSoldiers = null;
+let _getMenuSystemStates = null;
+
+// Exportar funciones de acceso para uso externo
+export function getMenuSystemStates() {
+  return _getMenuSystemStates ? _getMenuSystemStates() : {};
+}
 
 // eventos que, al activarse, deberían intentar domesticar la entidad
 import { isAutoTameEvent } from "../menu_config.js";
@@ -65,9 +76,7 @@ export function tryAutoTame(ent, player) {
  * Inyecta las funciones de menu_events para evitar importaciones circulares
  */
 export function injectMenuEventAccessors(accessors) {
-  getMenuSystemStates = accessors.getMenuSystemStates;
-  getMenuSoldiers = accessors.getMenuSoldiers;
-  getMenuSpecialSoldiers = accessors.getMenuSpecialSoldiers;
+  _getMenuSystemStates = accessors.getMenuSystemStates;
 }
 
 /**
@@ -97,16 +106,18 @@ export function applySystemToEntity(
   stateOverride = null,
   skipCompatibilityCheck = false,
   factionInfoOverride = null,
-  player = null // jugador que está realizando la acción (puede ser null)
+  player = null,
+  cached = {} // Datos precomputados para aplicaciones masivas
 ) {
+  // DEBUG CACHE: Verificar si la cache se está usando en applySystemToEntity
+  const cacheUsed = !!cached?.systemStates;
+  if (!cacheUsed) {
+    debugWarn("menuApply:entity", `[CACHE WARNING] ${systemId} - NO se usó cache, ejecutando fallback`, "red");
+  }
   try {
-    const specials = getMenuSpecialSoldiers
-      ? getMenuSpecialSoldiers()
-      : { foundation: { all: [] }, chaos: { all: [] } };
+    if (!ent || !isValidSoldier(ent)) return;
 
-    if (!ent || !isValidSoldier(ent, specials)) return;
-
-    const systemStates = getMenuSystemStates ? getMenuSystemStates() : {};
+    const systemStates = cached?.systemStates || (_getMenuSystemStates ? _getMenuSystemStates() : {});
     const state = stateOverride || systemStates[systemId];
 
     if (!state) {
@@ -114,7 +125,7 @@ export function applySystemToEntity(
       return;
     }
 
-    const factionInfo = factionInfoOverride || getEntityFactionInfo(ent, specials);
+    const factionInfo = factionInfoOverride || getEntityFactionInfo(ent);
     if (!factionInfo) {
       debugWarn("menuApply:entity", `${ent.nameTag || ent.typeId}: No se pudo determinar facción`, "red");
       return;
@@ -198,94 +209,137 @@ export function applySystemToEntity(
 }
 
 /**
+ * Obtiene la lista de soldados elegibles basándose en dimensiones y scope
+ */
+export function getEligibleSoldiers(dimensions, scope = null) {
+  const seen = new Set();
+  const eligible = [];
+
+  const entities = getAllAddonEntitiesInDimensions(dimensions);
+  for (const ent of entities) {
+    if (!ent?.id || seen.has(ent.id)) continue;
+    seen.add(ent.id);
+    if (!isValidSoldier(ent)) continue;
+
+    const factionInfo = getEntityFactionInfo(ent);
+    if (!factionInfo) continue;
+    if (factionInfo.isSpecial && !factionInfo.group) continue;
+
+    const nameTag = ent.nameTag ?? "";
+    if (
+      scope &&
+      !isEntityInScope(ent, factionInfo.faction, factionInfo.isSpecial, nameTag, scope, factionInfo.hierarchy)
+    )
+      continue;
+
+    eligible.push({ entity: ent, factionInfo });
+  }
+
+  return eligible;
+}
+
+/**
+ * Aplica múltiples sistemas a un conjunto de entidades ya filtradas
+ */
+export function applySystemsToEntities(eligibleSoldiers, systemIds, options = {}) {
+  const { player = null, skipCompatibilityCheck = false, cached = {} } = options;
+
+  // DEBUG CACHE: Verificar si la cache se está usando
+  const cacheUsed = !!cached?.systemStates;
+  debugWarn(
+    "menuApply",
+    `[CACHE] Entrada: cached=${cacheUsed ? "ACTIVA" : "FALLBACK"} (systemStates: ${cached?.systemStates ? "sí" : "no"})`,
+    "yellow"
+  );
+
+  const systemStates = cached.systemStates || (_getMenuSystemStates ? _getMenuSystemStates() : {});
+
+  let totalChecked = 0;
+  let skippedNoChange = 0;
+  let appliedCount = 0;
+
+  for (const { entity, factionInfo } of eligibleSoldiers) {
+    for (const systemId of systemIds) {
+      totalChecked++;
+      const systemConfig = getSystemConfig(systemId);
+      const state = systemStates[systemId];
+
+      // Debug detallado para diagnóstico
+      if (!systemConfig) {
+        debugWarn("menuApply", `DEBUG: ${systemId} - sin systemConfig`, "red");
+        continue;
+      }
+      if (!state) {
+        debugWarn(
+          "menuApply",
+          `DEBUG: ${systemId} - sin state en systemStates (keys: ${JSON.stringify(Object.keys(systemStates))})`,
+          "red"
+        );
+        continue;
+      }
+
+      const factionState = state[factionInfo.faction];
+      const configValue = getEntityConfigValue(factionState, factionInfo);
+      if (configValue === undefined) {
+        // Debug CRÍTICO: ver qué está pasando con el estado
+        debugWarn(
+          "menuApply",
+          `DEBUG: ${systemId} - configValue UNDEFINED para ${entity.nameTag || entity.typeId}`,
+          "red"
+        );
+        debugWarn("menuApply", `DEBUG: state keys=${JSON.stringify(Object.keys(state || {}))}`, "dark_gray");
+        debugWarn("menuApply", `DEBUG: factionState=${JSON.stringify(factionState)}`, "dark_gray");
+        debugWarn("menuApply", `DEBUG: factionInfo=${JSON.stringify(factionInfo)}`, "dark_gray");
+        continue;
+      }
+
+      // Guardia ANTES de llamar a applySystemToEntity - evita eventos innecesarios
+      const currentValue = getEntitySystemState(entity, systemId);
+      debugWarn(
+        "menuApply",
+        `DEBUG: ${systemId} - currentValue="${currentValue}" vs configValue="${configValue}"`,
+        "dark_gray"
+      );
+      if (currentValue !== undefined && currentValue === configValue) {
+        skippedNoChange++;
+        continue;
+      }
+
+      applySystemToEntity(systemId, systemConfig, entity, null, skipCompatibilityCheck, factionInfo, player, {
+        systemStates,
+      });
+      appliedCount++;
+    }
+  }
+
+  debugWarn(
+    "menuApply",
+    `applySystemsToEntities: ${totalChecked} verificados, ${skippedNoChange} sin cambios, ${appliedCount} aplicados`,
+    "cyan"
+  );
+}
+
+/**
  * Aplica un sistema a todas las entidades usando eventos de la configuración
  */
 export function applySystemWithEvents(systemId, systemConfig, dimension = null, player = null) {
   try {
-    const seen = new Set();
-    let appliedCount = 0;
-    let skippedCount = 0;
-    const specials = getMenuSpecialSoldiers
-      ? getMenuSpecialSoldiers()
-      : { foundation: { all: [] }, chaos: { all: [] } };
-
-    // Cargar scope una sola vez para optimización
+    const dims = dimension
+      ? [dimension]
+      : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
     const scope = loadScope();
 
     debugWarn("menuApply", `=== Aplicando sistema ${systemId} ===`, "cyan");
 
-    // Escanear entidades en la dimensión solicitada o en todas
-    const dims = dimension
-      ? [dimension]
-      : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
+    const cached = {
+      systemStates: _getMenuSystemStates ? _getMenuSystemStates() : {},
+    };
 
-    // Optimización: 2 llamadas a getEntities por dimensión (Foundation + Chaos) en lugar de 4
-    const allEnts = getAllAddonEntitiesInDimensions(dims);
-
-    for (const ent of allEnts) {
-      if (!ent || !ent.id) continue;
-      if (seen.has(ent.id)) continue;
-      seen.add(ent.id);
-      if (!isValidSoldier(ent, specials)) continue;
-
-      // Obtener información de facción
-      const factionInfo = getEntityFactionInfo(ent, specials);
-      if (!factionInfo) continue;
-
-      // Guardia de especialidad: especial sin grupo asignado (null) → omitir
-      // NO_GROUP es un grupo válido y SÍ ejecuta sistemas
-      if (factionInfo.isSpecial && !factionInfo.group) {
-        skippedCount++;
-        continue;
-      }
-
-      const { faction, isSpecial } = factionInfo;
-      const nameTag = ent.nameTag ?? "";
-
-      // Verificar scope (pasando jerarquía para no especiales)
-      if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, factionInfo.hierarchy)) {
-        skippedCount++;
-        continue;
-      }
-
-      applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo, player);
-      appliedCount += 1;
-    }
-
-    // Procesar lista auxiliar de soldados conocida
-    const allSoldiers = getMenuSoldiers ? getMenuSoldiers() : null;
-    if (Array.isArray(allSoldiers)) {
-      for (const id of allSoldiers) {
-        if (seen.has(id)) continue;
-        try {
-          const ent = world.getEntity(id);
-          if (!ent) continue;
-          seen.add(id);
-          if (!isValidSoldier(ent, specials)) continue;
-
-          const factionInfo = getEntityFactionInfo(ent, specials);
-          if (!factionInfo) continue;
-
-          const { faction, isSpecial } = factionInfo;
-          const nameTag = ent.nameTag ?? "";
-
-          if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, factionInfo.hierarchy)) {
-            skippedCount++;
-            continue;
-          }
-
-          applySystemToEntity(systemId, systemConfig, ent, null, false, factionInfo, player);
-          appliedCount += 1;
-        } catch {}
-      }
-    }
+    const eligible = getEligibleSoldiers(dims, scope);
+    applySystemsToEntities(eligible, [systemId], { player, cached });
 
     const dimLabel = dimension ? (dimension?.id ?? "custom") : "all";
-    debugWarn(
-      "menuApply",
-      `Sistema ${systemId} aplicado a ${appliedCount} entidades (${skippedCount} fuera de scope) en dim=${dimLabel}`,
-      "green"
-    );
+    debugWarn("menuApply", `Sistema ${systemId} aplicado a ${eligible.length} entidades en dim=${dimLabel}`, "green");
   } catch (e) {
     debugWarn("menuApply", `Error en applySystemWithEvents(${systemId}): ${e}`, "red");
   }
