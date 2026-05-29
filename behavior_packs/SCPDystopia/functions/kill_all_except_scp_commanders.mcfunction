@@ -1,4 +1,3 @@
-tag @e remove eliminar
 tag @e add eliminar
 
 tag @e[name="§c§lMTF Delta-1 Chara"] remove eliminar
@@ -8,11 +7,9 @@ tag @e[name="§d§lMTF Delta-1 Commander"] remove eliminar
 tag @e[name="§d§lMTF Delta-1 Mita"] remove eliminar
 tag @e[name="§d§lMTF Delta-1 Leader"] remove eliminar
 
-
 tag @e[name="§lMTF Alpha-1 Commander"] remove eliminar
 tag @e[name="§lMTF Alpha-1 Commander 2"] remove eliminar
 tag @e[name="§lMTF Alpha-1 Commander 3"] remove eliminar
-
 
 tag @e[name="§1§lMTF Epsilon-11 Commander"] remove eliminar
 tag @e[name="§b§lMTF Eta-10 Commander"] remove eliminar

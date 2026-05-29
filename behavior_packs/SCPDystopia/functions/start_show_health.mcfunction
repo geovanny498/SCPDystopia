@@ -27,6 +27,13 @@ tag @e[name="§a§lChaos Delta Leader 3"] remove show_health
 tag @e[name="§a§lChaos Delta Leader 4"] remove show_health
 
 
+tag @e[name="§lMTF Alpha-1 Leader"] remove show_health
+tag @e[name="§1§lMTF Epsilon-11 Leader"] remove show_health
+tag @e[name="§b§lMTF Eta-10 Leader"] remove show_health
+tag @e[name="§8§lMTF Nu-7 Leader"] remove show_health
+tag @e[name="§6§lMTF Beta-7 Leader"] remove show_health
+tag @e[name="§e§lMTF Epsilon-6 Leader"] remove show_health
+
 tag @e[name="MTF Alpha-1 Member"] remove show_health
 tag @e[name="§1MTF Epsilon-11 Member"] remove show_health
 tag @e[name="§bMTF Eta-10 Member"] remove show_health

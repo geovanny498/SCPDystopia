@@ -1,4 +1,3 @@
-tag @e remove eliminar
 tag @e add eliminar
 
 tag @e[name="§2§lChaos Delta Commander"] remove eliminar
