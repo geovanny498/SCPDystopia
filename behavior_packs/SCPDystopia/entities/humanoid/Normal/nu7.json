@@ -494,7 +494,7 @@
           "target": "self"
         },
         "minecraft:angry": {
-          "duration": 6,
+          "duration": 3,
           "broadcast_anger": false,
           "broadcast_anger_on_attack": true,
           "broadcast_anger_on_being_attacked": true,
