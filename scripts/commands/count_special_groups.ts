@@ -18,6 +18,7 @@ import {
   scanActiveUnits,
   getFamilyTagLabel,
   getFamilyTagOrder,
+  NAMETAG_FAMILY_MAP,
 } from "../gui/commandMenu/menu_config.js";
 import { getEntityFactionInfo } from "../gui/commandMenu/model/menu_faction.js";
 import { compareNametags } from "../utils/nametagSort.js";
@@ -200,7 +201,8 @@ system.beforeEvents.startup.subscribe((init) => {
             if (!scanned.hierarchy || !hierarchyOrder.includes(scanned.hierarchy)) continue;
 
             // Etiquetar por familia MTF detectada o tipo
-            const mtfLabel = getFamilyTagLabel(scanned.nametagFamilyId) || "§7Desconocido§r";
+            const mtfFamilyId = (scanned.families || []).find((f: string) => f in NAMETAG_FAMILY_MAP);
+            const mtfLabel = mtfFamilyId ? getFamilyTagLabel(mtfFamilyId) : "§7Desconocido§r";
             if (!counts[scanned.hierarchy].groups[mtfLabel]) {
               counts[scanned.hierarchy].groups[mtfLabel] = [];
             }

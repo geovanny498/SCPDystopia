@@ -122,6 +122,7 @@ export const NAMETAG_FAMILY_MAP = {
   mtf_beta7: { label: "§6§lMTF Beta-7", order: 6 },
   mtf_epsilon6: { label: "§e§lMTF Epsilon-6", order: 7 },
   chaos_delta: { label: "§2§lChaos Delta", order: 10 },
+  chaos_member: { label: "§a§lChaos Member", order: 11 },
 };
 
 export function getFamilyTagLabel(familyId: string) {
