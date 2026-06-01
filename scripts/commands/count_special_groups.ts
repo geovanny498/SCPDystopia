@@ -15,7 +15,7 @@ import {
   SpecialGroups,
   SpecialGroupLabels,
   Factions,
-  scanActiveUnits,
+  scanActiveEntities,
   getFamilyTagLabel,
   getFamilyTagOrder,
   NAMETAG_FAMILY_MAP,
@@ -75,7 +75,7 @@ system.beforeEvents.startup.subscribe((init) => {
         };
 
         for (const dim of dims) {
-          const scanResult = scanActiveUnits(dim, selectedFaction);
+          const scanResult = scanActiveEntities(dim, selectedFaction);
           for (const scanned of scanResult.entities) {
             if (!scanned.isSpecial) continue;
             if (scanned.faction !== selectedFaction) continue;
@@ -194,7 +194,7 @@ system.beforeEvents.startup.subscribe((init) => {
         }
 
         for (const dim of dims) {
-          const scanResult = scanActiveUnits(dim, selectedFaction);
+          const scanResult = scanActiveEntities(dim, selectedFaction);
           for (const scanned of scanResult.entities) {
             if (scanned.isSpecial) continue;
             if (scanned.faction !== selectedFaction) continue;

@@ -6,7 +6,7 @@ import {
   Factions,
   SpecialGroups,
   getGroupsOrderForSystems,
-  scanActiveUnits,
+  scanActiveEntities,
 } from "../menu_config.js";
 import { buildSystemForm, parseSystemFormValues, getConfirmationMessage } from "../builder/menu_builder.js";
 import { loadSystemStates, saveSystemStates, applySystemsToAll } from "../core/menu_state.js";
@@ -69,7 +69,7 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
     const loadedStates = loadSystemStates(systemIds);
 
     // 2. Escanear entidades activas en la dimensión del jugador
-    const scanResult = scanActiveUnits(player.dimension, selectedFaction, { withBuckets: false });
+    const scanResult = scanActiveEntities(player.dimension, selectedFaction);
 
     // 2.1. Grupos activos: sincroniza buildSystemForm ↔ parseSystemFormValues
     // Calcular antes de buildSystemForm para que ambos usen la misma lista

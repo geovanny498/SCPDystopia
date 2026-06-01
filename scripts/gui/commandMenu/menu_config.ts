@@ -139,6 +139,7 @@ export function getFamilyTagOrder(familyId: string) {
 
 export {
   scanActiveUnits,
+  scanActiveEntities,
   invalidateScanCache,
   getScanCache,
   invalidateEntityQueryCache,

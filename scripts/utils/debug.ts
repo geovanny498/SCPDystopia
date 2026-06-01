@@ -34,10 +34,12 @@ export const DEBUG_MODULES: string[] = [
   "menuGroups", // Asignación y lectura de grupos de especiales
   "menuGroups:ui", // UI del menú de grupos
 
-  // ═══════════════════════════════════════════════════════════════════════════
+   // ═══════════════════════════════════════════════════════════════════════════
   // ACTIVOS PARA PRUEBAS DE OPTIMIZACIÓN — Verificar scanner y sincronización
   // ═══════════════════════════════════════════════════════════════════════════
-  "menuScanner", // Escaneo de entidades (cache hits/misses, contadores)
+  "menuScanner", // Cache de entidades (getEntitiesCached)
+  "menuScanner:base", // Escaneo base de entidades (scanActiveEntities)
+  "menuScanner:buckets", // Bucketing posterior (scanActiveUnits)
   // "menuScanner:ent",   // Detalle por entidad (COMENTAR: muy verboso)
   "menuEvents:spawn", // Sincronización de grupos en spawn (crítico para pruebas)
   "menuSystem", // Construcción de formularios y buckets

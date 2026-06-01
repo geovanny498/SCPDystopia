@@ -48,7 +48,7 @@ export function showTeleportAllMenu(player: Player, faction: string): void {
   form.label("§e─── Soldados Especiales ───");
 
   // Escanear entidades activas para obtener buckets dinámicos
-  const scanResult = scanActiveUnits(player.dimension, faction, { withBuckets: true });
+  const scanResult = scanActiveUnits(player.dimension, faction);
   const buckets = scanResult.buckets;
 
   // Orden fijo de buckets

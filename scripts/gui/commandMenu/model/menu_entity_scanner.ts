@@ -16,7 +16,7 @@ import { teamFamilies } from "../../../utils/teams.js";
 // ── Cache TTL ────────────────────────────────────────────────────────────────
 
 interface _ScanCacheEntry {
-  result: ScanResult;
+  result: ScanResult | BaseScanResult;
   tick: number;
 }
 
@@ -27,7 +27,7 @@ export function invalidateScanCache(): void {
   _scanCache.clear();
 }
 
-export function getScanCache(): ScanResult | null {
+export function getScanCache(): ScanResult | BaseScanResult | null {
   // Devuelve la entrada más reciente si existe
   let newest: _ScanCacheEntry | undefined;
   for (const entry of _scanCache.values()) {
@@ -122,6 +122,8 @@ export interface ScanResult {
   dimension: string;
   faction: string;
 }
+
+export type BaseScanResult = Omit<ScanResult, 'buckets' | 'bucketIdMap'>;
 
 // ── Detección de facción por familias ───────────────────────────────────────
 
@@ -260,12 +262,12 @@ function groupNametagsByBucket(
   // Diagnostic logging
   if (mixedEntries.length > 0) {
     bucketDiagnostic(
-      "menuScanner",
+      "menuScanner:buckets",
       `[dedupCrossBucket] ${mixedEntries.length} nametags cruzaron buckets → other_units`,
       "yellow"
     );
     for (const [name, count] of mixedEntries) {
-      bucketDiagnostic("menuScanner", `  "${name}" (${count} unidades)`, "yellow");
+      bucketDiagnostic("menuScanner:buckets", `  "${name}" (${count} unidades)`, "yellow");
     }
   }
 
@@ -340,30 +342,28 @@ function groupNametagsByBucket(
 
 // ── Escaneo principal ─────────────────────────────────────────────────────────
 
-export function scanActiveUnits(
+export function scanActiveEntities(
   dimension: Dimension,
-  faction: string,
-  options?: { withBuckets?: boolean }
-): ScanResult {
+  faction: string
+): BaseScanResult {
   const now = Date.now();
   const cacheKey = `${dimension.id}:${faction}`;
 
-  // Verificar cache por clave compuesta (dimension + faction) y TTL
   const cached = _scanCache.get(cacheKey);
   if (cached) {
     const age = now - cached.tick;
     if (age < CACHE_TTL_TICKS * 50) {
       debugWarn(
-        "menuScanner",
-        `[CACHE HIT] key=${cacheKey} age=${age}ms < ${CACHE_TTL_TICKS * 50}ms TTL, dimension=${cached.result.dimension} entities=${cached.result.entities.length}`,
+        "menuScanner:base",
+        `[CACHE HIT] key=${cacheKey} age=${age}ms < ${CACHE_TTL_TICKS * 50}ms TTL, dimension=${cached.result.dimension} entities=${(cached.result as BaseScanResult).entities.length}`,
         "blue"
       );
-      return cached.result;
+      return cached.result as BaseScanResult;
     }
   }
 
   debugWarn(
-    "menuScanner",
+    "menuScanner:base",
     `[CACHE MISS] key=${cacheKey} faction=${faction} age=${cached ? now - cached.tick : "n/a"}ms TTL=${CACHE_TTL_TICKS * 50}ms dim=${dimension.id}`,
     "yellow"
   );
@@ -377,7 +377,7 @@ export function scanActiveUnits(
   // Optimización O1-Extended: usar función centralizada
   const rawEntities = getEntitiesByFaction(dimension, faction as "foundation" | "chaos");
 
-  debugWarn("menuScanner", `Scan START: faction=${faction} rawEntities=${rawEntities.length}`, "dark_gray");
+  debugWarn("menuScanner:base", `Scan START: faction=${faction} rawEntities=${rawEntities.length}`, "dark_gray");
 
   // ── BUCLE 1: Escaneo principal ────────────────────────────────────────────────
   for (const ent of rawEntities) {
@@ -426,35 +426,24 @@ export function scanActiveUnits(
       }
 
       debugWarn(
-        "menuScanner:ent",
+        `menuScanner:base:ent`,
         `  ent="${typeId}" nametag="${nametag}" isSpecial=${isSpecial} faction=${detectedFaction} familyId="${nametagFamilyId}" group="${isSpecial ? scanned.group : "n/a"}"`,
         "dark_gray"
       );
     } catch (e) {
-      debugWarn("menuScanner", `Error escaneando entidad ${ent?.typeId}: ${e}`, "yellow");
+      debugWarn("menuScanner:base", `Error escaneando entidad ${ent?.typeId}: ${e}`, "yellow");
     }
   }
 
   const activeHierarchies = Object.keys(byHierarchy).filter((h) => (byHierarchy[h]?.length ?? 0) > 0);
 
-  const withBuckets = options?.withBuckets ?? false;
-  let bucketResult: { buckets: Record<string, BucketData>; bucketEntityMap: Record<string, string[]> };
-
-  if (withBuckets) {
-    bucketResult = groupNametagsByBucket(entities, nametagGroups);
-  } else {
-    bucketResult = { buckets: {}, bucketEntityMap: {} };
-  }
-
-  const result: ScanResult = {
+  const result: BaseScanResult = {
     entities,
     byHierarchy,
     byFamilyTag,
     nametagGroups,
     activeHierarchies,
     activeFamilyTags,
-    buckets: bucketResult.buckets,
-    bucketIdMap: bucketResult.bucketEntityMap,
     dimension: dimension.id,
     faction,
   };
@@ -462,8 +451,61 @@ export function scanActiveUnits(
   _scanCache.set(cacheKey, { result, tick: now });
 
   debugWarn(
-    "menuScanner",
+    "menuScanner:base",
     `Scan: ${entities.length} entidades, ${activeHierarchies.length} jerarquías, ${Object.keys(activeFamilyTags).length} familias`,
+    "cyan"
+  );
+
+  return result;
+}
+
+export function scanActiveUnits(
+  dimension: Dimension,
+  faction: string
+): ScanResult {
+  const now = Date.now();
+  const cacheKey = `${dimension.id}:${faction}:buckets`;
+
+  const cached = _scanCache.get(cacheKey);
+  if (cached) {
+    const age = now - cached.tick;
+    if (age < CACHE_TTL_TICKS * 50) {
+      debugWarn(
+        "menuScanner:buckets",
+        `[CACHE HIT] key=${cacheKey} age=${age}ms < ${CACHE_TTL_TICKS * 50}ms TTL, dimension=${cached.result.dimension} entities=${cached.result.entities.length}`,
+        "blue"
+      );
+      return cached.result as ScanResult;
+    }
+  }
+
+  debugWarn(
+    "menuScanner:buckets",
+    `[CACHE MISS] key=${cacheKey} faction=${faction} age=${cached ? now - cached.tick : "n/a"}ms TTL=${CACHE_TTL_TICKS * 50}ms dim=${dimension.id}`,
+    "yellow"
+  );
+
+  const baseResult = scanActiveEntities(dimension, faction);
+  const bucketResult = groupNametagsByBucket(baseResult.entities, baseResult.nametagGroups);
+
+  const result: ScanResult = {
+    entities: baseResult.entities,
+    byHierarchy: baseResult.byHierarchy,
+    byFamilyTag: baseResult.byFamilyTag,
+    nametagGroups: baseResult.nametagGroups,
+    activeHierarchies: baseResult.activeHierarchies,
+    activeFamilyTags: baseResult.activeFamilyTags,
+    buckets: bucketResult.buckets,
+    bucketIdMap: bucketResult.bucketEntityMap,
+    dimension: baseResult.dimension,
+    faction: baseResult.faction,
+  };
+
+  _scanCache.set(cacheKey, { result, tick: now });
+
+  debugWarn(
+    "menuScanner:buckets",
+    `Buckets: ${Object.keys(bucketResult.buckets).length} buckets, ${Object.keys(bucketResult.bucketEntityMap).length} mapped`,
     "cyan"
   );
 

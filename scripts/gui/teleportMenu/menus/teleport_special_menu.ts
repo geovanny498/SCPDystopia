@@ -31,7 +31,7 @@ export function showSpecialSoldiersMenu(player: Player, faction: string): void {
   debugMessage("teleportMenu", `Mostrando menú de especiales para facción ${faction}`, "cyan");
 
   // 1. Escanear entidades activas
-  const scanResult = scanActiveUnits(player.dimension, faction, { withBuckets: true });
+  const scanResult = scanActiveUnits(player.dimension, faction);
   const buckets = scanResult.buckets;
 
   // 2. Orden fijo de buckets
