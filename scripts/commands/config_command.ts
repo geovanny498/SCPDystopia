@@ -1,4 +1,3 @@
-// scripts/commands/config_command.js
 import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel } from "@minecraft/server";
 import { buildAndShowMenu } from "../gui/commandMenu/builder/menu.js";
 
@@ -13,7 +12,6 @@ system.beforeEvents.startup.subscribe((init) => {
   try {
     init.customCommandRegistry.registerCommand(cmd, (origin) => {
       try {
-        // Solo permitir ejecución por entidad (jugador)
         if (origin.sourceType !== CustomCommandSource.Entity || !origin.sourceEntity) {
           return {
             status: CustomCommandStatus.Failure,
@@ -21,7 +19,6 @@ system.beforeEvents.startup.subscribe((init) => {
           };
         }
 
-        // Mostrar el menú al jugador que ejecutó el comando
         try {
           buildAndShowMenu(origin.sourceEntity);
         } catch (e) {
