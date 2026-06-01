@@ -340,7 +340,11 @@ function groupNametagsByBucket(
 
 // ── Escaneo principal ─────────────────────────────────────────────────────────
 
-export function scanActiveUnits(dimension: Dimension, faction: string): ScanResult {
+export function scanActiveUnits(
+  dimension: Dimension,
+  faction: string,
+  options?: { withBuckets?: boolean }
+): ScanResult {
   const now = Date.now();
   const cacheKey = `${dimension.id}:${faction}`;
 
@@ -433,7 +437,14 @@ export function scanActiveUnits(dimension: Dimension, faction: string): ScanResu
 
   const activeHierarchies = Object.keys(byHierarchy).filter((h) => (byHierarchy[h]?.length ?? 0) > 0);
 
-  const bucketResult = groupNametagsByBucket(entities, nametagGroups);
+  const withBuckets = options?.withBuckets ?? false;
+  let bucketResult: { buckets: Record<string, BucketData>; bucketEntityMap: Record<string, string[]> };
+
+  if (withBuckets) {
+    bucketResult = groupNametagsByBucket(entities, nametagGroups);
+  } else {
+    bucketResult = { buckets: {}, bucketEntityMap: {} };
+  }
 
   const result: ScanResult = {
     entities,

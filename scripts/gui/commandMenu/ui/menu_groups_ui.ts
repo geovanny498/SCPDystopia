@@ -84,7 +84,7 @@ function showFactionGroupsMenu(player: Player, faction: string): void {
 
     // Escanear entidades activas en la dimensión del jugador
     // El cache TTL (2s) maneja la expiración natural - no forzar invalidación en navegación UI
-    const scanResult = scanActiveUnits(player.dimension, faction);
+    const scanResult = scanActiveUnits(player.dimension, faction, { withBuckets: true });
     const buckets = scanResult.buckets;
 
     // Resumen de grupos: contar entidades ESPECIALES vivas por grupo en la facción
