@@ -678,7 +678,7 @@
               {
                 "test": "owner_distance",
                 "operator": ">",
-                "value": 22 // Valor estándar en exploración
+                "value": 16 // Valor estándar en exploración
               },
               {
                 "all_of": [
