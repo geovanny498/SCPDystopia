@@ -1,4 +1,4 @@
-import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel } from "@minecraft/server";
+import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel, Player } from "@minecraft/server";
 import { buildAndShowMenu } from "../gui/commandMenu/builder/menu.js";
 
 system.beforeEvents.startup.subscribe((init) => {
@@ -20,7 +20,7 @@ system.beforeEvents.startup.subscribe((init) => {
         }
 
         try {
-          buildAndShowMenu(origin.sourceEntity);
+          buildAndShowMenu(origin.sourceEntity as Player);
         } catch (e) {
           console.warn("Error mostrando menú desde scpd:config:", e);
           return {

@@ -1,9 +1,9 @@
 // scripts/gui/commandMenu/menu_events.ts
-import { world, system } from "@minecraft/server";
+import { world, system, Entity, EntitySpawnAfterEvent, EntityLoadAfterEvent, EntityRemoveAfterEvent } from "@minecraft/server";
 import { debugWarn } from "../../../utils/debug.js";
 import { systems, invalidateScanCache, invalidateEntityQueryCache, getEntitiesCached } from "../menu_config.js";
 import { loadSystemOrDefault } from "./menu_state.js";
-import { shouldApplyToFutureEntities, canApplySystem } from "../menu_rules.js";
+import { shouldApplyToFutureEntities, canApplySystem, SystemState } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
 import { applySystemToEntity } from "./menu_apply.js";
@@ -18,7 +18,7 @@ const menuSoldiers: string[] = [];
 /**
  * Estados de sistemas en memoria (independiente de toggle_system)
  */
-const menuSystemStates: any = {};
+const menuSystemStates: Record<string, SystemState> = {};
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // §  ESTADOS DE SISTEMAS
@@ -40,7 +40,7 @@ function loadAllSystemStates() {
 /**
  * Obtiene los estados en memoria (para menu_apply.ts)
  */
-export function getMenuSystemStates() {
+export function getMenuSystemStates(): Record<string, SystemState> {
   return menuSystemStates;
 }
 
@@ -50,7 +50,7 @@ export function getMenuSystemStates() {
  * @param {Object} options
  * @param {boolean} [options.forceApply=false] - Si true, ignora el scope y forza aplicar sistemas
  */
-function handleSoldierEntity(ent: any, { forceApply = false } = {}) {
+function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
   try {
     if (!ent || !isValidSoldier(ent)) return;
 
@@ -128,7 +128,12 @@ function handleSoldierEntity(ent: any, { forceApply = false } = {}) {
       }
 
       // Verificar compatibilidad
-      const compatResult = canApplySystem(systemId, menuSystemStates, faction, isSpecial);
+      const compatResult = canApplySystem(
+        systemId,
+        menuSystemStates as Record<string, Record<string, SystemState>>,
+        faction,
+        isSpecial
+      );
       if (!compatResult.canApply) {
         debugWarn("menuEvents:spawn", `${systemId} → ${nameTag}: NO aplicado (incompatible)`, "gray");
         continue;
@@ -151,17 +156,15 @@ export function initializeMenuEvents() {
     loadAllSystemStates();
 
     // Event listener para cuando una entidad spawnea (forzar aplicación)
-    world.afterEvents.entitySpawn.subscribe((ev: any) => {
+    world.afterEvents.entitySpawn.subscribe((ev: EntitySpawnAfterEvent) => {
       handleSoldierEntity(ev.entity, { forceApply: true });
     });
 
-    // Event listener para cuando una entidad se carga
-    world.afterEvents.entityLoad.subscribe((ev: any) => {
+    world.afterEvents.entityLoad.subscribe((ev: EntityLoadAfterEvent) => {
       handleSoldierEntity(ev.entity);
     });
 
-    // Event listener para cuando una entidad se remueve
-    world.afterEvents.entityRemove.subscribe((ev: any) => {
+    world.afterEvents.entityRemove.subscribe((ev: EntityRemoveAfterEvent) => {
       const idx = menuSoldiers.indexOf(ev.removedEntityId);
       if (idx !== -1) {
         menuSoldiers.splice(idx, 1);
@@ -184,7 +187,7 @@ export function initializeMenuEvents() {
 /**
  * Actualiza el estado de un sistema en memoria
  */
-export function updateMenuSystemState(systemId: string, state: any) {
+export function updateMenuSystemState(systemId: string, state: SystemState) {
   menuSystemStates[systemId] = state;
   debugWarn("menuEvents", `Estado actualizado en memoria: ${systemId}`, "green");
 }

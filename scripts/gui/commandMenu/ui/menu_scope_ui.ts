@@ -1,16 +1,14 @@
 // scripts/gui/commandMenu/menu_scope_ui.ts
-import { system } from "@minecraft/server";
-import { ModalFormData } from "@minecraft/server-ui";
+import { system, Player } from "@minecraft/server";
+import { ModalFormData, ModalFormResponse } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
 import { loadScope, saveScope } from "../model/menu_scope.js";
 
 /**
  * Muestra el único toggle de scope simplificado
  */
-export function showScopeMenu(player: any) {
+export function showScopeMenu(player: Player) {
   try {
-    debugWarn("menuScope", "=== showScopeMenu iniciado ===", "cyan");
-
     const currentScope = loadScope();
     const respectBlocks = currentScope?.respectEntityBlocks ?? true;
 
@@ -25,7 +23,7 @@ export function showScopeMenu(player: any) {
     system.run(() => {
       form
         .show(player)
-        .then((res: any) => {
+        .then((res: ModalFormResponse) => {
           if (!res || res.canceled) {
             import("../builder/menu.js").then((module) => {
               system.run(() => {
@@ -33,30 +31,30 @@ export function showScopeMenu(player: any) {
               });
             });
             return;
-          }
+        }
 
-          const allowRespect = res.formValues && res.formValues.length > 1 && res.formValues[1] === true;
-          currentScope.respectEntityBlocks = allowRespect;
-          saveScope(currentScope);
+        const allowRespect = res.formValues && res.formValues.length > 1 && res.formValues[1] === true;
+        currentScope.respectEntityBlocks = allowRespect ?? currentScope.respectEntityBlocks;
+        saveScope(currentScope);
 
-          player.sendMessage(
-            `§a[SCOPE] Toggle guardado: ${allowRespect ? "§aPreferir configuración local" : "§cForzar configuración global en todas las unidades"}§r`
-          );
+        player.sendMessage(
+          `§a[SCOPE] Toggle guardado: ${allowRespect ? "§aPreferir configuración local" : "§cForzar configuración global en todas las unidades"}§r`
+        );
 
-          import("../builder/menu.js").then((module) => {
-            system.run(() => {
-              module.buildAndShowMenu(player);
-            });
-          });
-        })
-        .catch((err: any) => {
-          debugWarn("menuScope", `Error en ModalForm: ${err}`, "red");
-          import("../builder/menu.js").then((module) => {
-            system.run(() => {
-              module.buildAndShowMenu(player);
-            });
+        import("../builder/menu.js").then((module) => {
+          system.run(() => {
+            module.buildAndShowMenu(player);
           });
         });
+      })
+      .catch((err: unknown) => {
+        debugWarn("menuScope", `Error en ModalForm: ${err}`, "red");
+        import("../builder/menu.js").then((module) => {
+          system.run(() => {
+            module.buildAndShowMenu(player);
+          });
+        });
+      });
     });
   } catch (e) {
     debugWarn("menuScope", `Error en showScopeMenu: ${e}`, "red");

@@ -1,6 +1,6 @@
 // scripts/gui/commandMenu/menu.ts
-import { world, system } from "@minecraft/server";
-import { ActionFormData } from "@minecraft/server-ui";
+import { world, system, Player } from "@minecraft/server";
+import { ActionFormData, ActionFormResponse } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
 
 // Importar módulos de configuración y lógica
@@ -18,7 +18,7 @@ interface CategoryConfig {
 /**
  * Construye y muestra el menú principal de categorías
  */
-export function buildAndShowMenu(player: any) {
+export function buildAndShowMenu(player: Player) {
   try {
     debugWarn("commandMenu", "=== Iniciando buildAndShowMenu ===", "cyan");
 
@@ -41,7 +41,7 @@ export function buildAndShowMenu(player: any) {
     system.run(() => {
       form
         .show(player)
-        .then((res: any) => {
+        .then((res: ActionFormResponse) => {
           if (!res || res.canceled) {
             debugWarn("commandMenu", "Formulario cancelado", "yellow");
             return;
@@ -52,7 +52,6 @@ export function buildAndShowMenu(player: any) {
             return;
           }
 
-          // Botón 0: Grupos de especiales
           if (selectedIndex === 0) {
             showGroupsMenu(player);
             return;
@@ -68,7 +67,7 @@ export function buildAndShowMenu(player: any) {
 
           showCategoryMenu(player, selectedCategory.id);
         })
-        .catch((err: any) => {
+        .catch((err: unknown) => {
           debugWarn("commandMenu", `Error en form.show: ${err}`, "red");
         });
     });

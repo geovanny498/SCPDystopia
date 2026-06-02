@@ -1,9 +1,9 @@
 // scripts/gui/commandMenu/menu_category.ts
-import { system } from "@minecraft/server";
-import { ActionFormData } from "@minecraft/server-ui";
+import { system, Player } from "@minecraft/server";
+import { ActionFormData, ActionFormResponse } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
 
-import { getCategoryConfig, getSystemsByCategory } from "../menu_config.js";
+import { getCategoryConfig, getSystemsByCategory, MenuSystem } from "../menu_config.js";
 import { showSystemMenu } from "./menu_system.js";
 import { showScopeMenu } from "./menu_scope_ui.js";
 
@@ -12,7 +12,7 @@ import { showScopeMenu } from "./menu_scope_ui.js";
  * @param {Player} player
  * @param {string} categoryId
  */
-export function showCategoryMenu(player: any, categoryId: string) {
+export function showCategoryMenu(player: Player, categoryId: string) {
   try {
     const category = getCategoryConfig(categoryId);
     if (!category) {
@@ -45,7 +45,7 @@ export function showCategoryMenu(player: any, categoryId: string) {
     }
 
     // Agregar botones para cada sistema
-    systems.forEach((sys: any) => {
+    systems.forEach((sys: MenuSystem) => {
       // Si la descripción está vacía, no agregar salto de línea
       const buttonText = sys.description ? `${sys.displayName}\n§r§7${sys.description}` : sys.displayName;
       form.button(buttonText);
@@ -64,8 +64,7 @@ export function showCategoryMenu(player: any, categoryId: string) {
     form.button("§8« Volver al menú principal");
 
     system.run(() => {
-      form.show(player).then((res: any) => {
-        // Si el usuario canceló, volver al menú principal
+      form.show(player).then((res: ActionFormResponse) => {
         if (!res || res.canceled) {
           import("../builder/menu.js").then((module) => {
             system.run(() => {
@@ -75,7 +74,7 @@ export function showCategoryMenu(player: any, categoryId: string) {
           return;
         }
 
-        const selectedIndex = res.selection as number | undefined;
+        const selectedIndex = res.selection;
         if (selectedIndex === undefined || selectedIndex < 0) return;
 
         // Calcular índices según si es advanced o no
