@@ -1,17 +1,25 @@
-// scripts/commands/scope_commands.js
-import { system, world, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel } from "@minecraft/server";
+// scripts/commands/scope_commands.ts
+import {
+  system,
+  world,
+  CustomCommandStatus,
+  CustomCommandSource,
+  CommandPermissionLevel,
+  Entity,
+  Player,
+} from "@minecraft/server";
 import { loadScope, resetScope, getScopeSummary, isEntityInScope } from "../gui/commandMenu/model/menu_scope.js";
 import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
 import { getEntityFactionInfo, isValidSoldier } from "../gui/commandMenu/model/menu_faction.js";
 import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
 import { getAllAddonEntitiesInDimensions } from "../utils/entityQuery.js";
 import { compareNametags } from "../utils/nametagSort.js";
-/**
- * Comandos para gestionar el scope del menú
- */
+
+type ScopeData = {
+  respectEntityBlocks: boolean;
+};
 
 system.beforeEvents.startup.subscribe((init) => {
-  // Comando para ver el scope actual
   const checkCmd = {
     name: "scpd:check_scope",
     description: "Muestra si el menú global fuerza la configuracion global y qué unidades usan configuración local",
@@ -22,7 +30,6 @@ system.beforeEvents.startup.subscribe((init) => {
   try {
     init.customCommandRegistry.registerCommand(checkCmd, (origin) => {
       try {
-        // Solo permitir ejecución por entidad (jugador)
         if (origin.sourceType !== CustomCommandSource.Entity || !origin.sourceEntity) {
           return {
             status: CustomCommandStatus.Failure,
@@ -30,16 +37,14 @@ system.beforeEvents.startup.subscribe((init) => {
           };
         }
 
-        const entity = origin.sourceEntity;
+        const entity = origin.sourceEntity as Player;
 
-        // Verificar si existe la propiedad dinámica
         const rawScope = world.getDynamicProperty("scpd_menu_scope");
         const isSaved = rawScope !== undefined;
 
         const scope = loadScope();
         const summary = getScopeSummary(scope);
 
-        // Mostrar en chat del jugador
         const statusLabel = isSaved ? "§a[Guardado]§r" : "§8[Por defecto]§r";
         entity.sendMessage(`§d=== Prioridad de Aplicación ===§r ${statusLabel}`);
         entity.sendMessage(summary);
@@ -55,7 +60,6 @@ system.beforeEvents.startup.subscribe((init) => {
 
         entity.sendMessage("§8Usa el menú para modificar la configuración");
 
-        // Mostrar en consola
         console.warn("§d=== Prioridad de Aplicación ===");
         console.warn(summary);
         if (scope.respectEntityBlocks) {
@@ -81,7 +85,6 @@ system.beforeEvents.startup.subscribe((init) => {
     console.warn("Error registrando scpd:check_scope:", e);
   }
 
-  // Comando para resetear el scope
   const resetCmd = {
     name: "scpd:reset_scope",
     description: "Reinicia el sistema de Prioridad de Aplicación a valores por defecto",
@@ -92,7 +95,6 @@ system.beforeEvents.startup.subscribe((init) => {
   try {
     init.customCommandRegistry.registerCommand(resetCmd, (origin) => {
       try {
-        // Solo permitir ejecución por entidad (jugador)
         if (origin.sourceType !== CustomCommandSource.Entity || !origin.sourceEntity) {
           return {
             status: CustomCommandStatus.Failure,
@@ -100,9 +102,8 @@ system.beforeEvents.startup.subscribe((init) => {
           };
         }
 
-        const entity = origin.sourceEntity;
+        const entity = origin.sourceEntity as Player;
 
-        // Resetear el scope
         resetScope();
         const scope = loadScope();
         const summary = getScopeSummary(scope);
@@ -110,13 +111,11 @@ system.beforeEvents.startup.subscribe((init) => {
         entity.sendMessage("§a[SCOPE] §dPrioridad de Aplicación reiniciado:");
         entity.sendMessage(summary);
 
-        // Reaplicar todos los sistemas a las entidades existentes con el nuevo scope
         system.run(() => {
           try {
             const dimension = entity.dimension;
             const systemIds = Object.keys(menuSystems);
-            // El jugador que ejecutó el comando puede ser usado para auto-domesticar
-            applySystemsToAll(systemIds, dimension, entity);
+            applySystemsToAll(systemIds, dimension, entity as any);
 
             console.log("[SCPDystopia] Sistemas reaplicados a entidades existentes con nuevo scope");
             entity.sendMessage("§a[SCOPE] Sistemas reaplicados a entidades existentes");
@@ -143,14 +142,13 @@ system.beforeEvents.startup.subscribe((init) => {
   }
 });
 
-function getBlockedEntitiesReport(scope) {
+function getBlockedEntitiesReport(scope: ScopeData): string[] {
   const dims = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
-  const seen = new Set();
-  const blockedSpecials = {};
-  const blockedNormals = {};
+  const seen = new Set<string>();
+  const blockedSpecials: Record<string, number> = {};
+  const blockedNormals: Record<string, number> = {};
   let blockedTotal = 0;
 
-  // Optimización: 2 llamadas a getEntities por dimensión en lugar de 4
   const allEnts = getAllAddonEntitiesInDimensions(dims);
 
   for (const ent of allEnts) {
@@ -167,7 +165,7 @@ function getBlockedEntitiesReport(scope) {
       factionInfo.isSpecial,
       ent.nameTag ?? "",
       scope,
-      factionInfo.hierarchy
+      factionInfo.hierarchy ?? ""
     );
     if (inScope) continue;
 
@@ -177,7 +175,7 @@ function getBlockedEntitiesReport(scope) {
     bucket[label] = (bucket[label] || 0) + 1;
   }
 
-  const reportLines = [
+  const reportLines: string[] = [
     "§9§l[CHECK_SCOPE] Unidades con configuración local en simulación§r",
     `§fTotal: §e${blockedTotal} ${blockedTotal === 1 ? "unidad" : "unidades"}§r`,
   ];

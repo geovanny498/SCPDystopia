@@ -1,30 +1,34 @@
-// main.js
-import { world, system } from "@minecraft/server";
-import { getTeam } from "./utils/teams.ts";
+// main.ts
+import { world, system, Entity } from "@minecraft/server";
+import { getTeam } from "./utils/teams.js";
 import { projectileConfig } from "./utils/projectileConfig.js";
 import { applyDamageAndKnockback } from "./utils/damage.js";
 import { debugMessage, debugWarn } from "./utils/debug.js";
 
-const projectilePierceMap = new WeakMap();
+interface ProjectileConfigEntry {
+  damage: number;
+  knockback: number;
+  pierce: number;
+}
 
-// Evento cuando un proyectil impacta a una entidad
+const projectilePierceMap = new WeakMap<Entity, number>();
+
 world.afterEvents.projectileHitEntity.subscribe((event) => {
-  const projectile = event.projectile;
-  const target = event.getEntityHit()?.entity;
+  const projectile = event.projectile as Entity | undefined;
+  const target = event.getEntityHit()?.entity as Entity | undefined;
   if (!projectile || !target) {
     debugWarn("projectileHitEntity", "Falta objeto necesario o es fuego amigo.", "yellow");
     return;
   }
-  const shooter = event.source ? event.source : null;
-  const teamShooter = getTeam(shooter);
+
+  const teamShooter = event.source ? getTeam(event.source as Entity) : null;
   const teamTarget = getTeam(target);
 
-  if (shooter && target.id === shooter.id) {
+  if (event.source && target.id === (event.source as Entity).id) {
     debugWarn("projectileHitEntity", "El proyectil intentó dañar a su propio tirador. Cancelando daño.", "yellow");
     return;
   }
 
-  // Verificación de equipo para evitar fuego amigo
   if (teamShooter && teamTarget && teamShooter === teamTarget) {
     debugWarn(
       "projectileHitEntity",
@@ -33,16 +37,17 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
     );
     return;
   }
-  const cfg = projectileConfig[projectile.typeId];
+
+  const cfg = (projectileConfig as Record<string, ProjectileConfigEntry>)[projectile.typeId];
   if (!cfg) {
     debugWarn("projectileHitEntity", "No se encontró configuración para el proyectil.", "red");
     return;
   }
+
   try {
-    // Caso especial: Pierce infinito
     if (cfg.pierce === Infinity) {
       debugWarn("projectileHitEntity", "Pierce es Infinity. Solo aplicamos daño y knockback.", "green");
-      applyDamageAndKnockback(projectile, target, cfg, shooter);
+      if (event.source) applyDamageAndKnockback(projectile, target, cfg, event.source as Entity);
       return;
     }
 
@@ -51,11 +56,11 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
     if (pierced >= pierceLimit) {
       debugWarn("projectileHitEntity", `Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`, "cyan");
       debugWarn("projectileHitEntity", "Límite de pierce alcanzado. Eliminando proyectil.", "cyan");
-      return; // única manera actual de cancelar daño (no borra proyectil)
+      return;
     }
 
     debugWarn("projectileHitEntity", `Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`, "green");
-    applyDamageAndKnockback(projectile, target, cfg, shooter);
+    if (event.source) applyDamageAndKnockback(projectile, target, cfg, event.source as Entity);
 
     projectilePierceMap.set(projectile, pierced + 1);
   } catch (e) {
