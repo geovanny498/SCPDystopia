@@ -5,6 +5,7 @@ Comandos del proyecto:
 - `npm run build` — Compilar TypeScript
 
 Build debe pasar sin errores antes de considerar completado un cambio relevantes.
+Está disponible la herramienta ripgrep (o rg en bash) y se recomienda usarla según se estime conveniente.
 
 Siempre responde en español.
 

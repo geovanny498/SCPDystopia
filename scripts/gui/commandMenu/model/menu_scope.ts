@@ -1,7 +1,11 @@
-// scripts/gui/commandMenu/menu_scope.js
-import { world } from "@minecraft/server";
+// scripts/gui/commandMenu/menu_scope.ts
+import { world, Entity } from "@minecraft/server";
 import { debugWarn } from "../../../utils/debug.js";
 import { ENTITY_GLOBAL_OVERWRITE_PROPERTY } from "../../interactMenu/gui.js";
+
+export interface ScopeData {
+  respectEntityBlocks: boolean;
+}
 
 /**
  * Sistema de Prioridad de Aplicación (Scope)
@@ -18,12 +22,12 @@ const DEFAULT_RESPECT_ENTITY_BLOCKS = true;
 /**
  * Cache del scope en memoria para evitar cargas duplicadas
  */
-let scopeCache = null;
+let scopeCache: ScopeData | null = null;
 
 /**
  * Genera el scope por defecto
  */
-function generateDefaultScope() {
+function generateDefaultScope(): ScopeData {
   return {
     respectEntityBlocks: DEFAULT_RESPECT_ENTITY_BLOCKS,
   };
@@ -32,7 +36,7 @@ function generateDefaultScope() {
 /**
  * Migra un scope antiguo al nuevo formato simplificado
  */
-function migrateOldScope(oldScope) {
+function migrateOldScope(oldScope: unknown): ScopeData {
   debugWarn("menuScope", "Migrando scope antiguo al nuevo formato simplificado", "yellow");
   return generateDefaultScope();
 }
@@ -40,7 +44,7 @@ function migrateOldScope(oldScope) {
 /**
  * Carga el scope desde dynamic properties
  */
-export function loadScope(forceReload = false) {
+export function loadScope(forceReload = false): ScopeData {
   try {
     if (scopeCache && !forceReload) {
       debugWarn("menuScope", "Scope cargado desde cache en memoria", "gray");
@@ -57,7 +61,7 @@ export function loadScope(forceReload = false) {
     }
 
     debugWarn("menuScope", "Scope cargado desde propiedades dinámicas", "cyan");
-    const parsed = JSON.parse(raw);
+    const parsed = JSON.parse(raw as string);
 
     if (typeof parsed.respectEntityBlocks !== "boolean") {
       debugWarn("menuScope", "Scope antiguo o inválido, migrando a formato simplificado", "yellow");
@@ -80,7 +84,7 @@ export function loadScope(forceReload = false) {
 /**
  * Guarda el scope en dynamic properties
  */
-export function saveScope(scope) {
+export function saveScope(scope: ScopeData): void {
   try {
     const serialized = JSON.stringify(scope);
     world.setDynamicProperty(SCOPE_PROPERTY, serialized);
@@ -101,7 +105,14 @@ export function saveScope(scope) {
  * @param {Object} scope - Scope actual (opcional)
  * @param {string} hierarchy - Jerarquía de la entidad (basic/leader/commander) para no especiales
  */
-export function isEntityInScope(ent, faction, isSpecial, nameTag, scope = null, hierarchy = null) {
+export function isEntityInScope(
+  ent: Entity,
+  faction: string,
+  isSpecial: boolean,
+  nameTag: string,
+  scope: ScopeData | null = null,
+  hierarchy: string | null = null
+): boolean {
   if (!scope) {
     scope = loadScope();
   }
@@ -142,14 +153,14 @@ export function isEntityInScope(ent, faction, isSpecial, nameTag, scope = null, 
 /**
  * Obtiene un resumen legible del scope actual
  */
-function normalizeBooleanDynamicProperty(raw) {
+function normalizeBooleanDynamicProperty(raw: unknown): boolean | undefined {
   if (raw === undefined || raw === null) return undefined;
   if (raw === true || raw === "true" || raw === 1 || raw === "1") return true;
   if (raw === false || raw === "false" || raw === 0 || raw === "0") return false;
   return undefined;
 }
 
-export function getScopeSummary(scope) {
+export function getScopeSummary(scope: ScopeData | null): string {
   if (!scope || typeof scope.respectEntityBlocks !== "boolean") {
     scope = generateDefaultScope();
   }
@@ -160,7 +171,7 @@ export function getScopeSummary(scope) {
 /**
  * Reinicia el scope a valores por defecto
  */
-export function resetScope() {
+export function resetScope(): ScopeData {
   try {
     debugWarn("menuScope", "=== INICIANDO RESET DE SCOPE ===", "cyan");
     const newScope = generateDefaultScope();

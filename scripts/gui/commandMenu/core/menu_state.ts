@@ -1,4 +1,4 @@
-// scripts/gui/commandMenu/menu_state.js
+// scripts/gui/commandMenu/menu_state.ts
 import { world } from "@minecraft/server";
 import { saveSystemState, loadSystemState } from "../../../commands/worldSave.js";
 import { getSystemConfig, getSystemDefaults, Factions, UnitHierarchy, SpecialGroups } from "../menu_config.js";
@@ -11,7 +11,7 @@ import { loadScope } from "../model/menu_scope.js";
  * Carga el estado de un sistema desde propiedades dinámicas
  * Si no existe, retorna los valores por defecto
  */
-export function loadSystemOrDefault(systemId) {
+export function loadSystemOrDefault(systemId: string): any {
   const loaded = loadSystemState(systemId);
   if (loaded) return loaded;
   return getSystemDefaults(systemId);
@@ -20,8 +20,8 @@ export function loadSystemOrDefault(systemId) {
 /**
  * Carga los estados de múltiples sistemas
  */
-export function loadSystemStates(systemIds) {
-  const states = {};
+export function loadSystemStates(systemIds: string[]): any {
+  const states: any = {};
 
   systemIds.forEach((systemId) => {
     states[systemId] = loadSystemOrDefault(systemId);
@@ -39,12 +39,14 @@ export function loadSystemStates(systemIds) {
  *
  * Prioridad: formulario > DP guardado > defaults
  */
-function mergeSavedState(systemId, partialState) {
-  const saved = loadSystemState(systemId) || {};
-  const defaults = getSystemDefaults(systemId);
-  const completed = {};
+function mergeSavedState(systemId: string, partialState: any): any {
+  const saved: any = loadSystemState(systemId) || {};
+  const defaults: any = getSystemDefaults(systemId);
+  const completed: any = {};
 
-  for (const faction of [Factions.FOUNDATION, Factions.CHAOS]) {
+  const factions = [Factions.FOUNDATION, Factions.CHAOS] as const;
+
+  for (const faction of factions) {
     completed[faction] = {};
 
     const sourceGroups = [
@@ -59,12 +61,16 @@ function mergeSavedState(systemId, partialState) {
     ];
 
     for (const key of sourceGroups) {
+      const partialFaction = partialState[faction] || {};
+      const savedFaction = saved[faction] || {};
+      const defaultsFaction = defaults[faction] || {};
+
       completed[faction][key] =
-        partialState[faction]?.[key] !== undefined
-          ? partialState[faction][key] // 1. Valor del formulario (jugador lo cambió)
-          : saved[faction]?.[key] !== undefined
-            ? saved[faction][key] // 2. Valor ya guardado en DP (mantener último)
-            : defaults[faction]?.[key]; // 3. Default (nunca configurado)
+        partialFaction[key] !== undefined
+          ? partialFaction[key] // 1. Valor del formulario (jugador lo cambió)
+          : savedFaction[key] !== undefined
+            ? savedFaction[key] // 2. Valor ya guardado en DP (mantener último)
+            : defaultsFaction[key]; // 3. Default (nunca configurado)
     }
   }
 
@@ -75,7 +81,7 @@ function mergeSavedState(systemId, partialState) {
  * Guarda el estado de un sistema en propiedades dinámicas
  * y actualiza el estado compartido en memoria
  */
-export function saveSystemAndUpdateMemory(systemId, state) {
+export function saveSystemAndUpdateMemory(systemId: string, state: any): void {
   try {
     // Fusionar con estado guardado en DP para preservar valores de grupos sin entidades
     const completeState = mergeSavedState(systemId, state);
@@ -95,7 +101,7 @@ export function saveSystemAndUpdateMemory(systemId, state) {
 /**
  * Guarda los estados de múltiples sistemas
  */
-export function saveSystemStates(parsedStates) {
+export function saveSystemStates(parsedStates: any): void {
   for (const systemId in parsedStates) {
     saveSystemAndUpdateMemory(systemId, parsedStates[systemId]);
   }
@@ -104,7 +110,7 @@ export function saveSystemStates(parsedStates) {
 /**
  * Aplica un sistema a todas las entidades usando los eventos de la configuración
  */
-export function applySystemToAll(systemId, dimension, player = null) {
+export function applySystemToAll(systemId: string, dimension: any = null, player: any = null): void {
   try {
     const systemConfig = getSystemConfig(systemId);
     if (!systemConfig) {
@@ -122,7 +128,7 @@ export function applySystemToAll(systemId, dimension, player = null) {
 /**
  * Aplica múltiples sistemas de forma optimizada usando una única consulta de entidades
  */
-export function applySystemsToAll(systemIds, dimension, player = null) {
+export function applySystemsToAll(systemIds: string[], dimension: any = null, player: any = null): void {
   try {
     const dims = dimension
       ? [dimension]
@@ -140,7 +146,7 @@ export function applySystemsToAll(systemIds, dimension, player = null) {
     };
 
     // 1. Obtener soldados elegibles (una sola vez)
-    const eligible = getEligibleSoldiers(dims, scope);
+    const eligible = getEligibleSoldiers(dims as any, scope);
     debugWarn("menuState", `[applySystemsToAll] eligible=${eligible.length} entidades`, "cyan");
 
     // 2. Aplicar todos los sistemas elegidos (en un solo pase) con caché precomputado

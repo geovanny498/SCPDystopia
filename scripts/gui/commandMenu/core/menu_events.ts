@@ -1,5 +1,5 @@
-// scripts/gui/commandMenu/menu_events.js
-import { world } from "@minecraft/server";
+// scripts/gui/commandMenu/menu_events.ts
+import { world, system } from "@minecraft/server";
 import { debugWarn } from "../../../utils/debug.js";
 import { systems, invalidateScanCache, invalidateEntityQueryCache, getEntitiesCached } from "../menu_config.js";
 import { loadSystemOrDefault } from "./menu_state.js";
@@ -13,12 +13,12 @@ import { ENTITY_GROUP_DP } from "../model/menu_groups.js";
 /**
  * Lista de soldados conocidos (independiente de toggle_system)
  */
-const menuSoldiers = [];
+const menuSoldiers: string[] = [];
 
 /**
  * Estados de sistemas en memoria (independiente de toggle_system)
  */
-const menuSystemStates = {};
+const menuSystemStates: any = {};
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // §  ESTADOS DE SISTEMAS
@@ -38,7 +38,7 @@ function loadAllSystemStates() {
 }
 
 /**
- * Obtiene los estados en memoria (para menu_apply.js)
+ * Obtiene los estados en memoria (para menu_apply.ts)
  */
 export function getMenuSystemStates() {
   return menuSystemStates;
@@ -50,7 +50,7 @@ export function getMenuSystemStates() {
  * @param {Object} options
  * @param {boolean} [options.forceApply=false] - Si true, ignora el scope y forza aplicar sistemas
  */
-function handleSoldierEntity(ent, { forceApply = false } = {}) {
+function handleSoldierEntity(ent: any, { forceApply = false } = {}) {
   try {
     if (!ent || !isValidSoldier(ent)) return;
 
@@ -151,17 +151,17 @@ export function initializeMenuEvents() {
     loadAllSystemStates();
 
     // Event listener para cuando una entidad spawnea (forzar aplicación)
-    world.afterEvents.entitySpawn.subscribe((ev) => {
+    world.afterEvents.entitySpawn.subscribe((ev: any) => {
       handleSoldierEntity(ev.entity, { forceApply: true });
     });
 
     // Event listener para cuando una entidad se carga
-    world.afterEvents.entityLoad.subscribe((ev) => {
+    world.afterEvents.entityLoad.subscribe((ev: any) => {
       handleSoldierEntity(ev.entity);
     });
 
     // Event listener para cuando una entidad se remueve
-    world.afterEvents.entityRemove.subscribe((ev) => {
+    world.afterEvents.entityRemove.subscribe((ev: any) => {
       const idx = menuSoldiers.indexOf(ev.removedEntityId);
       if (idx !== -1) {
         menuSoldiers.splice(idx, 1);
@@ -184,7 +184,7 @@ export function initializeMenuEvents() {
 /**
  * Actualiza el estado de un sistema en memoria
  */
-export function updateMenuSystemState(systemId, state) {
+export function updateMenuSystemState(systemId: string, state: any) {
   menuSystemStates[systemId] = state;
   debugWarn("menuEvents", `Estado actualizado en memoria: ${systemId}`, "green");
 }

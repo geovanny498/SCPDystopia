@@ -1,4 +1,4 @@
-// scripts/gui/commandMenu/menu_builder.js
+// scripts/gui/commandMenu/menu_builder.ts
 import { ModalFormData } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
 import {
@@ -26,13 +26,13 @@ import { compareNametags } from "../../../utils/nametagSort.js";
  * @param {Array<string>|null} activeGroups - IDs de grupos con unidades activas (para sincronizar con parseSystemFormValues)
  */
 export function buildSystemForm(
-  systems,
-  loadedStates,
-  selectedFaction = null,
-  activeHierarchies = null,
-  activeFamilyTags = null,
-  scannedEntities = null,
-  activeGroups = null
+  systems: any[],
+  loadedStates: any,
+  selectedFaction: any = null,
+  activeHierarchies: any = null,
+  activeFamilyTags: any = null,
+  scannedEntities: any = null,
+  activeGroups: any = null
 ) {
   let title = menuConfig.title;
   if (systems.length === 1) {
@@ -43,12 +43,12 @@ export function buildSystemForm(
 
   const factions = selectedFaction ? [selectedFaction] : [Factions.FOUNDATION, Factions.CHAOS];
 
-  systems.forEach((system, index) => {
+  systems.forEach((system: any, index: number) => {
     if (systems.length > 1) {
       form.label(system.displayName);
     }
 
-    factions.forEach((faction) => {
+    factions.forEach((faction: any) => {
       const factionConfig = system.factions[faction];
       if (!factionConfig) return;
 
@@ -75,12 +75,12 @@ export function buildSystemForm(
             const value = currentValue ?? false;
             form.toggle(hierarchyLabel, { defaultValue: !!value, ...tooltipOptions });
           } else if (system.controlType === ControlType.DROPDOWN) {
-            const labels = system.options.map((opt) => opt.label);
+            const labels = system.options.map((opt: any) => opt.label);
             // Buscar el índice del valor guardado; si no está, usar el índice del default de este sistema
-            var currentIndex = system.options.findIndex((opt) => opt.value === currentValue);
+            var currentIndex = system.options.findIndex((opt: any) => opt.value === currentValue);
             if (currentIndex < 0) {
               const defaultVal = system.defaults?.[faction]?.[hierarchy];
-              currentIndex = system.options.findIndex((opt) => opt.value === defaultVal);
+              currentIndex = system.options.findIndex((opt: any) => opt.value === defaultVal);
             }
             form.dropdown(hierarchyLabel, labels, {
               defaultValueIndex: currentIndex >= 0 ? currentIndex : 0,
@@ -97,9 +97,9 @@ export function buildSystemForm(
         form.label("§e── Especiales ──");
 
         // Usar activeGroups de entrada para contar y mostrar solo grupos activos
-        var activeGroupsForFaction = activeGroups || getGroupsOrderForSystems();
+        var activeGroupsForFaction: any = activeGroups || getGroupsOrderForSystems();
 
-        var activeEntities = scannedEntities || [];
+        var activeEntities: any = scannedEntities || [];
 
         // ── Generar dropdowns por grupo (mismo orden que el parser)
         debugWarn(
@@ -110,8 +110,8 @@ export function buildSystemForm(
         var hasAnyGroup = false;
         for (var gi = 0; gi < activeGroupsForFaction.length; gi++) {
           var _gid = activeGroupsForFaction[gi];
-          var _groupInfo = { unitCount: 0, nametags: {} };
-          var seenThisGroup = Object.create(null); // ← Set LOCAL por grupo (no propagado)
+          var _groupInfo: any = { unitCount: 0, nametags: {} };
+          var seenThisGroup: any = Object.create(null); // ← Set LOCAL por grupo (no propagado)
 
           for (var si2 = 0; si2 < activeEntities.length; si2++) {
             var _scanned2 = activeEntities[si2];
@@ -145,10 +145,10 @@ export function buildSystemForm(
           var currentValue = state[stateKey];
 
           // Tooltip: nametags únicos en el grupo con contador §8xN
-          var tooltip;
+          var tooltip: any;
           var _uniqueNtNames = Object.keys(_groupInfo.nametags).sort(compareNametags);
           if (_uniqueNtNames.length > 0) {
-            var _ntLines2 = [];
+            var _ntLines2: any = [];
             for (var ni2 = 0; ni2 < _uniqueNtNames.length; ni2++) {
               var _nt2 = _uniqueNtNames[ni2];
               var count = _groupInfo.nametags[_nt2];
@@ -163,16 +163,16 @@ export function buildSystemForm(
             var value = currentValue !== undefined ? !!currentValue : false;
             form.toggle(_groupLabel, { defaultValue: value, tooltip: tooltip });
           } else if (system.controlType === ControlType.DROPDOWN) {
-            var labels = system.options.map(function (opt) {
+            var labels = system.options.map(function (opt: any) {
               return opt.label;
             });
             // Buscar el índice del valor guardado; si no está, usar el índice del default de este sistema
-            var _currentIdx = system.options.findIndex(function (opt) {
+            var _currentIdx = system.options.findIndex(function (opt: any) {
               return opt.value === currentValue;
             });
             if (_currentIdx < 0) {
               var _defaultVal = system.defaults?.[faction]?.[stateKey];
-              _currentIdx = system.options.findIndex(function (opt) {
+              _currentIdx = system.options.findIndex(function (opt: any) {
                 return opt.value === _defaultVal;
               });
             }
@@ -206,9 +206,9 @@ export function buildSystemForm(
  * @param {string|null} selectedFaction
  * @param {Array|null} activeGroups — IDs de grupos que se mostraron en el formulario (para sincronizar índices)
  */
-export function parseSystemFormValues(systems, formValues, selectedFaction = null, activeGroups = null) {
-  const filtered = formValues.filter((v) => v !== null && v !== undefined);
-  const parsedStates = {};
+export function parseSystemFormValues(systems: any[], formValues: any[], selectedFaction: any = null, activeGroups: any = null) {
+  const filtered = formValues.filter((v: any) => v !== null && v !== undefined);
+  const parsedStates: any = {};
   let valueIndex = 0;
 
   const nextValue = () => {
@@ -219,14 +219,14 @@ export function parseSystemFormValues(systems, formValues, selectedFaction = nul
 
   const factions = selectedFaction ? [selectedFaction] : [Factions.FOUNDATION, Factions.CHAOS];
 
-  systems.forEach((system) => {
-    const systemState = {};
+  systems.forEach((system: any) => {
+    const systemState: any = {};
 
     for (const f of [Factions.FOUNDATION, Factions.CHAOS]) {
       systemState[f] = {};
     }
 
-    factions.forEach((faction) => {
+    factions.forEach((faction: any) => {
       if (system.supportsHierarchy) {
         for (const hierarchy of Object.values(UnitHierarchy)) {
           if (system.controlType === ControlType.TOGGLE) {
@@ -274,11 +274,11 @@ export function parseSystemFormValues(systems, formValues, selectedFaction = nul
 /**
  * Genera el mensaje de confirmación según los sistemas configurados
  */
-export function getConfirmationMessage(playerName, systems, isAllCategory = false) {
+export function getConfirmationMessage(playerName: string, systems: any[], isAllCategory = false) {
   if (isAllCategory) {
     return menuConfig.messages.allSystems.replace("{player}", playerName);
   }
 
-  const systemNames = systems.map((sys) => `${sys.displayName}§r`).join(", ");
+  const systemNames = systems.map((sys: any) => `${sys.displayName}§r`).join(", ");
   return menuConfig.messages.specificSystems.replace("{player}", playerName).replace("{systems}", systemNames);
 }

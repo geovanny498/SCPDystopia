@@ -644,12 +644,13 @@ export function getSystemDefaults(systemId: string) {
   return sys.defaults;
 }
 
-export function getSystemEvents(systemId: string, value: string) {
+export function getSystemEvents(systemId: string, value: string | boolean): any {
   const sys = systems[systemId];
   if (!sys) return {};
 
   if (isToggleSystem(sys)) {
-    const ev = sys.events?.enable?.[value];
+    const key = typeof value === "boolean" ? String(value) : value;
+    const ev = sys.events?.enable?.[key];
     return ev ? { event: ev } : {};
   } else if (isDropdownSystem(sys)) {
     const option = sys.options?.find((opt: any) => opt.value === value);

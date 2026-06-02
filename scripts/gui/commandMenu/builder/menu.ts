@@ -1,4 +1,4 @@
-// scripts\gui\commandMenu\menu.js
+// scripts/gui/commandMenu/menu.ts
 import { world, system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
@@ -8,14 +8,21 @@ import { getOrderedCategories } from "../menu_config.js";
 import { showCategoryMenu } from "../ui/menu_category.js";
 import { showGroupsMenu } from "../ui/menu_groups_ui.js";
 
+interface CategoryConfig {
+  id: string;
+  displayName: string;
+  description: string;
+  systems: string[];
+}
+
 /**
  * Construye y muestra el menú principal de categorías
  */
-function buildAndShowMenu(player) {
+export function buildAndShowMenu(player: any) {
   try {
     debugWarn("commandMenu", "=== Iniciando buildAndShowMenu ===", "cyan");
 
-    const categories = getOrderedCategories();
+    const categories: CategoryConfig[] = getOrderedCategories();
 
     const form = new ActionFormData().title("SCPDystopia | Panel de Comandos").body(`§7Selecciona una categoría:`);
 
@@ -34,7 +41,7 @@ function buildAndShowMenu(player) {
     system.run(() => {
       form
         .show(player)
-        .then((res) => {
+        .then((res: any) => {
           if (!res || res.canceled) {
             debugWarn("commandMenu", "Formulario cancelado", "yellow");
             return;
@@ -61,7 +68,7 @@ function buildAndShowMenu(player) {
 
           showCategoryMenu(player, selectedCategory.id);
         })
-        .catch((err) => {
+        .catch((err: any) => {
           debugWarn("commandMenu", `Error en form.show: ${err}`, "red");
         });
     });
@@ -69,5 +76,3 @@ function buildAndShowMenu(player) {
     debugWarn("commandMenu", `Error mostrando menu principal: ${e}`, "red");
   }
 }
-
-export { buildAndShowMenu };

@@ -1,4 +1,4 @@
-// scripts/gui/commandMenu/menu_category.js
+// scripts/gui/commandMenu/menu_category.ts
 import { system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
@@ -12,7 +12,7 @@ import { showScopeMenu } from "./menu_scope_ui.js";
  * @param {Player} player
  * @param {string} categoryId
  */
-export function showCategoryMenu(player, categoryId) {
+export function showCategoryMenu(player: any, categoryId: string) {
   try {
     const category = getCategoryConfig(categoryId);
     if (!category) {
@@ -45,7 +45,7 @@ export function showCategoryMenu(player, categoryId) {
     }
 
     // Agregar botones para cada sistema
-    systems.forEach((sys) => {
+    systems.forEach((sys: any) => {
       // Si la descripción está vacía, no agregar salto de línea
       const buttonText = sys.description ? `${sys.displayName}\n§r§7${sys.description}` : sys.displayName;
       form.button(buttonText);
@@ -64,7 +64,7 @@ export function showCategoryMenu(player, categoryId) {
     form.button("§8« Volver al menú principal");
 
     system.run(() => {
-      form.show(player).then((res) => {
+      form.show(player).then((res: any) => {
         // Si el usuario canceló, volver al menú principal
         if (!res || res.canceled) {
           import("../builder/menu.js").then((module) => {
@@ -75,7 +75,7 @@ export function showCategoryMenu(player, categoryId) {
           return;
         }
 
-        const selectedIndex = res.selection;
+        const selectedIndex = res.selection as number | undefined;
         if (selectedIndex === undefined || selectedIndex < 0) return;
 
         // Calcular índices según si es advanced o no
@@ -99,14 +99,14 @@ export function showCategoryMenu(player, categoryId) {
 
         // Botón "Configurar Todos"
         if (selectedIndex === configureAllIndex) {
-          showSystemMenu(player, systems, false, categoryId);
+          showSystemMenu(player, systems, false, categoryId as any);
           return;
         }
 
         // Sistema individual
         const selectedSystem = systems[selectedIndex];
         if (selectedSystem) {
-          showSystemMenu(player, [selectedSystem], false, categoryId);
+          showSystemMenu(player, [selectedSystem], false, categoryId as any);
         }
       });
     });

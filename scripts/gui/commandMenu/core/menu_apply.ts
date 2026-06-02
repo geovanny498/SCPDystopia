@@ -1,5 +1,5 @@
-// scripts/gui/commandMenu/menu_apply.js
-import { world, system } from "@minecraft/server";
+// scripts/gui/commandMenu/menu_apply.ts
+import { world, system, Entity, Player } from "@minecraft/server";
 import { debugMessage, debugWarn } from "../../../utils/debug.js";
 import {
   ControlType,
@@ -15,18 +15,21 @@ import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "../m
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
 import { getAllAddonEntitiesInDimensions } from "../../../utils/entityQuery.js";
 
-// Importar funciones de menu_events (se inyectarán para evitar ciclos)
-let _getMenuSystemStates = null;
-
-// Exportar funciones de acceso para uso externo
-export function getMenuSystemStates() {
-  return _getMenuSystemStates ? _getMenuSystemStates() : {};
-}
-
 // eventos que, al activarse, deberían intentar domesticar la entidad
 import { isAutoTameEvent } from "../menu_config.js";
 
-export function tryAutoTame(ent, player) {
+// Importar funciones de menu_events (se inyectarán para evitar ciclos)
+let _getMenuSystemStates: any = null;
+
+// Exportar funciones de acceso para uso externo
+export function getMenuSystemStates(): any {
+  return _getMenuSystemStates ? _getMenuSystemStates() : {};
+}
+
+/**
+ * Intenta domesticar la entidad usando el componente tameable o minecraft:on_calm como fallback
+ */
+export function tryAutoTame(ent: Entity, player: Player): void {
   if (!ent || !player) return;
 
   try {
@@ -75,14 +78,14 @@ export function tryAutoTame(ent, player) {
 /**
  * Inyecta las funciones de menu_events para evitar importaciones circulares
  */
-export function injectMenuEventAccessors(accessors) {
+export function injectMenuEventAccessors(accessors: { getMenuSystemStates: () => any }): void {
   _getMenuSystemStates = accessors.getMenuSystemStates;
 }
 
 /**
  * Trigger seguro de eventos en entidades
  */
-function safeTriggerEvent(ent, eventName, player = null) {
+function safeTriggerEvent(ent: Entity, eventName: string, player: Player | null = null): boolean {
   if (!ent || !eventName) return false;
   try {
     if (player && isAutoTameEvent(eventName)) {
@@ -101,35 +104,35 @@ function safeTriggerEvent(ent, eventName, player = null) {
  * @returns boolean indicando si el sistema se aplicó exitosamente
  */
 export function applySystemToEntity(
-  systemId,
-  systemConfig,
-  ent,
-  stateOverride = null,
+  systemId: string,
+  systemConfig: any,
+  ent: Entity,
+  stateOverride: any = null,
   skipCompatibilityCheck = false,
-  factionInfoOverride = null,
-  player = null,
-  cached = {} // Datos precomputados para aplicaciones masivas
-) {
+  factionInfoOverride: any = null,
+  player: Player | null = null,
+  cached: any = {} // Datos precomputados para aplicaciones masivas
+): boolean {
   // DEBUG CACHE: Verificar si la cache se está usando en applySystemToEntity
   const cacheUsed = !!cached?.systemStates;
   if (!cacheUsed) {
     debugWarn("menuApply:entity", `[CACHE WARNING] ${systemId} - NO se usó cache, ejecutando fallback`, "red");
   }
   try {
-    if (!ent || !isValidSoldier(ent)) return;
+    if (!ent || !isValidSoldier(ent)) return false;
 
     const systemStates = cached?.systemStates || (_getMenuSystemStates ? _getMenuSystemStates() : {});
     const state = stateOverride || systemStates[systemId];
 
     if (!state) {
       debugWarn("menuApply:entity", `Sistema ${systemId}: Sin estado configurado`, "red");
-      return;
+      return false;
     }
 
     const factionInfo = factionInfoOverride || getEntityFactionInfo(ent);
     if (!factionInfo) {
       debugWarn("menuApply:entity", `${ent.nameTag || ent.typeId}: No se pudo determinar facción`, "red");
-      return;
+      return false;
     }
 
     const { faction, isSpecial, hierarchy, group } = factionInfo;
@@ -148,14 +151,14 @@ export function applySystemToEntity(
 
       if (!result.canApply) {
         debugWarn("menuApply:entity", `${systemId} → ${nameTag}: NO aplicado (${result.reason})`, "yellow");
-        return;
+        return false;
       }
     }
 
     const factionState = state[faction];
     if (!factionState) {
       debugWarn("menuApply:entity", `Sistema ${systemId}: Sin configuración para ${faction}`, "red");
-      return;
+      return false;
     }
 
     // Obtener el valor de configuración según jerarquía/grupo
@@ -163,7 +166,7 @@ export function applySystemToEntity(
 
     if (configValue === undefined) {
       debugWarn("menuApply:entity", `Sistema ${systemId}: Sin valor para ${isSpecial ? group : hierarchy}`, "yellow");
-      return;
+      return false;
     }
 
     // Construir etiqueta para debug
@@ -177,7 +180,7 @@ export function applySystemToEntity(
       const events = getSystemEvents(systemId, isEnabled);
 
       if (events.event) {
-        const triggered = safeTriggerEvent(ent, events.event, player);
+        const triggered = safeTriggerEvent(ent, events.event as string, player);
         if (triggered) {
           setEntitySystemState(ent, systemId, isEnabled);
           debugWarn(
@@ -198,14 +201,14 @@ export function applySystemToEntity(
       }
     } else if (systemConfig.controlType === ControlType.DROPDOWN) {
       const mode = configValue;
-      const events = getSystemEvents(systemId, mode);
+      const events = getSystemEvents(systemId, mode as string);
 
       // Primero detener cualquier modo anterior
-      const stopped = events.stop ? safeTriggerEvent(ent, events.stop, player) : true;
+      const stopped = events.stop ? safeTriggerEvent(ent, events.stop as string, player) : true;
 
       // Luego iniciar el nuevo modo
       if (events.start && mode !== "false" && mode !== "off") {
-        const triggered = safeTriggerEvent(ent, events.start, player);
+        const triggered = safeTriggerEvent(ent, events.start as string, player);
         if (triggered) {
           setEntitySystemState(ent, systemId, mode);
           debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: modo=${mode}`, "green");
@@ -226,20 +229,22 @@ export function applySystemToEntity(
         return true; // Para el caso de "desactivado" sin evento start, se considera aplicado
       }
     }
+
     return false; // Caso por defecto: no se aplicó
   } catch (e) {
     debugWarn("menuApply:entity", `Error aplicando ${systemId} a ${ent?.nameTag || "<noName>"}: ${e}`, "red");
+    return false;
   }
 }
 
 /**
  * Obtiene la lista de soldados elegibles basándose en dimensiones y scope
  */
-export function getEligibleSoldiers(dimensions, scope = null) {
+export function getEligibleSoldiers(dimensions: any[], scope: any = null): any[] {
   const seen = new Set();
   const eligible = [];
 
-  const entities = getAllAddonEntitiesInDimensions(dimensions);
+  const entities = getAllAddonEntitiesInDimensions(dimensions as any);
   for (const ent of entities) {
     if (!ent?.id || seen.has(ent.id)) continue;
     seen.add(ent.id);
@@ -265,7 +270,7 @@ export function getEligibleSoldiers(dimensions, scope = null) {
 /**
  * Aplica múltiples sistemas a un conjunto de entidades ya filtradas
  */
-export function applySystemsToEntities(eligibleSoldiers, systemIds, options = {}) {
+export function applySystemsToEntities(eligibleSoldiers: any[], systemIds: string[], options: any = {}): void {
   const { player = null, skipCompatibilityCheck = false, cached = {} } = options;
 
   // DEBUG CACHE: Verificar si la cache se está usando
@@ -303,6 +308,7 @@ export function applySystemsToEntities(eligibleSoldiers, systemIds, options = {}
       }
 
       const factionState = state[factionInfo.faction];
+      // Obtener el valor de configuración según jerarquía/grupo
       const configValue = getEntityConfigValue(factionState, factionInfo);
       if (configValue === undefined) {
         // Debug CRÍTICO: ver qué está pasando con el estado
@@ -355,23 +361,30 @@ export function applySystemsToEntities(eligibleSoldiers, systemIds, options = {}
 /**
  * Aplica un sistema a todas las entidades usando eventos de la configuración
  */
-export function applySystemWithEvents(systemId, systemConfig, dimension = null, player = null) {
+export function applySystemWithEvents(
+  systemId: string,
+  systemConfig: any,
+  dimension: any = null,
+  player: Player | null = null
+): void {
   try {
     const dims = dimension
       ? [dimension]
       : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
+
     const scope = loadScope();
 
+    // Log para diagnosticar estados
     debugWarn("menuApply", `=== Aplicando sistema ${systemId} ===`, "cyan");
 
     const cached = {
       systemStates: _getMenuSystemStates ? _getMenuSystemStates() : {},
     };
 
-    const eligible = getEligibleSoldiers(dims, scope);
+    const eligible = getEligibleSoldiers(dims as any, scope);
     applySystemsToEntities(eligible, [systemId], { player, cached });
 
-    const dimLabel = dimension ? (dimension?.id ?? "custom") : "all";
+    const dimLabel = dimension ? ((dimension as any).id ?? "custom") : "all";
     debugWarn("menuApply", `Sistema ${systemId} aplicado a ${eligible.length} entidades en dim=${dimLabel}`, "green");
   } catch (e) {
     debugWarn("menuApply", `Error en applySystemWithEvents(${systemId}): ${e}`, "red");

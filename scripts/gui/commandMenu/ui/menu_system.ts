@@ -1,4 +1,4 @@
-// scripts/gui/commandMenu/menu_system.js
+// scripts/gui/commandMenu/menu_system.ts
 import { world, system } from "@minecraft/server";
 import { ActionFormData } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
@@ -14,7 +14,7 @@ import { loadSystemStates, saveSystemStates, applySystemsToAll } from "../core/m
 /**
  * Muestra el selector de facción antes de mostrar el formulario de sistemas
  */
-export function showSystemMenu(player, systems, isAllCategory = false, categoryId = null) {
+export function showSystemMenu(player: any, systems: any[], isAllCategory = false, categoryId: any = null) {
   try {
     if (!systems || systems.length === 0) {
       debugWarn("commandMenu", "No hay sistemas para mostrar", "red");
@@ -31,13 +31,13 @@ export function showSystemMenu(player, systems, isAllCategory = false, categoryI
     system.run(() => {
       form
         .show(player)
-        .then((res) => {
+        .then((res: any) => {
           if (!res || res.canceled) {
             goBack(player, categoryId);
             return;
           }
 
-          let selectedFaction = null;
+          let selectedFaction: any = null;
           if (res.selection === 0) {
             selectedFaction = Factions.FOUNDATION;
           } else if (res.selection === 1) {
@@ -50,7 +50,7 @@ export function showSystemMenu(player, systems, isAllCategory = false, categoryI
           // Mostrar formulario de sistemas para la facción seleccionada
           showSystemFormForFaction(player, systems, selectedFaction, isAllCategory, categoryId);
         })
-        .catch((err) => {
+        .catch((err: any) => {
           debugWarn("commandMenu", `Error en selector de facción: ${err}`, "red");
         });
     });
@@ -62,10 +62,10 @@ export function showSystemMenu(player, systems, isAllCategory = false, categoryI
 /**
  * Muestra el formulario de configuración para una facción específica
  */
-function showSystemFormForFaction(player, systems, selectedFaction, isAllCategory, categoryId) {
+function showSystemFormForFaction(player: any, systems: any[], selectedFaction: any, isAllCategory: any, categoryId: any) {
   try {
     // 1. Cargar estados actuales de los sistemas
-    const systemIds = systems.map((s) => s.id);
+    const systemIds = systems.map((s: any) => s.id);
     const loadedStates = loadSystemStates(systemIds);
 
     // 2. Escanear entidades activas en la dimensión del jugador
@@ -74,9 +74,9 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
     // 2.1. Grupos activos: sincroniza buildSystemForm ↔ parseSystemFormValues
     // Calcular antes de buildSystemForm para que ambos usen la misma lista
     var _allGroups = getGroupsOrderForSystems();
-    var _groupCounts = {};
+    var _groupCounts: any = {};
     for (var _gi = 0; _gi < _allGroups.length; _gi++) _groupCounts[_allGroups[_gi]] = 0;
-    var _ents = scanResult.entities || [];
+    var _ents: any = scanResult.entities || [];
     for (var _si = 0; _si < _ents.length; _si++) {
       var _sc = _ents[_si];
       if (!_sc.isSpecial) continue;
@@ -86,7 +86,7 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
       if (_groupCounts[_gid] !== undefined) _groupCounts[_gid]++;
     }
     debugWarn("menuSystem", `[activeGroups] faction=${selectedFaction} counts=${JSON.stringify(_groupCounts)}`, "cyan");
-    var activeGroups = _allGroups.filter(function (g) {
+    var activeGroups = _allGroups.filter(function (g: any) {
       return _groupCounts[g] > 0;
     });
     debugWarn(
@@ -96,7 +96,7 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
     );
 
     // 3. Construir el formulario solo con entidades activas
-    let form;
+    let form: any;
     try {
       debugWarn("menuSystem", `[buildForm] calling buildSystemForm...`, "cyan");
       form = buildSystemForm(
@@ -109,7 +109,7 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
         activeGroups
       );
       debugWarn("menuSystem", `[buildForm] buildSystemForm OK`, "green");
-    } catch (formErr) {
+    } catch (formErr: any) {
       debugWarn("menuSystem", `[buildForm] ERROR: ${formErr} stack=${formErr.stack}`, "red");
       player.sendMessage("§c[ERROR] No se pudo construir el formulario de sistemas.");
       return;
@@ -120,7 +120,7 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
       try {
         form
           .show(player)
-          .then((res) => {
+          .then((res: any) => {
             debugWarn(
               "menuSystem",
               `System menu - canceled=${res.canceled}, formValues length=${res.formValues?.length || 0}`,
@@ -164,8 +164,8 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
                 const factionState = systemState[faction];
                 if (!factionState || Object.keys(factionState).length === 0) continue;
 
-                const hierarchies = {};
-                const groups = {};
+                const hierarchies: any = {};
+                const groups: any = {};
 
                 // Separar jerarquías de grupos
                 for (const key in factionState) {
@@ -204,7 +204,7 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
             // 8. Mensaje de confirmación
             try {
               const factionLabel = selectedFaction === Factions.FOUNDATION ? "Foundation" : "Chaos";
-              const msg = `§a[SISTEMAS] ${player.name} configuró ${factionLabel}: ${systems.map((s) => s.displayName).join(", ")}`;
+              const msg = `§a[SISTEMAS] ${player.name} configuró ${factionLabel}: ${systems.map((s: any) => s.displayName).join(", ")}`;
               world.sendMessage(msg);
             } catch (e) {
               debugWarn("commandMenu", `Error enviando mensaje de confirmacion: ${e}`, "red");
@@ -213,10 +213,10 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
             // 9. Preguntar si quiere configurar el otro bando
             askConfigureOtherFaction(player, systems, selectedFaction, isAllCategory, categoryId);
           })
-          .catch((err) => {
+          .catch((err: any) => {
             debugWarn("menuSystem", `Error en formulario de sistema: ${err}`, "red");
           });
-      } catch (showErr) {
+      } catch (showErr: any) {
         debugWarn("menuSystem", `Error mostrando formulario: ${showErr}`, "red");
         player.sendMessage("§c[ERROR] No se pudo mostrar el formulario de sistemas.");
       }
@@ -229,7 +229,7 @@ function showSystemFormForFaction(player, systems, selectedFaction, isAllCategor
 /**
  * Pregunta si el usuario quiere configurar el otro bando
  */
-function askConfigureOtherFaction(player, systems, currentFaction, isAllCategory, categoryId) {
+function askConfigureOtherFaction(player: any, systems: any[], currentFaction: any, isAllCategory: any, categoryId: any) {
   const otherFaction = currentFaction === Factions.FOUNDATION ? Factions.CHAOS : Factions.FOUNDATION;
   const otherLabel = otherFaction === Factions.FOUNDATION ? "§lFoundation" : "§2§lChaos";
 
@@ -243,7 +243,7 @@ function askConfigureOtherFaction(player, systems, currentFaction, isAllCategory
   system.run(() => {
     form
       .show(player)
-      .then((res) => {
+      .then((res: any) => {
         if (!res || res.canceled || res.selection === 1) {
           goBack(player, categoryId);
           return;
@@ -252,8 +252,8 @@ function askConfigureOtherFaction(player, systems, currentFaction, isAllCategory
         // Configurar el otro bando
         showSystemFormForFaction(player, systems, otherFaction, isAllCategory, categoryId);
       })
-      .catch((err) => {
-        debugWarn("commandMenu", `Error en askConfigureOtherFaction: ${err}`, "red");
+      .catch((err: any) => {
+        debugWarn("menuSystem", `Error en askConfigureOtherFaction: ${err}`, "red");
       });
   });
 }
@@ -261,7 +261,7 @@ function askConfigureOtherFaction(player, systems, currentFaction, isAllCategory
 /**
  * Vuelve al menú anterior
  */
-function goBack(player, categoryId) {
+function goBack(player: any, categoryId: any) {
   if (categoryId) {
     import("../menu_config.js").then((configModule) => {
       const category = configModule.getCategoryConfig(categoryId);

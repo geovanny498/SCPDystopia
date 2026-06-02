@@ -1,4 +1,4 @@
-// scripts/gui/commandMenu/menu_scope_ui.js
+// scripts/gui/commandMenu/menu_scope_ui.ts
 import { system } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
@@ -7,7 +7,7 @@ import { loadScope, saveScope } from "../model/menu_scope.js";
 /**
  * Muestra el único toggle de scope simplificado
  */
-export function showScopeMenu(player) {
+export function showScopeMenu(player: any) {
   try {
     debugWarn("menuScope", "=== showScopeMenu iniciado ===", "cyan");
 
@@ -25,7 +25,7 @@ export function showScopeMenu(player) {
     system.run(() => {
       form
         .show(player)
-        .then((res) => {
+        .then((res: any) => {
           if (!res || res.canceled) {
             import("../builder/menu.js").then((module) => {
               system.run(() => {
@@ -49,7 +49,7 @@ export function showScopeMenu(player) {
             });
           });
         })
-        .catch((err) => {
+        .catch((err: any) => {
           debugWarn("menuScope", `Error en ModalForm: ${err}`, "red");
           import("../builder/menu.js").then((module) => {
             system.run(() => {

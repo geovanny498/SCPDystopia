@@ -10,11 +10,11 @@
 
 import { debugWarn } from "../../utils/debug.js";
 
-type SystemState = {
+export type SystemState = {
   mode?: string;
   enable?: boolean;
   includeSpecial?: boolean;
-};
+} & Record<string, unknown>;
 
 export type AllSystemStates = Record<string, Record<string, SystemState>>;
 
