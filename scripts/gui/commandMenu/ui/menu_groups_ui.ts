@@ -13,7 +13,7 @@ import {
 } from "../menu_config.js";
 import { setUnitGroup, getUnitGroup } from "../model/menu_groups.js";
 
-import type { ScannedEntity } from "../model/menu_entity_scanner.js";
+import type { ScannedEntity, ScanResult } from "../model/menu_entity_scanner.js";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // §  MENÚ PRINCIPAL DE GRUPOS
@@ -120,8 +120,7 @@ function showFactionGroupsMenu(player: Player, faction: string): void {
       "basic_any",
       "other_units",
     ];
-    // @ts-ignore — arreglo tipado inline por limitación de TS en archivo JS-ish
-    var nonEmptyBuckets: any[] = [];
+    var nonEmptyBuckets: { id: string; data: { label: string; nametags: Record<string, number>; unitCount: number } }[] = [];
     for (var bi = 0; bi < bucketOrder.length; bi++) {
       var bkey = bucketOrder[bi];
       if (buckets[bkey] && buckets[bkey].unitCount > 0) {
@@ -204,7 +203,7 @@ function showFactionGroupsMenu(player: Player, faction: string): void {
  * (jerarquía + familia MTF principal). 1 dropdown por cada nametag único
  * encontrado en ese bucket.
  */
-function showBucketAssignmentModal(player: Player, faction: string, bucketId: string, scanResult: any): void {
+function showBucketAssignmentModal(player: Player, faction: string, bucketId: string, scanResult: ScanResult): void {
   try {
     debugWarn("menuGroups:ui", "=== showBucketAssignmentModal: faction=" + faction + ", bucketId=" + bucketId, "cyan");
 

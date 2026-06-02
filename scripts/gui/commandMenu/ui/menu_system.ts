@@ -1,20 +1,22 @@
 // scripts/gui/commandMenu/menu_system.ts
-import { world, system } from "@minecraft/server";
-import { ActionFormData } from "@minecraft/server-ui";
+import { world, system, Player } from "@minecraft/server";
+import { ActionFormData, ActionFormResponse, ModalFormData, ModalFormResponse } from "@minecraft/server-ui";
 import { debugWarn } from "../../../utils/debug.js";
-import {
-  Factions,
-  SpecialGroups,
-  getGroupsOrderForSystems,
-  scanActiveEntities,
-} from "../menu_config.js";
+import { Factions, SpecialGroups, getGroupsOrderForSystems, scanActiveEntities } from "../menu_config.js";
 import { buildSystemForm, parseSystemFormValues, getConfirmationMessage } from "../builder/menu_builder.js";
 import { loadSystemStates, saveSystemStates, applySystemsToAll } from "../core/menu_state.js";
+import type { MenuSystem } from "../menu_config.js";
+import type { BaseScanResult } from "../model/menu_entity_scanner.js";
 
 /**
  * Muestra el selector de facción antes de mostrar el formulario de sistemas
  */
-export function showSystemMenu(player: any, systems: any[], isAllCategory = false, categoryId: any = null) {
+export function showSystemMenu(
+  player: Player,
+  systems: MenuSystem[],
+  isAllCategory = false,
+  categoryId: string | null = null
+) {
   try {
     if (!systems || systems.length === 0) {
       debugWarn("commandMenu", "No hay sistemas para mostrar", "red");
@@ -31,13 +33,13 @@ export function showSystemMenu(player: any, systems: any[], isAllCategory = fals
     system.run(() => {
       form
         .show(player)
-        .then((res: any) => {
+        .then((res: ActionFormResponse) => {
           if (!res || res.canceled) {
             goBack(player, categoryId);
             return;
           }
 
-          let selectedFaction: any = null;
+          let selectedFaction: string | null = null;
           if (res.selection === 0) {
             selectedFaction = Factions.FOUNDATION;
           } else if (res.selection === 1) {
@@ -50,7 +52,7 @@ export function showSystemMenu(player: any, systems: any[], isAllCategory = fals
           // Mostrar formulario de sistemas para la facción seleccionada
           showSystemFormForFaction(player, systems, selectedFaction, isAllCategory, categoryId);
         })
-        .catch((err: any) => {
+        .catch((err: unknown) => {
           debugWarn("commandMenu", `Error en selector de facción: ${err}`, "red");
         });
     });
@@ -62,21 +64,23 @@ export function showSystemMenu(player: any, systems: any[], isAllCategory = fals
 /**
  * Muestra el formulario de configuración para una facción específica
  */
-function showSystemFormForFaction(player: any, systems: any[], selectedFaction: any, isAllCategory: any, categoryId: any) {
+function showSystemFormForFaction(
+  player: Player,
+  systems: MenuSystem[],
+  selectedFaction: string,
+  isAllCategory: boolean,
+  categoryId: string | null
+) {
   try {
-    // 1. Cargar estados actuales de los sistemas
-    const systemIds = systems.map((s: any) => s.id);
+    const systemIds = systems.map((s) => s.id);
     const loadedStates = loadSystemStates(systemIds);
 
-    // 2. Escanear entidades activas en la dimensión del jugador
-    const scanResult = scanActiveEntities(player.dimension, selectedFaction);
+    const scanResult: BaseScanResult = scanActiveEntities(player.dimension, selectedFaction);
 
-    // 2.1. Grupos activos: sincroniza buildSystemForm ↔ parseSystemFormValues
-    // Calcular antes de buildSystemForm para que ambos usen la misma lista
     var _allGroups = getGroupsOrderForSystems();
-    var _groupCounts: any = {};
+    var _groupCounts: Record<string, number> = {};
     for (var _gi = 0; _gi < _allGroups.length; _gi++) _groupCounts[_allGroups[_gi]] = 0;
-    var _ents: any = scanResult.entities || [];
+    var _ents = scanResult.entities || [];
     for (var _si = 0; _si < _ents.length; _si++) {
       var _sc = _ents[_si];
       if (!_sc.isSpecial) continue;
@@ -229,7 +233,13 @@ function showSystemFormForFaction(player: any, systems: any[], selectedFaction: 
 /**
  * Pregunta si el usuario quiere configurar el otro bando
  */
-function askConfigureOtherFaction(player: any, systems: any[], currentFaction: any, isAllCategory: any, categoryId: any) {
+function askConfigureOtherFaction(
+  player: any,
+  systems: any[],
+  currentFaction: any,
+  isAllCategory: any,
+  categoryId: any
+) {
   const otherFaction = currentFaction === Factions.FOUNDATION ? Factions.CHAOS : Factions.FOUNDATION;
   const otherLabel = otherFaction === Factions.FOUNDATION ? "§lFoundation" : "§2§lChaos";
 
