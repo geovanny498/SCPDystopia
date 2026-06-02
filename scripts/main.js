@@ -3,7 +3,7 @@ import { world, system } from "@minecraft/server";
 import { getTeam } from "./utils/teams.ts";
 import { projectileConfig } from "./utils/projectileConfig.js";
 import { applyDamageAndKnockback } from "./utils/damage.js";
-import { debugMessage, debugWarn } from "./utils/debug.ts";
+import { debugMessage, debugWarn } from "./utils/debug.js";
 
 const projectilePierceMap = new WeakMap();
 

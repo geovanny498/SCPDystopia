@@ -16,7 +16,7 @@ import {
   SpecialGroupLabels,
   Factions,
 } from "../gui/commandMenu/menu_config.js";
-import { resetAllSystems, resetAllSystemStates, resetOneSystemState } from "./worldSave.js";
+import { resetAllSystems, resetAllSystemStates, resetOneSystemState } from "./worldSave";
 import { resetMenuSystemStates } from "../gui/commandMenu/core/menu_events.js";
 import { resetScope } from "../gui/commandMenu/model/menu_scope.js";
 import { setUnitGroup, ENTITY_GROUP_DP } from "../gui/commandMenu/model/menu_groups.js";

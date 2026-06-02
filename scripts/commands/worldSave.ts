@@ -1,14 +1,16 @@
-// scripts/commands/worldSave.js
+// scripts/commands/worldSave.ts
 import { world } from "@minecraft/server";
+import { systems as menuSystems } from "../gui/commandMenu/menu_config";
 import { debugMessage, debugWarn } from "../utils/debug";
-import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
+
+type SystemState = Record<string, unknown> | string | boolean | number | undefined;
 
 /**
  * Guarda el estado de un sistema
  * @param {string} systemName
  * @param {Object} state
  */
-export function saveSystemState(systemName, state) {
+export function saveSystemState(systemName: string, state: SystemState): void {
   try {
     const propName = `scpd_system_${systemName}`;
     world.setDynamicProperty(propName, JSON.stringify(state));
@@ -23,11 +25,11 @@ export function saveSystemState(systemName, state) {
  * @param {string} systemName
  * @returns {Object|undefined}
  */
-export function loadSystemState(systemName) {
+export function loadSystemState(systemName: string): SystemState | undefined {
   try {
     const prop = world.getDynamicProperty(`scpd_system_${systemName}`);
     if (!prop) return undefined;
-    return JSON.parse(prop);
+    return JSON.parse(String(prop));
   } catch (err) {
     debugWarn("dynamicProperties", `[SCPDystopia] Error al cargar sistema ${systemName}: ${err}`, "red");
     return undefined;
@@ -38,7 +40,7 @@ export function loadSystemState(systemName) {
  * Resetea las propiedades dinámicas de un único sistema a sus valores por defecto
  * @param {string} systemName
  */
-export function resetOneSystemState(systemName) {
+export function resetOneSystemState(systemName: string): boolean {
   try {
     const systemConfig = menuSystems[systemName];
     if (!systemConfig?.dynamicProperty) return false;
@@ -53,7 +55,7 @@ export function resetOneSystemState(systemName) {
 /**
  * Resetea solo las propiedades dinámicas de los sistemas a sus valores por defecto
  */
-export function resetAllSystemStates() {
+export function resetAllSystemStates(): void {
   try {
     for (const systemConfig of Object.values(menuSystems)) {
       if (!systemConfig?.dynamicProperty) continue;
@@ -69,7 +71,7 @@ export function resetAllSystemStates() {
  * Resetea todos los sistemas guardados
  * NO hardcodea valores, usa los defaults de menu_config.js
  */
-export function resetAllSystems() {
+export function resetAllSystems(): void {
   try {
     // Limpiar todas las propiedades dinámicas
     world.clearDynamicProperties();

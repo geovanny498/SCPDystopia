@@ -1,23 +1,30 @@
-// init.js
+// init.ts
 import { system } from "@minecraft/server";
-import "./components/maxDamage";
-import "./components/killTarget";
-import "./components/removeTarget";
-import "./utils/weapons";
+
+// Inicializa componentes
+import "./components/maxDamage.js";
+import "./components/killTarget.js";
+import "./components/removeTarget.js";
+
+// Inicializa utilidades
+import "./utils/weapons.js";
+
+// Inicializa sistemas
 import "./commands/register_systems.ts";
 import "./commands/register_test_commands.ts";
-import "./gui/interactMenu/gui";
-import "./gui/commandMenu/builder/menu";
-import "./commands/config_command";
+
+// Inicializa GUI
+import "./gui/interactMenu/gui.js";
+import "./gui/commandMenu/builder/menu.js";
+
+// Inicializa comandos
+import "./commands/config_command.js";
 import "./commands/count_special_groups.ts";
-import "./commands/scope_commands";
-import "./commands/teleport_command"; // TEMPORALMENTE DESHABILITADO — ver scripts/gui/teleportMenu/teleport_config.ts
+import "./commands/scope_commands.js";
+import "./commands/teleport_command.js"; // TEMPORALMENTE DESHABILITADO — ver scripts/gui/teleportMenu/teleport_config.ts
 
 // Importar funciones de inicialización del menú
-import {
-  initializeMenuEvents,
-  getMenuSystemStates,
-} from "./gui/commandMenu/core/menu_events.js";
+import { initializeMenuEvents, getMenuSystemStates } from "./gui/commandMenu/core/menu_events.js";
 import { injectMenuEventAccessors } from "./gui/commandMenu/core/menu_apply.js";
 
 // Inicializar el sistema de menú DESPUÉS de que el mundo esté listo
