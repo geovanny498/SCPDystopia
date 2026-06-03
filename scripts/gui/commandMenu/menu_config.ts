@@ -535,16 +535,16 @@ export function getSystemPropertyId(systemId: string) {
   return sys.dynamicProperty;
 }
 
-function shouldParseJsonString(raw: any): raw is string {
+function shouldParseJsonString(raw: unknown): raw is string {
   return typeof raw === "string" && (raw.startsWith("{") || raw.startsWith("["));
 }
 
-export function setEntitySystemState(entity: Entity, systemId: string, value: any) {
+export function setEntitySystemState(entity: Entity, systemId: string, value: unknown): void {
   const propertyId = getSystemPropertyId(systemId);
   if (!propertyId || !entity) return;
   try {
-    // Normalizar valor inline (función eliminada por no uso)
-    let normalized = value;
+    let normalized: string | number | boolean | undefined = undefined;
+
     if (value !== undefined && value !== null) {
       if (typeof value === "boolean" || typeof value === "number" || typeof value === "string") {
         normalized = value;
@@ -603,7 +603,7 @@ export function findSystemStateByEvent(eventName: string) {
   return null;
 }
 
-export function formatEntitySystemStateLabel(systemId: string, value: any) {
+export function formatEntitySystemStateLabel(systemId: string, value: unknown): string {
   const sys = systems[systemId];
   if (!sys) return String(value ?? "§7No configurado§r");
 
@@ -612,7 +612,7 @@ export function formatEntitySystemStateLabel(systemId: string, value: any) {
   }
 
   if (isDropdownSystem(sys)) {
-    const option = sys.options?.find((opt: any) => opt.value === value);
+    const option = sys.options?.find((opt: MenuOption) => opt.value === value);
     if (option?.label) return option.label;
     return typeof value === "string" ? value : String(value ?? "§7No configurado§r");
   }
@@ -644,7 +644,7 @@ export function getSystemDefaults(systemId: string) {
   return sys.defaults;
 }
 
-export function getSystemEvents(systemId: string, value: string | boolean): any {
+export function getSystemEvents(systemId: string, value: string | boolean): Record<string, string | boolean | undefined> {
   const sys = systems[systemId];
   if (!sys) return {};
 
@@ -653,7 +653,7 @@ export function getSystemEvents(systemId: string, value: string | boolean): any 
     const ev = sys.events?.enable?.[key];
     return ev ? { event: ev } : {};
   } else if (isDropdownSystem(sys)) {
-    const option = sys.options?.find((opt: any) => opt.value === value);
+    const option = sys.options?.find((opt: MenuOption) => opt.value === value);
     if (!option) return {};
     const result: Record<string, string | boolean | undefined> = { ...(option.events || {}) };
     if (option.autoTame) result.autoTame = true;

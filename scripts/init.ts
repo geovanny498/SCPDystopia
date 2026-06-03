@@ -21,7 +21,7 @@ import "./gui/commandMenu/builder/menu.js";
 import "./commands/config_command.js";
 import "./commands/count_special_groups.ts";
 import "./commands/scope_commands.js";
-import "./commands/teleport_command.js"; // TEMPORALMENTE DESHABILITADO — ver scripts/gui/teleportMenu/teleport_config.ts
+import "./commands/teleport_command.js";
 
 // Importar funciones de inicialización del menú
 import { initializeMenuEvents, getMenuSystemStates } from "./gui/commandMenu/core/menu_events.js";
