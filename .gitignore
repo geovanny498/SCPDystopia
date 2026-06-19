@@ -22,6 +22,7 @@ codigo_original/*
 # Comentar cuando ya no se necesite mantener el historial de cambios de los planes
 # !.kilo/plans/
 # !.kilo/plans/**
+.docs/*
 
 # Environment variables (si tienes datos sensibles)
 # .env.local

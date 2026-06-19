@@ -10,8 +10,8 @@ import "./components/removeTarget.js";
 import "./utils/weapons.js";
 
 // Inicializa sistemas
-import "./commands/register_systems.ts";
-import "./commands/register_test_commands.ts";
+import "./commands/register_systems.js";
+import "./commands/register_test_commands.js";
 
 // Inicializa GUI
 import "./gui/interactMenu/gui.js";
@@ -19,7 +19,7 @@ import "./gui/commandMenu/builder/menu.js";
 
 // Inicializa comandos
 import "./commands/config_command.js";
-import "./commands/count_special_groups.ts";
+import "./commands/count_special_groups.js";
 import "./commands/scope_commands.js";
 import "./commands/teleport_command.js";
 

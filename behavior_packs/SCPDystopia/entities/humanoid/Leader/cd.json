@@ -1038,8 +1038,8 @@
         ]
       },
       "minecraft:health": {
-        "value": 170,
-        "max": 170
+        "value": 115,
+        "max": 115
       },
       "minecraft:breathable": {
         "total_supply": 15,

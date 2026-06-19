@@ -2,7 +2,7 @@
 import { world, system, Entity } from "@minecraft/server";
 import { getTeam } from "./utils/teams.js";
 import { projectileConfig } from "./utils/projectileConfig.js";
-import { applyDamageAndKnockback } from "./utils/damage.js";
+import { applyDamageAndCfg } from "./utils/damage.js";
 import { debugMessage, debugWarn } from "./utils/debug.js";
 
 interface ProjectileConfigEntry {
@@ -47,7 +47,7 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
   try {
     if (cfg.pierce === Infinity) {
       debugWarn("projectileHitEntity", "Pierce es Infinity. Solo aplicamos daño y knockback.", "green");
-      if (event.source) applyDamageAndKnockback(projectile, target, cfg, event.source as Entity);
+      if (event.source) applyDamageAndCfg(projectile, target, cfg, event.source as Entity);
       return;
     }
 
@@ -60,7 +60,7 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
     }
 
     debugWarn("projectileHitEntity", `Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`, "green");
-    if (event.source) applyDamageAndKnockback(projectile, target, cfg, event.source as Entity);
+    if (event.source) applyDamageAndCfg(projectile, target, cfg, event.source as Entity);
 
     projectilePierceMap.set(projectile, pierced + 1);
   } catch (e) {

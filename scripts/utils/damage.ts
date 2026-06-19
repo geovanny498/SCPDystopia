@@ -1,11 +1,10 @@
 // scripts\utils\damage.js
 import * as mc from "@minecraft/server";
 import type { Entity } from "@minecraft/server";
-import { applyKnockback } from "./knockback";
 import { debugMessage, debugWarn } from "./debug.js";
 import { entityDamageConfig } from "./entityConfig.js";
 
-export function applyDamageAndKnockback(
+export function applyDamageAndCfg(
   projectile: Entity,
   target: Entity,
   cfg: { damage?: number; knockback?: number },
@@ -53,87 +52,12 @@ export function applyDamageAndKnockback(
   if (!canDamage) {
     debugWarn(`damage`, `Daño bloqueado para ${target.typeId}`, "purple");
   } else if ((cfg.damage ?? 0) > 0) {
-    const dmg = getModifiedDamageNumber(cfg.damage ?? 0, target);
+    const dmg = cfg.damage ?? 0;
     if (dmg > 0) {
       target.applyDamage(dmg, {
-        cause: mc.EntityDamageCause.override,
         damagingEntity: shooter,
         damagingProjectile: projectile,
       });
     }
-  }
-
-  if (!canKnockback) {
-    debugWarn(`applyKnockback`, `Knockback bloqueado para ${target.typeId}`, "purple");
-  } else {
-    applyKnockback(target, projectile, cfg.knockback ?? 0);
-  }
-}
-
-// Función de cálculo de daño, la dejé igual
-export function getModifiedDamageNumber(damage: number, entity: Entity) {
-  if (damage <= 0) {
-    debugMessage("modifiedDamageNumber", "Daño negativo o nulo, no se aplicará.");
-    return 0;
-  }
-
-  const originalDamage = damage;
-
-  try {
-    // 1) Reducción por efecto de Resistencia
-    const res = entity.getEffect("minecraft:resistance");
-    if (res) {
-      const reduction = (res.amplifier + 1) * 0.2;
-      damage = Math.floor(damage * (1 - reduction));
-      debugMessage(
-        "modifiedDamageNumber",
-        `Daño original: ${originalDamage} | Resistencia nivel ${res.amplifier + 1} (-${Math.round(reduction * 100)}%) => ${damage}`
-      );
-    }
-
-    if (damage <= 0) {
-      debugWarn("modifiedDamageNumber", "Daño final: 0 (anulado por resistencia)", "green");
-      return 0;
-    }
-
-    // 2) Reducción por Armadura y Encantamientos
-    const equippable = entity.getComponent("equippable");
-    if (!equippable) {
-      debugWarn("modifiedDamageNumber", `Daño final sin armadura: ${damage}`, "green");
-      return damage;
-    }
-
-    let defensePoints = 0,
-      armorToughness = 0,
-      epf = 0;
-    for (const slot of [mc.EquipmentSlot.Head, mc.EquipmentSlot.Chest, mc.EquipmentSlot.Legs, mc.EquipmentSlot.Feet]) {
-      const item = equippable.getEquipment(slot);
-      if (!item) continue;
-
-      const eqComp = item.getComponent("equippable") as { defense?: number; armorToughness?: number } | null;
-      defensePoints += eqComp?.defense ?? 0;
-      armorToughness += eqComp?.armorToughness ?? 0;
-
-      const ench = item.getComponent("enchantable");
-      epf +=
-        (ench?.getEnchantment("protection")?.level ?? 0) +
-        (ench?.getEnchantment("projectile_protection")?.level ?? 0) * 2;
-    }
-
-    const armorReduction =
-      Math.min(20, Math.max(defensePoints / 5, defensePoints - (4 * damage) / (armorToughness + 8))) / 25;
-    damage = Math.floor(damage * (1 - armorReduction) - Math.min(20, epf) / 25);
-
-    if (damage <= 0) {
-      debugMessage("modifiedDamageNumber", "Daño final: 0 (anulado por armadura/encantamientos)");
-      return 0;
-    }
-
-    debugMessage("modifiedDamageNumber", `Daño final tras armadura/encantamientos: ${damage}`);
-    return damage;
-  } catch (error) {
-    const err = error as Error;
-    debugWarn("modifiedDamageNumber", `Error al calcular el daño: ${err?.message ?? String(error)}`, "red");
-    return damage; // Devolver el daño sin cambios en caso de error
   }
 }
