@@ -29,8 +29,8 @@ export const projectileConfig = {
   "lc:dt_hk416_bullet_player_ads": { damage: 21, knockback: 0.04, pierce: 3 },
 
   // Jugador (20 de vida) Aplok Guns
-  "lc:dt_mp7_player_bullet": { damage: 18, knockback: 0.04, pierce: 3 },
-  "lc:dt_ak47_player_bullet": { damage: 18, knockback: 0.04, pierce: 3 },
+  "lc:dt_mp7_player_bullet": { damage: 19, knockback: 0.04, pierce: 3 },
+  "lc:dt_ak47_player_bullet": { damage: 19, knockback: 0.04, pierce: 3 },
   "lc:dt_p90_player_bullet": { damage: 21, knockback: 0.04, pierce: 3 },
   "lc:dt_dtrifle_player_bullet": { damage: 120, knockback: 0.04, pierce: 3 }, // awp
   "lc:dt_scar_player_bullet": { damage: 20, knockback: 0.04, pierce: 3 }, // m249

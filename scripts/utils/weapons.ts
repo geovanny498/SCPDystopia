@@ -1,5 +1,5 @@
 // scripts\utils\weapons.js
-import { world, system, Entity } from "@minecraft/server";
+import { world, system, Entity, EntityProjectileComponent } from "@minecraft/server";
 import { debugMessage, debugWarn } from "./debug.js";
 import * as mc from "@minecraft/server";
 
@@ -86,10 +86,7 @@ function shoot(player: Entity, itemId: string) {
     // projectileShooterMap.set(projectile.id, player);
 
     // Asignar propietario nativo
-    const projComp = projectile.getComponent("minecraft:projectile") as {
-      owner?: Entity;
-      shoot?: (velocity: { x: number; y: number; z: number }) => void;
-    } | null;
+    const projComp = projectile.getComponent("minecraft:projectile") as EntityProjectileComponent;
     if (projComp) {
       projComp.owner = player;
     }
@@ -100,9 +97,7 @@ function shoot(player: Entity, itemId: string) {
       z: direction.z * data.speed,
     };
 
-    if (projComp?.shoot) {
-      projComp.shoot(velocity);
-    }
+    projComp?.shoot(velocity);
     // } else {
     //     projectile.applyImpulse(velocity);
     // }

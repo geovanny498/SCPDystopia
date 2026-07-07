@@ -156,6 +156,7 @@
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp001_gg" },
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "enderman" },
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp280" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "creaking" },
                   {
                     "any_of": [
                       { "test": "is_family", "subject": "other", "value": "monster" },
@@ -236,6 +237,7 @@
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp001_gg" },
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "enderman" },
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp280" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "creaking" },
                   {
                     "any_of": [
                       { "test": "is_family", "subject": "other", "value": "monster" },
@@ -314,6 +316,7 @@
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp001_gg" },
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "enderman" },
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp280" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "creaking" },
                   {
                     "any_of": [
                       { "test": "is_family", "subject": "other", "value": "monster" },
@@ -392,6 +395,7 @@
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp001_gg" },
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "enderman" },
                   { "test": "is_family", "subject": "other", "operator": "!=", "value": "scp280" },
+                  { "test": "is_family", "subject": "other", "operator": "!=", "value": "creaking" },
                   {
                     "any_of": [
                       { "test": "is_family", "subject": "other", "value": "monster" },

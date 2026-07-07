@@ -309,6 +309,9 @@
 			"minecraft:attack": {
 				"damage": 3
 			},
+			"minecraft:knockback_resistance": {
+        "value": 0.3
+      },
 			"minecraft:movement.basic": {},
 			"minecraft:jump.static": {},
 			"minecraft:can_climb": {},

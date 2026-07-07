@@ -1,6 +1,6 @@
 // scripts\utils\damage.js
 import * as mc from "@minecraft/server";
-import type { Entity } from "@minecraft/server";
+import { EntityDamageCause, type Entity } from "@minecraft/server";
 import { debugMessage, debugWarn } from "./debug.js";
 import { entityDamageConfig } from "./entityConfig.js";
 
@@ -51,13 +51,21 @@ export function applyDamageAndCfg(
 
   if (!canDamage) {
     debugWarn(`damage`, `Daño bloqueado para ${target.typeId}`, "purple");
-  } else if ((cfg.damage ?? 0) > 0) {
+  } else {
     const dmg = cfg.damage ?? 0;
+    debugMessage(
+      `damage`,
+      `Aplicando ${dmg} de daño a ${target.typeId} (proyectil: ${projectile.typeId}, tirador: ${shooter.typeId})`,
+      "green"
+    );
     if (dmg > 0) {
       target.applyDamage(dmg, {
         damagingEntity: shooter,
         damagingProjectile: projectile,
       });
+      debugMessage(`damage`, `Daño aplicado correctamente a ${target.typeId}: ${dmg}`, "green");
+    } else {
+      debugWarn(`damage`, `Daño calculado es 0 o menor para ${target.typeId}. No se aplica daño.`, "yellow");
     }
   }
 }

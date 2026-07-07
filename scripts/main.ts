@@ -16,15 +16,16 @@ const projectilePierceMap = new WeakMap<Entity, number>();
 world.afterEvents.projectileHitEntity.subscribe((event) => {
   const projectile = event.projectile as Entity | undefined;
   const target = event.getEntityHit()?.entity as Entity | undefined;
+  const shooter = event.source as Entity;
   if (!projectile || !target) {
     debugWarn("projectileHitEntity", "Falta objeto necesario o es fuego amigo.", "yellow");
     return;
   }
 
-  const teamShooter = event.source ? getTeam(event.source as Entity) : null;
+  const teamShooter = shooter ? getTeam(shooter) : null;
   const teamTarget = getTeam(target);
 
-  if (event.source && target.id === (event.source as Entity).id) {
+  if (shooter && target.id === shooter.id) {
     debugWarn("projectileHitEntity", "El proyectil intentó dañar a su propio tirador. Cancelando daño.", "yellow");
     return;
   }
@@ -47,7 +48,7 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
   try {
     if (cfg.pierce === Infinity) {
       debugWarn("projectileHitEntity", "Pierce es Infinity. Solo aplicamos daño y knockback.", "green");
-      if (event.source) applyDamageAndCfg(projectile, target, cfg, event.source as Entity);
+      applyDamageAndCfg(projectile, target, cfg, shooter);
       return;
     }
 
@@ -60,7 +61,7 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
     }
 
     debugWarn("projectileHitEntity", `Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`, "green");
-    if (event.source) applyDamageAndCfg(projectile, target, cfg, event.source as Entity);
+    applyDamageAndCfg(projectile, target, cfg, shooter);
 
     projectilePierceMap.set(projectile, pierced + 1);
   } catch (e) {

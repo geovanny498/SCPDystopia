@@ -3,7 +3,7 @@
   "format_version": "1.21.50",
   "minecraft:entity": {
     "description": {
-      "identifier": "lc:dt_scar_bullet_player",
+      "identifier": "lc:dt_hk416_bullet_player_ads",
       "is_spawnable": false,
       "is_summonable": true,
       "is_experimental": false,
@@ -37,16 +37,6 @@
           "wheat"
         ]
       },
-      // "minecraft:spawn_entity": {
-      //     "entities": {
-      //         "min_wait_time": 0,
-      //         "max_wait_time": 0,
-      //         "single_use": true,
-      //         "spawn_entity": "lc:dt_none",
-      //         "spawn_sound": "purr",
-      //         "num_to_spawn": 1
-      //     }
-      // },
       "minecraft:collision_box": {
         "width": 0.25,
         "height": 0.25
@@ -55,7 +45,7 @@
         "on_hit": {
           "impact_damage": {
             "damage": 0,
-            /*"knockback": false,*/
+            "knockback": false,
             "semi_random_diff_damage": false,
             "destroy_on_hit": false
           },
@@ -72,11 +62,11 @@
         "power": 25.0,
         "gravity": 0.0,
         "inertia": 1.0,
-        "uncertainty_base": 2.5,
+        "uncertainty_base": 2.0,
         "uncertainty_multiplier": 0,
         "anchor": 1,
         "offset": [0, -0.1, 0],
-        "on_fire_time": 30,
+        "on_fire_time": 60,
         "reflect_on_hurt": false,
         "catch_fire": false
       },
