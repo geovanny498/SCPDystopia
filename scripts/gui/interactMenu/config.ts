@@ -141,14 +141,14 @@ const config: GuiConfig = {
         ],
       },
       {
-        id: "unit_management",
-        category: "§dGestión de Unidad",
-        submenu: "unit_management",
-      },
-      {
         id: "advanced_menu",
         category: "§6Más sistemas",
         submenu: "advanced",
+      },
+      {
+        id: "unit_management",
+        category: "§dGestión de Unidad",
+        submenu: "unit_management",
       },
     ],
   },

@@ -1,5 +1,5 @@
 {
-  "format_version": "1.21.50",
+  "format_version": "1.26.40",
   "minecraft:entity": {
     "description": {
       "identifier": "lc:dt_suscharger_shot_player_sneak",

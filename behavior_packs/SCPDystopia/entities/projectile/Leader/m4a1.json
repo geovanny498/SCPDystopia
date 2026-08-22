@@ -1,6 +1,6 @@
 // CC-BY-SA 3.0
 {
-  "format_version": "1.21.50",
+  "format_version": "1.26.40",
   "minecraft:entity": {
     "description": {
       "identifier": "lc:dt_m4a1_bullet_player",
@@ -43,12 +43,12 @@
       },
       "minecraft:projectile": {
         "on_hit": {
-          // "impact_damage": {
-          //   "damage": 0,
-          //   "knockback": false,
-          //   "semi_random_diff_damage": false,
-          //   "destroy_on_hit": false
-          // },
+          "impact_damage": {
+            "damage": 0,
+            "knockback": false,
+            "semi_random_diff_damage": false,
+            "destroy_on_hit": false
+          },
           "stick_in_ground": {
             "shake_time": 0.1
           },
