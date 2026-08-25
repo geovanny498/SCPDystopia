@@ -60,6 +60,7 @@ function shouldIncludeCategoryForEntity(cat: MenuCategory, typeId: string): bool
  * - specific: categorías específicas de la entidad
  * - global: categorías globales
  * - merged: orden final según insertAt / replace
+ * @param typeId
  */
 function getSpecificConfig(typeId: string): EntitySpecificConfig | undefined {
   if (!config.specific || typeof config.specific !== "object") return undefined;
@@ -88,6 +89,12 @@ function getSpecificConfig(typeId: string): EntitySpecificConfig | undefined {
   return undefined;
 }
 
+/**
+ * Devuelve la configuración de categorías para una entidad específica
+ * @param typeId
+ * @param entity
+ * @returns
+ */
 function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null {
   const globalCats = config.global && Array.isArray(config.global.categories) ? [...config.global.categories] : [];
 
@@ -489,9 +496,7 @@ function showEntryMenu(
       const sysConfig = getSystemConfig(mapped.systemId);
       const sysDisplay = sysConfig?.displayName || mapped.systemId;
       const valueLabel = formatEntitySystemStateLabel(mapped.systemId, mapped.value);
-      player.sendMessage(
-        `§8[§aMENU§8] §7${soldierName} §7-> §e${sysDisplay}§7: §f${valueLabel}`
-      );
+      player.sendMessage(`§8[§aMENU§8] §7${soldierName} §7-> §e${sysDisplay}§7: §f${valueLabel}`);
       debugWarn(
         "playerInteract:system",
         `jugador=${player.name} | typeId=${typeId} | sistema=${mapped.systemId} | valor=${valueLabel} | key=${mapped.value}`,

@@ -137,6 +137,9 @@ export function applySystemToAll(
 
 /**
  * Aplica múltiples sistemas de forma optimizada usando una única consulta de entidades
+ * @param systemIds - Lista de IDs de sistemas a aplicar
+ * @param dimension - Dimensión opcional para filtrar entidades
+ * @param player - Jugador opcional para contexto de aplicación
  */
 export function applySystemsToAll(
   systemIds: string[],

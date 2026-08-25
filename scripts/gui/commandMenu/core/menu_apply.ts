@@ -28,6 +28,9 @@ export function getMenuSystemStates(): any {
 
 /**
  * Intenta domesticar la entidad usando el componente tameable o minecraft:on_calm como fallback
+ * @param ent Entidad a domesticar
+ * @param player Jugador que realiza la domesticación
+ *
  */
 export function tryAutoTame(ent: Entity, player: Player): void {
   if (!ent || !player) return;
@@ -101,6 +104,14 @@ function safeTriggerEvent(ent: Entity, eventName: string, player: Player | null 
 
 /**
  * Aplica un sistema a una entidad específica usando eventos de la configuración
+ * @param systemId
+ * @param systemConfig
+ * @param ent
+ * @param stateOverride
+ * @param skipCompatibilityCheck
+ * @param factionInfoOverride
+ * @param player
+ * @param cached
  * @returns boolean indicando si el sistema se aplicó exitosamente
  */
 export function applySystemToEntity(
@@ -239,6 +250,9 @@ export function applySystemToEntity(
 
 /**
  * Obtiene la lista de soldados elegibles basándose en dimensiones y scope
+ * @param dimensions - Lista de dimensiones a considerar
+ * @param scope - Scope opcional para filtrar entidades
+ * @returns Lista de entidades elegibles con su información de facción
  */
 export function getEligibleSoldiers(dimensions: any[], scope: any = null): any[] {
   const seen = new Set();
@@ -269,6 +283,9 @@ export function getEligibleSoldiers(dimensions: any[], scope: any = null): any[]
 
 /**
  * Aplica múltiples sistemas a un conjunto de entidades ya filtradas
+ * @param eligibleSoldiers
+ * @param systemIds
+ * @param options
  */
 export function applySystemsToEntities(eligibleSoldiers: any[], systemIds: string[], options: any = {}): void {
   const { player = null, skipCompatibilityCheck = false, cached = {} } = options;

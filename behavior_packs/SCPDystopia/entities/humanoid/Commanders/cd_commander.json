@@ -919,11 +919,11 @@
         "items": [
           {
             "item": "golden_apple",
-            "heal_amount": 5000
+            "heal_amount": 10000
           },
           {
             "item": "golden_carrot",
-            "heal_amount": 2500
+            "heal_amount": 5000
           }
         ]
       },
@@ -1050,8 +1050,8 @@
         ]
       },
       "minecraft:health": {
-        "value": 10000,
-        "max": 10000
+        "value": 20000,
+        "max": 20000
       },
       "minecraft:breathable": {
         "total_supply": 15,

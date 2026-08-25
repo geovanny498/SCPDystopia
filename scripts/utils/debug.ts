@@ -12,12 +12,12 @@ export const DEBUG_CONSOLE = true; // Mensajes en consola
  * Cualquier string es válido para máxima flexibilidad.
  *
  * Formato de secciones:
- *   // ── ACTIVOS ──────────────────────────────────────────────────────────────
- *   // Módulos con spam controlado (volumen bajo por diseño)
+ *  - ACTIVOS:
+ *   Módulos con spam controlado (volumen bajo por diseño)
  *
- *   // ── COMENTADOS ───────────────────────────────────────────────────────────
- *   // Módulos comentados: intensivos en volumen. Descomentar solo para depuración
- *   // específica y volver a comentar después.
+ *   - COMENTADOS:
+ *   Módulos comentados: intensivos en volumen. Descomentar solo para depuración
+ *   específica y volver a comentar después.
  */
 export const DEBUG_MODULES: string[] = [
   // ═══════════════════════════════════════════════════════════════════════════
@@ -28,6 +28,11 @@ export const DEBUG_MODULES: string[] = [
   "entityDamageConfig",
 ];
 
+/**
+ * Verifica si un módulo está habilitado para debug.
+ * @param module
+ * @returns
+ */
 function isModuleEnabled(module: string): boolean {
   return DEBUG_MODULES.includes("*") || DEBUG_MODULES.includes(module);
 }
