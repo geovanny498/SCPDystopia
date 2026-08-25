@@ -644,7 +644,10 @@ export function getSystemDefaults(systemId: string) {
   return sys.defaults;
 }
 
-export function getSystemEvents(systemId: string, value: string | boolean): Record<string, string | boolean | undefined> {
+export function getSystemEvents(
+  systemId: string,
+  value: string | boolean
+): Record<string, string | boolean | undefined> {
   const sys = systems[systemId];
   if (!sys) return {};
 

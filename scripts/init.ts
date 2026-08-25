@@ -22,6 +22,7 @@ import "./commands/config_command.js";
 import "./commands/count_special_groups.js";
 import "./commands/scope_commands.js";
 import "./commands/teleport_command.js";
+import "./commands/monitor_command.js";
 
 // Importar funciones de inicialización del menú
 import { initializeMenuEvents, getMenuSystemStates } from "./gui/commandMenu/core/menu_events.js";

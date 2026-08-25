@@ -26,6 +26,11 @@ export const DEBUG_MODULES: string[] = [
   "projectileHitEntity",
   "damage",
   "entityDamageConfig",
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MONITOR REACTIVO — Activo para depurar transición a DDUI 2.1.0
+  // ═══════════════════════════════════════════════════════════════════════════
+  "monitorCommand",
 ];
 
 /**
