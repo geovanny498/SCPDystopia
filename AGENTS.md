@@ -2,7 +2,8 @@
 
 Comandos del proyecto:
 
-- `npm run build` — Compilar TypeScript
+- `npm run build` — Compilar TypeScript (Para saber si hay errores de código o errores en compilación)
+- `npm run local-deploy` — Desplegar con logs al juego (Usar cuando se quiere probar un cambio rapido)
 
 Build debe pasar sin errores antes de considerar completado un cambio relevantes.
 Está disponible la herramienta ripgrep (o rg en bash) y se recomienda usarla según se estime conveniente.

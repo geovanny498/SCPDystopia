@@ -9,6 +9,15 @@ import {
 } from "../commandMenu/menu_config.js";
 import { NAMETAG_FAMILY_MAP, getFamilyTagLabel } from "../commandMenu/menu_config.js";
 
+/**
+ * Decisiones de arquitectura:
+ * - Las secciones de nivel superior son las FACCIONES (Foundation/Chaos)
+ * - Normales y especiales son SUB-SECCIONES dentro de cada facción
+ *   porque usan estructuras de datos distintas (jerarquía vs grupos)
+ * - buildFactionSummary procesa datos; formatFactionBlock arma texto por facción
+ * - formatHierarchyBlock y formatSpecialsBlock son helpers especializados
+ */
+
 export type MonitorFaction = "foundation" | "chaos" | "ambas";
 export type MonitorUnitType = "especiales" | "normales" | "ambos";
 export type MonitorSortBy = "alpha_asc" | "alpha_desc";
@@ -17,14 +26,16 @@ export type MonitorListMode = "breve" | "completa";
 export interface MonitorConfig {
   faction: MonitorFaction;
   unitType: MonitorUnitType;
-  listMode: MonitorListMode;
+  normalListMode: MonitorListMode;
+  specialListMode: MonitorListMode;
   sortBy: MonitorSortBy;
 }
 
 export const MonitorConfigDefaults: MonitorConfig = {
   faction: "ambas",
-  unitType: "especiales",
-  listMode: "completa",
+  unitType: "ambos",
+  normalListMode: "breve",
+  specialListMode: "breve",
   sortBy: "alpha_asc",
 };
 
@@ -32,13 +43,13 @@ export const MonitorTitles = {
   main: "§bMonitor de Unidades en Tiempo Real",
   foundation: "§lFoundation",
   chaos: "§2§lChaos",
-  config: "§6§l§nConfiguración del Monitor§r",
+  config: "§b§lConfiguración del Monitor§r",
 };
 
 export const MonitorLabels = {
   total: "§7Total:§r",
   noSpecials: "§7No especiales:§r",
-  specials: "§eEspeciales:§r",
+  specials: "§dEspeciales:§r",
   noUnits: "§8No hay unidades",
   units: "unidades",
   refreshing: "§8Actualizando...",
@@ -48,20 +59,30 @@ export const MonitorButtons = {
   config: "Configuración",
   save: "Guardar",
   cancel: "Cancelar",
+  reset: "Restablecer ajustes",
+  close: "Cerrar",
 };
 
 export const MonitorConfigLabels = {
   faction: {
-    foundation: "§bFoundation§r",
+    foundation: "Foundation§r",
     chaos: "§2Chaos§r",
-    ambas: "§bFoundation§r / §2Chaos§r",
+    ambas: "Foundation §r/ §2Chaos§r",
   },
   unitType: {
-    especiales: "§eEspeciales§r",
+    especiales: "§dEspeciales§r",
     normales: "§7No especiales§r",
     ambos: "§7Todos§r",
   },
   listMode: {
+    completa: "§aCompleta§r",
+    breve: "§8Breve§r",
+  },
+  normalListMode: {
+    completa: "§aCompleta§r",
+    breve: "§8Breve§r",
+  },
+  specialListMode: {
     completa: "§aCompleta§r",
     breve: "§8Breve§r",
   },
@@ -225,11 +246,103 @@ function formatSpecialGroupLines(
 ): string[] {
   const lines: string[] = [];
   if (listMode === "breve") return lines;
-
   if (data.nametags.length === 0) return lines;
 
   const nametagLines = buildSortedNametagLines(data.nametags, sortBy);
   return nametagLines.map((line) => `  ${line}`);
+}
+
+/**
+ * Arma el bloque de texto de UNA facción (Foundation o Chaos)
+ * Incluye: título de facción, total, normales por jerarquía, especiales por grupo
+ */
+export function formatFactionBlock(
+  scan: ReturnType<typeof buildFactionSummary>,
+  factionTitle: string,
+  unitType: MonitorUnitType,
+  normalListMode: MonitorListMode,
+  specialListMode: MonitorListMode,
+  sortBy: MonitorSortBy
+): string {
+  const includeNormals = unitType === "normales" || unitType === "ambos";
+  const includeSpecials = unitType === "especiales" || unitType === "ambos";
+
+  const lines: string[] = [];
+  lines.push(`${factionTitle}§r`);
+  lines.push(`${MonitorLabels.total} §7${scan.total} ${MonitorLabels.units}§r`);
+
+  if (includeNormals) {
+    const hierarchies = [UnitHierarchy.BASIC, UnitHierarchy.LEADER, UnitHierarchy.COMMANDER];
+    for (const h of hierarchies) {
+      const data = scan.normalsByHierarchy[h];
+      if (!data || data.count === 0) continue;
+
+      const hierarchyLabel = UnitHierarchyLabels[h as keyof typeof UnitHierarchyLabels];
+      lines.push(`${hierarchyLabel}: §8x${data.count}§r`);
+
+      const sortedFamilies = getSortedFamilies(data.familyTags, sortBy);
+      if (sortedFamilies.length === 0) continue;
+
+      if (normalListMode === "completa") {
+        for (const [, family] of sortedFamilies) {
+          if (family.nametags.length === 0) {
+              lines.push(`    §7- §r${family.label}: §8x${family.count}§r`);
+          } else {
+            const nametagLines = buildSortedNametagLines(family.nametags, sortBy);
+            if (nametagLines.length === 1) {
+              lines.push(
+                `    §7- §r${family.label}: §8x${family.count}§r (${nametagLines[0].replace(/^§7- §r/, "").replace(/§r$/, "")}§r)`
+              );
+            } else {
+            lines.push(`    §7- §r${family.label}: §8x${family.count}§r`);
+              for (const line of nametagLines) {
+                lines.push(`      ${line}`);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  if (includeNormals && includeSpecials) {
+    lines.push("");
+  }
+
+  if (includeSpecials) {
+    const totalSpecials = Object.values(scan.specialsByGroup).reduce((sum, v) => sum + v.count, 0);
+    lines.push(`${MonitorLabels.specials} §7${totalSpecials} ${MonitorLabels.units}§r`);
+
+    const orderedGroups = [
+      SpecialGroups.GROUP_A,
+      SpecialGroups.GROUP_B,
+      SpecialGroups.GROUP_C,
+      SpecialGroups.GROUP_D,
+      SpecialGroups.NO_GROUP,
+    ];
+
+    if (specialListMode === "breve") {
+      for (const gid of orderedGroups) {
+        const data = scan.specialsByGroup[gid];
+        if (!data || data.count === 0) continue;
+        const label = SpecialGroupLabels[gid as keyof typeof SpecialGroupLabels];
+        lines.push(`  ${label}: §8x${data.count}§r`);
+      }
+    } else {
+      for (const gid of orderedGroups) {
+        const data = scan.specialsByGroup[gid];
+        if (!data || data.count === 0) continue;
+        const label = SpecialGroupLabels[gid as keyof typeof SpecialGroupLabels];
+        lines.push(`  ${label}: §8x${data.count}§r`);
+        const groupLines = formatSpecialGroupLines(data, sortBy, specialListMode);
+        for (const line of groupLines) {
+          lines.push(`${line}`);
+        }
+      }
+    }
+  }
+
+  return lines.join("\n");
 }
 
 export function formatFactionSummary(
@@ -237,104 +350,29 @@ export function formatFactionSummary(
   chaosScan: ReturnType<typeof buildFactionSummary>,
   faction: MonitorFaction,
   unitType: MonitorUnitType,
-  listMode: MonitorListMode,
+  normalListMode: MonitorListMode,
+  specialListMode: MonitorListMode,
   sortBy: MonitorSortBy
 ): string {
   const includeFoundation = faction === "ambas" || faction === "foundation";
   const includeChaos = faction === "ambas" || faction === "chaos";
-  const includeSpecials = unitType === "especiales" || unitType === "ambos";
-  const includeNormals = unitType === "normales" || unitType === "ambos";
 
-  const scans: { label: string; scan: ReturnType<typeof buildFactionSummary> }[] = [];
-  if (includeFoundation) scans.push({ label: "§lFoundation", scan: foundationScan });
-  if (includeChaos) scans.push({ label: "§2§lChaos", scan: chaosScan });
-
-  let text = "";
-  for (const { label, scan } of scans) {
-    text += `§6§l§n${label}§r\n`;
-    text += `${MonitorLabels.total} §e${scan.total} ${pluralizeUnit(scan.total)}§r\n`;
-
-    if (includeNormals) {
-      const hierarchies = [UnitHierarchy.BASIC, UnitHierarchy.LEADER, UnitHierarchy.COMMANDER];
-      for (const h of hierarchies) {
-        const data = scan.normalsByHierarchy[h];
-        if (!data || data.count === 0) continue;
-
-        const hierarchyLabel = UnitHierarchyLabels[h as keyof typeof UnitHierarchyLabels];
-        text += `§f${hierarchyLabel}:§r §e${data.count} ${pluralizeUnit(data.count)}§r\n`;
-
-        const sortedFamilies = getSortedFamilies(data.familyTags, sortBy);
-        if (sortedFamilies.length === 0) continue;
-
-        if (listMode === "breve") {
-          for (const [, family] of sortedFamilies) {
-            text += `    §7- §r${family.label}:§r §e${family.count} ${pluralizeUnit(family.count)}§r\n`;
-          }
-        } else {
-          for (const [, family] of sortedFamilies) {
-            const uniqueTypeIds = [...new Set(family.typeIds)].join(", ");
-            const typeIdPart = uniqueTypeIds ? ` §8(${uniqueTypeIds})§r` : "";
-
-            if (family.nametags.length === 1 && !uniqueTypeIds) {
-              const onlyName = family.nametags[0];
-              text += `    §7- §r${family.label}:§r §e${family.count} ${pluralizeUnit(family.count)}§r (${onlyName}§r)\n`;
-            } else {
-              text += `    §7- §r${family.label}:§r §e${family.count} ${pluralizeUnit(family.count)}§r${typeIdPart}\n`;
-              if (family.nametags.length > 0) {
-                const nametagLines = buildSortedNametagLines(family.nametags, sortBy);
-                if (nametagLines.length === 1 && !uniqueTypeIds) {
-                  text += `      §7(${nametagLines[0].replace(/^§7- §r/, "").replace(/§r$/, "")}§r)\n`;
-                } else {
-                  for (const line of nametagLines) {
-                    text += `      ${line}\n`;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if (includeNormals && includeSpecials) {
-      text += "\n";
-    }
-
-    if (includeSpecials) {
-      const totalSpecials = Object.values(scan.specialsByGroup).reduce((sum, v) => sum + v.count, 0);
-      text += `${MonitorLabels.specials} §e${totalSpecials} ${pluralizeUnit(totalSpecials)}§r\n`;
-
-      const orderedGroups = [
-        SpecialGroups.GROUP_A,
-        SpecialGroups.GROUP_B,
-        SpecialGroups.GROUP_C,
-        SpecialGroups.GROUP_D,
-        SpecialGroups.NO_GROUP,
-      ];
-
-      if (listMode === "breve") {
-        for (const gid of orderedGroups) {
-          const data = scan.specialsByGroup[gid];
-          if (!data || data.count === 0) continue;
-          const label = SpecialGroupLabels[gid as keyof typeof SpecialGroupLabels];
-          text += `§f  ${label}:§r §e${data.count} ${pluralizeUnit(data.count)}§r\n`;
-        }
-      } else {
-        for (const gid of orderedGroups) {
-          const data = scan.specialsByGroup[gid];
-          if (!data || data.count === 0) continue;
-          const label = SpecialGroupLabels[gid as keyof typeof SpecialGroupLabels];
-          text += `§f  ${label}:§r §e${data.count} ${pluralizeUnit(data.count)}§r\n`;
-          const groupLines = formatSpecialGroupLines(data, sortBy, listMode);
-          for (const line of groupLines) {
-            text += `${line}\n`;
-          }
-        }
-      }
-    }
-
-    text += "\n";
+  const blocks: string[] = [];
+  if (includeFoundation) {
+    const block = formatFactionBlock(
+      foundationScan,
+      MonitorTitles.foundation,
+      unitType,
+      normalListMode,
+      specialListMode,
+      sortBy
+    );
+    if (block) blocks.push(block);
+  }
+  if (includeChaos) {
+    const block = formatFactionBlock(chaosScan, MonitorTitles.chaos, unitType, normalListMode, specialListMode, sortBy);
+    if (block) blocks.push(block);
   }
 
-  return text.trimEnd();
+  return blocks.join("\n\n");
 }
