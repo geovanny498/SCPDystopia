@@ -751,7 +751,7 @@
         "minecraft:boss": {
           "should_darken_sky": false,
           "name": "§d§lMTF Delta-1 Commander",
-          "hud_range": 5
+          "hud_range": 3
         }
       },
       "humanoid:teleport": {

@@ -752,7 +752,7 @@
         "minecraft:boss": {
           "should_darken_sky": false,
           "name": "§8§lMTF Nu-7 Leader",
-          "hud_range": 5
+          "hud_range": 3
         }
       },
       "humanoid:teleport": {

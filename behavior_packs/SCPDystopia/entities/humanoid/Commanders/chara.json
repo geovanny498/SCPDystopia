@@ -752,7 +752,7 @@
         "minecraft:boss": {
           "should_darken_sky": false,
           "name": "§c§lMTF Delta-1 Chara",
-          "hud_range": 5
+          "hud_range": 3
         }
       },
       "humanoid:teleport": {

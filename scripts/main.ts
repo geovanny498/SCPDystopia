@@ -4,6 +4,7 @@ import { getTeam } from "./utils/teams.js";
 import { projectileConfig } from "./utils/projectileConfig.js";
 import { applyDamageAndCfg } from "./utils/damage.js";
 import { debugMessage, debugWarn } from "./utils/debug.js";
+import { cleanupEntityData, cleanupSessionsByEntity } from "./gui/interactMenu/interact_ddui_shared.js";
 
 interface ProjectileConfigEntry {
   damage: number;
@@ -26,7 +27,7 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
   const teamTarget = getTeam(target);
 
   if (shooter && target.id === shooter.id) {
-    debugWarn("projectileHitEntity", "El proyectil intentó dañar a su propio tirador. Cancelando daño.", "yellow");
+    debugWarn("projectileHitEntity", `El proyectil intentó dañar a su propio tirador. Cancelando daño.`, "yellow");
     return;
   }
 
@@ -41,13 +42,13 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
 
   const cfg = (projectileConfig as Record<string, ProjectileConfigEntry>)[projectile.typeId];
   if (!cfg) {
-    debugWarn("projectileHitEntity", "No se encontró configuración para el proyectil.", "red");
+    debugWarn("projectileHitEntity", `No se encontró configuración para el proyectil.`, "red");
     return;
   }
 
   try {
     if (cfg.pierce === Infinity) {
-      debugWarn("projectileHitEntity", "Pierce es Infinity. Solo aplicamos daño y knockback.", "green");
+      debugWarn("projectileHitEntity", `Pierce es Infinity. Solo aplicamos daño y knockback.`, "green");
       applyDamageAndCfg(projectile, target, cfg, shooter);
       return;
     }
@@ -73,4 +74,6 @@ world.afterEvents.entityRemove.subscribe((event) => {
   const removedEntityId = event.removedEntityId;
   const entityType = event.typeId;
   debugWarn("projectileHitEntity", `Entidad eliminada: ${entityType} Id: ${removedEntityId}`, "magenta");
+  cleanupEntityData(removedEntityId);
+  cleanupSessionsByEntity(removedEntityId);
 });

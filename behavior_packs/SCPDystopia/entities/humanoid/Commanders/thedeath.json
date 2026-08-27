@@ -751,7 +751,7 @@
         "minecraft:boss": {
           "should_darken_sky": false,
           "name": "§5§lMTF Delta-1 Death",
-          "hud_range": 5
+          "hud_range": 3
         }
       },
       "humanoid:teleport": {

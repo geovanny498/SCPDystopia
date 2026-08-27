@@ -10,7 +10,8 @@ export interface MenuEntry {
   label: string;
   event?: string;
   action?: string;
-  value?: string;
+  value?: unknown;
+  description?: string;
 }
 
 export interface MenuCategory {
@@ -19,6 +20,8 @@ export interface MenuCategory {
   entries?: MenuEntry[];
   submenu?: string;
   requiresSpecial?: boolean;
+  dynamicProperty?: string;
+  description?: string;
 }
 
 export interface SubmenuConfig {
@@ -95,22 +98,27 @@ const config: GuiConfig = {
           {
             label: "§aSeguir jugador (Cerca)",
             event: "humanoid:set_tamed_close",
+            description: "Escolta cercana. Teletransporte de combate activo",
           },
           {
             label: "§eSeguir jugador (Media)",
             event: "humanoid:set_tamed_mid",
+            description: "Grupo extendido. Unidades de apoyo",
           },
           {
             label: "§6Seguir jugador (Lejos)",
             event: "humanoid:set_tamed_far",
+            description: "Grupo operando separado. Mantiene posición relativa",
           },
           {
             label: "§9Caminar libremente",
             event: "mtf:to_move_free",
+            description: "Autonomía total. Sin dueño ni teletransporte",
           },
           {
             label: "§cDetenerse",
             event: "mtf:to_stop",
+            description: "Guardia estática. Mantiene ataque y rotación activos",
           },
         ],
       },
@@ -121,22 +129,27 @@ const config: GuiConfig = {
           {
             label: "§cMáxima",
             event: "humanoid:fire_maximum",
+            description: "Detección máxima. Guerra y defensa. Hasta ~48m-64m según unidad",
           },
           {
             label: "§9Avanzada",
             event: "humanoid:fire_advanced",
+            description: "Combate ofensivo. Ataque controlado. Hasta ~36m-48m según unidad",
           },
           {
             label: "§aIntermedia",
             event: "humanoid:fire_intermediate",
+            description: "Exploración estándar. Cobertura general. Hasta ~26m-34m según unidad",
           },
           {
             label: "§bCercana",
             event: "humanoid:fire_close",
+            description: "CQB y escolta. Interiores cerrados. Hasta ~16m-22m según unidad",
           },
           {
             label: "§eNeutral / Sigilo",
             event: "humanoid:fire_neutral",
+            description: "Sin detección visual. Pasa desapercibido. Solo responde al daño",
           },
         ],
       },
@@ -187,21 +200,25 @@ const config: GuiConfig = {
       categories: [
         {
           id: "spawn",
-          category: "§bInvocar soldados§r",
+          category: "§bTraer refuerzos§r",
+          description: "Activa o detiene el spawn automático de refuerzos",
           entries: [
             {
               label: "§aActivar",
               event: "humanoid:start_spawn_soldiers",
+              description: "Spawnea refuerzos según configuración de la entidad",
             },
             {
               label: "§cDesactivar",
               event: "humanoid:stop_spawn_soldiers",
+              description: "Detiene el spawn de refuerzos",
             },
           ],
         },
         {
-          id: "boss_bar",
+          id: "health",
           category: "§cBarra de vida§r",
+          description: "Muestra u oculta la barra de vida de la entidad",
           entries: [
             {
               label: "§aMostrar",
@@ -218,22 +235,26 @@ const config: GuiConfig = {
           category: "§2Teletransportación§r",
           entries: [
             {
-              label: "§aIniciar teletransporte",
+              label: "§aModerado",
               event: "humanoid:start_teleport",
+              description: "Teletransporta hacia el enemigo si está a más de ~30m",
             },
             {
-              label: "§6Iniciar teletransporte cercano",
+              label: "§6Cercano",
               event: "humanoid:start_teleport_near",
+              description: "Teletransporta hacia el enemigo si está a más de ~15m",
             },
             {
-              label: "§cDetener teletransporte",
+              label: "§cDesactivado",
               event: "humanoid:stop_teleport",
+              description: "Avanza hacia el enemigo usando solo navegación a pie",
             },
           ],
         },
         {
           id: "invincible",
           category: "Invencibilidad",
+          description: "Hace que la entidad ignore todo el daño recibido",
           entries: [
             {
               label: "§aActivar",
@@ -270,36 +291,49 @@ const config: GuiConfig = {
               label: "§9Grupo A",
               action: "assign_group",
               value: "groupA",
+              description: "Perfil 1. Menos unidades, más control",
             },
             {
               label: "§aGrupo B",
               action: "assign_group",
               value: "groupB",
+              description: "Perfil 2. Unidades de apoyo",
             },
             {
               label: "§6Grupo C",
               action: "assign_group",
               value: "groupC",
+              description: "Perfil 3. Cobertura amplia",
             },
             {
               label: "§dGrupo D",
               action: "assign_group",
               value: "groupD",
+              description: "Perfil 4. Más unidades, fuego masivo",
             },
             {
               label: "§8Sin grupo",
               action: "assign_group",
               value: "noGroup",
+              description: "Perfil por defecto. Aplica a todas sin asignar",
             },
           ],
         },
         {
           id: "entity_protection",
-          category: "§dControl de Configuración",
+          category: "§dTipo de Configuración",
           entries: [
             {
-              label: "Control de Configuración",
-              action: "toggle_entity_global_overwrite",
+              label: "Global",
+              action: "set_global_overwrite",
+              value: true,
+              description: "Acepta órdenes en masa del menú de comandos",
+            },
+            {
+              label: "Local",
+              action: "set_global_overwrite",
+              value: false,
+              description: "Ignora órdenes en masa. Solo se modifica desde aquí",
             },
           ],
         },
@@ -530,6 +564,17 @@ const config: GuiConfig = {
       ],
     },
   },
+};
+
+export const SYSTEM_SHORT_NAMES: Record<string, string> = {
+  movement: "§1Movimiento§r",
+  fire: "§cIniciativa§r",
+  spawn: "§bRefuerzos§r",
+  health: "§cBarra de vida§r",
+  teleport: "§2Teletransporte§r",
+  invincible: "Invencibilidad",
+  group_assignment: "§9Asignar grupo§r",
+  entity_protection: "§7Configuración§r",
 };
 
 export default config;

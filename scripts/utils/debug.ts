@@ -31,6 +31,9 @@ export const DEBUG_MODULES: string[] = [
   // MONITOR REACTIVO — Activo para depurar transición a DDUI 2.1.0
   // ═══════════════════════════════════════════════════════════════════════════
   "monitorCommand",
+  "interactDDUI",
+  "player",
+  // "zoom",
 ];
 
 /**

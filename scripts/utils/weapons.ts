@@ -1,5 +1,5 @@
 // scripts\utils\weapons.js
-import { world, system, Entity, EntityProjectileComponent } from "@minecraft/server";
+import { world, system, Player, EntityProjectileComponent } from "@minecraft/server";
 import { debugMessage, debugWarn } from "./debug.js";
 import * as mc from "@minecraft/server";
 
@@ -9,6 +9,8 @@ export type WeaponData = {
   fireRate: number;
   isAutomatic: boolean;
   onEntryCommands: string[];
+  zoomFov?: number;
+  zoomEnabled?: boolean;
 };
 
 const weaponData: Record<string, WeaponData> = {
@@ -46,34 +48,136 @@ const weaponData: Record<string, WeaponData> = {
     fireRate: 30,
     isAutomatic: false,
     onEntryCommands: ["function aplokguns/fire_awp"],
+    zoomFov: 30,
+    zoomEnabled: true,
   },
 };
 
 const firingPlayers = new Map(); // Para automáticas: player.id -> intervalId
 const cooldownMap = new Map(); // Para semiautomáticas: player.id -> tick
 
+// Estado de zoom por arma
+const playerZoomIntervals = new Map<string, number>();
+const playerZoomConfigs = new Map<string, { zoomFov: number; itemTypeId: string }>();
+
+function startPlayerZoom(player: Player, itemTypeId: string, zoomFov: number) {
+  if (playerZoomIntervals.has(player.id)) {
+    debugWarn("zoom", `[start] Jugador ${player.id} ya tiene intervalo de zoom activo`, "yellow");
+    return;
+  }
+
+  debugWarn("zoom", `[start] Creando zoom para jugador ${player.id} con ${itemTypeId} FOV=${zoomFov}`, "green");
+
+  const intervalId = system.runInterval(() => {
+    const currentItem = player.getComponent("minecraft:inventory")?.container?.getItem(player.selectedSlotIndex);
+    const currentTypeId = currentItem?.typeId;
+    const config = playerZoomConfigs.get(player.id);
+    debugWarn(
+      "zoom",
+      `[interval] Jugador ${player.id} tiene item actual=${currentTypeId}, esperado=${config?.itemTypeId}`,
+      "blue"
+    );
+    if (!config || currentTypeId !== config.itemTypeId) {
+      debugWarn(
+        "zoom",
+        `[interval] Jugador ${player.id} ya no tiene el arma con zoom (actual=${currentTypeId}, esperado=${config?.itemTypeId}), deteniendo zoom`,
+        "red"
+      );
+      clearZoomIfActive(player);
+      return;
+    }
+
+    if (player.isSneaking) {
+      player.camera.setFov({
+        fov: config.zoomFov,
+        easeOptions: {
+          easeTime: 0.3,
+          easeType: mc.EasingType.OutSine,
+        },
+      });
+    } else {
+      player.camera.clear();
+    }
+  }, 2);
+
+  playerZoomIntervals.set(player.id, intervalId);
+  playerZoomConfigs.set(player.id, { zoomFov, itemTypeId });
+}
+
+function clearZoomIfActive(player: Player) {
+  const intervalId = playerZoomIntervals.get(player.id);
+  if (intervalId !== undefined) {
+    system.clearRun(intervalId);
+    playerZoomIntervals.delete(player.id);
+    playerZoomConfigs.delete(player.id);
+    player.camera.clear();
+    debugWarn("zoom", `[clear] Cámara limpiada y zoom detenido para jugador ${player.id}`, "cyan");
+  }
+}
+
+// Detectar cambio de slot en la hotbar
+world.afterEvents.playerHotbarSelectedSlotChange.subscribe((event) => {
+  const player = event.player;
+  const itemTypeId = event.itemStack?.typeId;
+  const data = itemTypeId ? weaponData[itemTypeId] : undefined;
+
+  debugWarn("zoom", `[hotbar] Jugador ${player.id} cambió a slot ${event.newSlotSelected} item=${itemTypeId}`, "blue");
+
+  if (data?.zoomEnabled && data.zoomFov !== undefined) {
+    const zoomFov = data.zoomFov;
+    startPlayerZoom(player, itemTypeId!, zoomFov);
+  } else {
+    clearZoomIfActive(player);
+  }
+});
+
+// Detectar cambios dentro de la hotbar (equipar, soltar, consumir)
+world.afterEvents.playerInventoryItemChange.subscribe((event) => {
+  if (event.inventoryType !== mc.PlayerInventoryType.Hotbar) return;
+
+  const player = event.player;
+  if (event.slot !== player.selectedSlotIndex) return;
+
+  const itemTypeId = event.itemStack?.typeId;
+  const data = itemTypeId ? weaponData[itemTypeId] : undefined;
+
+  debugWarn(
+    "zoom",
+    `[inventory] Jugador ${player.id} cambió item en hotbar slot=${event.slot} item=${itemTypeId}`,
+    "blue"
+  );
+
+  if (data?.zoomEnabled && data.zoomFov !== undefined) {
+    const zoomFov = data.zoomFov;
+    startPlayerZoom(player, itemTypeId!, zoomFov);
+  } else {
+    clearZoomIfActive(player);
+  }
+});
+
 // Como respaldo de proyectil -> jugador
 // export const projectileShooterMap = new Map();
 
-function shoot(player: Entity, itemId: string) {
+function getProjectileSpawnPosition(player: Player) {
+  const direction = player.getViewDirection();
+  const { x, y, z } = player.getHeadLocation();
+  return {
+    x: x + direction.x,
+    y: y + direction.y,
+    z: z + direction.z,
+  };
+}
+
+function shoot(player: Player, itemId: string) {
   const data = weaponData[itemId];
   if (!data) {
     debugWarn("player", `No se encontró la configuración del arma: ${itemId}`, "yellow");
     return;
   }
 
-  const direction = player.getViewDirection();
-  const { x, y, z } = player.getHeadLocation();
-  const spawnPos = {
-    x: x + direction.x,
-    y: y + direction.y,
-    z: z + direction.z,
-  };
+  const spawnPos = getProjectileSpawnPosition(player);
 
-  if (spawnPos.y > 321) {
-    debugWarn("player", `[Disparo] Posición demasiado alta para generar proyectil: Y=${spawnPos.y}`, "red");
-    return;
-  }
+  const direction = player.getViewDirection();
 
   try {
     const projectile = player.dimension.spawnEntity(data.projectile, spawnPos);
@@ -157,6 +261,14 @@ world.afterEvents.itemUse.subscribe((event) => {
   const data = weaponData[item.typeId];
   if (!data) return;
 
+  const spawnPos = getProjectileSpawnPosition(player);
+  if (spawnPos.y > 321) {
+    const message = `[Disparo] Posición demasiado alta para generar proyectil: Y=${spawnPos.y}`;
+    player.sendMessage(`§c${message}`);
+    debugWarn("player", message, "red");
+    return;
+  }
+
   if (data.isAutomatic) {
     if (firingPlayers.has(player.id)) return;
 
@@ -210,4 +322,7 @@ world.beforeEvents.playerLeave.subscribe((event) => {
 
   // Borrar firingPlayers y limpiar interval si existía
   stopShooting(playerId);
+
+  // Limpiar zoom si estaba activo
+  clearZoomIfActive(event.player);
 });

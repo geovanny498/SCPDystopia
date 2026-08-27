@@ -828,7 +828,7 @@
         "minecraft:boss": {
           "should_darken_sky": false,
           "name": "§2§lChaos Delta Commander",
-          "hud_range": 5
+          "hud_range": 3
         }
       },
       "humanoid:teleport": {

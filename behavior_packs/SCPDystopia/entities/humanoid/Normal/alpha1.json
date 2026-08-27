@@ -713,7 +713,7 @@
         "minecraft:boss": {
           "should_darken_sky": false,
           "name": "§lMTF Alpha-1",
-          "hud_range": 5
+          "hud_range": 3
         }
       },
       "humanoid:teleport": {

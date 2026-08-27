@@ -112,6 +112,7 @@ export function showMonitorMenu(player: Player): void {
 
     system.run(() => {
       try {
+        form.spacer();
         form.label(foundationText, {
           visible: monitorConfig.faction === "ambas" || monitorConfig.faction === "foundation",
         });

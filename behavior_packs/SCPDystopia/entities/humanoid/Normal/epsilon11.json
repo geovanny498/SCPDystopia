@@ -703,7 +703,7 @@
         "minecraft:boss": {
           "should_darken_sky": false,
           "name": "§1§lMTF Epsilon-11",
-          "hud_range": 5
+          "hud_range": 3
         }
       },
       "humanoid:teleport": {

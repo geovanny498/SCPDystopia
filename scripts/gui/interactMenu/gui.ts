@@ -19,23 +19,28 @@ import {
 import { getEntityFactionInfo } from "../commandMenu/model/menu_faction.js";
 import { tryAutoTame } from "../commandMenu/core/menu_apply.js";
 import { setUnitGroup } from "../commandMenu/model/menu_groups.js";
+import { showInteractDDUI } from "./interact_ddui_form.js";
 
-interface EntityConfig {
+export interface EntityConfig {
   specific: MenuCategory[];
   global: MenuCategory[];
   merged: MenuCategory[];
   isSpecial: boolean;
+  submenus?: {
+    advanced?: { categories: MenuCategory[] };
+    unit_management?: { categories: MenuCategory[] };
+  };
 }
 
 // Helpers de sistema/ids para filtrado por `config.global_rules`.
-function makeSystemId(cat: MenuCategory | null | undefined): string | null {
+export function makeSystemId(cat: MenuCategory | null | undefined): string | null {
   if (!cat) return null;
   if (cat.id) return String(cat.id);
   const name = String(cat.category || "").toLowerCase();
   return `auto:${name.replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "")}`;
 }
 
-function isAllowedByRule(sysId: string | null, typeId: string): boolean {
+export function isAllowedByRule(sysId: string | null, typeId: string): boolean {
   if (!sysId) return true;
   if (!config.global_rules || !config.global_rules[sysId]) return true;
   const rule = config.global_rules[sysId];
@@ -189,6 +194,7 @@ function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null
     global: spec && spec.replace ? [] : filteredGlobalCats,
     merged,
     isSpecial,
+    submenus: config.submenus,
   };
 }
 
@@ -215,7 +221,7 @@ function isTruthyToggleValue(raw: unknown): boolean {
   return normalized === undefined ? false : normalized;
 }
 
-function isGlobalOverwriteAllowed(entity: Entity): boolean {
+export function isGlobalOverwriteAllowed(entity: Entity): boolean {
   try {
     const raw = entity.getDynamicProperty(ENTITY_GLOBAL_OVERWRITE_PROPERTY);
     const normalized = normalizeBooleanDynamicProperty(raw);
@@ -226,7 +232,7 @@ function isGlobalOverwriteAllowed(entity: Entity): boolean {
   }
 }
 
-function setGlobalOverwriteAllowed(entity: Entity, value: boolean): void {
+export function setGlobalOverwriteAllowed(entity: Entity, value: boolean): void {
   try {
     entity.setDynamicProperty(ENTITY_GLOBAL_OVERWRITE_PROPERTY, value);
   } catch (e) {
@@ -530,12 +536,12 @@ function showEntitySystemStatus(
   const bodyLines = [
     `§7Unidad:§r ${unidadDisplay}`,
     `§7Tipo de Configuración:§r ${isGlobalOverwriteAllowed(entity) ? "§aGlobal" : "§cLocal"}`,
-    `§7Propiedades dinámicas guardadas:§r ${dynamicProperties.length}`,
+    `§7Propiedades dinámicas:§r ${dynamicProperties.length}`,
     `§7Sistemas guardados:§r ${savedSystems}`,
   ];
 
   if (systemStatuses.length) {
-    bodyLines.push("§7Configuración actual guardada en la entidad:");
+    bodyLines.push("§7Configuración de la entidad:");
     for (const status of systemStatuses) {
       bodyLines.push(`§6${status.displayName}§r: ${status.label}`);
     }
@@ -551,7 +557,7 @@ function showEntitySystemStatus(
       // Volver a la categoría desde donde se abrió el estado de sistemas
       showEntryMenu(player, entity, parentCategory, soldierName, displayName, cfg, typeId, null);
     } else {
-      // Sin contexto de categoría → volver al menú principal
+      // Sin contexto de categoría -> volver al menú principal
       showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
     }
   });
@@ -583,6 +589,8 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
 
     const openerItem = (entGroup && config.openItem?.[entGroup]) || config.openItem?.default || "lc:dt_commander";
 
+    let isDDUIOpener = false;
+
     try {
       const mainhand = player.getComponent("equippable")?.getEquipment(EquipmentSlot.Mainhand);
 
@@ -590,7 +598,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
 
       debugWarn("playerInteractWithEntity", `player mainhand=${mainId}, opener=${openerItem}`);
 
-      if (!itemMatches(mainId, openerItem)) {
+      const isLegacyOpener = itemMatches(mainId, openerItem);
+      isDDUIOpener = itemMatches(mainId, "blaze_rod");
+
+      if (!isLegacyOpener && !isDDUIOpener) {
         debugWarn("playerInteractWithEntity", `menu blocked: wrong opener`, "blue");
         return;
       }
@@ -617,7 +628,11 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
     const soldierName = entity.nameTag ? `${entity.nameTag}§r` : `§b${displayName}§r`;
 
     system.run(() => {
-      showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
+      if (isDDUIOpener) {
+        showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
+      } else {
+        showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
+      }
     });
   } catch (err) {
     debugWarn("playerInteractWithEntity", `GUI error: ${err}`, "red");

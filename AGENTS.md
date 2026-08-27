@@ -1,14 +1,15 @@
 # AGENTS.md
 
-Comandos del proyecto:
+## Flujo de compilación y despliegue
 
-- `npm run build` — Compilar TypeScript (Para saber si hay errores de código o errores en compilación)
-- `npm run local-deploy` — Desplegar con logs al juego (Usar cuando se quiere probar un cambio rapido)
-
-Build debe pasar sin errores antes de considerar completado un cambio relevantes.
-Está disponible la herramienta ripgrep (o rg en bash) y se recomienda usarla según se estime conveniente.
+- Para verificar errores y desplegar cambios al juego, ejecuta únicamente:
+  `npm run local-deploy`
+- NO uses el flag `--watch` ni comandos en segundo plano, ya que bloquean la ejecución de la consola.
+- Si la compilación falla, corrige los errores informados en la salida de la consola antes de continuar.
+-Build debe pasar sin errores antes de considerar completado un cambio relevantes.
 
 Siempre responde en español.
+Está disponible la herramienta ripgrep (o rg en bash) y se recomienda usarla según se estime conveniente.
 
 El proyecto es de un addon de minecraft bedrock que usa los archivos de ruta "scripts" para compilar JavaScript y TypeScript en un único archivo JavaScript que usa el addon al ejecutarse en el juego.
 
