@@ -56,12 +56,16 @@ const weaponData: Record<string, WeaponData> = {
 const firingPlayers = new Map(); // Para automáticas: player.id -> intervalId
 const cooldownMap = new Map(); // Para semiautomáticas: player.id -> tick
 
-// Estado de zoom por arma
-const playerZoomIntervals = new Map<string, number>();
-const playerZoomConfigs = new Map<string, { zoomFov: number; itemTypeId: string }>();
+type PlayerZoomState = {
+  intervalId: number;
+  zoomFov: number;
+  itemTypeId: string;
+};
+
+const playerZoomStates = new Map<string, PlayerZoomState>();
 
 function startPlayerZoom(player: Player, itemTypeId: string, zoomFov: number) {
-  if (playerZoomIntervals.has(player.id)) {
+  if (playerZoomStates.has(player.id)) {
     debugWarn("zoom", `[start] Jugador ${player.id} ya tiene intervalo de zoom activo`, "yellow");
     return;
   }
@@ -71,16 +75,16 @@ function startPlayerZoom(player: Player, itemTypeId: string, zoomFov: number) {
   const intervalId = system.runInterval(() => {
     const currentItem = player.getComponent("minecraft:inventory")?.container?.getItem(player.selectedSlotIndex);
     const currentTypeId = currentItem?.typeId;
-    const config = playerZoomConfigs.get(player.id);
+    const state = playerZoomStates.get(player.id);
     debugWarn(
       "zoom",
-      `[interval] Jugador ${player.id} tiene item actual=${currentTypeId}, esperado=${config?.itemTypeId}`,
+      `[interval] Jugador ${player.id} tiene item actual=${currentTypeId}, esperado=${state?.itemTypeId}`,
       "blue"
     );
-    if (!config || currentTypeId !== config.itemTypeId) {
+    if (!state || currentTypeId !== state.itemTypeId) {
       debugWarn(
         "zoom",
-        `[interval] Jugador ${player.id} ya no tiene el arma con zoom (actual=${currentTypeId}, esperado=${config?.itemTypeId}), deteniendo zoom`,
+        `[interval] Jugador ${player.id} ya no tiene el arma con zoom (actual=${currentTypeId}, esperado=${state?.itemTypeId}), deteniendo zoom`,
         "red"
       );
       clearZoomIfActive(player);
@@ -89,7 +93,7 @@ function startPlayerZoom(player: Player, itemTypeId: string, zoomFov: number) {
 
     if (player.isSneaking) {
       player.camera.setFov({
-        fov: config.zoomFov,
+        fov: state.zoomFov,
         easeOptions: {
           easeTime: 0.3,
           easeType: mc.EasingType.OutSine,
@@ -100,16 +104,14 @@ function startPlayerZoom(player: Player, itemTypeId: string, zoomFov: number) {
     }
   }, 2);
 
-  playerZoomIntervals.set(player.id, intervalId);
-  playerZoomConfigs.set(player.id, { zoomFov, itemTypeId });
+  playerZoomStates.set(player.id, { intervalId, zoomFov, itemTypeId });
 }
 
 function clearZoomIfActive(player: Player) {
-  const intervalId = playerZoomIntervals.get(player.id);
-  if (intervalId !== undefined) {
-    system.clearRun(intervalId);
-    playerZoomIntervals.delete(player.id);
-    playerZoomConfigs.delete(player.id);
+  const state = playerZoomStates.get(player.id);
+  if (state) {
+    system.clearRun(state.intervalId);
+    playerZoomStates.delete(player.id);
     player.camera.clear();
     debugWarn("zoom", `[clear] Cámara limpiada y zoom detenido para jugador ${player.id}`, "cyan");
   }

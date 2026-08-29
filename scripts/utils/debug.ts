@@ -32,6 +32,7 @@ export const DEBUG_MODULES: string[] = [
   // ═══════════════════════════════════════════════════════════════════════════
   "monitorCommand",
   "interactDDUI",
+  "commandMenuDDUI",
   "player",
   // "zoom",
 ];

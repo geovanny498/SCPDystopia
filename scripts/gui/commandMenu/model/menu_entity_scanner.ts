@@ -123,7 +123,7 @@ export interface ScanResult {
   faction: string;
 }
 
-export type BaseScanResult = Omit<ScanResult, 'buckets' | 'bucketIdMap'>;
+export type BaseScanResult = Omit<ScanResult, "buckets" | "bucketIdMap">;
 
 // ── Detección de facción por familias ───────────────────────────────────────
 
@@ -342,10 +342,7 @@ function groupNametagsByBucket(
 
 // ── Escaneo principal ─────────────────────────────────────────────────────────
 
-export function scanActiveEntities(
-  dimension: Dimension,
-  faction: string
-): BaseScanResult {
+export function scanActiveEntities(dimension: Dimension, faction: string): BaseScanResult {
   const now = Date.now();
   const cacheKey = `${dimension.id}:${faction}`;
 
@@ -459,10 +456,7 @@ export function scanActiveEntities(
   return result;
 }
 
-export function scanActiveUnits(
-  dimension: Dimension,
-  faction: string
-): ScanResult {
+export function scanActiveUnits(dimension: Dimension, faction: string): ScanResult {
   const now = Date.now();
   const cacheKey = `${dimension.id}:${faction}:buckets`;
 

@@ -153,19 +153,7 @@ export function cleanupEntityData(entityId: string): void {
   history.delete(entityId);
 }
 
-// UTC-4 hardcodeado porque no hay forma de obtener la hora local del cliente en este contexto.
-const HISTORY_LOCAL_TIME_OFFSET_HOURS = -4;
-
-export function formatLocalTime(timestamp: number): string {
-  const offsetMs = HISTORY_LOCAL_TIME_OFFSET_HOURS * 3600000;
-  const localDate = new Date(timestamp + offsetMs);
-
-  const hours = localDate.getUTCHours().toString().padStart(2, "0");
-  const minutes = localDate.getUTCMinutes().toString().padStart(2, "0");
-  const seconds = localDate.getUTCSeconds().toString().padStart(2, "0");
-
-  return `${hours}:${minutes}:${seconds}`;
-}
+import { formatLocalTimeShort } from "../shared/timeHelpers.js";
 
 export function recordFeedback(session: InteractDDUISession, context: string, value: string): void {
   const text = buildFeedback(context, value);
@@ -176,7 +164,7 @@ export function recordFeedback(session: InteractDDUISession, context: string, va
     context,
     value,
     timestamp: Date.now(),
-    localTime: formatLocalTime(Date.now()),
+    localTime: formatLocalTimeShort(Date.now()),
   });
 }
 
