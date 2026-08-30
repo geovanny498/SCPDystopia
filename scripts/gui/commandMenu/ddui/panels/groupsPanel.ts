@@ -16,6 +16,7 @@ import { showMainPanel } from "./mainPanel.js";
 import { scanActiveUnits, invalidateScanCache, invalidateEntityQueryCache } from "../../model/menu_entity_scanner.js";
 import { setUnitGroup } from "../../model/menu_groups.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
+import { compareNametags } from "../../../../utils/nametagSort.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
 
 export function showGroupsPanel(player: Player, targetFaction: string = "foundation"): void {
@@ -130,7 +131,7 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
     form.label(feedbackText);
     form.spacer();
 
-    const nametags = Object.keys(bucket.nametags).sort();
+    const nametags = Object.keys(bucket.nametags).sort(compareNametags);
     const groupOptions = [
       { value: "groupA", label: GROUP_LABELS.groupA },
       { value: "groupB", label: GROUP_LABELS.groupB },

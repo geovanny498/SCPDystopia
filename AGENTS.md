@@ -2,7 +2,7 @@
 
 ## Reglas para código escalable y mantenible
 
-- Encapsulación: antes de agregar un `Map`/`Record` mutable global, definir una interfaz o clase con `get/set/delete/clear` y un único punto de cleanup. Evitar acceder a estructuras de estado desde módulos externos sin pasar por esa interfaz.
+- Encapsulación: definir una interfaz o clase con `get/set/delete/clear` y un único punto de cleanup para cualquier `Map`/`Record` mutable global. Evitar acceder a estructuras de estado desde módulos externos sin pasar por esa interfaz.
 - Ciclo de vida: todo recurso creado en runtime (intervalos, eventos, formularios, sesiones) debe tener un punto de cleanup explícito. No dejar listeners ni `system.runInterval` huérfanos.
 - Tamaño y responsabilidad: si un módulo supera las ~250 líneas o mezcla configuración, query de entidades, builders de UI y lógica de aplicación, dividirlo por dominio. Un archivo = una responsabilidad principal.
 - Funciones: evitar handlers/monolitos mayores a ~80 líneas. Extraer builders de formulario, parsers de `formValues` y ejecutores de acciones en funciones separadas.
@@ -26,10 +26,11 @@
 - No crear `system.runInterval` ni `system.runTimeout` sin registrar su `intervalId` en un store y limpiarlo en el punto de cierre del formulario (`formResponse` con cierre, cancelación o `playerLeave`). El intervalo sin cleanup es el error real, no su existencia.
 - No parsear `formValues` por índice frágil dentro de la misma función que construye el formulario; usar acceso por etiqueta/ID o un parser separado.
 - No guardar estado de jugador en cierres de formularios sin registrarlo en un store con cleanup por `playerLeave`.
+- No declarar `Map`/`Record` mutables globales sin una interfaz con `get/set/delete/clear` y punto de cleanup centralizado. El estado disperso sin encapsulación es bloqueante.
 
 ## Jerarquía de reglas
 
-- **Bloqueo**: estado global sin cleanup, listeners huérfanos, `any` en firmas públicas.
+- **Bloqueo**: estado global sin cleanup, listeners huérfanos, `any` en firmas públicas, Maps/Records mutables globales sin interfaz encapsulada.
 - **Obligatorio**: tipado explícito, logging con `debugWarn`/`debugMessage`, separación de responsabilidades.
 - **Recomendado**: JSON para config estática, helpers para operaciones repetitivas.
 
@@ -48,7 +49,7 @@ El proyecto es de un addon de minecraft bedrock que usa los archivos de ruta "sc
 
 Se recomienda consultar `node_modules\@minecraft\server\index.d.ts` y `node_modules\@minecraft\server-ui\index.d.ts` dentro de `node_modules` para buscar qué funciones o métodos están vigentes en la API.
 
-Se busca que todo lo relacionado a SCPDystopia sea escalable y modular para facilitar futuras expansiones para el addon.
+Se busca que todo lo relacionado con SCPDystopia sea escalable y modular para facilitar futuras expansiones del addon.
 
 Hay funciones de depuración en `scripts/utils/debug.ts` para mejor personalización y depuración; cuando quieras usarlas, añade el módulo a `debug.ts` para que se puedan ver.
 

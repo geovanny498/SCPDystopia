@@ -1,6 +1,6 @@
 // scripts/gui/commandMenu/ddui/builders/systemBuilder.ts
 
-import { Player, system, world } from "@minecraft/server";
+import { Player, Dimension, Entity, system } from "@minecraft/server";
 import { CustomForm, ObservableNumber, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
 import {
@@ -15,17 +15,37 @@ import {
 import { cleanupSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
-import { getSystemConfig, getSystemDefaults, getEntitySystemState } from "../../menu_config.js";
-import { loadSystemStates } from "../../core/menu_state.js";
-import { applySystemToEntity, getEligibleSoldiers } from "../../../commandMenu/core/menu_apply.js";
-import { loadScope } from "../../../commandMenu/model/menu_scope.js";
-import { saveSystemAndUpdateMemory } from "../../core/menu_state.js";
+import { getSystemConfig, getSystemDefaults, getEntitySystemState, SpecialGroups } from "../../menu_config.js";
+import { loadSystemStates, saveSystemAndUpdateMemory } from "../../core/menu_state.js";
+import { applySystemsToEntities } from "../../../commandMenu/core/menu_apply.js";
+import { scanActiveEntities } from "../../../commandMenu/model/menu_entity_scanner.js";
 
 export interface SystemViewParams {
   systemId: string;
   player: Player;
   targetFaction?: string;
 }
+
+interface BaseControl {
+  key: string;
+  label: string;
+  labelObs: ObservableString;
+  descriptionObs?: ObservableString;
+}
+
+interface DropdownControlRecord extends BaseControl {
+  kind: "dropdown";
+  obs: ObservableNumber;
+  lastAppliedIndex: number;
+}
+
+interface ToggleControlRecord extends BaseControl {
+  kind: "toggle";
+  obs: ObservableBoolean;
+  lastValue: boolean;
+}
+
+type ControlRecord = DropdownControlRecord | ToggleControlRecord;
 
 function findOptionIndex(options: { value: string; label: string }[], value: unknown): number {
   if (value === undefined || value === null) return -1;
@@ -43,6 +63,228 @@ function buildInitialState(systemId: string, factions: string[], key: string): R
     result[fac] = factionState;
   }
   return result;
+}
+
+function buildDropdownItems(options: { label: string; value: unknown }[]): { label: string; value: number }[] {
+  return options.map((o, idx) => ({ label: stripColorCodes(o.label), value: idx }));
+}
+
+function buildCountsAndNametags(dimension: Dimension, factions: string[]): {
+  counts: Record<string, number>;
+  nametagsByKey: Record<string, Set<string>>;
+} {
+  const counts: Record<string, number> = {};
+  const nametagsByKey: Record<string, Set<string>> = {};
+
+  for (const fac of factions) {
+    const result = scanActiveEntities(dimension, fac);
+    for (const se of result.entities) {
+      const entityKey = se.isSpecial ? se.group : se.hierarchy;
+      if (!entityKey) continue;
+      counts[entityKey] = (counts[entityKey] || 0) + 1;
+      if (se.isSpecial && se.nametag) {
+        if (!nametagsByKey[entityKey]) nametagsByKey[entityKey] = new Set();
+        nametagsByKey[entityKey].add(stripColorCodes(se.nametag));
+      }
+    }
+  }
+
+  return { counts, nametagsByKey };
+}
+
+function updateControlLabels(
+  hierarchyControls: ControlRecord[],
+  groupControls: ControlRecord[],
+  counts: Record<string, number>,
+  nametagsByKey: Record<string, Set<string>>
+): void {
+  for (const ctrl of hierarchyControls) {
+    const count = counts[ctrl.key] || 0;
+    ctrl.labelObs.setData(`${stripColorCodes(ctrl.label)}: (${count})`);
+  }
+
+  for (const ctrl of groupControls) {
+    const count = counts[ctrl.key] || 0;
+    ctrl.labelObs.setData(`${stripColorCodes(ctrl.label)}: (${count})`);
+
+    const nametagSet = nametagsByKey[ctrl.key];
+    if (ctrl.descriptionObs) {
+      if (count === 0 || !nametagSet || nametagSet.size === 0) {
+        ctrl.descriptionObs.setData(`(N/A)`);
+      } else {
+        const sorted = Array.from(nametagSet).sort();
+        const MAX_DISPLAY = 3;
+        const truncated = sorted.slice(0, MAX_DISPLAY).join(", ");
+        const more = sorted.length > MAX_DISPLAY ? ` +${sorted.length - MAX_DISPLAY} más` : "";
+        ctrl.descriptionObs.setData(`(${truncated}${more})`);
+      }
+    }
+  }
+}
+
+function buildControls(
+  controlOptions: { value: string; label: string }[],
+  systemOptions: { label: string; value: unknown }[] | undefined,
+  initialStates: Record<string, Record<string, unknown>>,
+  factions: string[],
+  form: CustomForm,
+  controlType: "dropdown" | "toggle",
+  isGroup: boolean
+): ControlRecord[] {
+  const controls: ControlRecord[] = [];
+  const systemOptionsForIndex = systemOptions?.map((o) => ({ value: String(o.value), label: o.label })) ?? [];
+
+  for (const opt of controlOptions) {
+    let initialValue: number | boolean = controlType === "dropdown" ? 0 : false;
+    for (const fac of factions) {
+      const factionState = initialStates[fac as string] || {};
+      const currentValue = factionState[opt.value];
+      if (controlType === "dropdown") {
+        const foundIndex = findOptionIndex(systemOptionsForIndex, currentValue);
+        if (foundIndex >= 0) {
+          initialValue = foundIndex;
+          break;
+        }
+      } else {
+        if (typeof currentValue === "boolean") {
+          initialValue = currentValue;
+          break;
+        }
+      }
+    }
+
+    const labelObs = new ObservableString(`${stripColorCodes(opt.label)}: (0)`);
+    const descObs = isGroup ? new ObservableString(`(N/A)`) : undefined;
+
+    if (controlType === "dropdown") {
+      const obs = new ObservableNumber(initialValue as number, { clientWritable: true });
+      form.dropdown(
+        labelObs,
+        obs,
+        buildDropdownItems(systemOptions ?? []),
+        isGroup ? { description: descObs } : undefined
+      );
+      controls.push({
+        key: opt.value,
+        label: opt.label,
+        labelObs,
+        descriptionObs: descObs,
+        kind: "dropdown",
+        obs,
+        lastAppliedIndex: initialValue as number,
+      });
+    } else {
+      const obs = new ObservableBoolean(initialValue as boolean, { clientWritable: true });
+      form.toggle(labelObs, obs, isGroup && descObs ? { description: descObs } : undefined);
+      controls.push({
+        key: opt.value,
+        label: opt.label,
+        labelObs,
+        descriptionObs: descObs,
+        kind: "toggle",
+        obs,
+        lastValue: initialValue as boolean,
+      });
+    }
+  }
+
+  return controls;
+}
+
+function applySystemToEntitiesForSystem(
+  key: string,
+  value: unknown,
+  valueLabel: string,
+  factions: string[],
+  dimension: Dimension,
+  systemId: string,
+  player: Player,
+  targetFaction: string | undefined,
+  label: string
+): string {
+  try {
+    const appliedEntries: string[] = [];
+    const allEligible: { entity: Entity; factionInfo: any }[] = [];
+
+    for (const fac of factions) {
+      const scanResult = scanActiveEntities(dimension, fac);
+      let totalAffected = 0;
+
+      for (const se of scanResult.entities) {
+        if (se.faction !== fac) continue;
+        if (se.isSpecial) {
+          if (se.group !== key) continue;
+        } else {
+          if (se.hierarchy !== key) continue;
+        }
+
+        allEligible.push({
+          entity: se.entity,
+          factionInfo: {
+            faction: se.faction,
+            isSpecial: se.isSpecial,
+            nametag: se.nametag,
+            hierarchy: se.hierarchy,
+            group: se.group || (se.isSpecial ? SpecialGroups.NO_GROUP : null),
+          },
+        });
+        totalAffected++;
+      }
+
+      if (totalAffected > 0) {
+        appliedEntries.push(
+          `${FACTION_DISPLAY_NAMES[fac as keyof typeof FACTION_DISPLAY_NAMES] ?? fac}: ${totalAffected}`
+        );
+      }
+    }
+
+    const systemOverrideState: Record<string, Record<string, unknown>> = {};
+    for (const fac of factions) {
+      systemOverrideState[fac] = { [key]: value };
+    }
+
+    applySystemsToEntities(allEligible, [systemId], {
+      player,
+      skipCompatibilityCheck: true,
+      cached: {
+        systemStates: {
+          [systemId]: systemOverrideState,
+        },
+      },
+    });
+
+    const summary = appliedEntries.length > 0 ? appliedEntries.join(" | ") : "0 unidades";
+    const displayName = stripColorCodes(CATALOG_SYSTEMS[systemId].displayName);
+    const cleanLabel = stripColorCodes(label);
+    const cleanValue = stripColorCodes(valueLabel);
+    const feedback = `§a✓ §7${displayName} [${cleanLabel}]: §f${cleanValue} §8(${summary})`;
+
+    const partialState: Record<string, Record<string, unknown>> = {};
+    for (const fac of factions) {
+      partialState[fac] = { [key]: value };
+    }
+    try {
+      saveSystemAndUpdateMemory(systemId, partialState);
+    } catch (e) {
+      debugWarn("commandMenuDDUI", `Error guardando estado de sistema ${systemId}: ${e}`, "red");
+    }
+
+    const session = commandMenuSessionStore.get(player.id);
+    if (session) {
+      addHistoryEntry({
+        playerName: player.name,
+        faction: targetFaction ?? "foundation",
+        systemShortName: getSystemShortName(systemId),
+        key: cleanLabel,
+        value: cleanValue,
+      });
+    }
+
+    return feedback;
+  } catch (e) {
+    debugWarn("commandMenuDDUI", `Error aplicando control ${systemId} [${key}]: ${e}`, "red");
+    return "";
+  }
 }
 
 export function buildSystemView({ systemId, player, targetFaction }: SystemViewParams): () => void {
@@ -67,307 +309,128 @@ export function buildSystemView({ systemId, player, targetFaction }: SystemViewP
       form.label(feedbackText);
       form.spacer();
 
-      const scope = loadScope();
-      const dimensions = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
+      const dimension = player.dimension;
       const factions: string[] = targetFaction === "both" ? ["foundation", "chaos"] : [targetFaction ?? "foundation"];
-
       const initialStates = buildInitialState(systemId, factions, systemId);
 
-      if (systemConfig.controlType === "dropdown" && systemConfig.options) {
+      if ((systemConfig.controlType === "dropdown" && systemConfig.options) || systemConfig.controlType === "toggle") {
         form.header("§7No especiales");
         form.spacer();
 
-        const hierarchyControls: { key: string; label: string; obs: ObservableNumber; lastAppliedIndex: number }[] = [];
-        for (const opt of HIERARCHY_OPTIONS) {
-          let initialIndex = 0;
-          for (const fac of factions) {
-            const factionState = initialStates[fac as string] || {};
-            const currentValue = factionState[opt.value];
-            const foundIndex = findOptionIndex(systemConfig.options, currentValue);
-            if (foundIndex >= 0) {
-              initialIndex = foundIndex;
-              break;
-            }
-          }
-
-          const obs = new ObservableNumber(initialIndex, { clientWritable: true });
-          form.dropdown(
-            `${stripColorCodes(opt.label)}:`,
-            obs,
-            systemConfig.options.map((o, idx) => ({ label: stripColorCodes(o.label), value: idx }))
-          );
-          hierarchyControls.push({ key: opt.value, label: opt.label, obs, lastAppliedIndex: initialIndex });
-        }
+        const hierarchyControls = buildControls(
+          HIERARCHY_OPTIONS,
+          systemConfig.options!,
+          initialStates,
+          factions,
+          form,
+          systemConfig.controlType,
+          false
+        );
 
         form.spacer();
         form.header("§6Especiales");
         form.spacer();
 
-        const groupControls: { key: string; label: string; obs: ObservableNumber; lastAppliedIndex: number }[] = [];
-        for (const opt of SPECIAL_GROUP_OPTIONS) {
-          let initialIndex = 0;
-          for (const fac of factions) {
-            const factionState = initialStates[fac as string] || {};
-            const currentValue = factionState[opt.value];
-            const foundIndex = findOptionIndex(systemConfig.options, currentValue);
-            if (foundIndex >= 0) {
-              initialIndex = foundIndex;
-              break;
-            }
-          }
+        const groupControls = buildControls(
+          SPECIAL_GROUP_OPTIONS,
+          systemConfig.options!,
+          initialStates,
+          factions,
+          form,
+          systemConfig.controlType,
+          true
+        );
 
-          const obs = new ObservableNumber(initialIndex, { clientWritable: true });
-          form.dropdown(
-            `${stripColorCodes(opt.label)}:`,
-            obs,
-            systemConfig.options.map((o, idx) => ({ label: stripColorCodes(o.label), value: idx }))
-          );
-          groupControls.push({ key: opt.value, label: opt.label, obs, lastAppliedIndex: initialIndex });
-        }
-
-        function applyDropdown(key: string, optionIndex: number, label: string, targetFaction?: string): void {
+        const intervalId = system.runInterval(() => {
           try {
-            const selectedOption = systemConfig.options![optionIndex] ?? systemConfig.options![0];
-            const appliedEntries: string[] = [];
-
-            for (const fac of factions) {
-              let totalAffected = 0;
-              const eligible = getEligibleSoldiers(dimensions as any, scope).filter((s: any) => {
-                const fi = s.factionInfo;
-                if (fi.faction !== fac) return false;
-                if (fi.isSpecial) {
-                  return fi.group === key;
-                }
-                return fi.hierarchy === key;
-              });
-
-              for (const { entity } of eligible) {
-                const stateOverride: Record<string, any> = {
-                  [fac as string]: {
-                    [key]: selectedOption.value,
-                  },
-                };
-
-                const applied = applySystemToEntity(
-                  systemId,
-                  legacySystem,
-                  entity,
-                  stateOverride,
-                  true,
-                  null,
-                  player,
-                  {}
-                );
-
-                if (applied) {
-                  totalAffected++;
-                }
-              }
-
-              if (totalAffected > 0) {
-                appliedEntries.push(
-                  `${FACTION_DISPLAY_NAMES[fac as keyof typeof FACTION_DISPLAY_NAMES] ?? fac}: ${totalAffected}`
-                );
-              }
-            }
-
-            const summary = appliedEntries.length > 0 ? appliedEntries.join(" | ") : "0 unidades";
-            feedbackText.setData(
-              `§a✓ §7${stripColorCodes(systemConfig.displayName)} [${label}]: §f${selectedOption?.label ?? ""} §8(${summary})`
-            );
-
-            const partialState: Record<string, Record<string, unknown>> = {};
-            for (const fac of factions) {
-              partialState[fac] = { [key]: selectedOption.value };
-            }
-            try {
-              saveSystemAndUpdateMemory(systemId, partialState);
-            } catch (e) {
-              debugWarn("commandMenuDDUI", `Error guardando estado de sistema ${systemId}: ${e}`, "red");
-            }
-
-            const session = commandMenuSessionStore.get(player.id);
-            if (session) {
-              addHistoryEntry({
-                playerName: player.name,
-                faction: targetFaction ?? "foundation",
-                systemShortName: getSystemShortName(systemId),
-                key: label,
-                value: selectedOption?.label ?? "",
-              });
-            }
+            const { counts, nametagsByKey } = buildCountsAndNametags(dimension, factions);
+            updateControlLabels(hierarchyControls, groupControls, counts, nametagsByKey);
           } catch (e) {
-            debugWarn("commandMenuDDUI", `Error aplicando dropdown ${systemId} [${key}]: ${e}`, "red");
+            debugWarn("commandMenuDDUI", `Error en intervalo de contadores: ${e}`, "red");
           }
+        }, 20);
+
+        const session = commandMenuSessionStore.get(player.id);
+        if (session) {
+          session.registerInterval(intervalId);
         }
 
         for (const ctrl of hierarchyControls) {
-          ctrl.obs.subscribe((idx) => {
-            if (idx === ctrl.lastAppliedIndex) return;
-            if (idx < 0) return;
-            applyDropdown(ctrl.key, idx, ctrl.label, targetFaction);
-            ctrl.lastAppliedIndex = idx;
-          });
+          if (ctrl.kind === "dropdown") {
+            ctrl.obs.subscribe((idx: number) => {
+              if (idx === ctrl.lastAppliedIndex) return;
+              if (idx < 0) return;
+              const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
+              const feedback = applySystemToEntitiesForSystem(ctrl.key, selectedOption.value, selectedOption.label, factions, dimension, systemId, player, targetFaction, ctrl.label);
+              feedbackText.setData(feedback);
+              ctrl.lastAppliedIndex = idx;
+            });
+          } else {
+            ctrl.obs.subscribe((enabled: boolean) => {
+              if (enabled === ctrl.lastValue) return;
+              const feedback = applySystemToEntitiesForSystem(ctrl.key, enabled, enabled ? "Activado" : "Desactivado", factions, dimension, systemId, player, targetFaction, ctrl.label);
+              feedbackText.setData(feedback);
+              ctrl.lastValue = enabled;
+            });
+          }
         }
+
         for (const ctrl of groupControls) {
-          ctrl.obs.subscribe((idx) => {
-            if (idx === ctrl.lastAppliedIndex) return;
-            if (idx < 0) return;
-            applyDropdown(ctrl.key, idx, ctrl.label, targetFaction);
-            ctrl.lastAppliedIndex = idx;
-          });
-        }
-      } else if (systemConfig.controlType === "toggle") {
-        form.header("§7No especiales");
-        form.spacer();
-
-        const hierarchyToggles: { key: string; label: string; obs: ObservableBoolean; lastValue: boolean }[] = [];
-        for (const opt of HIERARCHY_OPTIONS) {
-          let initialValue = false;
-          for (const fac of factions) {
-            const factionState = initialStates[fac as string] || {};
-            const currentValue = factionState[opt.value];
-            if (typeof currentValue === "boolean") {
-              initialValue = currentValue;
-              break;
-            }
+          if (ctrl.kind === "dropdown") {
+            ctrl.obs.subscribe((idx: number) => {
+              if (idx === ctrl.lastAppliedIndex) return;
+              if (idx < 0) return;
+              const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
+              const feedback = applySystemToEntitiesForSystem(ctrl.key, selectedOption.value, selectedOption.label, factions, dimension, systemId, player, targetFaction, ctrl.label);
+              feedbackText.setData(feedback);
+              ctrl.lastAppliedIndex = idx;
+            });
+          } else {
+            ctrl.obs.subscribe((enabled: boolean) => {
+              if (enabled === ctrl.lastValue) return;
+              const feedback = applySystemToEntitiesForSystem(ctrl.key, enabled, enabled ? "Activado" : "Desactivado", factions, dimension, systemId, player, targetFaction, ctrl.label);
+              feedbackText.setData(feedback);
+              ctrl.lastValue = enabled;
+            });
           }
-
-          const obs = new ObservableBoolean(initialValue, { clientWritable: true });
-          form.toggle(stripColorCodes(opt.label), obs);
-          hierarchyToggles.push({ key: opt.value, label: opt.label, obs, lastValue: initialValue });
         }
 
-        form.spacer();
-        form.header("§6Especiales");
-        form.spacer();
+        const { counts, nametagsByKey } = buildCountsAndNametags(dimension, factions);
+        updateControlLabels(hierarchyControls, groupControls, counts, nametagsByKey);
 
-        const groupToggles: { key: string; label: string; obs: ObservableBoolean; lastValue: boolean }[] = [];
-        for (const opt of SPECIAL_GROUP_OPTIONS) {
-          let initialValue = false;
-          for (const fac of factions) {
-            const factionState = initialStates[fac as string] || {};
-            const currentValue = factionState[opt.value];
-            if (typeof currentValue === "boolean") {
-              initialValue = currentValue;
-              break;
-            }
-          }
-
-          const obs = new ObservableBoolean(initialValue, { clientWritable: true });
-          form.toggle(stripColorCodes(opt.label), obs);
-          groupToggles.push({ key: opt.value, label: opt.label, obs, lastValue: initialValue });
-        }
-
-        function applyToggle(key: string, enabled: boolean, label: string, targetFaction?: string): void {
+        form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
           try {
-            const appliedEntries: string[] = [];
-
-            for (const fac of factions) {
-              let totalAffected = 0;
-              const eligible = getEligibleSoldiers(dimensions as any, scope).filter((s: any) => {
-                const fi = s.factionInfo;
-                if (fi.faction !== fac) return false;
-                if (fi.isSpecial) {
-                  return fi.group === key;
-                }
-                return fi.hierarchy === key;
-              });
-
-              for (const { entity } of eligible) {
-                const stateOverride: Record<string, any> = {
-                  [fac as string]: {
-                    [key]: enabled,
-                  },
-                };
-
-                const applied = applySystemToEntity(
-                  systemId,
-                  legacySystem,
-                  entity,
-                  stateOverride,
-                  true,
-                  null,
-                  player,
-                  {}
-                );
-
-                if (applied) {
-                  totalAffected++;
-                }
-              }
-
-              if (totalAffected > 0) {
-                appliedEntries.push(
-                  `${FACTION_DISPLAY_NAMES[fac as keyof typeof FACTION_DISPLAY_NAMES] ?? fac}: ${totalAffected}`
-                );
-              }
-            }
-
-            const summary = appliedEntries.length > 0 ? appliedEntries.join(" | ") : "0 unidades";
-            feedbackText.setData(
-              `§a✓ §7${stripColorCodes(systemConfig.displayName)} [${label}]: §f${enabled ? "Activado" : "Desactivado"} §8(${summary})`
-            );
-
-            const partialState: Record<string, Record<string, unknown>> = {};
-            for (const fac of factions) {
-              partialState[fac] = { [key]: enabled };
-            }
-            try {
-              saveSystemAndUpdateMemory(systemId, partialState);
-            } catch (e) {
-              debugWarn("commandMenuDDUI", `Error guardando estado de sistema ${systemId}: ${e}`, "red");
-            }
-
-            const session = commandMenuSessionStore.get(player.id);
-            if (session) {
-              addHistoryEntry({
-                playerName: player.name,
-                faction: targetFaction ?? "foundation",
-                systemShortName: getSystemShortName(systemId),
-                key: label,
-                value: enabled ? "Activado" : "Desactivado",
-              });
-            }
-          } catch (e) {
-            debugWarn("commandMenuDDUI", `Error aplicando toggle ${systemId} [${key}]: ${e}`, "red");
+            system.clearRun(intervalId);
+          } catch {
+            // intervalo ya limpiado o inválido
           }
-        }
-
-        for (const ctrl of hierarchyToggles) {
-          ctrl.obs.subscribe((enabled) => {
-            if (enabled === ctrl.lastValue) return;
-            applyToggle(ctrl.key, enabled, ctrl.label, targetFaction);
-            ctrl.lastValue = enabled;
-          });
-        }
-        for (const ctrl of groupToggles) {
-          ctrl.obs.subscribe((enabled) => {
-            if (enabled === ctrl.lastValue) return;
-            applyToggle(ctrl.key, enabled, ctrl.label, targetFaction);
-            ctrl.lastValue = enabled;
-          });
-        }
-      }
-
-      form.spacer();
-      form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
-        form.close();
-        system.run(() => import("../panels/mainPanel.js").then(({ showMainPanel }) => showMainPanel(player)));
-      });
-
-      form
-        .show()
-        .then((reason) => {
-          debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: ${reason}`, "gray");
-          if (reason === "ClientClosed") {
-            pauseSession(player.id);
-          }
-        })
-        .catch((err) => {
-          debugWarn("commandMenuDDUI", `Error en form.show() sistema ${systemId}: ${err}`, "red");
-          cleanupSession(player.id);
+          form.close();
+          system.run(() => import("../panels/mainPanel.js").then(({ showMainPanel }) => showMainPanel(player)));
         });
+
+        form
+          .show()
+          .then((reason) => {
+            try {
+              system.clearRun(intervalId);
+            } catch {
+              // intervalo ya limpiado o inválido
+            }
+            debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: ${reason}`, "gray");
+            if (reason === "ClientClosed") {
+              pauseSession(player.id);
+            }
+          })
+          .catch((err) => {
+            try {
+              system.clearRun(intervalId);
+            } catch {
+              // intervalo ya limpiado o inválido
+            }
+            debugWarn("commandMenuDDUI", `Error en form.show() sistema ${systemId}: ${err}`, "red");
+            cleanupSession(player.id);
+          });
+      }
     } catch (e) {
       debugWarn("commandMenuDDUI", `Error en buildSystemView ${systemId}: ${e}`, "red");
     }

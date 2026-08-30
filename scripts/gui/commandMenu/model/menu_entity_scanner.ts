@@ -7,11 +7,12 @@
 
 import { Entity, Dimension, EntityComponentTypes } from "@minecraft/server";
 import { Factions, UnitHierarchy, NAMETAG_FAMILY_MAP, SpecialGroups } from "../menu_config.js";
-import { debugWarn } from "../../../utils/debug.js";
+import { debugWarn, debugMessage } from "../../../utils/debug.js";
 import { getUnitGroup, ENTITY_GROUP_DP } from "./menu_groups.js";
 import { compareNametags } from "../../../utils/nametagSort.js";
 import { getEntitiesByFaction } from "../../../utils/entityQuery.js";
 import { teamFamilies } from "../../../utils/teams.js";
+import { loadScope, isEntityInScope } from "./menu_scope.js";
 
 // ── Cache TTL ────────────────────────────────────────────────────────────────
 
@@ -21,7 +22,7 @@ interface _ScanCacheEntry {
 }
 
 const _scanCache = new Map<string, _ScanCacheEntry>();
-const CACHE_TTL_TICKS = 40;
+const CACHE_TTL_TICKS = 60;
 
 export function invalidateScanCache(): void {
   _scanCache.clear();
@@ -371,12 +372,12 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
   const nametagGroups: Record<string, ScannedEntity[]> = {};
   const activeFamilyTags: { [tagId: string]: { label: string; unitCount: number } } = {};
 
-  // Optimización O1-Extended: usar función centralizada
   const rawEntities = getEntitiesByFaction(dimension, faction as "foundation" | "chaos");
 
   debugWarn("menuScanner:base", `Scan START: faction=${faction} rawEntities=${rawEntities.length}`, "dark_gray");
 
-  // ── BUCLE 1: Escaneo principal ────────────────────────────────────────────────
+  const scope = loadScope();
+
   for (const ent of rawEntities) {
     try {
       if (!ent || !ent.id) continue;
@@ -392,6 +393,10 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
       const isSpecial = nametag !== "";
       const hierarchy = detectHierarchyFromFamilies(families);
       const nametagFamilyId = isSpecial ? extractMtfFamily(families) : "";
+
+      if (!isEntityInScope(ent, detectedFaction, isSpecial, nametag, scope, hierarchy)) {
+        continue;
+      }
 
       const scanned: ScannedEntity = {
         entity: ent,
@@ -410,7 +415,6 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
       byHierarchy[hierarchy].push(scanned);
 
       if (isSpecial && nametagFamilyId) {
-        // Construir byFamilyTag y activeFamilyTags inline (optimización)
         if (!byFamilyTag[nametagFamilyId]) {
           byFamilyTag[nametagFamilyId] = [];
           activeFamilyTags[nametagFamilyId] = { label: nametagFamilyId, unitCount: 0 };

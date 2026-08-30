@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/menu_scope.ts
 import { world, Entity } from "@minecraft/server";
 import { debugWarn } from "../../../utils/debug.js";
-import { ENTITY_GLOBAL_OVERWRITE_PROPERTY } from "../../interactMenu/gui.js";
+import { ENTITY_GLOBAL_OVERWRITE_PROPERTY } from "../../shared/entityScope.js";
 
 export interface ScopeData {
   respectEntityBlocks: boolean;

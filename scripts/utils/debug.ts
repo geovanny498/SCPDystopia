@@ -23,9 +23,10 @@ export const DEBUG_MODULES: string[] = [
   // ═══════════════════════════════════════════════════════════════════════════
   // DEPURACIÓN DE DAÑO — Activos para verificar aplicación de daño
   // ═══════════════════════════════════════════════════════════════════════════
-  "projectileHitEntity",
-  "damage",
-  "entityDamageConfig",
+  // "projectileHitEntity",
+  // "damage",
+  // "entityDeath",
+  // "entityDamageConfig",
 
   // ═══════════════════════════════════════════════════════════════════════════
   // MONITOR REACTIVO — Activo para depurar transición a DDUI 2.1.0
@@ -33,7 +34,11 @@ export const DEBUG_MODULES: string[] = [
   "monitorCommand",
   "interactDDUI",
   "commandMenuDDUI",
-  "player",
+  // "player",
+  // "menuScanner",
+  // "menuScanner:buckets",
+  // "menuScanner:base",
+  // "menuScanner:base:ent",
   // "zoom",
 ];
 

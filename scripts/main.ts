@@ -73,7 +73,7 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
 world.afterEvents.entityRemove.subscribe((event) => {
   const removedEntityId = event.removedEntityId;
   const entityType = event.typeId;
-  debugWarn("projectileHitEntity", `Entidad eliminada: ${entityType} Id: ${removedEntityId}`, "magenta");
+  debugWarn("entityDeath", `Entidad eliminada: ${entityType} Id: ${removedEntityId}`, "magenta");
   cleanupEntityData(removedEntityId);
   cleanupSessionsByEntity(removedEntityId);
 });
