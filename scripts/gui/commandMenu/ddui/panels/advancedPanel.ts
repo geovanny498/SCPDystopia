@@ -31,7 +31,7 @@ export function showAdvancedPanel(player: Player, targetFaction: string = "found
         if (!systemConfig) continue;
         form.button(stripColorCodes(systemConfig.displayName), () => {
           form.close();
-          system.run(() => buildSystemView({ systemId, player, targetFaction })());
+          system.run(() => buildSystemView({ systemId, player, targetFaction, returnTo: "advanced" })());
         });
       }
     }

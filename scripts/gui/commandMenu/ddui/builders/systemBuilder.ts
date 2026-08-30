@@ -13,6 +13,7 @@ import {
   HIERARCHY_OPTIONS,
 } from "../../../shared/systemCatalog.js";
 import { cleanupSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
+import { showAdvancedPanel } from "../panels/advancedPanel.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
 import { getSystemConfig, getSystemDefaults, getEntitySystemState, SpecialGroups } from "../../menu_config.js";
@@ -24,6 +25,7 @@ export interface SystemViewParams {
   systemId: string;
   player: Player;
   targetFaction?: string;
+  returnTo?: "main" | "advanced";
 }
 
 interface BaseControl {
@@ -287,7 +289,7 @@ function applySystemToEntitiesForSystem(
   }
 }
 
-export function buildSystemView({ systemId, player, targetFaction }: SystemViewParams): () => void {
+export function buildSystemView({ systemId, player, targetFaction, returnTo }: SystemViewParams): () => void {
   const systemConfig = CATALOG_SYSTEMS[systemId];
   const legacySystem = getSystemConfig(systemId);
   if (!systemConfig || !legacySystem) {
@@ -405,7 +407,11 @@ export function buildSystemView({ systemId, player, targetFaction }: SystemViewP
             // intervalo ya limpiado o inválido
           }
           form.close();
-          system.run(() => import("../panels/mainPanel.js").then(({ showMainPanel }) => showMainPanel(player)));
+          if (returnTo === "advanced") {
+            system.run(() => import("../panels/advancedPanel.js").then(({ showAdvancedPanel }) => showAdvancedPanel(player, targetFaction)));
+          } else {
+            system.run(() => import("../panels/mainPanel.js").then(({ showMainPanel }) => showMainPanel(player)));
+          }
         });
 
         form
