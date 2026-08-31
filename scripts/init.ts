@@ -17,12 +17,18 @@ import "./commands/register_test_commands.js";
 import "./gui/interactMenu/gui.js";
 import "./gui/commandMenu/builder/menu.js";
 
+// Inicializa lifecycle cleanups
+import { registerLifecycleCleanups } from "./utils/lifecycle.js";
+
+registerLifecycleCleanups();
+
 // Inicializa comandos
 import "./commands/config_command.js";
 import "./commands/count_special_groups.js";
 import "./commands/scope_commands.js";
 import "./commands/teleport_command.js";
 import "./commands/monitor_command.js";
+import "./commands/role_commands.js";
 
 // Importar funciones de inicialización del menú
 import { initializeMenuEvents, getMenuSystemStates } from "./gui/commandMenu/core/menu_events.js";

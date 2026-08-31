@@ -542,7 +542,6 @@ const config: GuiConfig = {
         },
       ],
     },
-
     "lc:dt_cd_commander": {
       replace: false,
       // `insertAt`: "start" | "end" — dónde insertar las categorías específicas respecto a las globales

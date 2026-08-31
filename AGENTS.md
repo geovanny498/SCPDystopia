@@ -6,6 +6,8 @@
 - Ciclo de vida: todo recurso creado en runtime (intervalos, eventos, formularios, sesiones) debe tener un punto de cleanup explícito. No dejar listeners ni `system.runInterval` huérfanos.
 - Tamaño y responsabilidad: si un módulo supera las ~250 líneas o mezcla configuración, query de entidades, builders de UI y lógica de aplicación, dividirlo por dominio. Un archivo = una responsabilidad principal.
 - Funciones: evitar handlers/monolitos mayores a ~80 líneas. Extraer builders de formulario, parsers de `formValues` y ejecutores de acciones en funciones separadas.
+- Documentación: toda función, clase, interfaz, enum y tipo exportado debe incluir un comentario JSDoc con descripción, `@param` para cada parámetro y `@returns` cuando corresponda. Sin excepciones.
+- Comentarios: nunca eliminar comentarios existentes del código base. Agregar comentarios explicativos en bucles complejos, secciones grandes y puntos donde sea difícil orientarse. Son obligatorios cuando la lógica no es obvia de un vistazo.
 - Tipos: prohibido usar `any` en firmas públicas. Usar interfaces del dominio existentes o definirlas en el mismo módulo de la feature.
 - Logging: usar exclusivamente `debugMessage`/`debugWarn`. Eliminar `console.log`/`console.warn`/`console.error` de comandos, eventos y UI.
 - Configuración estática (armas, proyectiles, sistemas, textos de UI): definirla en datos tipados separados, no como literales inline dispersos en lógica de negocio.
@@ -27,12 +29,13 @@
 - No parsear `formValues` por índice frágil dentro de la misma función que construye el formulario; usar acceso por etiqueta/ID o un parser separado.
 - No guardar estado de jugador en cierres de formularios sin registrarlo en un store con cleanup por `playerLeave`.
 - No declarar `Map`/`Record` mutables globales sin una interfaz con `get/set/delete/clear` y punto de cleanup centralizado. El estado disperso sin encapsulación es bloqueante.
+- No omitir el JSDoc en funciones, clases, interfaces, enums ni tipos exportados. No eliminar comentarios existentes del código base. Omitir documentación o borrar comentarios es una mala práctica bloqueante.
 
 ## Jerarquía de reglas
 
 - **Bloqueo**: estado global sin cleanup, listeners huérfanos, `any` en firmas públicas, Maps/Records mutables globales sin interfaz encapsulada.
-- **Obligatorio**: tipado explícito, logging con `debugWarn`/`debugMessage`, separación de responsabilidades.
-- **Recomendado**: JSON para config estática, helpers para operaciones repetitivas.
+- **Obligatorio**: tipado explícito, JSDoc en toda exportación, logging con `debugWarn`/`debugMessage`, separación de responsabilidades.
+- **Recomendado**: datos tipados en archivos `.ts` para config estática, helpers para operaciones repetitivas.
 
 ## Flujo de compilación y despliegue
 

@@ -4,15 +4,7 @@ import { Player, system, world } from "@minecraft/server";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
 import { getRoleInfo } from "./helpers/roleHelpers.js";
 import { showMainPanel } from "./panels/mainPanel.js";
-import { cleanupSession } from "./sessionStore.js";
-
-export function registerCommandMenuDDUI(): void {
-  world.afterEvents.playerLeave.subscribe((event) => {
-    cleanupSession(event.playerId);
-  });
-
-  debugMessage("commandMenuDDUI", "Registro de commandMenu DDUI completado.", "green");
-}
+import { cleanupCommandMenuSession } from "./sessionStore.js";
 
 export function openCommandMenuDDUI(player: Player): void {
   try {

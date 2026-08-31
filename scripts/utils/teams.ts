@@ -33,7 +33,7 @@ export const teamFamilies: Record<string, string[]> = {
   foundation: ["scpfoundation", "foundation"],
 };
 
-const helmetTeams: Record<string, string> = {
+export const helmetTeams: Record<string, string> = {
   "minecraft:golden_helmet": "chaos",
   "minecraft:netherite_helmet": "foundation",
   "minecraft:diamond_helmet": "foundation",

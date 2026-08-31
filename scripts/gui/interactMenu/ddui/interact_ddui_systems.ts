@@ -1,27 +1,36 @@
-// scripts/gui/interactMenu/interact_ddui_systems.ts
+// scripts/gui/interactMenu/ddui/interact_ddui_systems.ts
 
-import { CustomForm, ObservableNumber, ObservableBoolean, ObservableString, DataDrivenScreenClosedReason } from "@minecraft/server-ui";
+import {
+  CustomForm,
+  ObservableNumber,
+  ObservableBoolean,
+  ObservableString,
+  DataDrivenScreenClosedReason,
+} from "@minecraft/server-ui";
 import { Player, system, Entity } from "@minecraft/server";
-import { debugWarn, debugMessage } from "../../utils/debug.js";
-import { getEntityFactionInfo } from "../commandMenu/model/menu_faction.js";
-import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, isAllowedByRule, type EntityConfig } from "./gui.js";
-import { stripColorCodes } from "../monitorMenu/monitor_config.js";
-import type { MenuCategory } from "./config.js";
+import { debugWarn, debugMessage } from "../../../utils/debug.js";
+import { getEntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
+import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, isAllowedByRule, type EntityConfig } from "../gui.js";
+import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
+import type { MenuCategory } from "../config.js";
 import {
   getOrCreateInteractDDUISession,
-  removeInteractDDUISession,
-  buildObservableFromEntries,
+  interactMenuSessionStore,
   refreshStatus,
   getLastFeedbackText,
-  applyEntryAction,
   setLastFeedbackText,
-  buildFeedback,
   getHistory,
-  recordFeedback,
 } from "./interact_ddui_shared.js";
-import { getEntitySystemState, findSystemStateByEvent, SpecialGroups, UnitHierarchy, UnitHierarchyLabels, Factions } from "../commandMenu/menu_config.js";
-import { getUnitGroup, setUnitGroup } from "../commandMenu/model/menu_groups.js";
-import { SpecialGroupLabels } from "../commandMenu/menu_config.js";
+import {
+  getEntitySystemState,
+  findSystemStateByEvent,
+  SpecialGroups,
+  UnitHierarchy,
+  UnitHierarchyLabels,
+  Factions,
+} from "../../commandMenu/menu_config.js";
+import { getUnitGroup, setUnitGroup } from "../../commandMenu/model/menu_groups.js";
+import { SpecialGroupLabels } from "../../commandMenu/menu_config.js";
 
 export function showInteractDDUISystems(
   player: Player,
@@ -40,7 +49,6 @@ export function showInteractDDUISystems(
 
     system.run(() => {
       try {
-        const intervalState = { current: null as number | null };
         session.observables.actionResultText.setData(getLastFeedbackText(entity.id, "systems"));
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
@@ -89,7 +97,7 @@ export function showInteractDDUISystems(
               const targetEvent = newValue ? enableEvent : disableEvent;
               const targetEntry = entries.find((e) => e.event === targetEvent);
               if (targetEntry) {
-                applyEntryAction(session, targetEntry, undefined, adv.category);
+                session.applyEntryAction(targetEntry, undefined, adv.category);
               }
               lastValue = newValue;
             });
@@ -99,20 +107,17 @@ export function showInteractDDUISystems(
               disabled: toggleDisabled,
             });
           } else {
-            const built = buildObservableFromEntries(
-              entries,
-              session,
-              undefined,
-              typeId,
-              adv.category
-            );
+            const built = session.buildObservableFromEntries(entries, undefined, typeId, adv.category);
             form.dropdown(stripColorCodes(adv.category), built.obs, built.items, { disabled: built.disabled });
           }
         }
 
         form.spacer();
+        let closeReason: "navigation" | undefined = undefined;
+
         form.button("<- Volver", () => {
           try {
+            closeReason = "navigation";
             form.close();
             system.run(() => {
               import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
@@ -124,30 +129,37 @@ export function showInteractDDUISystems(
           }
         });
 
+        let intervalId: number;
+
         form
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
-            debugMessage("interactDDUI", `Vista Sistemas Avanzados cerrada: ${reason}`, "gray");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
-            }
             if (reason === "ClientClosed") {
-              removeInteractDDUISession(player, entity);
+              debugMessage("interactDDUI", `Vista Sistemas Avanzados cerrada: X del cliente (${player.name})`, "gray");
+              interactMenuSessionStore.cleanup(player.id);
+            } else if (reason === "UserBusy") {
+              debugWarn("interactDDUI", `Vista Sistemas Avanzados cerrada: UserBusy (${player.name})`, "yellow");
+              interactMenuSessionStore.cleanup(player.id);
+            } else if (reason === "ServerClosed") {
+              if (closeReason === "navigation") {
+                debugMessage("interactDDUI", `Vista Sistemas Avanzados cerrada: navegación (${player.name})`, "gray");
+                session.unregisterInterval(intervalId);
+              } else {
+                debugWarn("interactDDUI", `Vista Sistemas Avanzados cerrada: ServerClosed sin razón (${player.name})`, "yellow");
+                interactMenuSessionStore.cleanup(player.id);
+              }
             }
+            closeReason = undefined;
           })
           .catch((showError) => {
             debugWarn("interactDDUI", `Error en form.show() sistemas avanzados: ${showError}`, "red");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
-            }
-            removeInteractDDUISession(player, entity);
+            interactMenuSessionStore.cleanup(player.id);
           });
 
-        intervalState.current = system.runInterval(() => {
+        intervalId = system.runInterval(() => {
           refreshAndUpdateStatus();
         }, 20);
+        session.registerInterval(intervalId);
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando Vista Sistemas Avanzados: ${setupError}`, "red");
         try {
@@ -182,7 +194,6 @@ export function showInteractDDUIManagement(
 
     system.run(() => {
       try {
-        const intervalState = { current: null as number | null };
         session.observables.actionResultText.setData(getLastFeedbackText(entity.id, "management"));
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
@@ -205,10 +216,16 @@ export function showInteractDDUIManagement(
               if (factionInfo.isSpecial) {
                 const groupId = getUnitGroup(entity) ?? SpecialGroups.NO_GROUP;
                 const groupLabel = SpecialGroupLabels[groupId] || String(groupId);
-                session.observables.groupDetailText.setData(`§7Facción: §a${factionLabel}\n§7Grupo actual: §a${groupLabel}`);
+                session.observables.groupDetailText.setData(
+                  `§7Facción: §a${factionLabel}\n§7Grupo actual: §a${groupLabel}`
+                );
               } else {
-                const hierarchyLabel = UnitHierarchyLabels[factionInfo.hierarchy ?? UnitHierarchy.BASIC] || String(factionInfo.hierarchy ?? UnitHierarchy.BASIC);
-                session.observables.groupDetailText.setData(`§7Facción: §a${factionLabel}\n§7Jerarquia: §a${hierarchyLabel}`);
+                const hierarchyLabel =
+                  UnitHierarchyLabels[factionInfo.hierarchy ?? UnitHierarchy.BASIC] ||
+                  String(factionInfo.hierarchy ?? UnitHierarchy.BASIC);
+                session.observables.groupDetailText.setData(
+                  `§7Facción: §a${factionLabel}\n§7Jerarquia: §a${hierarchyLabel}`
+                );
               }
             } else {
               session.observables.groupDetailText.setData("");
@@ -253,15 +270,18 @@ export function showInteractDDUIManagement(
                 try {
                   setUnitGroup(entity, String(entry.value));
                   const label = SpecialGroupLabels[String(entry.value)] || String(entry.value);
-                  recordFeedback(session, "Asignar grupo", label);
+                  session.recordFeedback("Asignar grupo", label);
                   const updatedGroup = getUnitGroup(entity);
                   const updatedLabel = SpecialGroupLabels[updatedGroup] || updatedGroup;
-                  const factionLabel = factionInfo!.faction === Factions.FOUNDATION
-                    ? "§lFoundation"
-                    : factionInfo!.faction === Factions.CHAOS
-                      ? "§2§lChaos"
-                      : factionInfo!.faction;
-                  session.observables.groupDetailText.setData(`§7Facción: §a${factionLabel}\n§7Grupo actual: §a${updatedLabel}`);
+                  const factionLabel =
+                    factionInfo!.faction === Factions.FOUNDATION
+                      ? "§lFoundation"
+                      : factionInfo!.faction === Factions.CHAOS
+                        ? "§2§lChaos"
+                        : factionInfo!.faction;
+                  session.observables.groupDetailText.setData(
+                    `§7Facción: §a${factionLabel}\n§7Grupo actual: §a${updatedLabel}`
+                  );
 
                   const updatedIndex = entries.findIndex(
                     (e) => e.action === "assign_group" && e.value === String(updatedGroup)
@@ -302,7 +322,7 @@ export function showInteractDDUIManagement(
             const entry = entries[newIndex];
             if (entry && entry.action === "set_global_overwrite" && typeof entry.value === "boolean") {
               setGlobalOverwriteAllowed(entity, entry.value);
-              recordFeedback(session, "Configuración", entry.value ? "Global" : "Local");
+              session.recordFeedback("Configuración", entry.value ? "Global" : "Local");
             }
             lastIndex = newIndex;
           });
@@ -310,8 +330,11 @@ export function showInteractDDUIManagement(
         }
 
         form.spacer();
+        let closeReason: "navigation" | undefined = undefined;
+
         form.button("<- Volver", () => {
           try {
+            closeReason = "navigation";
             form.close();
             system.run(() => {
               import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
@@ -323,30 +346,37 @@ export function showInteractDDUIManagement(
           }
         });
 
+        let intervalId: number;
+
         form
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
-            debugMessage("interactDDUI", `Vista Gestión y Estado cerrada: ${reason}`, "gray");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
-            }
             if (reason === "ClientClosed") {
-              removeInteractDDUISession(player, entity);
+              debugMessage("interactDDUI", `Vista Gestión y Estado cerrada: X del cliente (${player.name})`, "gray");
+              interactMenuSessionStore.cleanup(player.id);
+            } else if (reason === "UserBusy") {
+              debugWarn("interactDDUI", `Vista Gestión y Estado cerrada: UserBusy (${player.name})`, "yellow");
+              interactMenuSessionStore.cleanup(player.id);
+            } else if (reason === "ServerClosed") {
+              if (closeReason === "navigation") {
+                debugMessage("interactDDUI", `Vista Gestión y Estado cerrada: navegación (${player.name})`, "gray");
+                session.unregisterInterval(intervalId);
+              } else {
+                debugWarn("interactDDUI", `Vista Gestión y Estado cerrada: ServerClosed sin razón (${player.name})`, "yellow");
+                interactMenuSessionStore.cleanup(player.id);
+              }
             }
+            closeReason = undefined;
           })
           .catch((showError) => {
             debugWarn("interactDDUI", `Error en form.show() gestión/estado: ${showError}`, "red");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
-            }
-            removeInteractDDUISession(player, entity);
+            interactMenuSessionStore.cleanup(player.id);
           });
 
-        intervalState.current = system.runInterval(() => {
+        intervalId = system.runInterval(() => {
           refreshAndUpdateStatus();
         }, 20);
+        session.registerInterval(intervalId);
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando Vista Gestión y Estado: ${setupError}`, "red");
         try {
@@ -371,6 +401,8 @@ export function showInteractDDUHistory(
   typeId: string
 ): void {
   try {
+    const session = getOrCreateInteractDDUISession(player, entity, cfg, soldierName, displayName, typeId);
+    session.viewId = "history";
     debugMessage("interactDDUI", `Mostrando Historial para ${player.name} en ${typeId}`, "cyan");
 
     const form = new CustomForm(player, `§dHistorial`);
@@ -378,8 +410,6 @@ export function showInteractDDUHistory(
     system.run(() => {
       try {
         const historyObs = new ObservableString("");
-        const intervalState = { current: null as number | null };
-
         function updateHistoryText(): void {
           const entries = getHistory(entity.id);
           let historyText = `§6Historial de cambios (10 más recientes):§r\n`;
@@ -400,8 +430,11 @@ export function showInteractDDUHistory(
         form.spacer();
         form.label(historyObs);
         form.spacer();
+        let closeReason: "navigation" | undefined = undefined;
+
         form.button("<- Volver", () => {
           try {
+            closeReason = "navigation";
             form.close();
             system.run(() => {
               import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
@@ -413,30 +446,37 @@ export function showInteractDDUHistory(
           }
         });
 
+        let intervalId: number;
+
         form
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
-            debugMessage("interactDDUI", `Historial cerrado: ${reason}`, "gray");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
-            }
             if (reason === "ClientClosed") {
-              removeInteractDDUISession(player, entity);
+              debugMessage("interactDDUI", `Historial cerrado: X del cliente (${player.name})`, "gray");
+              interactMenuSessionStore.cleanup(player.id);
+            } else if (reason === "UserBusy") {
+              debugWarn("interactDDUI", `Historial cerrado: UserBusy (${player.name})`, "yellow");
+              interactMenuSessionStore.cleanup(player.id);
+            } else if (reason === "ServerClosed") {
+              if (closeReason === "navigation") {
+                debugMessage("interactDDUI", `Historial cerrado: navegación (${player.name})`, "gray");
+                session.unregisterInterval(intervalId);
+              } else {
+                debugWarn("interactDDUI", `Historial cerrado: ServerClosed sin razón (${player.name})`, "yellow");
+                interactMenuSessionStore.cleanup(player.id);
+              }
             }
+            closeReason = undefined;
           })
           .catch((showError) => {
             debugWarn("interactDDUI", `Error en form.show() historial: ${showError}`, "red");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
-            }
-            removeInteractDDUISession(player, entity);
+            interactMenuSessionStore.cleanup(player.id);
           });
 
-        intervalState.current = system.runInterval(() => {
+        intervalId = system.runInterval(() => {
           updateHistoryText();
         }, 20);
+        session.registerInterval(intervalId);
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando Historial: ${setupError}`, "red");
         try {

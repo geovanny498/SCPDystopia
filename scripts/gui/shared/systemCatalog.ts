@@ -263,6 +263,12 @@ export const TARGET_FACTION_OPTIONS = [
   { value: "both", label: "§dAmbas facciones" },
 ];
 
+export const SYSTEM_VIEW_FILTER_OPTIONS = [
+  { value: "all", label: "§fAmbos" },
+  { value: "hierarchy", label: "§7No especiales" },
+  { value: "specials", label: "§6Especiales" },
+];
+
 export const HIERARCHY_AND_GROUP_OPTIONS = [
   { value: "basic", label: "§7Básicos" },
   { value: "leader", label: "§eLíderes" },

@@ -15,7 +15,7 @@ import {
   SpecialGroupLabels,
 } from "../../../shared/systemCatalog.js";
 import { SpecialGroups } from "../../menu_config.js";
-import { cleanupSession, pauseSession } from "../sessionStore.js";
+import { cleanupCommandMenuSession, pauseSession } from "../sessionStore.js";
 import { scanActiveUnits, invalidateScanCache, invalidateEntityQueryCache } from "../../model/menu_entity_scanner.js";
 import { setUnitGroup } from "../../model/menu_groups.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
@@ -54,15 +54,18 @@ function showGroupsPanel(player: Player): void {
       system.run(() => import("../panels/mainPanel.js").then(({ showMainPanel }) => showMainPanel(player)));
     });
 
-    form.show().then((reason) => {
-      if (reason === "ClientClosed") {
-        pauseSession(player.id);
-      }
-    }).catch((err) => {
-      cleanupSession(player.id);
-    });
+    form
+      .show()
+      .then((reason) => {
+        if (reason === "ClientClosed") {
+          pauseSession(player.id);
+        }
+      })
+      .catch((err) => {
+        cleanupCommandMenuSession(player.id);
+      });
   } catch (e) {
-    cleanupSession(player.id);
+    cleanupCommandMenuSession(player.id);
   }
 }
 
@@ -122,15 +125,18 @@ function showGroupsByFaction(player: Player, faction: string): void {
       system.run(() => showGroupsPanel(player));
     });
 
-    form.show().then((reason) => {
-      if (reason === "ClientClosed") {
-        pauseSession(player.id);
-      }
-    }).catch((err) => {
-      cleanupSession(player.id);
-    });
+    form
+      .show()
+      .then((reason) => {
+        if (reason === "ClientClosed") {
+          pauseSession(player.id);
+        }
+      })
+      .catch((err) => {
+        cleanupCommandMenuSession(player.id);
+      });
   } catch (e) {
-    cleanupSession(player.id);
+    cleanupCommandMenuSession(player.id);
   }
 }
 
@@ -165,24 +171,29 @@ function showGroupAssignment(player: Player, faction: string, nametag: string): 
       system.run(() => showGroupsByFaction(player, faction));
     });
 
-    form.show().then((reason) => {
-      if (reason === "ClientClosed") {
-        pauseSession(player.id);
-        return;
-      }
-
-      const selectedIndex = groupObs.getData();
-      const selectedGroup = groupOptions[selectedIndex];
-      if (selectedGroup) {
-        for (const scannedEntity of entities) {
-          setUnitGroup(scannedEntity.entity, selectedGroup);
+    form
+      .show()
+      .then((reason) => {
+        if (reason === "ClientClosed") {
+          pauseSession(player.id);
+          return;
         }
-        player.sendMessage(`§a[SCPDystopia] Grupo ${selectedGroup} asignado a ${entities.length} unidades de ${nametag}.`);
-      }
-    }).catch((err) => {
-      cleanupSession(player.id);
-    });
+
+        const selectedIndex = groupObs.getData();
+        const selectedGroup = groupOptions[selectedIndex];
+        if (selectedGroup) {
+          for (const scannedEntity of entities) {
+            setUnitGroup(scannedEntity.entity, selectedGroup);
+          }
+          player.sendMessage(
+            `§a[SCPDystopia] Grupo ${selectedGroup} asignado a ${entities.length} unidades de ${nametag}.`
+          );
+        }
+      })
+      .catch((err) => {
+        cleanupCommandMenuSession(player.id);
+      });
   } catch (e) {
-    cleanupSession(player.id);
+    cleanupCommandMenuSession(player.id);
   }
 }

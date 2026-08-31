@@ -58,6 +58,7 @@ export const MonitorLabels = {
 export const MonitorButtons = {
   config: "Configuración",
   save: "Guardar",
+  back: "Volver",
   cancel: "Cancelar",
   reset: "Restablecer ajustes",
   close: "Cerrar",
@@ -286,7 +287,7 @@ export function formatFactionBlock(
       if (normalListMode === "completa") {
         for (const [, family] of sortedFamilies) {
           if (family.nametags.length === 0) {
-              lines.push(`    §7- §r${family.label}: §8x${family.count}§r`);
+            lines.push(`    §7- §r${family.label}: §8x${family.count}§r`);
           } else {
             const nametagLines = buildSortedNametagLines(family.nametags, sortBy);
             if (nametagLines.length === 1) {
@@ -294,7 +295,7 @@ export function formatFactionBlock(
                 `    §7- §r${family.label}: §8x${family.count}§r (${nametagLines[0].replace(/^§7- §r/, "").replace(/§r$/, "")}§r)`
               );
             } else {
-            lines.push(`    §7- §r${family.label}: §8x${family.count}§r`);
+              lines.push(`    §7- §r${family.label}: §8x${family.count}§r`);
               for (const line of nametagLines) {
                 lines.push(`      ${line}`);
               }

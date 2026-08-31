@@ -8,16 +8,8 @@
  */
 
 import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel, Player } from "@minecraft/server";
-import { showMonitorMenu, initializeMonitorObservables } from "../gui/monitorMenu/monitor_form.js";
+import { showMonitorMenu } from "../gui/monitorMenu/monitor_form.js";
 import { debugMessage } from "../utils/debug.js";
-
-system.beforeEvents.startup.subscribe(() => {
-  try {
-    initializeMonitorObservables();
-  } catch (e) {
-    console.warn("[Monitor] Error inicializando observables en startup:", e);
-  }
-});
 
 system.beforeEvents.startup.subscribe((init) => {
   const cmd = {
@@ -46,7 +38,6 @@ system.beforeEvents.startup.subscribe((init) => {
           showMonitorMenu(player);
         } catch (e) {
           debugMessage("monitorCommand", `Error mostrando monitor: ${e}`, "red");
-          console.warn("Error mostrando monitor de unidades:", e);
           return {
             status: CustomCommandStatus.Failure,
             message: "Error abriendo el monitor de unidades. Revisa la consola.",
@@ -58,11 +49,11 @@ system.beforeEvents.startup.subscribe((init) => {
           message: "Abriendo monitor de unidades...",
         };
       } catch (e) {
-        console.warn("scpd:monitor_units handler error:", e);
+        debugMessage("monitorCommand", `Error interno al ejecutar el comando: ${e}`, "red");
         return { status: CustomCommandStatus.Failure, message: "Error interno al ejecutar el comando." };
       }
     });
   } catch (e) {
-    console.warn("Error registrando scpd:monitor_units:", e);
+    debugMessage("monitorCommand", `Error registrando scpd:monitor_units: ${e}`, "red");
   }
 });

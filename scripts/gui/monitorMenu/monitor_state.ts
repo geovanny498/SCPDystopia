@@ -1,20 +1,20 @@
 // scripts/gui/monitorMenu/monitor_state.ts
 
 /**
- * Persistencia de configuración del monitor
- * - Carga desde world.setDynamicProperty al abrir el menú
+ * Persistencia de configuración del monitor por jugador
+ * - Carga desde player.getDynamicProperty al abrir el menú
  * - Guarda al confirmar cambios en la vista de configuración
  */
 
-import { world } from "@minecraft/server";
+import { Player } from "@minecraft/server";
 import { MonitorConfig, MonitorConfigDefaults } from "./monitor_config.js";
 import { debugMessage, debugWarn } from "../../utils/debug.js";
 
 export const MONITOR_CONFIG_PROPERTY = "scpd_monitor_config";
 
-export function loadMonitorConfig(): MonitorConfig {
+export function loadMonitorConfig(player: Player): MonitorConfig {
   try {
-    const saved = world.getDynamicProperty(MONITOR_CONFIG_PROPERTY);
+    const saved = player.getDynamicProperty(MONITOR_CONFIG_PROPERTY);
     if (!saved) {
       debugMessage("monitorCommand", "No hay config del monitor guardada, usando defaults", "yellow");
       return { ...MonitorConfigDefaults };
@@ -49,11 +49,20 @@ export function loadMonitorConfig(): MonitorConfig {
   }
 }
 
-export function saveMonitorConfig(config: MonitorConfig): void {
+export function saveMonitorConfig(player: Player, config: MonitorConfig): void {
   try {
-    world.setDynamicProperty(MONITOR_CONFIG_PROPERTY, JSON.stringify(config));
+    player.setDynamicProperty(MONITOR_CONFIG_PROPERTY, JSON.stringify(config));
     debugMessage("monitorCommand", `Config del monitor guardada: ${JSON.stringify(config)}`, "green");
   } catch (e) {
     debugWarn("monitorCommand", `Error guardando config del monitor: ${e}`, "red");
+  }
+}
+
+export function clearMonitorConfig(player: Player): void {
+  try {
+    player.setDynamicProperty(MONITOR_CONFIG_PROPERTY, null as any);
+    debugMessage("monitorCommand", "Config del monitor borrada", "yellow");
+  } catch (e) {
+    debugWarn("monitorCommand", `Error borrando config del monitor: ${e}`, "red");
   }
 }

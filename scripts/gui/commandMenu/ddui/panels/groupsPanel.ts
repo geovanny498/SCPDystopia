@@ -11,7 +11,7 @@ import {
   GROUP_LABELS,
   SYSTEM_PANEL_FEEDBACK_INITIAL,
 } from "../../../shared/systemCatalog.js";
-import { cleanupSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
+import { cleanupCommandMenuSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
 import { showMainPanel } from "./mainPanel.js";
 import { scanActiveUnits, invalidateScanCache, invalidateEntityQueryCache } from "../../model/menu_entity_scanner.js";
 import { setUnitGroup } from "../../model/menu_groups.js";
@@ -25,6 +25,8 @@ export function showGroupsPanel(player: Player, targetFaction: string = "foundat
 
 function showGroupsByFaction(player: Player, faction: string): void {
   try {
+    let closeReason: "navigation" | undefined = undefined;
+
     const form = new CustomForm(
       player,
       `${PANEL_TITLES.groupsByFaction} - ${FACTION_DISPLAY_NAMES[faction as keyof typeof FACTION_DISPLAY_NAMES]}`
@@ -75,6 +77,7 @@ function showGroupsByFaction(player: Player, faction: string): void {
       const ntCount = Object.keys(bucket.nametags).length;
       const counterLabel = ntCount > 1 ? ` (${ntCount} nametags)` : "";
       form.button(`${stripColorCodes(bucket.label)}${counterLabel}`, () => {
+        closeReason = "navigation";
         form.close();
         system.run(() => showBucketAssignment(player, faction, bucketId));
       });
@@ -83,6 +86,7 @@ function showGroupsByFaction(player: Player, faction: string): void {
     form.divider();
 
     form.button(stripColorCodes(GROUP_PANEL_BUTTONS.back), () => {
+      closeReason = "navigation";
       form.close();
       system.run(() => showMainPanel(player));
     });
@@ -90,14 +94,25 @@ function showGroupsByFaction(player: Player, faction: string): void {
     form
       .show()
       .then((reason) => {
-        debugMessage("commandMenuDDUI", `Grupos por Facción cerrado: ${reason}`, "gray");
         if (reason === "ClientClosed") {
+          debugMessage("commandMenuDDUI", `Grupos por Facción cerrado: X del cliente (${player.name})`, "gray");
           pauseSession(player.id);
+        } else if (reason === "UserBusy") {
+          debugWarn("commandMenuDDUI", `Grupos por Facción cerrado: UserBusy (${player.name})`, "yellow");
+          cleanupCommandMenuSession(player.id);
+        } else if (reason === "ServerClosed") {
+          if (closeReason === "navigation") {
+            debugMessage("commandMenuDDUI", `Grupos por Facción cerrado: navegación (${player.name})`, "gray");
+          } else {
+            debugWarn("commandMenuDDUI", `Grupos por Facción cerrado: ServerClosed sin razón (${player.name})`, "yellow");
+            cleanupCommandMenuSession(player.id);
+          }
         }
+        closeReason = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() grupos por facción: ${err}`, "red");
-        cleanupSession(player.id);
+        cleanupCommandMenuSession(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showGroupsByFaction: ${e}`, "red");
@@ -118,6 +133,8 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       player.sendMessage("§c[SCPDystopia] Bucket no encontrado.");
       return;
     }
+
+    let closeReason: "navigation" | undefined = undefined;
 
     const form = new CustomForm(player, `${stripColorCodes(bucket.label)} §8- Asignar Grupos`);
 
@@ -162,6 +179,7 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
     form.spacer();
 
     form.button(stripColorCodes(GROUP_PANEL_BUTTONS.back), () => {
+      closeReason = "navigation";
       invalidateScanCache();
       invalidateEntityQueryCache();
       form.close();
@@ -176,14 +194,25 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
     form
       .show()
       .then((reason) => {
-        debugMessage("commandMenuDDUI", `Asignación por bucket cerrada: ${reason}`, "gray");
         if (reason === "ClientClosed") {
+          debugMessage("commandMenuDDUI", `Asignación por bucket cerrada: X del cliente (${player.name})`, "gray");
           pauseSession(player.id);
+        } else if (reason === "UserBusy") {
+          debugWarn("commandMenuDDUI", `Asignación por bucket cerrada: UserBusy (${player.name})`, "yellow");
+          cleanupCommandMenuSession(player.id);
+        } else if (reason === "ServerClosed") {
+          if (closeReason === "navigation") {
+            debugMessage("commandMenuDDUI", `Asignación por bucket cerrada: navegación (${player.name})`, "gray");
+          } else {
+            debugWarn("commandMenuDDUI", `Asignación por bucket cerrada: ServerClosed sin razón (${player.name})`, "yellow");
+            cleanupCommandMenuSession(player.id);
+          }
         }
+        closeReason = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() asignación por bucket: ${err}`, "red");
-        cleanupSession(player.id);
+        cleanupCommandMenuSession(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showBucketAssignment: ${e}`, "red");

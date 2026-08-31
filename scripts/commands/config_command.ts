@@ -1,7 +1,14 @@
-import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel, Player, CustomCommandParamType } from "@minecraft/server";
+import {
+  system,
+  CustomCommandStatus,
+  CustomCommandSource,
+  CommandPermissionLevel,
+  Player,
+  CustomCommandParamType,
+} from "@minecraft/server";
 import { debugWarn, debugMessage } from "../utils/debug.js";
 import { buildAndShowMenu } from "../gui/commandMenu/builder/menu.js";
-import { openCommandMenuDDUI, registerCommandMenuDDUI } from "../gui/commandMenu/ddui/main.js";
+import { openCommandMenuDDUI } from "../gui/commandMenu/ddui/main.js";
 
 system.beforeEvents.startup.subscribe((init) => {
   const cmd = {
@@ -11,12 +18,6 @@ system.beforeEvents.startup.subscribe((init) => {
     cheatsRequired: false,
     optionalParameters: [{ name: "mode", type: CustomCommandParamType.String }],
   };
-
-  try {
-    registerCommandMenuDDUI();
-  } catch (e) {
-    debugWarn("configCommand", `Error registrando DDUI: ${e}`, "red");
-  }
 
   try {
     init.customCommandRegistry.registerCommand(cmd, (origin, mode) => {

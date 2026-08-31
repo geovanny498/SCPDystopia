@@ -11,8 +11,10 @@ import {
   PANEL_TITLES,
   SPECIAL_GROUP_OPTIONS,
   HIERARCHY_OPTIONS,
+  SYSTEM_VIEW_FILTER_OPTIONS,
 } from "../../../shared/systemCatalog.js";
-import { cleanupSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
+import { PlayerPermissionManager, FactionId } from "../../../shared/playerPermissionManager.js";
+import { cleanupCommandMenuSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
 import { showAdvancedPanel } from "../panels/advancedPanel.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
@@ -26,6 +28,7 @@ export interface SystemViewParams {
   player: Player;
   targetFaction?: string;
   returnTo?: "main" | "advanced";
+  viewFilter?: "all" | "hierarchy" | "specials";
 }
 
 interface BaseControl {
@@ -71,7 +74,10 @@ function buildDropdownItems(options: { label: string; value: unknown }[]): { lab
   return options.map((o, idx) => ({ label: stripColorCodes(o.label), value: idx }));
 }
 
-function buildCountsAndNametags(dimension: Dimension, factions: string[]): {
+function buildCountsAndNametags(
+  dimension: Dimension,
+  factions: string[]
+): {
   counts: Record<string, number>;
   nametagsByKey: Record<string, Set<string>>;
 } {
@@ -131,7 +137,8 @@ function buildControls(
   factions: string[],
   form: CustomForm,
   controlType: "dropdown" | "toggle",
-  isGroup: boolean
+  isGroup: boolean,
+  visibleObs?: ObservableBoolean
 ): ControlRecord[] {
   const controls: ControlRecord[] = [];
   const systemOptionsForIndex = systemOptions?.map((o) => ({ value: String(o.value), label: o.label })) ?? [];
@@ -160,11 +167,14 @@ function buildControls(
 
     if (controlType === "dropdown") {
       const obs = new ObservableNumber(initialValue as number, { clientWritable: true });
+      const dropdownOptions: Record<string, unknown> = {};
+      if (isGroup) dropdownOptions.description = descObs;
+      if (visibleObs) dropdownOptions.visible = visibleObs;
       form.dropdown(
         labelObs,
         obs,
         buildDropdownItems(systemOptions ?? []),
-        isGroup ? { description: descObs } : undefined
+        Object.keys(dropdownOptions).length > 0 ? dropdownOptions : undefined
       );
       controls.push({
         key: opt.value,
@@ -177,7 +187,10 @@ function buildControls(
       });
     } else {
       const obs = new ObservableBoolean(initialValue as boolean, { clientWritable: true });
-      form.toggle(labelObs, obs, isGroup && descObs ? { description: descObs } : undefined);
+      const toggleOptions: Record<string, unknown> = {};
+      if (isGroup && descObs) toggleOptions.description = descObs;
+      if (visibleObs) toggleOptions.visible = visibleObs;
+      form.toggle(labelObs, obs, Object.keys(toggleOptions).length > 0 ? toggleOptions : undefined);
       controls.push({
         key: opt.value,
         label: opt.label,
@@ -289,7 +302,13 @@ function applySystemToEntitiesForSystem(
   }
 }
 
-export function buildSystemView({ systemId, player, targetFaction, returnTo }: SystemViewParams): () => void {
+export function buildSystemView({
+  systemId,
+  player,
+  targetFaction,
+  returnTo,
+  viewFilter,
+}: SystemViewParams): () => void {
   const systemConfig = CATALOG_SYSTEMS[systemId];
   const legacySystem = getSystemConfig(systemId);
   if (!systemConfig || !legacySystem) {
@@ -300,6 +319,8 @@ export function buildSystemView({ systemId, player, targetFaction, returnTo }: S
 
   return () => {
     try {
+      let closeReason: "navigation" | undefined = undefined;
+
       const form = new CustomForm(player, `${PANEL_TITLES.system} - ${stripColorCodes(systemConfig.displayName)}`);
       const feedbackText = new ObservableString(SYSTEM_PANEL_FEEDBACK_INITIAL);
 
@@ -309,15 +330,65 @@ export function buildSystemView({ systemId, player, targetFaction, returnTo }: S
       );
       form.spacer();
       form.label(feedbackText);
-      form.spacer();
 
       const dimension = player.dimension;
       const factions: string[] = targetFaction === "both" ? ["foundation", "chaos"] : [targetFaction ?? "foundation"];
       const initialStates = buildInitialState(systemId, factions, systemId);
+      const session = commandMenuSessionStore.get(player.id);
 
       if ((systemConfig.controlType === "dropdown" && systemConfig.options) || systemConfig.controlType === "toggle") {
-        form.header("§7No especiales");
-        form.spacer();
+        const isAdmin = PlayerPermissionManager.isAdmin(player);
+        let canFilter = isAdmin;
+        if (!canFilter && targetFaction === "both") {
+          const foundationRole = PlayerPermissionManager.getPlayerRole(player, "foundation");
+          const chaosRole = PlayerPermissionManager.getPlayerRole(player, "chaos");
+          canFilter = foundationRole === "commander" || chaosRole === "commander";
+        } else if (!canFilter && targetFaction) {
+          canFilter = PlayerPermissionManager.getPlayerRole(player, targetFaction as FactionId) === "commander";
+        }
+
+        let resolvedViewFilter: "all" | "hierarchy" | "specials";
+        if (canFilter) {
+          resolvedViewFilter =
+            viewFilter ??
+            (session?.formState.systemViewFilter as "all" | "hierarchy" | "specials" | undefined) ??
+            "all";
+        } else {
+          resolvedViewFilter = "specials";
+        }
+
+        const hierarchyVisibleObs = new ObservableBoolean(
+          resolvedViewFilter === "all" || resolvedViewFilter === "hierarchy"
+        );
+        const groupVisibleObs = new ObservableBoolean(
+          resolvedViewFilter === "all" || resolvedViewFilter === "specials"
+        );
+
+        if (canFilter) {
+          const filterIndex = SYSTEM_VIEW_FILTER_OPTIONS.findIndex((opt) => opt.value === resolvedViewFilter);
+          const filterObs = new ObservableNumber(filterIndex >= 0 ? filterIndex : 0, { clientWritable: true });
+          form.spacer();
+          form.dropdown(
+            new ObservableString("Mostrar:"),
+            filterObs,
+            SYSTEM_VIEW_FILTER_OPTIONS.map((opt, idx) => ({
+              label: stripColorCodes(opt.label),
+              value: idx,
+            }))
+          );
+          filterObs.subscribe((idx: number) => {
+            const newFilter = SYSTEM_VIEW_FILTER_OPTIONS[idx]?.value ?? "all";
+            if (session) {
+              session.formState.systemViewFilter = newFilter;
+            }
+            hierarchyVisibleObs.setData(newFilter === "all" || newFilter === "hierarchy");
+            groupVisibleObs.setData(newFilter === "all" || newFilter === "specials");
+          });
+        }
+
+        form.spacer({ visible: hierarchyVisibleObs });
+        form.header("§7No especiales", { visible: hierarchyVisibleObs });
+        form.spacer({ visible: hierarchyVisibleObs });
 
         const hierarchyControls = buildControls(
           HIERARCHY_OPTIONS,
@@ -326,12 +397,14 @@ export function buildSystemView({ systemId, player, targetFaction, returnTo }: S
           factions,
           form,
           systemConfig.controlType,
-          false
+          false,
+          hierarchyVisibleObs
         );
+        // form.spacer({ visible: hierarchyVisibleObs });
 
-        form.spacer();
-        form.header("§6Especiales");
-        form.spacer();
+        form.spacer({ visible: groupVisibleObs });
+        form.header("§6Especiales", { visible: groupVisibleObs });
+        form.spacer({ visible: groupVisibleObs });
 
         const groupControls = buildControls(
           SPECIAL_GROUP_OPTIONS,
@@ -340,10 +413,13 @@ export function buildSystemView({ systemId, player, targetFaction, returnTo }: S
           factions,
           form,
           systemConfig.controlType,
-          true
+          true,
+          groupVisibleObs
         );
 
-        const intervalId = system.runInterval(() => {
+        let intervalId: number | null = null;
+
+        intervalId = system.runInterval(() => {
           try {
             const { counts, nametagsByKey } = buildCountsAndNametags(dimension, factions);
             updateControlLabels(hierarchyControls, groupControls, counts, nametagsByKey);
@@ -352,7 +428,6 @@ export function buildSystemView({ systemId, player, targetFaction, returnTo }: S
           }
         }, 20);
 
-        const session = commandMenuSessionStore.get(player.id);
         if (session) {
           session.registerInterval(intervalId);
         }
@@ -363,14 +438,34 @@ export function buildSystemView({ systemId, player, targetFaction, returnTo }: S
               if (idx === ctrl.lastAppliedIndex) return;
               if (idx < 0) return;
               const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
-              const feedback = applySystemToEntitiesForSystem(ctrl.key, selectedOption.value, selectedOption.label, factions, dimension, systemId, player, targetFaction, ctrl.label);
+              const feedback = applySystemToEntitiesForSystem(
+                ctrl.key,
+                selectedOption.value,
+                selectedOption.label,
+                factions,
+                dimension,
+                systemId,
+                player,
+                targetFaction,
+                ctrl.label
+              );
               feedbackText.setData(feedback);
               ctrl.lastAppliedIndex = idx;
             });
           } else {
             ctrl.obs.subscribe((enabled: boolean) => {
               if (enabled === ctrl.lastValue) return;
-              const feedback = applySystemToEntitiesForSystem(ctrl.key, enabled, enabled ? "Activado" : "Desactivado", factions, dimension, systemId, player, targetFaction, ctrl.label);
+              const feedback = applySystemToEntitiesForSystem(
+                ctrl.key,
+                enabled,
+                enabled ? "Activado" : "Desactivado",
+                factions,
+                dimension,
+                systemId,
+                player,
+                targetFaction,
+                ctrl.label
+              );
               feedbackText.setData(feedback);
               ctrl.lastValue = enabled;
             });
@@ -383,14 +478,34 @@ export function buildSystemView({ systemId, player, targetFaction, returnTo }: S
               if (idx === ctrl.lastAppliedIndex) return;
               if (idx < 0) return;
               const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
-              const feedback = applySystemToEntitiesForSystem(ctrl.key, selectedOption.value, selectedOption.label, factions, dimension, systemId, player, targetFaction, ctrl.label);
+              const feedback = applySystemToEntitiesForSystem(
+                ctrl.key,
+                selectedOption.value,
+                selectedOption.label,
+                factions,
+                dimension,
+                systemId,
+                player,
+                targetFaction,
+                ctrl.label
+              );
               feedbackText.setData(feedback);
               ctrl.lastAppliedIndex = idx;
             });
           } else {
             ctrl.obs.subscribe((enabled: boolean) => {
               if (enabled === ctrl.lastValue) return;
-              const feedback = applySystemToEntitiesForSystem(ctrl.key, enabled, enabled ? "Activado" : "Desactivado", factions, dimension, systemId, player, targetFaction, ctrl.label);
+              const feedback = applySystemToEntitiesForSystem(
+                ctrl.key,
+                enabled,
+                enabled ? "Activado" : "Desactivado",
+                factions,
+                dimension,
+                systemId,
+                player,
+                targetFaction,
+                ctrl.label
+              );
               feedbackText.setData(feedback);
               ctrl.lastValue = enabled;
             });
@@ -399,16 +514,16 @@ export function buildSystemView({ systemId, player, targetFaction, returnTo }: S
 
         const { counts, nametagsByKey } = buildCountsAndNametags(dimension, factions);
         updateControlLabels(hierarchyControls, groupControls, counts, nametagsByKey);
-
+        form.spacer();
         form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
-          try {
-            system.clearRun(intervalId);
-          } catch {
-            // intervalo ya limpiado o inválido
-          }
+          closeReason = "navigation";
           form.close();
           if (returnTo === "advanced") {
-            system.run(() => import("../panels/advancedPanel.js").then(({ showAdvancedPanel }) => showAdvancedPanel(player, targetFaction)));
+            system.run(() =>
+              import("../panels/advancedPanel.js").then(({ showAdvancedPanel }) =>
+                showAdvancedPanel(player, targetFaction)
+              )
+            );
           } else {
             system.run(() => import("../panels/mainPanel.js").then(({ showMainPanel }) => showMainPanel(player)));
           }
@@ -417,24 +532,32 @@ export function buildSystemView({ systemId, player, targetFaction, returnTo }: S
         form
           .show()
           .then((reason) => {
-            try {
-              system.clearRun(intervalId);
-            } catch {
-              // intervalo ya limpiado o inválido
-            }
-            debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: ${reason}`, "gray");
             if (reason === "ClientClosed") {
+              debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: X del cliente (${player.name})`, "gray");
               pauseSession(player.id);
+            } else if (reason === "UserBusy") {
+              debugWarn("commandMenuDDUI", `Sistema ${systemId} cerrado: UserBusy (${player.name})`, "yellow");
+              cleanupCommandMenuSession(player.id);
+            } else if (reason === "ServerClosed") {
+              if (closeReason === "navigation" && intervalId !== null) {
+                debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: navegación (${player.name})`, "gray");
+                if (session) {
+                  session.unregisterInterval(intervalId);
+                }
+              } else {
+                debugWarn(
+                  "commandMenuDDUI",
+                  `Sistema ${systemId} cerrado: ServerClosed sin razón (${player.name})`,
+                  "yellow"
+                );
+                cleanupCommandMenuSession(player.id);
+              }
             }
+            closeReason = undefined;
           })
           .catch((err) => {
-            try {
-              system.clearRun(intervalId);
-            } catch {
-              // intervalo ya limpiado o inválido
-            }
             debugWarn("commandMenuDDUI", `Error en form.show() sistema ${systemId}: ${err}`, "red");
-            cleanupSession(player.id);
+            cleanupCommandMenuSession(player.id);
           });
       }
     } catch (e) {

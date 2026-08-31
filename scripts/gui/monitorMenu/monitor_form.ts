@@ -11,13 +11,13 @@
  * - 2 labels (Foundation / Chaos) + divider entre facciones
  * - Dentro de cada label: normales y especiales como sub-secciones
  * - Navegación explícita: monitor → config → monitor
- * - Config persistida en world.setDynamicProperty vía monitor_state.ts
+ * - Config por jugador persistida con player.setDynamicProperty vía monitor_state.ts
  */
 
 import {
   CustomForm,
-  ObservableString,
   ObservableNumber,
+  ObservableString,
   DataDrivenScreenClosedReason,
   MessageBox,
 } from "@minecraft/server-ui";
@@ -29,130 +29,124 @@ import {
   MonitorConfigDefaults,
   MonitorConfigLabels,
   MonitorFaction,
-  MonitorLabels,
   MonitorButtons,
   MonitorTitles,
   formatFactionBlock,
   buildFactionSummary,
 } from "./monitor_config.js";
-import { loadMonitorConfig, saveMonitorConfig } from "./monitor_state.js";
+import { MonitorMenuSession, monitorMenuSessionStore } from "./monitor_session.js";
 import { debugWarn, debugMessage } from "../../utils/debug.js";
 
-let foundationText: ObservableString;
-let chaosText: ObservableString;
-
-export function initializeMonitorObservables(): void {
-  foundationText = new ObservableString(MonitorLabels.refreshing);
-  chaosText = new ObservableString(MonitorLabels.refreshing);
-  debugMessage("monitorCommand", "Observables del monitor inicializados en startup", "green");
-}
-
-let intervalId: number | null = null;
-
-let lastFoundationText: string | null = null;
-let lastChaosText: string | null = null;
-
-function refresh(player: Player): void {
+function refresh(session: MonitorMenuSession): void {
   try {
+    const config = session.getConfig();
     const foundationScan = buildFactionSummary(
-      scanActiveEntities(player.dimension, Factions.FOUNDATION),
-      monitorConfig.unitType === "normales" || monitorConfig.unitType === "ambos"
+      scanActiveEntities(session.player.dimension, Factions.FOUNDATION),
+      config.unitType === "normales" || config.unitType === "ambos"
     );
     const chaosScan = buildFactionSummary(
-      scanActiveEntities(player.dimension, Factions.CHAOS),
-      monitorConfig.unitType === "normales" || monitorConfig.unitType === "ambos"
+      scanActiveEntities(session.player.dimension, Factions.CHAOS),
+      config.unitType === "normales" || config.unitType === "ambos"
     );
 
     const foundationBlock = formatFactionBlock(
       foundationScan,
       MonitorTitles.foundation,
-      monitorConfig.unitType,
-      monitorConfig.normalListMode,
-      monitorConfig.specialListMode,
-      monitorConfig.sortBy
+      config.unitType,
+      config.normalListMode,
+      config.specialListMode,
+      config.sortBy
     );
     const chaosBlock = formatFactionBlock(
       chaosScan,
       MonitorTitles.chaos,
-      monitorConfig.unitType,
-      monitorConfig.normalListMode,
-      monitorConfig.specialListMode,
-      monitorConfig.sortBy
+      config.unitType,
+      config.normalListMode,
+      config.specialListMode,
+      config.sortBy
     );
 
-    if (foundationBlock !== lastFoundationText) {
-      foundationText.setData(foundationBlock);
-      lastFoundationText = foundationBlock;
-    }
-
-    if (chaosBlock !== lastChaosText) {
-      chaosText.setData(chaosBlock);
-      lastChaosText = chaosBlock;
-    }
+    session.getFoundationText().setData(foundationBlock);
+    session.getChaosText().setData(chaosBlock);
   } catch (e) {
     debugWarn("monitorCommand", `Error en refresco: ${e}`, "red");
   }
 }
 
-let monitorConfig: MonitorConfig = { ...MonitorConfigDefaults };
-
 export function showMonitorMenu(player: Player): void {
+  debugMessage("monitorCommand", `Mostrando monitor para ${player.name}`, "cyan");
+
   try {
-    debugMessage("monitorCommand", `Mostrando monitor para ${player.name}`, "cyan");
-
-    if (!foundationText || !chaosText) {
-      throw new Error("Observables no inicializados. Llama a initializeMonitorObservables() en startup.");
-    }
-
-    monitorConfig = loadMonitorConfig();
-    lastFoundationText = null;
-    lastChaosText = null;
-
-    const form = new CustomForm(player, MonitorTitles.main);
-
     system.run(() => {
       try {
+        let session = monitorMenuSessionStore.get(player.id);
+        if (!session) {
+          session = new MonitorMenuSession(player);
+          monitorMenuSessionStore.set(player.id, session);
+          debugMessage("monitorCommand", `Sesión de monitor creada para ${player.name}`, "green");
+        }
+
+        const foundationText = session.getFoundationText();
+        const chaosText = session.getChaosText();
+        const config = session.getConfig();
+
+        const form = new CustomForm(player, MonitorTitles.main);
+
         form.spacer();
         form.label(foundationText, {
-          visible: monitorConfig.faction === "ambas" || monitorConfig.faction === "foundation",
+          visible: config.faction === "ambas" || config.faction === "foundation",
         });
-        form.divider({ visible: monitorConfig.faction === "ambas" });
-        form.label(chaosText, { visible: monitorConfig.faction === "ambas" || monitorConfig.faction === "chaos" });
+        form.divider({ visible: config.faction === "ambas" });
+        form.label(chaosText, { visible: config.faction === "ambas" || config.faction === "chaos" });
         form.spacer();
+        let closeReason: "navigation" | undefined = undefined;
+
         form.button(MonitorButtons.config, () => {
           try {
+            closeReason = "navigation";
             form.close();
             showConfigMenu(player);
           } catch (e) {
             debugWarn("monitorCommand", `Error abriendo config desde monitor: ${e}`, "red");
           }
         });
-        form.button(MonitorButtons.close, () => {
-          form.close();
-        });
 
-        const intervalState = { current: null as number | null };
+        let intervalId: number | null = null;
+        if (!session.hasActiveIntervals()) {
+          intervalId = system.runInterval(() => {
+            refresh(session);
+          }, 20);
+          session.registerInterval(intervalId);
+        }
+
+        refresh(session);
 
         form
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
-            debugMessage("monitorCommand", `Monitor cerrado: ${reason}`, "gray");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
+            if (reason === "ClientClosed") {
+              debugMessage("monitorCommand", `Monitor cerrado: X del cliente (${player.name})`, "gray");
+              monitorMenuSessionStore.cleanup(player.id);
+            } else if (reason === "UserBusy") {
+              debugWarn("monitorCommand", `Monitor cerrado: UserBusy (${player.name})`, "yellow");
+              monitorMenuSessionStore.cleanup(player.id);
+            } else if (reason === "ServerClosed") {
+              if (closeReason === "navigation") {
+                debugMessage("monitorCommand", `Monitor cerrado: navegación a Config (${player.name})`, "gray");
+                if (intervalId !== null) {
+                  session.unregisterInterval(intervalId);
+                }
+              } else {
+                debugWarn("monitorCommand", `Monitor cerrado: ServerClosed sin razón (${player.name})`, "yellow");
+                monitorMenuSessionStore.cleanup(player.id);
+              }
             }
+            closeReason = undefined;
           })
           .catch((showError) => {
             debugWarn("monitorCommand", `Error en form.show(): ${showError}`, "red");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
-            }
+            monitorMenuSessionStore.cleanup(player.id);
           });
-
-        intervalState.current = system.runInterval(() => {
-          refresh(player);
-        }, 20);
       } catch (setupError) {
         debugWarn("monitorCommand", `Error configurando DDUI en system.run: ${setupError}`, "red");
       }
@@ -165,39 +159,81 @@ export function showMonitorMenu(player: Player): void {
   }
 }
 
-function getConfigText(): string {
-  const lines: string[] = [
-    `§bFacción: §r${MonitorConfigLabels.faction[monitorConfig.faction]}`,
-    `§eTipo: §r${MonitorConfigLabels.unitType[monitorConfig.unitType]}`,
-    `§aLista (No especiales): §r${MonitorConfigLabels.normalListMode[monitorConfig.normalListMode]}`,
-    `§dLista (Especiales): §r${MonitorConfigLabels.specialListMode[monitorConfig.specialListMode]}`,
-    `§cOrden: §r${MonitorConfigLabels.sortBy[monitorConfig.sortBy]}`,
-  ];
-  return lines.join("\n");
-}
-
 export function showConfigMenu(player: Player): void {
   try {
+    const session = monitorMenuSessionStore.get(player.id);
+    if (!session) {
+      debugWarn("monitorCommand", "No hay sesión de monitor activa para este jugador", "yellow");
+      return;
+    }
+
+    const config = session.getConfig();
+
     const form = new CustomForm(player, MonitorTitles.config);
 
     system.run(() => {
       try {
         const factionObs = new ObservableNumber(
-          monitorConfig.faction === "foundation" ? 0 : monitorConfig.faction === "chaos" ? 1 : 2,
+          config.faction === "foundation" ? 0 : config.faction === "chaos" ? 1 : 2,
           { clientWritable: true }
         );
         const unitTypeObs = new ObservableNumber(
-          monitorConfig.unitType === "especiales" ? 0 : monitorConfig.unitType === "normales" ? 1 : 2,
+          config.unitType === "especiales" ? 0 : config.unitType === "normales" ? 1 : 2,
           { clientWritable: true }
         );
-        const normalListModeObs = new ObservableNumber(monitorConfig.normalListMode === "completa" ? 0 : 1, {
+        const normalListModeObs = new ObservableNumber(config.normalListMode === "completa" ? 0 : 1, {
           clientWritable: true,
         });
-        const specialListModeObs = new ObservableNumber(monitorConfig.specialListMode === "completa" ? 0 : 1, {
+        const specialListModeObs = new ObservableNumber(config.specialListMode === "completa" ? 0 : 1, {
           clientWritable: true,
         });
-        const sortByObs = new ObservableNumber(monitorConfig.sortBy === "alpha_asc" ? 0 : 1, { clientWritable: true });
-        const configTextObs = new ObservableString(getConfigText());
+        const sortByObs = new ObservableNumber(config.sortBy === "alpha_asc" ? 0 : 1, { clientWritable: true });
+        const configTextObs = new ObservableString(session.getConfigText());
+
+        factionObs.subscribe(() => {
+          const newConfig: MonitorConfig = {
+            ...session.getConfig(),
+            faction: factionObs.getData() === 0 ? "foundation" : factionObs.getData() === 1 ? "chaos" : "ambas",
+          };
+          session.saveConfig(newConfig);
+          configTextObs.setData(session.getConfigText());
+        });
+
+        unitTypeObs.subscribe(() => {
+          const newConfig: MonitorConfig = {
+            ...session.getConfig(),
+            unitType: unitTypeObs.getData() === 0 ? "especiales" : unitTypeObs.getData() === 1 ? "normales" : "ambos",
+          };
+          session.saveConfig(newConfig);
+          configTextObs.setData(session.getConfigText());
+        });
+
+        normalListModeObs.subscribe(() => {
+          const newConfig: MonitorConfig = {
+            ...session.getConfig(),
+            normalListMode: normalListModeObs.getData() === 0 ? "completa" : "breve",
+          };
+          session.saveConfig(newConfig);
+          configTextObs.setData(session.getConfigText());
+        });
+
+        specialListModeObs.subscribe(() => {
+          const newConfig: MonitorConfig = {
+            ...session.getConfig(),
+            specialListMode: specialListModeObs.getData() === 0 ? "completa" : "breve",
+          };
+          session.saveConfig(newConfig);
+          configTextObs.setData(session.getConfigText());
+        });
+
+        sortByObs.subscribe(() => {
+          const newConfig: MonitorConfig = {
+            ...session.getConfig(),
+            sortBy: sortByObs.getData() === 0 ? "alpha_asc" : "alpha_desc",
+          };
+          session.saveConfig(newConfig);
+          configTextObs.setData(session.getConfigText());
+        });
 
         form.label(configTextObs);
         form.spacer();
@@ -230,37 +266,29 @@ export function showConfigMenu(player: Player): void {
         ]);
 
         form.spacer();
-        form.button(MonitorButtons.save, () => {
-          try {
-            monitorConfig.faction =
-              factionObs.getData() === 0 ? "foundation" : factionObs.getData() === 1 ? "chaos" : "ambas";
-            monitorConfig.unitType =
-              unitTypeObs.getData() === 0 ? "especiales" : unitTypeObs.getData() === 1 ? "normales" : "ambos";
-            monitorConfig.normalListMode = normalListModeObs.getData() === 0 ? "completa" : "breve";
-            monitorConfig.specialListMode = specialListModeObs.getData() === 0 ? "completa" : "breve";
-            monitorConfig.sortBy = sortByObs.getData() === 0 ? "alpha_asc" : "alpha_desc";
-            saveMonitorConfig(monitorConfig);
-            configTextObs.setData(getConfigText());
-          } catch (e) {
-            debugWarn("monitorCommand", `Error guardando config: ${e}`, "red");
-            form.close();
-          }
-        });
+        let closeReason: "navigation" | undefined = undefined;
+
         form.button(
           MonitorButtons.reset,
           () => {
+            closeReason = "navigation";
             form.close();
             system.run(() => {
+              debugMessage("monitorCommand", "Navegando a MessageBox de confirmación de restablecimiento", "gray");
               new MessageBox(player, "Restablecer ajustes")
                 .body("¿Seguro que querés volver a los ajustes predeterminados del monitor?")
                 .button1("Sí, restablecer")
                 .button2("Cancelar", "No, volver a la configuración")
                 .show()
                 .then((response) => {
+                  debugMessage(
+                    "monitorCommand",
+                    `MessageBox cerrado, volviendo a configuración: ${response.closeReason}`,
+                    "gray"
+                  );
                   if (response.selection === 1) {
                     try {
-                      monitorConfig = { ...MonitorConfigDefaults };
-                      saveMonitorConfig(monitorConfig);
+                      session.resetToDefaults();
                     } catch (e) {
                       debugWarn("monitorCommand", `Error reseteando config: ${e}`, "red");
                     }
@@ -275,18 +303,34 @@ export function showConfigMenu(player: Player): void {
           { tooltip: "§cVuelve a los ajustes predeterminados del monitor" }
         );
 
-        form.button(MonitorButtons.cancel, () => {
+        form.button(MonitorButtons.back, () => {
+          closeReason = "navigation";
           form.close();
+          system.run(() => showMonitorMenu(player));
         });
 
         form
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
-            debugMessage("monitorCommand", `Config cerrada: ${reason}`, "gray");
-            showMonitorMenu(player);
+            if (reason === "ClientClosed") {
+              debugMessage("monitorCommand", `Config cerrada: X del cliente (${player.name})`, "gray");
+              monitorMenuSessionStore.cleanup(player.id);
+            } else if (reason === "UserBusy") {
+              debugWarn("monitorCommand", `Config cerrada: UserBusy (${player.name})`, "yellow");
+              monitorMenuSessionStore.cleanup(player.id);
+            } else if (reason === "ServerClosed") {
+              if (closeReason === "navigation") {
+                debugMessage("monitorCommand", `Config cerrada: navegación (${player.name})`, "gray");
+              } else {
+                debugWarn("monitorCommand", `Config cerrada: ServerClosed sin razón (${player.name})`, "yellow");
+                monitorMenuSessionStore.cleanup(player.id);
+              }
+            }
+            closeReason = undefined;
           })
           .catch((showError) => {
             debugWarn("monitorCommand", `Error en form.show() de config: ${showError}`, "red");
+            monitorMenuSessionStore.cleanup(player.id);
             showMonitorMenu(player);
           });
       } catch (setupError) {

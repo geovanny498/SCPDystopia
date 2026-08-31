@@ -1,21 +1,20 @@
-// scripts/gui/interactMenu/interact_ddui_form.ts
+// scripts/gui/interactMenu/ddui/interact_ddui_form.ts
 
 import { CustomForm, ObservableNumber, DataDrivenScreenClosedReason } from "@minecraft/server-ui";
 import { Player, system, Entity } from "@minecraft/server";
-import { debugWarn, debugMessage } from "../../utils/debug.js";
-import { getEntityFactionInfo } from "../commandMenu/model/menu_faction.js";
-import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, type EntityConfig } from "./gui.js";
-import { stripColorCodes } from "../monitorMenu/monitor_config.js";
-import type { MenuCategory } from "./config.js";
+import { debugWarn, debugMessage } from "../../../utils/debug.js";
+import { getEntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
+import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, type EntityConfig } from "../gui.js";
+import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
+import type { MenuCategory } from "../config.js";
 import {
   getOrCreateInteractDDUISession,
-  removeInteractDDUISession,
-  buildObservableFromEntries,
+  interactMenuSessionStore,
   refreshStatus,
   getLastFeedbackText,
 } from "./interact_ddui_shared.js";
-import { getUnitGroup } from "../commandMenu/model/menu_groups.js";
-import { SpecialGroupLabels } from "../commandMenu/menu_config.js";
+import { getUnitGroup } from "../../commandMenu/model/menu_groups.js";
+import { SpecialGroupLabels } from "../../commandMenu/menu_config.js";
 
 export function showInteractDDUI(
   player: Player,
@@ -36,7 +35,6 @@ export function showInteractDDUI(
 
     system.run(() => {
       try {
-        const intervalState = { current: null as number | null };
         session.observables.actionResultText.setData(getLastFeedbackText(entity.id, "main"));
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
@@ -61,13 +59,7 @@ export function showInteractDDUI(
           if (globalCat.submenu) continue;
           const entries = globalCat.entries || [];
           if (entries.length === 0) continue;
-          const built = buildObservableFromEntries(
-            entries,
-            session,
-            undefined,
-            typeId,
-            globalCat.category
-          );
+          const built = session.buildObservableFromEntries(entries, undefined, typeId, globalCat.category);
           form.dropdown(stripColorCodes(globalCat.category), built.obs, built.items, { disabled: built.disabled });
         }
 
@@ -75,9 +67,8 @@ export function showInteractDDUI(
         for (const variantCat of variantCategories) {
           const entries = variantCat.entries || [];
           if (entries.length === 0) continue;
-          const variantObs = buildObservableFromEntries(
+          const variantObs = session.buildObservableFromEntries(
             entries,
-            session,
             variantCat.dynamicProperty,
             typeId,
             variantCat.category
@@ -88,11 +79,14 @@ export function showInteractDDUI(
         }
 
         form.spacer();
+        let closeReason: "navigation" | undefined = undefined;
+        let intervalId: number | null = null;
 
         const advancedMenuCat = cfg.global.find((c: MenuCategory) => c.id === "advanced_menu");
         if (advancedMenuCat) {
           form.button(stripColorCodes(advancedMenuCat.category), () => {
             try {
+              closeReason = "navigation";
               form.close();
               system.run(() => {
                 import("./interact_ddui_systems.js").then(({ showInteractDDUISystems }) => {
@@ -109,6 +103,7 @@ export function showInteractDDUI(
         if (unitManagementCat) {
           form.button(stripColorCodes(unitManagementCat.category), () => {
             try {
+              closeReason = "navigation";
               form.close();
               system.run(() => {
                 import("./interact_ddui_systems.js").then(({ showInteractDDUIManagement }) => {
@@ -123,6 +118,7 @@ export function showInteractDDUI(
 
         form.button("Historial", () => {
           try {
+            closeReason = "navigation";
             form.close();
             system.run(() => {
               import("./interact_ddui_systems.js").then(({ showInteractDDUHistory }) => {
@@ -134,37 +130,37 @@ export function showInteractDDUI(
           }
         });
 
-        form.spacer();
-
-        form.button("Cerrar", () => {
-          removeInteractDDUISession(player, entity);
-          form.close();
-        });
-
         form
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
-            debugMessage("interactDDUI", `DDUI cerrado: ${reason}`, "gray");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
-            }
             if (reason === "ClientClosed") {
-              removeInteractDDUISession(player, entity);
+              debugMessage("interactDDUI", `DDUI cerrado: X del cliente (${player.name})`, "gray");
+              interactMenuSessionStore.cleanup(player.id);
+            } else if (reason === "UserBusy") {
+              debugWarn("interactDDUI", `DDUI cerrado: UserBusy (${player.name})`, "yellow");
+              interactMenuSessionStore.cleanup(player.id);
+            } else if (reason === "ServerClosed") {
+              if (closeReason === "navigation") {
+                debugMessage("interactDDUI", `DDUI cerrado: navegación (${player.name})`, "gray");
+                if (intervalId !== null) {
+                  session.unregisterInterval(intervalId);
+                }
+              } else {
+                debugWarn("interactDDUI", `DDUI cerrado: ServerClosed sin razón (${player.name})`, "yellow");
+                interactMenuSessionStore.cleanup(player.id);
+              }
             }
+            closeReason = undefined;
           })
           .catch((showError) => {
             debugWarn("interactDDUI", `Error en form.show(): ${showError}`, "red");
-            if (intervalState.current !== null) {
-              system.clearRun(intervalState.current);
-              intervalState.current = null;
-            }
-            removeInteractDDUISession(player, entity);
+            interactMenuSessionStore.cleanup(player.id);
           });
 
-        intervalState.current = system.runInterval(() => {
+        intervalId = system.runInterval(() => {
           refreshAndUpdateStatus();
         }, 20);
+        session.registerInterval(intervalId);
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando DDUI en system.run: ${setupError}`, "red");
         try {

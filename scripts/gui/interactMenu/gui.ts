@@ -2,7 +2,7 @@
 import { world, system, EquipmentSlot, Player, Entity } from "@minecraft/server";
 import { ActionFormData, ActionFormResponse, ModalFormData } from "@minecraft/server-ui";
 import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
-import { debugWarn } from "../../utils/debug.js";
+import { debugWarn, debugMessage } from "../../utils/debug.js";
 
 // Utilizar la misma configuración que el menú de comandos para detectar
 // qué eventos son de taming y mapear cambios de sistema en la entidad
@@ -19,7 +19,7 @@ import {
 import { getEntityFactionInfo } from "../commandMenu/model/menu_faction.js";
 import { tryAutoTame } from "../commandMenu/core/menu_apply.js";
 import { setUnitGroup } from "../commandMenu/model/menu_groups.js";
-import { showInteractDDUI } from "./interact_ddui_form.js";
+import { showInteractDDUI } from "./ddui/interact_ddui_form.js";
 
 export interface EntityConfig {
   specific: MenuCategory[];
