@@ -11,13 +11,14 @@ import {
   GROUP_LABELS,
   SYSTEM_PANEL_FEEDBACK_INITIAL,
 } from "../../../shared/systemCatalog.js";
-import { cleanupCommandMenuSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
+import { commandMenuSessionStore } from "../sessionStore.js";
 import { showMainPanel } from "./mainPanel.js";
 import { scanActiveUnits, invalidateScanCache, invalidateEntityQueryCache } from "../../model/menu_entity_scanner.js";
 import { setUnitGroup } from "../../model/menu_groups.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { compareNametags } from "../../../../utils/nametagSort.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
+import { getGroupsOrderForSystems, SpecialGroups, getGroupsOrderForAssignment, SpecialGroupLabels } from "../../menu_config.js";
 
 export function showGroupsPanel(player: Player, targetFaction: string = "foundation"): void {
   system.run(() => showGroupsByFaction(player, targetFaction));
@@ -36,7 +37,7 @@ function showGroupsByFaction(player: Player, faction: string): void {
     form.label(PANEL_DESCRIPTIONS.groupsByFaction);
     form.spacer();
 
-    const dimension = world.getDimension("overworld");
+    const dimension = player.dimension;
     if (!dimension) {
       player.sendMessage("§c[SCPDystopia] Dimensión no disponible.");
       return;
@@ -46,11 +47,12 @@ function showGroupsByFaction(player: Player, faction: string): void {
 
     const groupCounts: Record<string, number> = {};
     for (const entity of scanResult.entities) {
+      if (!entity.isSpecial) continue;
       const group = entity.group ?? "noGroup";
       groupCounts[group] = (groupCounts[group] ?? 0) + 1;
     }
 
-    const groupOrder = ["groupA", "groupB", "groupC", "groupD", "noGroup"];
+    const groupOrder = getGroupsOrderForSystems();
     for (let i = 0; i < groupOrder.length; i++) {
       const groupId = groupOrder[i];
       const label = GROUP_LABELS[groupId as keyof typeof GROUP_LABELS] ?? groupId;
@@ -96,23 +98,27 @@ function showGroupsByFaction(player: Player, faction: string): void {
       .then((reason) => {
         if (reason === "ClientClosed") {
           debugMessage("commandMenuDDUI", `Grupos por Facción cerrado: X del cliente (${player.name})`, "gray");
-          pauseSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
           debugWarn("commandMenuDDUI", `Grupos por Facción cerrado: UserBusy (${player.name})`, "yellow");
-          cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Grupos por Facción cerrado: navegación (${player.name})`, "gray");
           } else {
-            debugWarn("commandMenuDDUI", `Grupos por Facción cerrado: ServerClosed sin razón (${player.name})`, "yellow");
-            cleanupCommandMenuSession(player.id);
+            debugWarn(
+              "commandMenuDDUI",
+              `Grupos por Facción cerrado: ServerClosed sin razón (${player.name})`,
+              "yellow"
+            );
+            commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() grupos por facción: ${err}`, "red");
-        cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showGroupsByFaction: ${e}`, "red");
@@ -121,7 +127,7 @@ function showGroupsByFaction(player: Player, faction: string): void {
 
 function showBucketAssignment(player: Player, faction: string, bucketId: string): void {
   try {
-    const dimension = world.getDimension("overworld");
+    const dimension = player.dimension;
     if (!dimension) {
       player.sendMessage("§c[SCPDystopia] Dimensión no disponible.");
       return;
@@ -149,22 +155,42 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
     form.spacer();
 
     const nametags = Object.keys(bucket.nametags).sort(compareNametags);
-    const groupOptions = [
-      { value: "groupA", label: GROUP_LABELS.groupA },
-      { value: "groupB", label: GROUP_LABELS.groupB },
-      { value: "groupC", label: GROUP_LABELS.groupC },
-      { value: "groupD", label: GROUP_LABELS.groupD },
-      { value: "noGroup", label: GROUP_LABELS.noGroup },
-    ];
+    const groupOptions = getGroupsOrderForAssignment().map((groupId) => ({
+      value: groupId,
+      label: SpecialGroupLabels[groupId] ?? groupId,
+    }));
 
     const items = groupOptions.map((opt, idx) => ({ label: stripColorCodes(opt.label), value: idx }));
+
+    const prioritySystemOrder = getGroupsOrderForSystems();
+    const priorityMap: Record<string, number> = {};
+    for (let p = 0; p < prioritySystemOrder.length; p++) {
+      priorityMap[prioritySystemOrder[p]] = prioritySystemOrder.length - p;
+    }
+
+    const nametagPreferredGroup: Record<string, string> = {};
+    const nametagMaxPriority: Record<string, number> = {};
+
+    for (const nt of nametags) {
+      const entitiesForTag = scanResult.nametagGroups[nt] || [];
+      nametagPreferredGroup[nt] = SpecialGroups.NO_GROUP;
+      nametagMaxPriority[nt] = 0;
+
+      for (const scanned of entitiesForTag) {
+        const entityGroup = scanned.group ?? SpecialGroups.NO_GROUP;
+        const currentPriority = priorityMap[entityGroup] || 1;
+        if (currentPriority > nametagMaxPriority[nt]) {
+          nametagMaxPriority[nt] = currentPriority;
+          nametagPreferredGroup[nt] = entityGroup;
+        }
+      }
+    }
 
     const controls: { nametag: string; obs: ObservableNumber; lastAppliedIndex: number }[] = [];
     for (const nt of nametags) {
       const ntCount = bucket.nametags[nt] || 0;
-      const entitiesForTag = scanResult.nametagGroups[nt] || [];
-      const currentGroup = entitiesForTag.length > 0 ? (entitiesForTag[0].group ?? "noGroup") : "noGroup";
-      const currentIndex = groupOptions.findIndex((opt) => opt.value === currentGroup);
+      const preferredGroup = nametagPreferredGroup[nt] ?? SpecialGroups.NO_GROUP;
+      const currentIndex = groupOptions.findIndex((opt) => opt.value === preferredGroup);
       const initialIndex = currentIndex >= 0 ? currentIndex : groupOptions.findIndex((opt) => opt.value === "noGroup");
       const obs = new ObservableNumber(initialIndex >= 0 ? initialIndex : 0, { clientWritable: true });
       obs.subscribe((newIndex) => {
@@ -196,23 +222,27 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       .then((reason) => {
         if (reason === "ClientClosed") {
           debugMessage("commandMenuDDUI", `Asignación por bucket cerrada: X del cliente (${player.name})`, "gray");
-          pauseSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
           debugWarn("commandMenuDDUI", `Asignación por bucket cerrada: UserBusy (${player.name})`, "yellow");
-          cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Asignación por bucket cerrada: navegación (${player.name})`, "gray");
           } else {
-            debugWarn("commandMenuDDUI", `Asignación por bucket cerrada: ServerClosed sin razón (${player.name})`, "yellow");
-            cleanupCommandMenuSession(player.id);
+            debugWarn(
+              "commandMenuDDUI",
+              `Asignación por bucket cerrada: ServerClosed sin razón (${player.name})`,
+              "yellow"
+            );
+            commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() asignación por bucket: ${err}`, "red");
-        cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showBucketAssignment: ${e}`, "red");
@@ -221,7 +251,7 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
 
 function applyGroupToNametag(player: Player, faction: string, nametag: string, groupId: string): void {
   try {
-    const dimension = world.getDimension("overworld");
+    const dimension = player.dimension;
     if (!dimension) {
       player.sendMessage("§c[SCPDystopia] Dimensión no disponible.");
       return;

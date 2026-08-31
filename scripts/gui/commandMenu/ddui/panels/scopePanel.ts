@@ -6,7 +6,7 @@ import { debugWarn, debugMessage } from "../../../../utils/debug.js";
 import { PANEL_TITLES, PANEL_DESCRIPTIONS, BACK_BUTTON_LABEL } from "../../../shared/systemCatalog.js";
 import { SCOPE_TOGGLE_LABEL } from "../../../shared/entityScope.js";
 import { loadScope, saveScope, getScopeSummary } from "../../../commandMenu/model/menu_scope.js";
-import { cleanupCommandMenuSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
+import { commandMenuSessionStore } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
 
@@ -73,23 +73,23 @@ export function showScopePanel(player: Player): void {
       .then((reason) => {
         if (reason === "ClientClosed") {
           debugMessage("commandMenuDDUI", `Scope cerrado: X del cliente (${player.name})`, "gray");
-          pauseSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
           debugWarn("commandMenuDDUI", `Scope cerrado: UserBusy (${player.name})`, "yellow");
-          cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Scope cerrado: navegación (${player.name})`, "gray");
           } else {
             debugWarn("commandMenuDDUI", `Scope cerrado: ServerClosed sin razón (${player.name})`, "yellow");
-            cleanupCommandMenuSession(player.id);
+            commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() scope: ${err}`, "red");
-        cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showScopePanel: ${e}`, "red");

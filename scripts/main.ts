@@ -4,7 +4,7 @@ import { getTeam } from "./utils/teams.js";
 import { projectileConfig } from "./utils/projectileConfig.js";
 import { applyDamageAndCfg } from "./utils/damage.js";
 import { debugMessage, debugWarn } from "./utils/debug.js";
-import { interactMenuSessionStore, cleanupEntityData } from "./gui/interactMenu/ddui/interact_ddui_shared.js";
+import { interactMenuSessionStore } from "./gui/interactMenu/ddui/interact_ddui_shared.js";
 
 interface ProjectileConfigEntry {
   damage: number;
@@ -74,6 +74,6 @@ world.afterEvents.entityRemove.subscribe((event) => {
   const removedEntityId = event.removedEntityId;
   const entityType = event.typeId;
   debugWarn("entityDeath", `Entidad eliminada: ${entityType} Id: ${removedEntityId}`, "magenta");
-  cleanupEntityData(removedEntityId);
+  interactMenuSessionStore.cleanupEntityData(removedEntityId);
   interactMenuSessionStore.cleanupByEntity(removedEntityId);
 });

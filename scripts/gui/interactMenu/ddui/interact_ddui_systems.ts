@@ -14,12 +14,8 @@ import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, isAllowedByRule, t
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
 import type { MenuCategory } from "../config.js";
 import {
-  getOrCreateInteractDDUISession,
   interactMenuSessionStore,
   refreshStatus,
-  getLastFeedbackText,
-  setLastFeedbackText,
-  getHistory,
 } from "./interact_ddui_shared.js";
 import {
   getEntitySystemState,
@@ -41,7 +37,7 @@ export function showInteractDDUISystems(
   typeId: string
 ): void {
   try {
-    const session = getOrCreateInteractDDUISession(player, entity, cfg, soldierName, displayName, typeId);
+    const session = interactMenuSessionStore.getOrCreate(player, entity, cfg, soldierName, displayName, typeId);
     session.viewId = "systems";
     debugMessage("interactDDUI", `Mostrando Vista Sistemas Avanzados para ${player.name} en ${typeId}`, "cyan");
 
@@ -49,7 +45,7 @@ export function showInteractDDUISystems(
 
     system.run(() => {
       try {
-        session.observables.actionResultText.setData(getLastFeedbackText(entity.id, "systems"));
+        session.observables.actionResultText.setData(interactMenuSessionStore.getLastFeedbackText(entity.id, "systems"));
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();
@@ -184,7 +180,7 @@ export function showInteractDDUIManagement(
   typeId: string
 ): void {
   try {
-    const session = getOrCreateInteractDDUISession(player, entity, cfg, soldierName, displayName, typeId);
+    const session = interactMenuSessionStore.getOrCreate(player, entity, cfg, soldierName, displayName, typeId);
     session.viewId = "management";
     debugMessage("interactDDUI", `Mostrando Vista Gestión y Estado para ${player.name} en ${typeId}`, "cyan");
 
@@ -194,7 +190,7 @@ export function showInteractDDUIManagement(
 
     system.run(() => {
       try {
-        session.observables.actionResultText.setData(getLastFeedbackText(entity.id, "management"));
+        session.observables.actionResultText.setData(interactMenuSessionStore.getLastFeedbackText(entity.id, "management"));
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();
@@ -296,7 +292,7 @@ export function showInteractDDUIManagement(
                   debugWarn("interactDDUI", `Error asignando grupo: ${e}`, "red");
                   const text = `§cError asignando grupo`;
                   session.observables.actionResultText.setData(text);
-                  setLastFeedbackText(entity.id, session.viewId, text);
+                  interactMenuSessionStore.setLastFeedbackText(entity.id, session.viewId, text);
                   lastGroupIndex = newIndex;
                 }
               }
@@ -401,7 +397,7 @@ export function showInteractDDUHistory(
   typeId: string
 ): void {
   try {
-    const session = getOrCreateInteractDDUISession(player, entity, cfg, soldierName, displayName, typeId);
+    const session = interactMenuSessionStore.getOrCreate(player, entity, cfg, soldierName, displayName, typeId);
     session.viewId = "history";
     debugMessage("interactDDUI", `Mostrando Historial para ${player.name} en ${typeId}`, "cyan");
 
@@ -411,7 +407,7 @@ export function showInteractDDUHistory(
       try {
         const historyObs = new ObservableString("");
         function updateHistoryText(): void {
-          const entries = getHistory(entity.id);
+          const entries = interactMenuSessionStore.getHistory(entity.id);
           let historyText = `§6Historial de cambios (10 más recientes):§r\n`;
           if (entries.length === 0) {
             historyText += `§7Sin cambios registrados.`;

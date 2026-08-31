@@ -2,14 +2,14 @@
 
 import { world } from "@minecraft/server";
 import { debugWarn, debugMessage } from "./debug.js";
-import { cleanupCommandMenuSession } from "../gui/commandMenu/ddui/sessionStore.js";
+import { commandMenuSessionStore } from "../gui/commandMenu/ddui/sessionStore.js";
 import { interactMenuSessionStore } from "../gui/interactMenu/ddui/interact_ddui_shared.js";
 import { monitorMenuSessionStore } from "../gui/monitorMenu/monitor_session.js";
 
 export function registerLifecycleCleanups(): void {
   world.afterEvents.playerLeave.subscribe((event) => {
     try {
-      cleanupCommandMenuSession(event.playerId);
+      commandMenuSessionStore.cleanup(event.playerId);
     } catch (e) {
       debugWarn("lifecycle", `Error limpiando commandMenu session: ${e}`, "red");
     }

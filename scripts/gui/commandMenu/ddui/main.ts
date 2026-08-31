@@ -4,7 +4,7 @@ import { Player, system, world } from "@minecraft/server";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
 import { getRoleInfo } from "./helpers/roleHelpers.js";
 import { showMainPanel } from "./panels/mainPanel.js";
-import { cleanupCommandMenuSession } from "./sessionStore.js";
+import { commandMenuSessionStore } from "./sessionStore.js";
 
 export function openCommandMenuDDUI(player: Player): void {
   try {
@@ -21,3 +21,4 @@ export function openCommandMenuDDUI(player: Player): void {
     player.sendMessage("§c[SCPDystopia] Error al abrir el menú.");
   }
 }
+

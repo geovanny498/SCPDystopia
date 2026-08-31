@@ -14,7 +14,7 @@ import {
   SYSTEM_VIEW_FILTER_OPTIONS,
 } from "../../../shared/systemCatalog.js";
 import { PlayerPermissionManager, FactionId } from "../../../shared/playerPermissionManager.js";
-import { cleanupCommandMenuSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
+import { commandMenuSessionStore } from "../sessionStore.js";
 import { showAdvancedPanel } from "../panels/advancedPanel.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
@@ -534,10 +534,10 @@ export function buildSystemView({
           .then((reason) => {
             if (reason === "ClientClosed") {
               debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: X del cliente (${player.name})`, "gray");
-              pauseSession(player.id);
+              commandMenuSessionStore.cleanup(player.id);
             } else if (reason === "UserBusy") {
               debugWarn("commandMenuDDUI", `Sistema ${systemId} cerrado: UserBusy (${player.name})`, "yellow");
-              cleanupCommandMenuSession(player.id);
+              commandMenuSessionStore.cleanup(player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation" && intervalId !== null) {
                 debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: navegación (${player.name})`, "gray");
@@ -550,14 +550,14 @@ export function buildSystemView({
                   `Sistema ${systemId} cerrado: ServerClosed sin razón (${player.name})`,
                   "yellow"
                 );
-                cleanupCommandMenuSession(player.id);
+                commandMenuSessionStore.cleanup(player.id);
               }
             }
             closeReason = undefined;
           })
           .catch((err) => {
             debugWarn("commandMenuDDUI", `Error en form.show() sistema ${systemId}: ${err}`, "red");
-            cleanupCommandMenuSession(player.id);
+              commandMenuSessionStore.cleanup(player.id);
           });
       }
     } catch (e) {

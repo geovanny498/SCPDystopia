@@ -10,7 +10,7 @@ import {
   BACK_BUTTON_LABEL,
   FACTION_DISPLAY_NAMES,
 } from "../../../shared/systemCatalog.js";
-import { cleanupCommandMenuSession, pauseSession, commandMenuSessionStore } from "../sessionStore.js";
+import { commandMenuSessionStore } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { getHistoryEntries } from "../helpers/historyStore.js";
 
@@ -61,23 +61,23 @@ export function showHistoryPanel(player: Player, targetFaction?: string): void {
       .then((reason) => {
         if (reason === "ClientClosed") {
           debugMessage("commandMenuDDUI", `Historial cerrado: X del cliente (${player.name})`, "gray");
-          pauseSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
           debugWarn("commandMenuDDUI", `Historial cerrado: UserBusy (${player.name})`, "yellow");
-          cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Historial cerrado: navegación (${player.name})`, "gray");
           } else {
             debugWarn("commandMenuDDUI", `Historial cerrado: ServerClosed sin razón (${player.name})`, "yellow");
-            cleanupCommandMenuSession(player.id);
+            commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() historial: ${err}`, "red");
-        cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showHistoryPanel: ${e}`, "red");

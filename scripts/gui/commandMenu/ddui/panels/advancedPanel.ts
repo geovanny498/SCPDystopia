@@ -12,7 +12,7 @@ import {
   CATALOG_SYSTEMS,
 } from "../../../shared/systemCatalog.js";
 import { showScopePanel } from "./scopePanel.js";
-import { cleanupCommandMenuSession, pauseSession } from "../sessionStore.js";
+import { commandMenuSessionStore } from "../sessionStore.js";
 import { buildSystemView } from "../builders/systemBuilder.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 
@@ -58,23 +58,23 @@ export function showAdvancedPanel(player: Player, targetFaction: string = "found
       .then((reason) => {
         if (reason === "ClientClosed") {
           debugMessage("commandMenuDDUI", `Configuración Avanzada cerrada: X del cliente (${player.name})`, "gray");
-          pauseSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
           debugWarn("commandMenuDDUI", `Configuración Avanzada cerrada: UserBusy (${player.name})`, "yellow");
-          cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Configuración Avanzada cerrada: navegación (${player.name})`, "gray");
           } else {
             debugWarn("commandMenuDDUI", `Configuración Avanzada cerrada: ServerClosed sin razón (${player.name})`, "yellow");
-            cleanupCommandMenuSession(player.id);
+            commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() avanzada: ${err}`, "red");
-        cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showAdvancedPanel: ${e}`, "red");

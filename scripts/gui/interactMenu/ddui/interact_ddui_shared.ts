@@ -2,6 +2,7 @@
 
 import { ObservableNumber, ObservableString } from "@minecraft/server-ui";
 import { Entity, Player, EntityVariantComponent, system } from "@minecraft/server";
+import { formatLocalTimeShort } from "../../shared/timeHelpers.js";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
 import {
   getEntitySystemsStatus,
@@ -33,24 +34,49 @@ import type { MenuEntry } from "../config.js";
 import { SYSTEM_SHORT_NAMES } from "../config.js";
 
 export class InteractDDUISession {
+  /** Identificador del jugador dueño de la sesión. */
   readonly playerId: string;
+  /** Referencia al `Player` de Bedrock. */
   readonly player: Player;
+  /** Entidad que está siendo gestionada por la sesión. */
   readonly entity: Entity;
+  /** Configuración de menú efectiva para la entidad. */
   readonly cfg: EntityConfig;
+  /** Nombre interno del soldado. */
   readonly soldierName: string;
+  /** Nombre a mostrar en el UI. */
   readonly displayName: string;
+  /** `typeId` de la entidad. */
   readonly typeId: string;
+  /** Vista actual del menú (`main`, `systems`, `management`, `history`). */
   viewId: string;
+  /** Información de facción cacheada para la entidad. */
   factionInfo: EntityFactionInfo | null;
+  /** Observables compartidos con los forms para refresco reactivo. */
   readonly observables: {
+    /** Label de vida actual/máxima. */
     healthText: ObservableString;
+    /** Detalle de sistemas configurados. */
     systemStateDetailText: ObservableString;
+    /** Texto del último cambio aplicado. */
     actionResultText: ObservableString;
+    /** Detalle de facción/grupo/jerarquía. */
     groupDetailText: ObservableString;
   };
+  /** Ids de intervalos registrados en la sesión, limpiados en `cleanup()`. */
   private readonly intervalIds: number[] = [];
+  /** Flag para evitar limpieza múltiple. */
   private cleaned = false;
 
+  /**
+   * @param playerId Identificador del jugador.
+   * @param player Referencia al `Player` de Bedrock.
+   * @param entity Entidad objetivo del menú.
+   * @param cfg Configuración de menú de la entidad.
+   * @param soldierName Nombre del soldado (interno).
+   * @param displayName Nombre a mostrar.
+   * @param typeId `typeId` de la entidad.
+   */
   constructor(
     playerId: string,
     player: Player,
@@ -77,10 +103,18 @@ export class InteractDDUISession {
     };
   }
 
+  /**
+   * Registra un `system.runInterval` para asegurar su cleanup con la sesión.
+   * @param intervalId Id devuelto por `system.runInterval`.
+   */
   registerInterval(intervalId: number): void {
     this.intervalIds.push(intervalId);
   }
 
+  /**
+   * Desregistra y limpia un intervalo previamente registrado.
+   * @param intervalId Id a remover de la sesión.
+   */
   unregisterInterval(intervalId: number): void {
     const idx = this.intervalIds.indexOf(intervalId);
     if (idx >= 0) {
@@ -98,11 +132,18 @@ export class InteractDDUISession {
     return `§7Último cambio: ${context}\n§7-> §f${value}`;
   }
 
+  /**
+   * Registra feedback del último cambio en los observables, en el map global
+   * de feedback por entidad y en el historial. Es idempotente respecto al
+   * feedback observable (lo actualiza) y append-only en el historial.
+   * @param context Contexto del cambio (sistema o categoría).
+   * @param value Valor aplicado.
+   */
   recordFeedback(context: string, value: string): void {
     const text = InteractDDUISession.buildFeedbackText(context, value);
     this.observables.actionResultText.setData(text);
-    setLastFeedbackText(this.entity.id, this.viewId, text);
-    pushHistory(this.entity.id, {
+    interactMenuSessionStore.setLastFeedbackText(this.entity.id, this.viewId, text);
+    interactMenuSessionStore.pushHistory(this.entity.id, {
       viewId: this.viewId,
       context,
       value,
@@ -111,6 +152,13 @@ export class InteractDDUISession {
     });
   }
 
+  /**
+   * Aplica la acción asociada a una entrada de menú (evento, asignación de
+   * grupo, cambio de config) sobre la entidad objetivo y registra feedback.
+   * @param entry Entrada de menú seleccionada.
+   * @param dynamicProperty Propiedad dinámica opcional a escribir.
+   * @param categoryLabel Etiqueta de categoría para el feedback.
+   */
   applyEntryAction(entry: MenuEntry, dynamicProperty?: string, categoryLabel?: string): void {
     const action = entry.action;
     const event = entry.event;
@@ -128,7 +176,7 @@ export class InteractDDUISession {
         debugWarn("interactDDUI", `Error asignando grupo: ${e}`, "red");
         const text = `§cError asignando grupo`;
         this.observables.actionResultText.setData(text);
-        setLastFeedbackText(entity.id, viewId, text);
+        interactMenuSessionStore.setLastFeedbackText(entity.id, viewId, text);
       }
       return;
     }
@@ -141,7 +189,7 @@ export class InteractDDUISession {
         debugWarn("interactDDUI", `Error cambiando config global: ${e}`, "red");
         const text = `§cError config global`;
         this.observables.actionResultText.setData(text);
-        setLastFeedbackText(entity.id, viewId, text);
+        interactMenuSessionStore.setLastFeedbackText(entity.id, viewId, text);
       }
       return;
     }
@@ -155,7 +203,7 @@ export class InteractDDUISession {
         debugWarn("interactDDUI", `Error cambiando config global: ${e}`, "red");
         const text = `§cError config global`;
         this.observables.actionResultText.setData(text);
-        setLastFeedbackText(entity.id, viewId, text);
+        interactMenuSessionStore.setLastFeedbackText(entity.id, viewId, text);
       }
       return;
     }
@@ -194,6 +242,16 @@ export class InteractDDUISession {
     }
   }
 
+  /**
+   * Construye un observable para una lista de entradas de menú, resolviendo
+   * el valor inicial a partir del estado de la entidad y disparando la
+   * acción correspondiente al cambiar de selección.
+   * @param entries Entradas que componen el dropdown.
+   * @param dynamicProperty Propiedad dinámica opcional asociada a la entrada.
+   * @param typeId `typeId` de la entidad (para reglas de habilitación).
+   * @param categoryLabel Etiqueta de la categoría para feedback.
+   * @returns Observable, items listos para `form.dropdown` y flag de deshabilitado.
+   */
   buildObservableFromEntries(
     entries: MenuEntry[],
     dynamicProperty?: string,
@@ -293,6 +351,10 @@ export class InteractDDUISession {
     return { obs, items, disabled: !allowed };
   }
 
+  /**
+   * Limpia los intervalos registrados en la sesión. Idempotente: la segunda
+   * invocación no produce efectos.
+   */
   cleanup(): void {
     if (this.cleaned) return;
     this.cleaned = true;
@@ -307,17 +369,124 @@ export class InteractDDUISession {
   }
 }
 
+/**
+ * Interfaz que encapsula el acceso al Map de sesiones del interactMenu DDUI y
+ * a los Maps auxiliares (feedback por entidad, historial). Toda operación
+ * sobre el estado del menú o de las entidades debe pasar por aquí.
+ */
 export interface InteractMenuSessionStore {
+  /**
+   * Recupera la sesión del jugador.
+   * @param playerId Identificador del jugador.
+   * @returns La sesión si existe, o `undefined`.
+   */
   get(playerId: string): InteractDDUISession | undefined;
+  /**
+   * Registra una sesión en el store.
+   * @param playerId Identificador del jugador.
+   * @param session Sesión a registrar.
+   */
   set(playerId: string, session: InteractDDUISession): void;
+  /**
+   * Elimina la entrada del jugador del store sin invocar cleanup.
+   * @param playerId Identificador del jugador.
+   */
   delete(playerId: string): void;
+  /** Limpia todas las sesiones y los datos auxiliares de las entidades. */
   clear(): void;
+  /**
+   * Limpia los recursos de la sesión del jugador y la elimina del store.
+   * @param playerId Identificador del jugador.
+   */
   cleanup(playerId: string): void;
+  /**
+   * Limpia todas las sesiones asociadas a una entidad (cuando la entidad muere
+   * o es removida) y los datos auxiliares de esa entidad.
+   * @param entityId Identificador de la entidad.
+   */
   cleanupByEntity(entityId: string): void;
+  /**
+   * Crea y registra una nueva sesión para el jugador.
+   * @param playerId Identificador del jugador.
+   * @param player Referencia al `Player` de Bedrock.
+   * @param entity Entidad objetivo.
+   * @param cfg Configuración de menú de la entidad.
+   * @param soldierName Nombre del soldado.
+   * @param displayName Nombre a mostrar.
+   * @param typeId `typeId` de la entidad.
+   * @returns La sesión recién creada.
+   */
+  create(playerId: string, player: Player, entity: Entity, cfg: EntityConfig, soldierName: string, displayName: string, typeId: string): InteractDDUISession;
+  /**
+   * Devuelve la sesión del jugador si existe; si no, la crea y la registra.
+   * @param player Referencia al `Player` de Bedrock.
+   * @param entity Entidad objetivo.
+   * @param cfg Configuración de menú de la entidad.
+   * @param soldierName Nombre del soldado.
+   * @param displayName Nombre a mostrar.
+   * @param typeId `typeId` de la entidad.
+   * @returns La sesión existente o recién creada.
+   */
+  getOrCreate(player: Player, entity: Entity, cfg: EntityConfig, soldierName: string, displayName: string, typeId: string): InteractDDUISession;
+  /**
+   * Devuelve el último texto de feedback registrado para una vista de la entidad.
+   * @param entityId Identificador de la entidad.
+   * @param viewId Identificador de la vista (`main`, `systems`, etc.).
+   * @returns Texto almacenado, o el texto por defecto si no hay nada.
+   */
+  getLastFeedbackText(entityId: string, viewId: string): string;
+  /**
+   * Registra el último texto de feedback para una vista de la entidad.
+   * @param entityId Identificador de la entidad.
+   * @param viewId Identificador de la vista.
+   * @param text Texto a almacenar.
+   */
+  setLastFeedbackText(entityId: string, viewId: string, text: string): void;
+  /**
+   * Devuelve el historial reciente de cambios aplicados a la entidad.
+   * @param entityId Identificador de la entidad.
+   * @returns Lista de entradas (puede estar vacía).
+   */
+  getHistory(entityId: string): ChangeEntry[];
+  /**
+   * Inserta una entrada al inicio del historial de la entidad (limitado a 10).
+   * @param entityId Identificador de la entidad.
+   * @param entry Entrada a registrar.
+   */
+  pushHistory(entityId: string, entry: ChangeEntry): void;
+  /**
+   * Elimina los datos auxiliares (feedback e historial) asociados a una entidad.
+   * Se invoca cuando la entidad muere o es removida.
+   * @param entityId Identificador de la entidad.
+   */
+  cleanupEntityData(entityId: string): void;
+}
+
+/**
+ * Entrada de historial para un cambio aplicado a una entidad desde el menú.
+ */
+export interface ChangeEntry {
+  /** Vista del menú donde se aplicó el cambio. */
+  viewId: string;
+  /** Contexto del cambio (sistema o categoría). */
+  context: string;
+  /** Valor aplicado. */
+  value: string;
+  /** Timestamp en milisegundos. */
+  timestamp: number;
+  /** Hora local formateada corta. */
+  localTime: string;
 }
 
 const interactDDUISessions = new Map<string, InteractDDUISession>();
+const lastFeedback = new Map<string, Record<string, string>>();
+const history = new Map<string, ChangeEntry[]>();
 
+/**
+ * Store singleton de sesiones y datos auxiliares del interactMenu DDUI. Punto
+ * único de acceso para sesiones por jugador, feedback por entidad y
+ * historial por entidad.
+ */
 export const interactMenuSessionStore: InteractMenuSessionStore = {
   get(playerId: string) {
     return interactDDUISessions.get(playerId);
@@ -339,6 +508,7 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
     if (!session) return;
     session.cleanup();
     interactDDUISessions.delete(playerId);
+    debugMessage("interactDDUI", `Sesión limpiada y eliminada: ${session.playerId}`, "gray");
   },
   cleanupByEntity(entityId: string): void {
     for (const [playerId, session] of interactDDUISessions) {
@@ -348,92 +518,62 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
       }
     }
   },
+  create(playerId: string, player: Player, entity: Entity, cfg: EntityConfig, soldierName: string, displayName: string, typeId: string): InteractDDUISession {
+    const session = new InteractDDUISession(playerId, player, entity, cfg, soldierName, displayName, typeId);
+    interactDDUISessions.set(playerId, session);
+    debugMessage("interactDDUI", `Sesión creada: ${playerId}`, "green");
+    return session;
+  },
+  getOrCreate(player: Player, entity: Entity, cfg: EntityConfig, soldierName: string, displayName: string, typeId: string): InteractDDUISession {
+    const playerId = player.id;
+    let session = interactDDUISessions.get(playerId);
+    if (!session) {
+      session = this.create(playerId, player, entity, cfg, soldierName, displayName, typeId);
+    }
+    return session;
+  },
+  getLastFeedbackText(entityId: string, viewId: string): string {
+    const entityMap = lastFeedback.get(entityId);
+    if (entityMap) {
+      const viewText = entityMap[viewId];
+      if (viewText) return viewText;
+    }
+    return "§7Último cambio: §fN/A";
+  },
+  setLastFeedbackText(entityId: string, viewId: string, text: string): void {
+    let entityMap = lastFeedback.get(entityId);
+    if (!entityMap) {
+      entityMap = {};
+      lastFeedback.set(entityId, entityMap);
+    }
+    entityMap[viewId] = text;
+  },
+  getHistory(entityId: string): ChangeEntry[] {
+    return history.get(entityId) || [];
+  },
+  pushHistory(entityId: string, entry: ChangeEntry): void {
+    let entries = history.get(entityId);
+    if (!entries) {
+      entries = [];
+      history.set(entityId, entries);
+    }
+    entries.unshift(entry);
+    if (entries.length > 10) {
+      entries.length = 10;
+    }
+  },
+  cleanupEntityData(entityId: string): void {
+    lastFeedback.delete(entityId);
+    history.delete(entityId);
+  },
 };
 
-export function createInteractMenuSession(
-  playerId: string,
-  player: Player,
-  entity: Entity,
-  cfg: EntityConfig,
-  soldierName: string,
-  displayName: string,
-  typeId: string
-): InteractDDUISession {
-  const session = new InteractDDUISession(playerId, player, entity, cfg, soldierName, displayName, typeId);
-  interactMenuSessionStore.set(playerId, session);
-  debugMessage("interactDDUI", `Sesión creada: ${playerId}`, "green");
-  return session;
-}
-
-export function getOrCreateInteractDDUISession(
-  player: Player,
-  entity: Entity,
-  cfg: EntityConfig,
-  soldierName: string,
-  displayName: string,
-  typeId: string
-): InteractDDUISession {
-  const playerId = player.id;
-  let session = interactMenuSessionStore.get(playerId);
-  if (!session) {
-    session = createInteractMenuSession(playerId, player, entity, cfg, soldierName, displayName, typeId);
-  }
-  return session;
-}
-
-const lastFeedback = new Map<string, Record<string, string>>();
-
-export function getLastFeedbackText(entityId: string, viewId: string): string {
-  const entityMap = lastFeedback.get(entityId);
-  if (entityMap) {
-    const viewText = entityMap[viewId];
-    if (viewText) return viewText;
-  }
-  return "§7Último cambio: §fN/A";
-}
-
-export function setLastFeedbackText(entityId: string, viewId: string, text: string): void {
-  let entityMap = lastFeedback.get(entityId);
-  if (!entityMap) {
-    entityMap = {};
-    lastFeedback.set(entityId, entityMap);
-  }
-  entityMap[viewId] = text;
-}
-
-export interface ChangeEntry {
-  viewId: string;
-  context: string;
-  value: string;
-  timestamp: number;
-  localTime: string;
-}
-
-const history = new Map<string, ChangeEntry[]>();
-
-export function pushHistory(entityId: string, entry: ChangeEntry): void {
-  let entries = history.get(entityId);
-  if (!entries) {
-    entries = [];
-    history.set(entityId, entries);
-  }
-  entries.unshift(entry);
-  if (entries.length > 10) {
-    entries.length = 10;
-  }
-}
-
-export function getHistory(entityId: string): ChangeEntry[] {
-  return history.get(entityId) || [];
-}
-
-export function cleanupEntityData(entityId: string): void {
-  lastFeedback.delete(entityId);
-  history.delete(entityId);
-}
-
-import { formatLocalTimeShort } from "../../shared/timeHelpers.js";
-
+/**
+ * Genera los labels de estado para una entidad a partir de su facción.
+ * @param entity Entidad a inspeccionar.
+ * @param factionInfo Información de facción cacheada (puede ser `null`).
+ * @returns Labels listos para mostrar en el form (vida, sistemas, detalle, config).
+ */
 export function refreshStatus(
   entity: Entity,
   factionInfo: EntityFactionInfo | null

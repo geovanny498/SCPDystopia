@@ -8,10 +8,8 @@ import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, type EntityConfig 
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
 import type { MenuCategory } from "../config.js";
 import {
-  getOrCreateInteractDDUISession,
   interactMenuSessionStore,
   refreshStatus,
-  getLastFeedbackText,
 } from "./interact_ddui_shared.js";
 import { getUnitGroup } from "../../commandMenu/model/menu_groups.js";
 import { SpecialGroupLabels } from "../../commandMenu/menu_config.js";
@@ -25,7 +23,7 @@ export function showInteractDDUI(
   typeId: string
 ): void {
   try {
-    const session = getOrCreateInteractDDUISession(player, entity, cfg, soldierName, displayName, typeId);
+    const session = interactMenuSessionStore.getOrCreate(player, entity, cfg, soldierName, displayName, typeId);
     session.viewId = "main";
     debugMessage("interactDDUI", `Mostrando interact DDUI para ${player.name} en ${typeId}`, "cyan");
 
@@ -35,7 +33,7 @@ export function showInteractDDUI(
 
     system.run(() => {
       try {
-        session.observables.actionResultText.setData(getLastFeedbackText(entity.id, "main"));
+        session.observables.actionResultText.setData(interactMenuSessionStore.getLastFeedbackText(entity.id, "main"));
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();

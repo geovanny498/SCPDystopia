@@ -20,9 +20,6 @@ import { showGroupsPanel } from "./groupsPanel.js";
 import { showHistoryPanel } from "./historyPanel.js";
 import { showScopePanel } from "./scopePanel.js";
 import {
-  cleanupCommandMenuSession,
-  pauseSession,
-  createSession,
   commandMenuSessionStore,
   CommandMenuSession,
 } from "../sessionStore.js";
@@ -51,7 +48,7 @@ export function showMainPanel(player: Player): void {
         session.faction = helmetFaction ?? faction;
       }
     } else {
-      session = createSession(player.id, player.name, player, isAdmin ? faction : (helmetFaction ?? faction), role);
+      session = commandMenuSessionStore.create(player.id, player.name, player, isAdmin ? faction : (helmetFaction ?? faction), role);
     }
 
     const savedTarget = session.formState.targetFaction as string | undefined;
@@ -176,24 +173,24 @@ export function showMainPanel(player: Player): void {
       .then((reason) => {
         if (reason === "ClientClosed") {
           debugMessage("commandMenuDDUI", `Panel Principal cerrado: X del cliente (${player.name})`, "gray");
-          pauseSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
           debugWarn("commandMenuDDUI", `Panel Principal cerrado: UserBusy (${player.name})`, "yellow");
-          cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Panel Principal cerrado: navegación (${player.name})`, "gray");
             session.stopHelmetWatch();
           } else {
             debugWarn("commandMenuDDUI", `Panel Principal cerrado: ServerClosed sin razón (${player.name})`, "yellow");
-            cleanupCommandMenuSession(player.id);
+            commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error mostrando Panel Principal: ${err}`, "red");
-        cleanupCommandMenuSession(player.id);
+          commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showMainPanel: ${e}`, "red");
