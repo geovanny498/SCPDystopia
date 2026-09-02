@@ -14,6 +14,11 @@ export function registerLifecycleCleanups(): void {
       debugWarn("lifecycle", `Error limpiando commandMenu session: ${e}`, "red");
     }
     try {
+      commandMenuSessionStore.clearKey(event.playerId);
+    } catch (e) {
+      debugWarn("lifecycle", `Error limpiando commandMenu feedback: ${e}`, "red");
+    }
+    try {
       interactMenuSessionStore.cleanup(event.playerId);
     } catch (e) {
       debugWarn("lifecycle", `Error limpiando interactMenu session: ${e}`, "red");

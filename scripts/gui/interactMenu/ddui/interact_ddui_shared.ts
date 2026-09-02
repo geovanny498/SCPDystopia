@@ -32,6 +32,13 @@ import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
 import { tryAutoTame } from "../../commandMenu/core/menu_apply.js";
 import type { MenuEntry } from "../config.js";
 import { SYSTEM_SHORT_NAMES } from "../config.js";
+import {
+  DDUIFeedbackEntry,
+  DDUIFeedbackPresenter,
+  DDUIFeedbackStore,
+  INTERACT_PANEL_FEEDBACK_DEFAULT,
+  formatFeedbackText,
+} from "../../shared/dduiFeedback.js";
 
 export class InteractDDUISession {
   /** Identificador del jugador dueño de la sesión. */
@@ -58,11 +65,13 @@ export class InteractDDUISession {
     healthText: ObservableString;
     /** Detalle de sistemas configurados. */
     systemStateDetailText: ObservableString;
-    /** Texto del último cambio aplicado. */
+    /** Texto del último cambio aplicado. Se rehidrata desde el presenter al cambiar de vista. */
     actionResultText: ObservableString;
     /** Detalle de facción/grupo/jerarquía. */
     groupDetailText: ObservableString;
   };
+  /** Presenter de feedback visual de la vista activa. */
+  feedbackPresenter: DDUIFeedbackPresenter;
   /** Ids de intervalos registrados en la sesión, limpiados en `cleanup()`. */
   private readonly intervalIds: number[] = [];
   /** Flag para evitar limpieza múltiple. */
@@ -95,12 +104,36 @@ export class InteractDDUISession {
     this.typeId = typeId;
     this.viewId = "main";
     this.factionInfo = getEntityFactionInfo(entity);
+    const initialText = interactMenuSessionStore.getLastFeedbackText(entity.id, "main");
+    this.feedbackPresenter = new DDUIFeedbackPresenter(
+      entity.id,
+      "main",
+      interactMenuSessionStore,
+      initialText
+    );
     this.observables = {
       healthText: new ObservableString("§cVida: §a-- / --"),
       systemStateDetailText: new ObservableString(""),
-      actionResultText: new ObservableString("§7Último cambio: §fN/A"),
+      actionResultText: this.feedbackPresenter.getObservable(),
       groupDetailText: new ObservableString(""),
     };
+  }
+
+  /**
+   * Cambia la vista activa de la sesión y rehidrata el presenter desde el
+   * store con el `viewId` correspondiente. Llamado por cada vista del menú.
+   * @param viewId Identificador de la nueva vista.
+   */
+  setView(viewId: string): void {
+    this.viewId = viewId;
+    const initial = interactMenuSessionStore.getLastFeedbackText(this.entity.id, viewId);
+    this.feedbackPresenter = new DDUIFeedbackPresenter(
+      this.entity.id,
+      viewId,
+      interactMenuSessionStore,
+      initial
+    );
+    this.observables.actionResultText = this.feedbackPresenter.getObservable();
   }
 
   /**
@@ -128,21 +161,17 @@ export class InteractDDUISession {
     }
   }
 
-  private static buildFeedbackText(context: string, value: string): string {
-    return `§7Último cambio: ${context}\n§7-> §f${value}`;
-  }
-
   /**
-   * Registra feedback del último cambio en los observables, en el map global
-   * de feedback por entidad y en el historial. Es idempotente respecto al
-   * feedback observable (lo actualiza) y append-only en el historial.
+   * Registra feedback del último cambio en el presenter (que actualiza el
+   * `ObservableString` y el store) y en el historial por entidad. El
+   * historial es independiente del feedback visual y mantiene los últimos
+   * 10 cambios para la vista de historial del interactMenu.
    * @param context Contexto del cambio (sistema o categoría).
    * @param value Valor aplicado.
+   * @param status Estado semántico (`"ok"`, `"warn"`, `"error"`). Por defecto `"ok"`.
    */
-  recordFeedback(context: string, value: string): void {
-    const text = InteractDDUISession.buildFeedbackText(context, value);
-    this.observables.actionResultText.setData(text);
-    interactMenuSessionStore.setLastFeedbackText(this.entity.id, this.viewId, text);
+  recordFeedback(context: string, value: string, status: "ok" | "warn" | "error" = "ok"): void {
+    this.feedbackPresenter.present({ context, value, status });
     interactMenuSessionStore.pushHistory(this.entity.id, {
       viewId: this.viewId,
       context,
@@ -164,7 +193,6 @@ export class InteractDDUISession {
     const event = entry.event;
     const entity = this.entity;
     const player = this.player;
-    const viewId = this.viewId;
 
     if (action === "assign_group" && entry.value) {
       try {
@@ -174,9 +202,7 @@ export class InteractDDUISession {
         this.recordFeedback("Asignar grupo", groupLabel);
       } catch (e) {
         debugWarn("interactDDUI", `Error asignando grupo: ${e}`, "red");
-        const text = `§cError asignando grupo`;
-        this.observables.actionResultText.setData(text);
-        interactMenuSessionStore.setLastFeedbackText(entity.id, viewId, text);
+        this.recordFeedback("Asignar grupo", "Error", "error");
       }
       return;
     }
@@ -187,9 +213,7 @@ export class InteractDDUISession {
         this.recordFeedback("Configuración", entry.value ? "Global" : "Local");
       } catch (e) {
         debugWarn("interactDDUI", `Error cambiando config global: ${e}`, "red");
-        const text = `§cError config global`;
-        this.observables.actionResultText.setData(text);
-        interactMenuSessionStore.setLastFeedbackText(entity.id, viewId, text);
+        this.recordFeedback("Configuración", "Error", "error");
       }
       return;
     }
@@ -201,9 +225,7 @@ export class InteractDDUISession {
         this.recordFeedback("Configuración", !current ? "Activada" : "Desactivada");
       } catch (e) {
         debugWarn("interactDDUI", `Error cambiando config global: ${e}`, "red");
-        const text = `§cError config global`;
-        this.observables.actionResultText.setData(text);
-        interactMenuSessionStore.setLastFeedbackText(entity.id, viewId, text);
+        this.recordFeedback("Configuración", "Error", "error");
       }
       return;
     }
@@ -238,6 +260,8 @@ export class InteractDDUISession {
         }
         const context = categoryLabel || "Variante";
         this.recordFeedback(context, entry.label);
+      } else if (event && !triggeredEvent) {
+        this.recordFeedback(categoryLabel || "Variante", entry.label, "error");
       }
     }
   }
@@ -352,8 +376,10 @@ export class InteractDDUISession {
   }
 
   /**
-   * Limpia los intervalos registrados en la sesión. Idempotente: la segunda
-   * invocación no produce efectos.
+   * Limpia los intervalos registrados en la sesión y libera el presenter de
+   * feedback de la vista activa. Idempotente. **No** toca el store:
+   * `lastFeedback` y `history` por entidad sobreviven a cierres del menú y
+   * se limpian con `cleanupByEntity` cuando la entidad muere/removida.
    */
   cleanup(): void {
     if (this.cleaned) return;
@@ -365,6 +391,7 @@ export class InteractDDUISession {
         // intervalo ya limpiado o inválido
       }
     }
+    this.feedbackPresenter.reset();
     debugMessage("interactDDUI", `Sesión limpiada: ${this.playerId}`, "gray");
   }
 }
@@ -374,7 +401,7 @@ export class InteractDDUISession {
  * a los Maps auxiliares (feedback por entidad, historial). Toda operación
  * sobre el estado del menú o de las entidades debe pasar por aquí.
  */
-export interface InteractMenuSessionStore {
+export interface InteractMenuSessionStore extends DDUIFeedbackStore {
   /**
    * Recupera la sesión del jugador.
    * @param playerId Identificador del jugador.
@@ -479,15 +506,17 @@ export interface ChangeEntry {
 }
 
 const interactDDUISessions = new Map<string, InteractDDUISession>();
-const lastFeedback = new Map<string, Record<string, string>>();
+const lastFeedback = new Map<string, Record<string, DDUIFeedbackEntry>>();
 const history = new Map<string, ChangeEntry[]>();
 
 /**
  * Store singleton de sesiones y datos auxiliares del interactMenu DDUI. Punto
  * único de acceso para sesiones por jugador, feedback por entidad y
- * historial por entidad.
+ * historial por entidad. Implementa `DDUIFeedbackStore` para el feedback
+ * visual por vista (vida = existencia de la entidad; se limpia con
+ * `cleanupByEntity`).
  */
-export const interactMenuSessionStore: InteractMenuSessionStore = {
+export const interactMenuSessionStore: InteractMenuSessionStore & DDUIFeedbackStore = {
   get(playerId: string) {
     return interactDDUISessions.get(playerId);
   },
@@ -532,21 +561,40 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
     }
     return session;
   },
-  getLastFeedbackText(entityId: string, viewId: string): string {
+  getLast(entityId: string, viewId: string): DDUIFeedbackEntry | null {
     const entityMap = lastFeedback.get(entityId);
-    if (entityMap) {
-      const viewText = entityMap[viewId];
-      if (viewText) return viewText;
-    }
-    return "§7Último cambio: §fN/A";
+    if (!entityMap) return null;
+    return entityMap[viewId] ?? null;
   },
-  setLastFeedbackText(entityId: string, viewId: string, text: string): void {
+  setLast(entityId: string, viewId: string, entry: DDUIFeedbackEntry): void {
     let entityMap = lastFeedback.get(entityId);
     if (!entityMap) {
       entityMap = {};
       lastFeedback.set(entityId, entityMap);
     }
-    entityMap[viewId] = text;
+    entityMap[viewId] = entry;
+  },
+  clearKey(entityId: string): void {
+    lastFeedback.delete(entityId);
+  },
+  clearAll(): void {
+    lastFeedback.clear();
+  },
+  getLastFeedbackText(entityId: string, viewId: string): string {
+    const entry = this.getLast(entityId, viewId);
+    if (entry) return formatFeedbackText(entry);
+    return INTERACT_PANEL_FEEDBACK_DEFAULT;
+  },
+  setLastFeedbackText(entityId: string, viewId: string, text: string): void {
+    // Compatibilidad hacia atrás: se mantiene la firma legacy que recibe un
+    // texto formateado. Internamente se descompone para almacenar la entry.
+    this.setLast(entityId, viewId, {
+      context: "Vista",
+      value: text,
+      status: "ok",
+      timestamp: Date.now(),
+      viewId,
+    });
   },
   getHistory(entityId: string): ChangeEntry[] {
     return history.get(entityId) || [];

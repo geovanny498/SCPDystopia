@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/ddui/panels/groupsPanel.ts
 
 import { Player, system, world } from "@minecraft/server";
-import { CustomForm, ObservableNumber, ObservableString } from "@minecraft/server-ui";
+import { CustomForm, ObservableNumber } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
 import {
   PANEL_TITLES,
@@ -9,8 +9,8 @@ import {
   GROUP_PANEL_BUTTONS,
   FACTION_DISPLAY_NAMES,
   GROUP_LABELS,
-  SYSTEM_PANEL_FEEDBACK_INITIAL,
 } from "../../../shared/systemCatalog.js";
+import { SYSTEM_PANEL_FEEDBACK_INITIAL } from "../../../shared/dduiFeedback.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { showMainPanel } from "./mainPanel.js";
 import { scanActiveUnits, invalidateScanCache, invalidateEntityQueryCache } from "../../model/menu_entity_scanner.js";
@@ -133,6 +133,12 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       return;
     }
 
+    const session = commandMenuSessionStore.get(player.id);
+    if (!session) {
+      player.sendMessage("§c[SCPDystopia] Sesión no encontrada para el menú de comandos.");
+      return;
+    }
+
     const scanResult = scanActiveUnits(dimension, faction);
     const bucket = scanResult.buckets[bucketId];
     if (!bucket) {
@@ -150,8 +156,8 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
     form.label(`§7Rol: §f${stripColorCodes(bucket.label)} §8(${bucket.unitCount} unidades)`);
     form.spacer();
 
-    const feedbackText = new ObservableString(SYSTEM_PANEL_FEEDBACK_INITIAL);
-    form.label(feedbackText);
+    const feedbackPresenter = session.getOrCreateFeedbackPresenter("bucket_assignment", SYSTEM_PANEL_FEEDBACK_INITIAL);
+    form.label(feedbackPresenter.getObservable());
     form.spacer();
 
     const nametags = Object.keys(bucket.nametags).sort(compareNametags);
@@ -212,11 +218,6 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       system.run(() => showGroupsByFaction(player, faction));
     });
 
-    const session = commandMenuSessionStore.get(player.id);
-    if (session) {
-      session.currentFormFeedback = feedbackText;
-    }
-
     form
       .show()
       .then((reason) => {
@@ -267,7 +268,6 @@ function applyGroupToNametag(player: Player, faction: string, nametag: string, g
     }
 
     const groupLabel = GROUP_LABELS[groupId as keyof typeof GROUP_LABELS] ?? groupId;
-    const message = `§a✓ §7${groupLabel} → ${nametag} §8(${appliedCount} unidades)`;
     if (appliedCount > 0) {
       player.sendMessage(
         `§a[SCPDystopia] §7${groupLabel} asignado a ${appliedCount} unidad/es de ${nametag} §fen ${FACTION_DISPLAY_NAMES[faction as keyof typeof FACTION_DISPLAY_NAMES]}.`
@@ -275,8 +275,12 @@ function applyGroupToNametag(player: Player, faction: string, nametag: string, g
     }
 
     const session = commandMenuSessionStore.get(player.id);
-    if (session && session.currentFormFeedback) {
-      session.currentFormFeedback.setData(message);
+    if (session) {
+      session.getOrCreateFeedbackPresenter("bucket_assignment", SYSTEM_PANEL_FEEDBACK_INITIAL).present({
+        context: groupLabel,
+        value: `${nametag} (${appliedCount} unidades)`,
+        status: "ok",
+      });
     }
 
     addHistoryEntry({

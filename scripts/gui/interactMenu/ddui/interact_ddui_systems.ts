@@ -38,14 +38,13 @@ export function showInteractDDUISystems(
 ): void {
   try {
     const session = interactMenuSessionStore.getOrCreate(player, entity, cfg, soldierName, displayName, typeId);
-    session.viewId = "systems";
+    session.setView("systems");
     debugMessage("interactDDUI", `Mostrando Vista Sistemas Avanzados para ${player.name} en ${typeId}`, "cyan");
 
     const form = new CustomForm(player, `§6Sistemas Avanzados`);
 
     system.run(() => {
       try {
-        session.observables.actionResultText.setData(interactMenuSessionStore.getLastFeedbackText(entity.id, "systems"));
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();
@@ -181,7 +180,7 @@ export function showInteractDDUIManagement(
 ): void {
   try {
     const session = interactMenuSessionStore.getOrCreate(player, entity, cfg, soldierName, displayName, typeId);
-    session.viewId = "management";
+    session.setView("management");
     debugMessage("interactDDUI", `Mostrando Vista Gestión y Estado para ${player.name} en ${typeId}`, "cyan");
 
     const factionInfo = session.factionInfo;
@@ -190,7 +189,6 @@ export function showInteractDDUIManagement(
 
     system.run(() => {
       try {
-        session.observables.actionResultText.setData(interactMenuSessionStore.getLastFeedbackText(entity.id, "management"));
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();
@@ -290,9 +288,7 @@ export function showInteractDDUIManagement(
                   }
                 } catch (e) {
                   debugWarn("interactDDUI", `Error asignando grupo: ${e}`, "red");
-                  const text = `§cError asignando grupo`;
-                  session.observables.actionResultText.setData(text);
-                  interactMenuSessionStore.setLastFeedbackText(entity.id, session.viewId, text);
+                  session.recordFeedback("Asignar grupo", "Error", "error");
                   lastGroupIndex = newIndex;
                 }
               }
@@ -398,7 +394,7 @@ export function showInteractDDUHistory(
 ): void {
   try {
     const session = interactMenuSessionStore.getOrCreate(player, entity, cfg, soldierName, displayName, typeId);
-    session.viewId = "history";
+    session.setView("history");
     debugMessage("interactDDUI", `Mostrando Historial para ${player.name} en ${typeId}`, "cyan");
 
     const form = new CustomForm(player, `§dHistorial`);

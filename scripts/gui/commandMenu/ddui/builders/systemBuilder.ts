@@ -6,13 +6,13 @@ import { debugWarn, debugMessage } from "../../../../utils/debug.js";
 import {
   CATALOG_SYSTEMS,
   BACK_BUTTON_LABEL,
-  SYSTEM_PANEL_FEEDBACK_INITIAL,
   FACTION_DISPLAY_NAMES,
   PANEL_TITLES,
   SPECIAL_GROUP_OPTIONS,
   HIERARCHY_OPTIONS,
   SYSTEM_VIEW_FILTER_OPTIONS,
 } from "../../../shared/systemCatalog.js";
+import { SYSTEM_PANEL_FEEDBACK_INITIAL, type DDUIFeedbackEntry, DDUIFeedbackStatus } from "../../../shared/dduiFeedback.js";
 import { PlayerPermissionManager, FactionId } from "../../../shared/playerPermissionManager.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { showAdvancedPanel } from "../panels/advancedPanel.js";
@@ -216,7 +216,7 @@ function applySystemToEntitiesForSystem(
   player: Player,
   targetFaction: string | undefined,
   label: string
-): string {
+): DDUIFeedbackEntry | null {
   try {
     const appliedEntries: string[] = [];
     const allEligible: { entity: Entity; factionInfo: any }[] = [];
@@ -272,7 +272,6 @@ function applySystemToEntitiesForSystem(
     const displayName = stripColorCodes(CATALOG_SYSTEMS[systemId].displayName);
     const cleanLabel = stripColorCodes(label);
     const cleanValue = stripColorCodes(valueLabel);
-    const feedback = `§a✓ §7${displayName} [${cleanLabel}]: §f${cleanValue} §8(${summary})`;
 
     const partialState: Record<string, Record<string, unknown>> = {};
     for (const fac of factions) {
@@ -284,21 +283,24 @@ function applySystemToEntitiesForSystem(
       debugWarn("commandMenuDDUI", `Error guardando estado de sistema ${systemId}: ${e}`, "red");
     }
 
-    const session = commandMenuSessionStore.get(player.id);
-    if (session) {
-      addHistoryEntry({
-        playerName: player.name,
-        faction: targetFaction ?? "foundation",
-        systemShortName: getSystemShortName(systemId),
-        key: cleanLabel,
-        value: cleanValue,
-      });
-    }
+    addHistoryEntry({
+      playerName: player.name,
+      faction: targetFaction ?? "foundation",
+      systemShortName: getSystemShortName(systemId),
+      key: cleanLabel,
+      value: cleanValue,
+    });
 
-    return feedback;
+    return {
+      context: displayName,
+      value: `${cleanLabel}: ${cleanValue} (${summary})`,
+      status: "ok" as DDUIFeedbackStatus,
+      timestamp: Date.now(),
+      viewId: `system:${systemId}`,
+    };
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error aplicando control ${systemId} [${key}]: ${e}`, "red");
-    return "";
+    return null;
   }
 }
 
@@ -322,19 +324,24 @@ export function buildSystemView({
       let closeReason: "navigation" | undefined = undefined;
 
       const form = new CustomForm(player, `${PANEL_TITLES.system} - ${stripColorCodes(systemConfig.displayName)}`);
-      const feedbackText = new ObservableString(SYSTEM_PANEL_FEEDBACK_INITIAL);
+
+      const dimension = player.dimension;
+      const factions: string[] = targetFaction === "both" ? ["foundation", "chaos"] : [targetFaction ?? "foundation"];
+      const initialStates = buildInitialState(systemId, factions, systemId);
+      const session = commandMenuSessionStore.get(player.id);
+
+      const feedbackPresenter = session
+        ? session.getOrCreateFeedbackPresenter(`system:${systemId}`, SYSTEM_PANEL_FEEDBACK_INITIAL)
+        : null;
 
       form.spacer();
       form.label(
         `§7Facción: §f${targetFaction === "both" ? "Ambas facciones" : (FACTION_DISPLAY_NAMES[targetFaction as keyof typeof FACTION_DISPLAY_NAMES] ?? targetFaction)}`
       );
       form.spacer();
-      form.label(feedbackText);
-
-      const dimension = player.dimension;
-      const factions: string[] = targetFaction === "both" ? ["foundation", "chaos"] : [targetFaction ?? "foundation"];
-      const initialStates = buildInitialState(systemId, factions, systemId);
-      const session = commandMenuSessionStore.get(player.id);
+      if (feedbackPresenter) {
+        form.label(feedbackPresenter.getObservable());
+      }
 
       if ((systemConfig.controlType === "dropdown" && systemConfig.options) || systemConfig.controlType === "toggle") {
         const isAdmin = PlayerPermissionManager.isAdmin(player);
@@ -438,7 +445,7 @@ export function buildSystemView({
               if (idx === ctrl.lastAppliedIndex) return;
               if (idx < 0) return;
               const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
-              const feedback = applySystemToEntitiesForSystem(
+              const entry = applySystemToEntitiesForSystem(
                 ctrl.key,
                 selectedOption.value,
                 selectedOption.label,
@@ -449,13 +456,21 @@ export function buildSystemView({
                 targetFaction,
                 ctrl.label
               );
-              feedbackText.setData(feedback);
+              if (feedbackPresenter && entry) {
+                feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
+              } else if (feedbackPresenter) {
+                feedbackPresenter.present({
+                  context: stripColorCodes(systemConfig.displayName),
+                  value: "Error al aplicar",
+                  status: "error",
+                });
+              }
               ctrl.lastAppliedIndex = idx;
             });
           } else {
             ctrl.obs.subscribe((enabled: boolean) => {
               if (enabled === ctrl.lastValue) return;
-              const feedback = applySystemToEntitiesForSystem(
+              const entry = applySystemToEntitiesForSystem(
                 ctrl.key,
                 enabled,
                 enabled ? "Activado" : "Desactivado",
@@ -466,7 +481,15 @@ export function buildSystemView({
                 targetFaction,
                 ctrl.label
               );
-              feedbackText.setData(feedback);
+              if (feedbackPresenter && entry) {
+                feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
+              } else if (feedbackPresenter) {
+                feedbackPresenter.present({
+                  context: stripColorCodes(systemConfig.displayName),
+                  value: "Error al aplicar",
+                  status: "error",
+                });
+              }
               ctrl.lastValue = enabled;
             });
           }
@@ -478,7 +501,7 @@ export function buildSystemView({
               if (idx === ctrl.lastAppliedIndex) return;
               if (idx < 0) return;
               const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
-              const feedback = applySystemToEntitiesForSystem(
+              const entry = applySystemToEntitiesForSystem(
                 ctrl.key,
                 selectedOption.value,
                 selectedOption.label,
@@ -489,13 +512,21 @@ export function buildSystemView({
                 targetFaction,
                 ctrl.label
               );
-              feedbackText.setData(feedback);
+              if (feedbackPresenter && entry) {
+                feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
+              } else if (feedbackPresenter) {
+                feedbackPresenter.present({
+                  context: stripColorCodes(systemConfig.displayName),
+                  value: "Error al aplicar",
+                  status: "error",
+                });
+              }
               ctrl.lastAppliedIndex = idx;
             });
           } else {
             ctrl.obs.subscribe((enabled: boolean) => {
               if (enabled === ctrl.lastValue) return;
-              const feedback = applySystemToEntitiesForSystem(
+              const entry = applySystemToEntitiesForSystem(
                 ctrl.key,
                 enabled,
                 enabled ? "Activado" : "Desactivado",
@@ -506,7 +537,15 @@ export function buildSystemView({
                 targetFaction,
                 ctrl.label
               );
-              feedbackText.setData(feedback);
+              if (feedbackPresenter && entry) {
+                feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
+              } else if (feedbackPresenter) {
+                feedbackPresenter.present({
+                  context: stripColorCodes(systemConfig.displayName),
+                  value: "Error al aplicar",
+                  status: "error",
+                });
+              }
               ctrl.lastValue = enabled;
             });
           }

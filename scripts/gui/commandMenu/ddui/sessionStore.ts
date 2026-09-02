@@ -2,8 +2,8 @@
 
 import { Player, system, EquipmentSlot } from "@minecraft/server";
 import { debugMessage, debugWarn } from "../../../utils/debug.js";
-import { ObservableString } from "@minecraft/server-ui";
 import { EquipmentDetector, FactionId } from "../../shared/equipmentDetector.js";
+import { DDUIFeedbackEntry, DDUIFeedbackPresenter, DDUIFeedbackStore } from "../../shared/dduiFeedback.js";
 
 /**
  * Interfaz que encapsula el acceso al Map de sesiones del commandMenu DDUI.
@@ -73,8 +73,8 @@ export class CommandMenuSession {
   viewId: string = "main";
   /** Historial local de la sesión, limitado a 50 entradas. */
   history: Array<{ text: string; timestamp: number }> = [];
-  /** Label de feedback de la vista actual, compartido con la clase del form. */
-  currentFormFeedback?: ObservableString;
+  /** Presenters de feedback por vista. Se destruyen en `cleanup()`. */
+  private readonly feedbackPresenters: Map<string, DDUIFeedbackPresenter> = new Map();
   /** Id del intervalo de vigilancia del casco, si está activo. */
   helmetWatchIntervalId?: number;
   /** Último `typeId` observado en el casco del jugador. */
@@ -179,7 +179,23 @@ export class CommandMenuSession {
     if (this.history.length > 50) this.history.shift();
   }
 
-  /** Limpia intervalos, watcher de casco y referencias de la sesión. */
+  /**
+   * Devuelve el presenter de feedback para la vista indicada, creándolo si no
+   * existe. El presenter se rehidrata desde `commandMenuSessionStore` si hay
+   * una entry previa. Se destruye en `cleanup()`.
+   * @param viewId Identificador de la vista (`"system:movement"`, `"scope"`, etc.).
+   * @param initialText Texto inicial si no hay entry previa en el store.
+   * @returns El presenter existente o recién creado.
+   */
+  getOrCreateFeedbackPresenter(viewId: string, initialText: string): DDUIFeedbackPresenter {
+    const existing = this.feedbackPresenters.get(viewId);
+    if (existing) return existing;
+    const presenter = new DDUIFeedbackPresenter(this.playerId, viewId, commandMenuSessionStore, initialText);
+    this.feedbackPresenters.set(viewId, presenter);
+    return presenter;
+  }
+
+  /** Limpia intervalos, watcher de casco, presenters de feedback y referencias de la sesión. */
   cleanup(): void {
     this.stopHelmetWatch();
     for (const intervalId of this.intervalIds) {
@@ -189,18 +205,24 @@ export class CommandMenuSession {
         // intervalo ya limpiado o inválido
       }
     }
-    this.currentFormFeedback = undefined;
+    for (const presenter of this.feedbackPresenters.values()) {
+      presenter.reset();
+    }
+    this.feedbackPresenters.clear();
     debugMessage("commandMenuDDUI", `Sesión limpiada: ${this.playerName}`, "gray");
   }
 }
 
 const sessions = new Map<string, CommandMenuSession>();
+const lastFeedbackByPlayer = new Map<string, Record<string, DDUIFeedbackEntry>>();
 
 /**
  * Store singleton de sesiones del commandMenu DDUI. Punto único de acceso,
- * creación y limpieza para mantener la encapsulación del estado.
+ * creación y limpieza para mantener la encapsulación del estado. Implementa
+ * `DDUIFeedbackStore` para el feedback visual por vista (vida = conexión del
+ * jugador; se limpia con `playerLeave`).
  */
-export const commandMenuSessionStore: SessionStore = {
+export const commandMenuSessionStore: SessionStore & DDUIFeedbackStore = {
   get(playerId: string) {
     return sessions.get(playerId);
   },
@@ -228,6 +250,26 @@ export const commandMenuSessionStore: SessionStore = {
     sessions.set(playerId, session);
     debugMessage("commandMenuDDUI", `Sesión creada: ${playerName} (${faction}/${role})`, "green");
     return session;
+  },
+  getLast(playerId: string, viewId: string): DDUIFeedbackEntry | null {
+    const map = lastFeedbackByPlayer.get(playerId);
+    if (!map) return null;
+    return map[viewId] ?? null;
+  },
+  setLast(playerId: string, viewId: string, entry: DDUIFeedbackEntry): void {
+    let map = lastFeedbackByPlayer.get(playerId);
+    if (!map) {
+      map = {};
+      lastFeedbackByPlayer.set(playerId, map);
+    }
+    map[viewId] = entry;
+  },
+  clearKey(playerId: string): void {
+    lastFeedbackByPlayer.delete(playerId);
+    debugMessage("commandMenuDDUI", `Feedback del jugador limpiado: ${playerId}`, "gray");
+  },
+  clearAll(): void {
+    lastFeedbackByPlayer.clear();
   },
 };
 

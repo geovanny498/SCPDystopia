@@ -24,7 +24,7 @@ export function showInteractDDUI(
 ): void {
   try {
     const session = interactMenuSessionStore.getOrCreate(player, entity, cfg, soldierName, displayName, typeId);
-    session.viewId = "main";
+    session.setView("main");
     debugMessage("interactDDUI", `Mostrando interact DDUI para ${player.name} en ${typeId}`, "cyan");
 
     const factionInfo = session.factionInfo;
@@ -33,7 +33,6 @@ export function showInteractDDUI(
 
     system.run(() => {
       try {
-        session.observables.actionResultText.setData(interactMenuSessionStore.getLastFeedbackText(entity.id, "main"));
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();

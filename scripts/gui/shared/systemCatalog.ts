@@ -255,8 +255,6 @@ export const GROUP_ASSIGNMENT_DESCRIPTION_PREFIX = "§7Asignando grupos para fac
 
 export const HISTORY_INITIAL_TEXT = "§7Sin cambios registrados.";
 
-export const SYSTEM_PANEL_FEEDBACK_INITIAL = "§7Último cambio: §fN/A";
-
 export const TARGET_FACTION_OPTIONS = [
   { value: "foundation", label: "§lFoundation" },
   { value: "chaos", label: "§2§lChaos" },
