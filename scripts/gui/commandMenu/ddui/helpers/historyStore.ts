@@ -2,7 +2,7 @@
 
 import { world } from "@minecraft/server";
 import { debugWarn } from "../../../../utils/debug.js";
-import { SYSTEM_SHORT_NAMES } from "../../../interactMenu/config.js";
+import { SYSTEM_SHORT_NAMES } from "../../../shared/systemCatalog.js";
 import { formatLocalTimeShort } from "../../../shared/timeHelpers.js";
 
 const HISTORY_KEY = "scpdystopia_command_menu_history";

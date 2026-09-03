@@ -10,7 +10,8 @@ import {
 import { Player, system, Entity } from "@minecraft/server";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
 import { getEntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
-import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, isAllowedByRule, type EntityConfig } from "../gui.js";
+import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../shared/entityScope.js";
+import { isAllowedByRule, type EntityConfig } from "../gui.js";
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
 import type { MenuCategory } from "../config.js";
 import {
@@ -20,13 +21,13 @@ import {
 import {
   getEntitySystemState,
   findSystemStateByEvent,
-  SpecialGroups,
-  UnitHierarchy,
-  UnitHierarchyLabels,
-  Factions,
+  formatEntitySystemStateLabel,
+  getSystemDefaults,
 } from "../../commandMenu/menu_config.js";
+import { SpecialGroups, UnitHierarchy, Factions } from "../../../constants/domains.js";
+import { HIERARCHY_LABELS as UnitHierarchyLabels, GROUP_LABELS as SpecialGroupLabels } from "../../shared/systemCatalog.js";
 import { getUnitGroup, setUnitGroup } from "../../commandMenu/model/menu_groups.js";
-import { SpecialGroupLabels } from "../../commandMenu/menu_config.js";
+import { ERROR_MESSAGES, BACK_BUTTON_LABEL, FACTION_DISPLAY_NAMES } from "../../shared/systemCatalog.js";
 
 export function showInteractDDUISystems(
   player: Player,
@@ -110,7 +111,7 @@ export function showInteractDDUISystems(
         form.spacer();
         let closeReason: "navigation" | undefined = undefined;
 
-        form.button("<- Volver", () => {
+        form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
           try {
             closeReason = "navigation";
             form.close();
@@ -158,7 +159,7 @@ export function showInteractDDUISystems(
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando Vista Sistemas Avanzados: ${setupError}`, "red");
         try {
-          player.sendMessage("§c[DDUI] Error al abrir el menú de sistemas avanzados.");
+          player.sendMessage(ERROR_MESSAGES.DDUI_OPEN_SYSTEMS);
         } catch {}
       }
     });
@@ -202,9 +203,9 @@ export function showInteractDDUIManagement(
             if (factionInfo) {
               const factionLabel =
                 factionInfo.faction === Factions.FOUNDATION
-                  ? "§lFoundation"
+                  ? FACTION_DISPLAY_NAMES.foundation
                   : factionInfo.faction === Factions.CHAOS
-                    ? "§2§lChaos"
+                    ? FACTION_DISPLAY_NAMES.chaos
                     : factionInfo.faction;
 
               if (factionInfo.isSpecial) {
@@ -267,12 +268,12 @@ export function showInteractDDUIManagement(
                   session.recordFeedback("Asignar grupo", label);
                   const updatedGroup = getUnitGroup(entity);
                   const updatedLabel = SpecialGroupLabels[updatedGroup] || updatedGroup;
-                  const factionLabel =
-                    factionInfo!.faction === Factions.FOUNDATION
-                      ? "§lFoundation"
-                      : factionInfo!.faction === Factions.CHAOS
-                        ? "§2§lChaos"
-                        : factionInfo!.faction;
+                   const factionLabel =
+                     factionInfo!.faction === Factions.FOUNDATION
+                       ? FACTION_DISPLAY_NAMES.foundation
+                       : factionInfo!.faction === Factions.CHAOS
+                         ? FACTION_DISPLAY_NAMES.chaos
+                         : factionInfo!.faction;
                   session.observables.groupDetailText.setData(
                     `§7Facción: §a${factionLabel}\n§7Grupo actual: §a${updatedLabel}`
                   );
@@ -324,7 +325,7 @@ export function showInteractDDUIManagement(
         form.spacer();
         let closeReason: "navigation" | undefined = undefined;
 
-        form.button("<- Volver", () => {
+        form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
           try {
             closeReason = "navigation";
             form.close();
@@ -372,7 +373,7 @@ export function showInteractDDUIManagement(
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando Vista Gestión y Estado: ${setupError}`, "red");
         try {
-          player.sendMessage("§c[DDUI] Error al abrir el menú de gestión y estado.");
+          player.sendMessage(ERROR_MESSAGES.DDUI_OPEN_MANAGEMENT);
         } catch {}
       }
     });
@@ -424,7 +425,7 @@ export function showInteractDDUHistory(
         form.spacer();
         let closeReason: "navigation" | undefined = undefined;
 
-        form.button("<- Volver", () => {
+        form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
           try {
             closeReason = "navigation";
             form.close();
@@ -472,7 +473,7 @@ export function showInteractDDUHistory(
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando Historial: ${setupError}`, "red");
         try {
-          player.sendMessage("§c[DDUI] Error al abrir el historial.");
+          player.sendMessage(ERROR_MESSAGES.DDUI_OPEN_HISTORY);
         } catch {}
       }
     });

@@ -3,6 +3,7 @@
 import { Player, system } from "@minecraft/server";
 import { CustomForm, ObservableNumber, ObservableString } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { Factions } from "../../../../constants/domains.js";
 import { PlayerPermissionManager, FactionId, RoleId } from "../../../shared/playerPermissionManager.js";
 import { EquipmentDetector } from "../../../shared/equipmentDetector.js";
 import {
@@ -11,9 +12,10 @@ import {
   MAIN_PANEL_BUTTONS,
   FACTION_DISPLAY_NAMES,
   ROLE_LABELS,
-  CATALOG_SYSTEMS,
   CATALOG_CATEGORIES,
+  CATALOG_SYSTEMS,
   TARGET_FACTION_OPTIONS,
+  ERROR_MESSAGES,
 } from "../../../shared/systemCatalog.js";
 import { showAdvancedPanel } from "./advancedPanel.js";
 import { showGroupsPanel } from "./groupsPanel.js";
@@ -32,11 +34,11 @@ export function showMainPanel(player: Player): void {
     const helmetFaction = EquipmentDetector.getActiveFaction(player);
 
     if (!helmetFaction && !isAdmin) {
-      player.sendMessage("§c[SCPDystopia] Necesitas llevar el casco de tu facción para acceder al menú.");
+      player.sendMessage(ERROR_MESSAGES.NEED_FACTION_HELMET);
       return;
     }
 
-    const faction: FactionId = helmetFaction ?? "foundation";
+    const faction: FactionId = helmetFaction ?? Factions.FOUNDATION;
     const role: RoleId = isAdmin ? "admin" : PlayerPermissionManager.getPlayerRole(player, faction);
 
     const existingSession = commandMenuSessionStore.get(player.id);
@@ -56,15 +58,15 @@ export function showMainPanel(player: Player): void {
     if (isAdmin) {
       try {
         const adminSaved = player.getDynamicProperty("scpd_admin_target_faction");
-        if (typeof adminSaved === "string" && (adminSaved === "foundation" || adminSaved === "chaos")) {
+        if (typeof adminSaved === "string" && (adminSaved === Factions.FOUNDATION || adminSaved === Factions.CHAOS)) {
           selectedFaction = adminSaved;
-        } else if (savedTarget && (savedTarget === "foundation" || savedTarget === "chaos")) {
+        } else if (savedTarget && (savedTarget === Factions.FOUNDATION || savedTarget === Factions.CHAOS)) {
           selectedFaction = savedTarget;
         } else {
-          selectedFaction = helmetFaction ?? "foundation";
+          selectedFaction = helmetFaction ?? Factions.FOUNDATION;
         }
       } catch {
-        selectedFaction = savedTarget ?? helmetFaction ?? "foundation";
+        selectedFaction = savedTarget ?? helmetFaction ?? Factions.FOUNDATION;
       }
     } else {
       selectedFaction = helmetFaction ?? faction;
@@ -96,7 +98,7 @@ export function showMainPanel(player: Player): void {
         TARGET_FACTION_OPTIONS.map((opt, idx) => ({ label: stripColorCodes(opt.label), value: idx }))
       );
       factionObs.subscribe((index) => {
-        selectedFaction = TARGET_FACTION_OPTIONS[index]?.value ?? "foundation";
+        selectedFaction = TARGET_FACTION_OPTIONS[index]?.value ?? Factions.FOUNDATION;
         session.formState.targetFaction = selectedFaction;
         factionLabelText.setData(`§7Facción: §f${FACTION_DISPLAY_NAMES[selectedFaction]}`);
         try {

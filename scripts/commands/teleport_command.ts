@@ -13,7 +13,7 @@ system.beforeEvents.startup.subscribe((init) => {
   const cmd = {
     name: "scpd:teleport_units",
     description: "Abre el menú de teletransporte de entidades",
-    permissionLevel: CommandPermissionLevel.Any,
+    permissionLevel: CommandPermissionLevel.Admin,
     cheatsRequired: false,
   };
 

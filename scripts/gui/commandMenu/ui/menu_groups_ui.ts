@@ -11,6 +11,7 @@ import {
   getGroupsOrderForSystems, // Importado para manejar prioridades del sistema
   scanActiveUnits,
 } from "../menu_config.js";
+import type { SpecialGroupId } from "../../../constants/domains.js";
 import { setUnitGroup, getUnitGroup } from "../model/menu_groups.js";
 
 import type { ScannedEntity, ScanResult } from "../model/menu_entity_scanner.js";
@@ -301,7 +302,7 @@ function showBucketAssignmentModal(player: Player, faction: string, bucketId: st
       var entry = uniqueNametags[di];
 
       // La resolución ya se hizo en el Paso 1; la lectura aquí es instantánea O(1)
-      var currentIndex = groupOptions.indexOf(entry.preferredGroup);
+      var currentIndex = groupOptions.indexOf(entry.preferredGroup as SpecialGroupId);
 
       var unitCount2 = entry.entities.length;
       var label2 = unitCount2 > 1 ? "§f" + entry.nametag + "§r §8x" + unitCount2 : "§f" + entry.nametag + "§r";

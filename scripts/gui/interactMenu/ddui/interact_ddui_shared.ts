@@ -9,27 +9,26 @@ import {
   isAutoTameEvent,
   findSystemStateByEvent,
   setEntitySystemState,
-  getSystemConfig,
   formatEntitySystemStateLabel,
-  SpecialGroupLabels,
-  SpecialGroups,
-  UnitHierarchyLabels,
-  UnitHierarchy,
-  Factions,
   getEntitySystemState,
   getSystemDefaults,
 } from "../../commandMenu/menu_config.js";
+import { SpecialGroups, UnitHierarchy, Factions } from "../../../constants/domains.js";
+import { GROUP_LABELS, CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
 import { getEntityFactionInfo, type EntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
 import { setUnitGroup, getUnitGroup } from "../../commandMenu/model/menu_groups.js";
 import {
   isGlobalOverwriteAllowed,
   setGlobalOverwriteAllowed,
+} from "../../shared/entityScope.js";
+import {
   makeSystemId,
   isAllowedByRule,
   type EntityConfig,
 } from "../gui.js";
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
 import { tryAutoTame } from "../../commandMenu/core/menu_apply.js";
+import { getGlobalOverwriteLabel } from "../../shared/entityScope.js";
 import type { MenuEntry } from "../config.js";
 import { SYSTEM_SHORT_NAMES } from "../config.js";
 import {
@@ -198,7 +197,7 @@ export class InteractDDUISession {
       try {
         setUnitGroup(entity, String(entry.value));
         const groupId = String(entry.value);
-        const groupLabel = SpecialGroupLabels[groupId] || groupId;
+        const groupLabel = GROUP_LABELS[groupId] || groupId;
         this.recordFeedback("Asignar grupo", groupLabel);
       } catch (e) {
         debugWarn("interactDDUI", `Error asignando grupo: ${e}`, "red");
@@ -245,7 +244,7 @@ export class InteractDDUISession {
       const mapped = findSystemStateByEvent(event);
       if (mapped && triggeredEvent) {
         setEntitySystemState(entity, mapped.systemId, mapped.value);
-        const sysConfig = getSystemConfig(mapped.systemId);
+        const sysConfig = CATALOG_SYSTEMS[mapped.systemId as SystemId];
         const sysDisplay = sysConfig?.displayName || mapped.systemId;
         const valueLabel = formatEntitySystemStateLabel(mapped.systemId, mapped.value);
         const context = SYSTEM_SHORT_NAMES[mapped.systemId] || categoryLabel || sysDisplay || mapped.systemId;
@@ -656,7 +655,7 @@ export function refreshStatus(
   const systemStateDetail = systemStateLines.join("\n");
 
   const configAllowed = isGlobalOverwriteAllowed(entity);
-  const configLine = `§7Config: §a${configAllowed ? "Global" : "Local"}`;
+  const configLine = `§7Config: §a${getGlobalOverwriteLabel(entity)}`;
 
   return {
     healthLabel: healthLine,

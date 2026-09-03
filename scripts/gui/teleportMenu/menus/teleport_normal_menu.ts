@@ -8,6 +8,7 @@
 import { Player, system } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import { NormalSoldiersTexts, ResultMessages, CommonTexts } from "../teleport_config.js";
+import type { FactionId } from "../../../constants/domains.js";
 import {
   getNormalEntitiesByHierarchy,
   getCoordinateInputFromFormValues,
@@ -26,7 +27,7 @@ import { getNormalSelection, saveNormalSelection } from "../core/teleport_sessio
 export function showNormalSoldiersMenu(player: Player, faction: string): void {
   // Usar system.run para evitar errores de ejecución restringida
   const form = new ModalFormData();
-  form.title(NormalSoldiersTexts.title[faction]);
+  form.title(NormalSoldiersTexts.title[faction as keyof typeof NormalSoldiersTexts.title]);
 
   // Recuperar estado guardado
   const saved = getNormalSelection(player.name, faction);

@@ -3,9 +3,15 @@
 import { Player, system } from "@minecraft/server";
 import { CustomForm, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
-import { PANEL_TITLES, PANEL_DESCRIPTIONS, BACK_BUTTON_LABEL } from "../../../shared/systemCatalog.js";
-import { SCOPE_TOGGLE_LABEL } from "../../../shared/entityScope.js";
-import { SYSTEM_PANEL_FEEDBACK_INITIAL } from "../../../shared/dduiFeedback.js";
+import {
+  PANEL_TITLES,
+  PANEL_DESCRIPTIONS,
+  BACK_BUTTON_LABEL,
+  ERROR_MESSAGES,
+  SCOPE_RESPECT_LABEL,
+  SCOPE_GLOBAL_LABEL,
+  SCOPE_CONTEXT,
+} from "../../../shared/systemCatalog.js";
 import { loadScope, saveScope, getScopeSummary } from "../../../commandMenu/model/menu_scope.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
@@ -16,7 +22,7 @@ export function showScopePanel(player: Player): void {
     const scope = loadScope();
     const session = commandMenuSessionStore.get(player.id);
     if (!session) {
-      player.sendMessage("§c[SCPDystopia] Sesión no encontrada para el menú de comandos.");
+      player.sendMessage(ERROR_MESSAGES.NO_SESSION);
       return;
     }
     let closeReason: "navigation" | undefined = undefined;
@@ -31,37 +37,27 @@ export function showScopePanel(player: Player): void {
     form.label(descriptionText);
     form.spacer();
 
-    const feedbackPresenter = session.getOrCreateFeedbackPresenter("scope", SYSTEM_PANEL_FEEDBACK_INITIAL);
-    form.label(feedbackPresenter.getObservable());
-    form.spacer();
-
     const scopeObs = new ObservableBoolean(scope.respectEntityBlocks, { clientWritable: true });
-    form.toggle(SCOPE_TOGGLE_LABEL, scopeObs);
+    form.toggle(SCOPE_RESPECT_LABEL, scopeObs);
 
     scopeObs.subscribe((respectEntityBlocks) => {
       try {
         saveScope({ respectEntityBlocks });
         player.sendMessage(
-          `§a[SCPDystopia] Scope actualizado: §f${respectEntityBlocks ? "Respetar bloqueos" : "Aplicar global"}`
+          `§a[SCPDystopia] Scope actualizado: §f${respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL}`
         );
 
         descriptionText.setData(getScopeSummary({ respectEntityBlocks }));
-        feedbackPresenter.present({
-          context: "Prioridad de Aplicación",
-          value: respectEntityBlocks ? "Respetar bloqueos" : "Aplicar global",
-          status: "ok",
-        });
-
         addHistoryEntry({
           playerName: player.name,
           faction: (session.formState.targetFaction as string) ?? "both",
           systemShortName: getSystemShortName("scope"),
-          key: "Prioridad de Aplicación",
-          value: respectEntityBlocks ? "Respetar bloqueos" : "Aplicar global",
+          key: SCOPE_CONTEXT,
+          value: respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL,
         });
       } catch (e) {
         debugWarn("commandMenuDDUI", `Error guardando scope: ${e}`, "red");
-        player.sendMessage("§c[SCPDystopia] Error guardando scope.");
+        player.sendMessage(ERROR_MESSAGES.SCOPE_SAVE);
       }
     });
 

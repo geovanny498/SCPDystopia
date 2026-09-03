@@ -11,20 +11,30 @@ import {
   SPECIAL_GROUP_OPTIONS,
   HIERARCHY_OPTIONS,
   SYSTEM_VIEW_FILTER_OPTIONS,
+  ADVANCED_TOGGLE_SYSTEMS,
+  TOGGLE_ON_LABEL,
+  TOGGLE_OFF_LABEL,
+  ERROR_MESSAGES,
+  SystemId,
 } from "../../../shared/systemCatalog.js";
-import { SYSTEM_PANEL_FEEDBACK_INITIAL, type DDUIFeedbackEntry, DDUIFeedbackStatus } from "../../../shared/dduiFeedback.js";
+import {
+  SYSTEM_PANEL_FEEDBACK_INITIAL,
+  type DDUIFeedbackEntry,
+  DDUIFeedbackStatus,
+} from "../../../shared/dduiFeedback.js";
 import { PlayerPermissionManager, FactionId } from "../../../shared/playerPermissionManager.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { showAdvancedPanel } from "../panels/advancedPanel.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
-import { getSystemConfig, getSystemDefaults, getEntitySystemState, SpecialGroups } from "../../menu_config.js";
+import { SpecialGroups, Factions, FACTION_IDS } from "../../../../constants/domains.js";
+import { getSystemDefaults, getEntitySystemState } from "../../menu_config.js";
 import { loadSystemStates, saveSystemAndUpdateMemory } from "../../core/menu_state.js";
 import { applySystemsToEntities } from "../../../commandMenu/core/menu_apply.js";
 import { scanActiveEntities } from "../../../commandMenu/model/menu_entity_scanner.js";
 
 export interface SystemViewParams {
-  systemId: string;
+  systemId: SystemId;
   player: Player;
   targetFaction?: string;
   returnTo?: "main" | "advanced";
@@ -59,13 +69,24 @@ function findOptionIndex(options: { value: string; label: string }[], value: unk
   return found;
 }
 
-function buildInitialState(systemId: string, factions: string[], key: string): Record<string, Record<string, unknown>> {
+function buildInitialState(
+  systemId: SystemId,
+  factions: string[],
+  key: string
+): Record<string, Record<string, unknown>> {
   const loadedStates = loadSystemStates([systemId]);
-  const systemState = loadedStates[systemId] || getSystemDefaults(systemId);
+  const defaults = getSystemDefaults(systemId);
   const result: Record<string, Record<string, unknown>> = {};
   for (const fac of factions) {
-    const factionState = (systemState as Record<string, Record<string, unknown>>)[fac] || {};
-    result[fac] = factionState;
+    const loadedFaction = (loadedStates[systemId]?.[fac] as Record<string, unknown>) || {};
+    const defaultFaction = (defaults[fac as FactionId] as Record<string, unknown>) || {};
+    const merged: Record<string, unknown> = { ...defaultFaction };
+    for (const k of Object.keys(loadedFaction)) {
+      if (loadedFaction[k] !== undefined) {
+        merged[k] = loadedFaction[k];
+      }
+    }
+    result[fac] = merged;
   }
   return result;
 }
@@ -212,7 +233,7 @@ function applySystemToEntitiesForSystem(
   valueLabel: string,
   factions: string[],
   dimension: Dimension,
-  systemId: string,
+  systemId: SystemId,
   player: Player,
   targetFaction: string | undefined,
   label: string
@@ -285,7 +306,7 @@ function applySystemToEntitiesForSystem(
 
     addHistoryEntry({
       playerName: player.name,
-      faction: targetFaction ?? "foundation",
+      faction: targetFaction ?? Factions.FOUNDATION,
       systemShortName: getSystemShortName(systemId),
       key: cleanLabel,
       value: cleanValue,
@@ -312,8 +333,7 @@ export function buildSystemView({
   viewFilter,
 }: SystemViewParams): () => void {
   const systemConfig = CATALOG_SYSTEMS[systemId];
-  const legacySystem = getSystemConfig(systemId);
-  if (!systemConfig || !legacySystem) {
+  if (!systemConfig) {
     return () => {
       player.sendMessage("§c[SCPDystopia] Sistema no encontrado.");
     };
@@ -326,7 +346,7 @@ export function buildSystemView({
       const form = new CustomForm(player, `${PANEL_TITLES.system} - ${stripColorCodes(systemConfig.displayName)}`);
 
       const dimension = player.dimension;
-      const factions: string[] = targetFaction === "both" ? ["foundation", "chaos"] : [targetFaction ?? "foundation"];
+      const factions: FactionId[] = targetFaction === "both" ? FACTION_IDS : [(targetFaction ?? Factions.FOUNDATION) as FactionId];
       const initialStates = buildInitialState(systemId, factions, systemId);
       const session = commandMenuSessionStore.get(player.id);
 
@@ -347,8 +367,8 @@ export function buildSystemView({
         const isAdmin = PlayerPermissionManager.isAdmin(player);
         let canFilter = isAdmin;
         if (!canFilter && targetFaction === "both") {
-          const foundationRole = PlayerPermissionManager.getPlayerRole(player, "foundation");
-          const chaosRole = PlayerPermissionManager.getPlayerRole(player, "chaos");
+          const foundationRole = PlayerPermissionManager.getPlayerRole(player, Factions.FOUNDATION);
+          const chaosRole = PlayerPermissionManager.getPlayerRole(player, Factions.CHAOS);
           canFilter = foundationRole === "commander" || chaosRole === "commander";
         } else if (!canFilter && targetFaction) {
           canFilter = PlayerPermissionManager.getPlayerRole(player, targetFaction as FactionId) === "commander";
@@ -394,7 +414,9 @@ export function buildSystemView({
         }
 
         form.spacer({ visible: hierarchyVisibleObs });
-        form.header("§7No especiales", { visible: hierarchyVisibleObs });
+        form.header(SYSTEM_VIEW_FILTER_OPTIONS.find((o) => o.value === "hierarchy")!.label, {
+          visible: hierarchyVisibleObs,
+        });
         form.spacer({ visible: hierarchyVisibleObs });
 
         const hierarchyControls = buildControls(
@@ -410,7 +432,9 @@ export function buildSystemView({
         // form.spacer({ visible: hierarchyVisibleObs });
 
         form.spacer({ visible: groupVisibleObs });
-        form.header("§6Especiales", { visible: groupVisibleObs });
+        form.header(SYSTEM_VIEW_FILTER_OPTIONS.find((o) => o.value === "specials")!.label, {
+          visible: groupVisibleObs,
+        });
         form.spacer({ visible: groupVisibleObs });
 
         const groupControls = buildControls(
@@ -473,7 +497,7 @@ export function buildSystemView({
               const entry = applySystemToEntitiesForSystem(
                 ctrl.key,
                 enabled,
-                enabled ? "Activado" : "Desactivado",
+                enabled ? TOGGLE_ON_LABEL : TOGGLE_OFF_LABEL,
                 factions,
                 dimension,
                 systemId,
@@ -486,7 +510,7 @@ export function buildSystemView({
               } else if (feedbackPresenter) {
                 feedbackPresenter.present({
                   context: stripColorCodes(systemConfig.displayName),
-                  value: "Error al aplicar",
+                  value: ERROR_MESSAGES.APPLY,
                   status: "error",
                 });
               }
@@ -517,7 +541,7 @@ export function buildSystemView({
               } else if (feedbackPresenter) {
                 feedbackPresenter.present({
                   context: stripColorCodes(systemConfig.displayName),
-                  value: "Error al aplicar",
+                  value: ERROR_MESSAGES.APPLY,
                   status: "error",
                 });
               }
@@ -529,7 +553,7 @@ export function buildSystemView({
               const entry = applySystemToEntitiesForSystem(
                 ctrl.key,
                 enabled,
-                enabled ? "Activado" : "Desactivado",
+                enabled ? TOGGLE_ON_LABEL : TOGGLE_OFF_LABEL,
                 factions,
                 dimension,
                 systemId,
@@ -542,7 +566,7 @@ export function buildSystemView({
               } else if (feedbackPresenter) {
                 feedbackPresenter.present({
                   context: stripColorCodes(systemConfig.displayName),
-                  value: "Error al aplicar",
+                  value: ERROR_MESSAGES.APPLY,
                   status: "error",
                 });
               }
@@ -596,7 +620,7 @@ export function buildSystemView({
           })
           .catch((err) => {
             debugWarn("commandMenuDDUI", `Error en form.show() sistema ${systemId}: ${err}`, "red");
-              commandMenuSessionStore.cleanup(player.id);
+            commandMenuSessionStore.cleanup(player.id);
           });
       }
     } catch (e) {

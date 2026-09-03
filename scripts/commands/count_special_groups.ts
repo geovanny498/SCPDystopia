@@ -20,6 +20,7 @@ import {
   getFamilyTagOrder,
   NAMETAG_FAMILY_MAP,
 } from "../gui/commandMenu/menu_config.js";
+import type { UnitHierarchyId } from "../constants/domains.js";
 import { getEntityFactionInfo } from "../gui/commandMenu/model/menu_faction.js";
 import { compareNametags } from "../utils/nametagSort.js";
 import { teamFamilies } from "../utils/teams.js";
@@ -198,7 +199,7 @@ system.beforeEvents.startup.subscribe((init) => {
           for (const scanned of scanResult.entities) {
             if (scanned.isSpecial) continue;
             if (scanned.faction !== selectedFaction) continue;
-            if (!scanned.hierarchy || !hierarchyOrder.includes(scanned.hierarchy)) continue;
+            if (!scanned.hierarchy || !hierarchyOrder.includes(scanned.hierarchy as UnitHierarchyId)) continue;
 
             // Etiquetar por familia MTF detectada o tipo
             const mtfFamilyId = (scanned.families || []).find((f: string) => f in NAMETAG_FAMILY_MAP);

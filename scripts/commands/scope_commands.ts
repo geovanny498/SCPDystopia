@@ -88,7 +88,7 @@ system.beforeEvents.startup.subscribe((init) => {
   const resetCmd = {
     name: "scpd:reset_scope",
     description: "Reinicia el sistema de Prioridad de Aplicación a valores por defecto",
-    permissionLevel: CommandPermissionLevel.GameDirectors,
+    permissionLevel: CommandPermissionLevel.Admin,
     cheatsRequired: false,
   };
 

@@ -2,7 +2,8 @@
 import { world, Dimension, Player } from "@minecraft/server";
 import { saveSystemState, loadSystemState } from "../../../commands/worldSave.js";
 import { SystemState, AllSystemStates } from "../menu_rules.js";
-import { getSystemConfig, getSystemDefaults, Factions, UnitHierarchy, SpecialGroups } from "../menu_config.js";
+import { getSystemDefaults, Factions, UnitHierarchy, SpecialGroups } from "../menu_config.js";
+import { CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
 import {
   applySystemWithEvents,
   getEligibleSoldiers,
@@ -122,7 +123,7 @@ export function applySystemToAll(
   player: Player | null = null
 ): void {
   try {
-    const systemConfig = getSystemConfig(systemId);
+    const systemConfig = CATALOG_SYSTEMS[systemId as SystemId];
     if (!systemConfig) {
       debugWarn("menuState", `Sistema ${systemId} no encontrado en configuración`, "red");
       return;

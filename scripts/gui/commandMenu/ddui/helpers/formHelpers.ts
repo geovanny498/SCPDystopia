@@ -2,7 +2,7 @@
 
 import { ObservableNumber, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
-import { SYSTEM_DISPLAY_NAMES, MOVEMENT_OPTIONS, FIRE_OPTIONS, TELEPORT_OPTIONS, ADVANCED_TOGGLE_SYSTEMS, type SystemOption } from "../../../shared/systemCatalog.js";
+import { type SystemOption } from "../../../shared/systemCatalog.js";
 import { getEntitySystemState } from "../../menu_config.js";
 import type { CommandMenuSession } from "../sessionStore.js";
 

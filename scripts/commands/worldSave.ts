@@ -1,7 +1,7 @@
 // scripts/commands/worldSave.ts
 import { world } from "@minecraft/server";
-import { systems as menuSystems } from "../gui/commandMenu/menu_config";
-import { debugMessage, debugWarn } from "../utils/debug";
+import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
+import { debugMessage, debugWarn } from "../utils/debug.js";
 
 type SystemState = Record<string, unknown> | string | boolean | number | undefined;
 

@@ -4,7 +4,8 @@ import { CustomForm, ObservableNumber, DataDrivenScreenClosedReason } from "@min
 import { Player, system, Entity } from "@minecraft/server";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
 import { getEntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
-import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, type EntityConfig } from "../gui.js";
+import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../shared/entityScope.js";
+import { type EntityConfig } from "../gui.js";
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
 import type { MenuCategory } from "../config.js";
 import {
@@ -12,7 +13,6 @@ import {
   refreshStatus,
 } from "./interact_ddui_shared.js";
 import { getUnitGroup } from "../../commandMenu/model/menu_groups.js";
-import { SpecialGroupLabels } from "../../commandMenu/menu_config.js";
 
 export function showInteractDDUI(
   player: Player,

@@ -188,7 +188,7 @@ system.beforeEvents.startup.subscribe((init) => {
       {
         name: "scpd:reset_groups",
         description: "Reinicia los grupos de especiales a valores por defecto (Sin grupo)",
-        permissionLevel: CommandPermissionLevel.Any,
+        permissionLevel: CommandPermissionLevel.Admin,
         cheatsRequired: false,
       },
       (origin: any) => {
@@ -257,7 +257,7 @@ system.beforeEvents.startup.subscribe((init) => {
       {
         name: "scpd:reset_systems",
         description: "Resetea un sistema o todos los sistemas. Usa 'all' para reiniciar todos.",
-        permissionLevel: CommandPermissionLevel.Any,
+        permissionLevel: CommandPermissionLevel.Admin,
         cheatsRequired: false,
         // Parámetro OPCIONAL: si se ejecuta sin argumento se devuelve un mensaje
         // custom de ayuda, evitando el mensaje nativo genérico de Minecraft.
@@ -370,7 +370,7 @@ system.beforeEvents.startup.subscribe((init) => {
       {
         name: "scpd:reset_all",
         description: "Resetea todos los sistemas, scope y grupos a valores por defecto",
-        permissionLevel: CommandPermissionLevel.Any,
+        permissionLevel: CommandPermissionLevel.Admin,
         cheatsRequired: false,
       },
       (origin: any) => {

@@ -3,6 +3,12 @@ import { world, system, EquipmentSlot, Player, Entity } from "@minecraft/server"
 import { ActionFormData, ActionFormResponse, ModalFormData } from "@minecraft/server-ui";
 import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
 import { debugWarn, debugMessage } from "../../utils/debug.js";
+import {
+  ENTITY_GLOBAL_OVERWRITE_PROPERTY,
+  isGlobalOverwriteAllowed,
+  setGlobalOverwriteAllowed,
+  getGlobalOverwriteLabel,
+} from "../shared/entityScope.js";
 
 // Utilizar la misma configuración que el menú de comandos para detectar
 // qué eventos son de taming y mapear cambios de sistema en la entidad
@@ -198,7 +204,6 @@ function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null
   };
 }
 
-export const ENTITY_GLOBAL_OVERWRITE_PROPERTY = "scpd_menu_config_allow_global_overwrite";
 
 function itemMatches(mainId: string | null, opener: string): boolean {
   if (!mainId || !opener) return false;
@@ -219,25 +224,6 @@ function normalizeBooleanDynamicProperty(raw: unknown): boolean | undefined {
 function isTruthyToggleValue(raw: unknown): boolean {
   const normalized = normalizeBooleanDynamicProperty(raw);
   return normalized === undefined ? false : normalized;
-}
-
-export function isGlobalOverwriteAllowed(entity: Entity): boolean {
-  try {
-    const raw = entity.getDynamicProperty(ENTITY_GLOBAL_OVERWRITE_PROPERTY);
-    const normalized = normalizeBooleanDynamicProperty(raw);
-    return normalized === undefined ? true : normalized;
-  } catch (e) {
-    debugWarn("playerInteractWithEntity", `Error reading overwrite property: ${e}`, "yellow");
-    return true;
-  }
-}
-
-export function setGlobalOverwriteAllowed(entity: Entity, value: boolean): void {
-  try {
-    entity.setDynamicProperty(ENTITY_GLOBAL_OVERWRITE_PROPERTY, value);
-  } catch (e) {
-    debugWarn("playerInteractWithEntity", `Error setting overwrite property: ${e}`, "red");
-  }
 }
 
 function buildEntityOverwriteStatus(entity: Entity): string {
@@ -535,7 +521,7 @@ function showEntitySystemStatus(
 
   const bodyLines = [
     `§7Unidad:§r ${unidadDisplay}`,
-    `§7Tipo de Configuración:§r ${isGlobalOverwriteAllowed(entity) ? "§aGlobal" : "§cLocal"}`,
+    `§7Tipo de Configuración:§r ${getGlobalOverwriteLabel(entity)}`,
     `§7Propiedades dinámicas:§r ${dynamicProperties.length}`,
     `§7Sistemas guardados:§r ${savedSystems}`,
   ];
@@ -589,8 +575,6 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
 
     const openerItem = (entGroup && config.openItem?.[entGroup]) || config.openItem?.default || "lc:dt_commander";
 
-    let isDDUIOpener = false;
-
     try {
       const mainhand = player.getComponent("equippable")?.getEquipment(EquipmentSlot.Mainhand);
 
@@ -598,10 +582,9 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
 
       debugWarn("playerInteractWithEntity", `player mainhand=${mainId}, opener=${openerItem}`);
 
-      const isLegacyOpener = itemMatches(mainId, openerItem);
-      isDDUIOpener = itemMatches(mainId, "blaze_rod");
+      const isDDUIOpener = itemMatches(mainId, openerItem);
 
-      if (!isLegacyOpener && !isDDUIOpener) {
+      if (!isDDUIOpener) {
         debugWarn("playerInteractWithEntity", `menu blocked: wrong opener`, "blue");
         return;
       }
@@ -628,11 +611,7 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
     const soldierName = entity.nameTag ? `${entity.nameTag}§r` : `§b${displayName}§r`;
 
     system.run(() => {
-      if (isDDUIOpener) {
-        showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
-      } else {
-        showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
-      }
+      showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
     });
   } catch (err) {
     debugWarn("playerInteractWithEntity", `GUI error: ${err}`, "red");

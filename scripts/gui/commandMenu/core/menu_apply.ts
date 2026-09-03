@@ -8,8 +8,8 @@ import {
   getEntitySystemState,
   SpecialGroups,
   UnitHierarchy,
-  getSystemConfig,
 } from "../menu_config.js";
+import { CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
 import { canApplySystem } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
@@ -307,7 +307,7 @@ export function applySystemsToEntities(eligibleSoldiers: any[], systemIds: strin
   for (const { entity, factionInfo } of eligibleSoldiers) {
     for (const systemId of systemIds) {
       totalChecked++;
-      const systemConfig = getSystemConfig(systemId);
+      const systemConfig = CATALOG_SYSTEMS[systemId as SystemId];
       const state = systemStates[systemId];
 
       // Debug detallado para diagnóstico

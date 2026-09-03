@@ -51,6 +51,28 @@ export interface GuiConfig {
   specific: Record<string, EntitySpecificConfig>;
 }
 
+import {
+  SystemIds,
+  CategoryIds,
+  SYSTEM_SHORT_NAMES as CATALOG_SYSTEM_SHORT_NAMES,
+  SYSTEM_DISPLAY_NAMES,
+  CATEGORY_DISPLAY_NAMES,
+  MOVEMENT_OPTIONS,
+  FIRE_OPTIONS,
+  TELEPORT_OPTIONS,
+  ADVANCED_TOGGLE_SYSTEMS,
+  GROUP_DESCRIPTIONS,
+  GROUP_LABELS,
+  type SystemOption,
+} from "../shared/systemCatalog.js";
+import { SpecialGroups } from "../../constants/domains.js";
+
+export const SYSTEM_SHORT_NAMES: Record<string, string> = {
+  ...CATALOG_SYSTEM_SHORT_NAMES,
+  group_assignment: "§9Asignar grupo§r",
+  entity_protection: "§7Configuración§r",
+};
+
 const config: GuiConfig = {
   // Qué ítem debe tener el jugador en mano para abrir el menú según la facción
   // key = grupo en `entities`
@@ -92,66 +114,22 @@ const config: GuiConfig = {
   global: {
     categories: [
       {
-        id: "movement_patrol",
-        category: "§1Movimiento / Patrulla§r",
-        entries: [
-          {
-            label: "§aSeguir jugador (Cerca)",
-            event: "humanoid:set_tamed_close",
-            description: "Escolta cercana. Teletransporte de combate activo",
-          },
-          {
-            label: "§eSeguir jugador (Media)",
-            event: "humanoid:set_tamed_mid",
-            description: "Grupo extendido. Unidades de apoyo",
-          },
-          {
-            label: "§6Seguir jugador (Lejos)",
-            event: "humanoid:set_tamed_far",
-            description: "Grupo operando separado. Mantiene posición relativa",
-          },
-          {
-            label: "§9Caminar libremente",
-            event: "mtf:to_move_free",
-            description: "Autonomía total. Sin dueño ni teletransporte",
-          },
-          {
-            label: "§cDetenerse",
-            event: "mtf:to_stop",
-            description: "Guardia estática. Mantiene ataque y rotación activos",
-          },
-        ],
+        id: CategoryIds.MOVEMENT_PATROL,
+        category: `${CATEGORY_DISPLAY_NAMES.movement_patrol}§r`,
+        entries: MOVEMENT_OPTIONS.map((opt: SystemOption) => ({
+          label: opt.label,
+          event: opt.eventStart,
+          description: opt.description,
+        })),
       },
       {
-        id: "attack_rules",
-        category: "§cIniciativa de Combate§r",
-        entries: [
-          {
-            label: "§cMáxima",
-            event: "humanoid:fire_maximum",
-            description: "Detección máxima. Guerra y defensa. Hasta ~48m-64m según unidad",
-          },
-          {
-            label: "§9Avanzada",
-            event: "humanoid:fire_advanced",
-            description: "Combate ofensivo. Ataque controlado. Hasta ~36m-48m según unidad",
-          },
-          {
-            label: "§aIntermedia",
-            event: "humanoid:fire_intermediate",
-            description: "Exploración estándar. Cobertura general. Hasta ~26m-34m según unidad",
-          },
-          {
-            label: "§bCercana",
-            event: "humanoid:fire_close",
-            description: "CQB y escolta. Interiores cerrados. Hasta ~16m-22m según unidad",
-          },
-          {
-            label: "§eNeutral / Sigilo",
-            event: "humanoid:fire_neutral",
-            description: "Sin detección visual. Pasa desapercibido. Solo responde al daño",
-          },
-        ],
+        id: CategoryIds.COMBAT,
+        category: `${CATEGORY_DISPLAY_NAMES.combat}§r`,
+        entries: FIRE_OPTIONS.map((opt: SystemOption) => ({
+          label: opt.label,
+          event: opt.eventStart,
+          description: opt.description,
+        })),
       },
       {
         id: "advanced_menu",
@@ -199,72 +177,49 @@ const config: GuiConfig = {
     advanced: {
       categories: [
         {
-          id: "spawn",
-          category: "§bTraer refuerzos§r",
+          id: SystemIds.SPAWN,
+          category: `${SYSTEM_DISPLAY_NAMES.spawn}§r`,
           description: "Activa o detiene el spawn automático de refuerzos",
-          entries: [
-            {
-              label: "§aActivar",
-              event: "humanoid:start_spawn_soldiers",
-              description: "Spawnea refuerzos según configuración de la entidad",
-            },
-            {
-              label: "§cDesactivar",
-              event: "humanoid:stop_spawn_soldiers",
-              description: "Detiene el spawn de refuerzos",
-            },
-          ],
+          entries: (() => {
+            const sys = ADVANCED_TOGGLE_SYSTEMS.find((s) => s.id === SystemIds.SPAWN)!;
+            return [
+              { label: sys.labelTrue!, event: sys.eventTrue!, description: sys.description },
+              { label: sys.labelFalse!, event: sys.eventFalse!, description: sys.description },
+            ];
+          })(),
         },
         {
-          id: "health",
-          category: "§cBarra de vida§r",
+          id: SystemIds.HEALTH,
+          category: `${SYSTEM_DISPLAY_NAMES.health}§r`,
           description: "Muestra u oculta la barra de vida de la entidad",
-          entries: [
-            {
-              label: "§aMostrar",
-              event: "humanoid:show_boss_bar",
-            },
-            {
-              label: "§cOcultar",
-              event: "humanoid:dont_show_boss_bar",
-            },
-          ],
+          entries: (() => {
+            const sys = ADVANCED_TOGGLE_SYSTEMS.find((s) => s.id === SystemIds.HEALTH)!;
+            return [
+              { label: sys.labelTrue!, event: sys.eventTrue!, description: sys.description },
+              { label: sys.labelFalse!, event: sys.eventFalse!, description: sys.description },
+            ];
+          })(),
         },
         {
-          id: "teleport",
-          category: "§2Teletransportación§r",
-          entries: [
-            {
-              label: "§aModerado",
-              event: "humanoid:start_teleport",
-              description: "Teletransporta hacia el enemigo si está a más de ~30m",
-            },
-            {
-              label: "§6Cercano",
-              event: "humanoid:start_teleport_near",
-              description: "Teletransporta hacia el enemigo si está a más de ~15m",
-            },
-            {
-              label: "§cDesactivado",
-              event: "humanoid:stop_teleport",
-              description: "Avanza hacia el enemigo usando solo navegación a pie",
-            },
-          ],
+          id: SystemIds.TELEPORT,
+          category: `${SYSTEM_DISPLAY_NAMES.teleport}§r`,
+          entries: TELEPORT_OPTIONS.map((opt: SystemOption) => ({
+            label: opt.label,
+            event: opt.eventStart ?? opt.eventStop,
+            description: opt.description,
+          })),
         },
         {
-          id: "invincible",
-          category: "Invencibilidad",
+          id: SystemIds.INVINCIBLE,
+          category: `${SYSTEM_DISPLAY_NAMES.invincible}§r`,
           description: "Hace que la entidad ignore todo el daño recibido",
-          entries: [
-            {
-              label: "§aActivar",
-              event: "humanoid:start_invincible",
-            },
-            {
-              label: "§cDesactivar",
-              event: "humanoid:stop_invincible",
-            },
-          ],
+          entries: (() => {
+            const sys = ADVANCED_TOGGLE_SYSTEMS.find((s) => s.id === SystemIds.INVINCIBLE)!;
+            return [
+              { label: sys.labelTrue!, event: sys.eventTrue!, description: sys.description },
+              { label: sys.labelFalse!, event: sys.eventFalse!, description: sys.description },
+            ];
+          })(),
         },
       ],
     },
@@ -284,38 +239,38 @@ const config: GuiConfig = {
         },
         {
           id: "group_assignment",
-          category: "§9Asignar Grupo",
+          category: SYSTEM_SHORT_NAMES.group_assignment,
           requiresSpecial: true,
           entries: [
             {
-              label: "§9Grupo A",
+              label: GROUP_LABELS.groupA,
               action: "assign_group",
-              value: "groupA",
-              description: "Perfil 1. Menos unidades, más control",
+              value: SpecialGroups.GROUP_A,
+              description: GROUP_DESCRIPTIONS[SpecialGroups.GROUP_A],
             },
             {
-              label: "§aGrupo B",
+              label: GROUP_LABELS.groupB,
               action: "assign_group",
-              value: "groupB",
-              description: "Perfil 2. Unidades de apoyo",
+              value: SpecialGroups.GROUP_B,
+              description: GROUP_DESCRIPTIONS[SpecialGroups.GROUP_B],
             },
             {
-              label: "§6Grupo C",
+              label: GROUP_LABELS.groupC,
               action: "assign_group",
-              value: "groupC",
-              description: "Perfil 3. Cobertura amplia",
+              value: SpecialGroups.GROUP_C,
+              description: GROUP_DESCRIPTIONS[SpecialGroups.GROUP_C],
             },
             {
-              label: "§dGrupo D",
+              label: GROUP_LABELS.groupD,
               action: "assign_group",
-              value: "groupD",
-              description: "Perfil 4. Más unidades, fuego masivo",
+              value: SpecialGroups.GROUP_D,
+              description: GROUP_DESCRIPTIONS[SpecialGroups.GROUP_D],
             },
             {
-              label: "§8Sin grupo",
+              label: GROUP_LABELS.noGroup,
               action: "assign_group",
-              value: "noGroup",
-              description: "Perfil por defecto. Aplica a todas sin asignar",
+              value: SpecialGroups.NO_GROUP,
+              description: GROUP_DESCRIPTIONS[SpecialGroups.NO_GROUP],
             },
           ],
         },
@@ -563,17 +518,6 @@ const config: GuiConfig = {
       ],
     },
   },
-};
-
-export const SYSTEM_SHORT_NAMES: Record<string, string> = {
-  movement: "§1Movimiento§r",
-  fire: "§cIniciativa§r",
-  spawn: "§bRefuerzos§r",
-  health: "§cBarra de vida§r",
-  teleport: "§2Teletransporte§r",
-  invincible: "Invencibilidad",
-  group_assignment: "§9Asignar grupo§r",
-  entity_protection: "§7Configuración§r",
 };
 
 export default config;

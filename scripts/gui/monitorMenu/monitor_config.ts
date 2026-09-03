@@ -7,6 +7,7 @@ import {
   UnitHierarchyLabels,
   UnitHierarchy,
 } from "../commandMenu/menu_config.js";
+import type { UnitHierarchyId } from "../../constants/domains.js";
 import { NAMETAG_FAMILY_MAP, getFamilyTagLabel } from "../commandMenu/menu_config.js";
 
 /**
@@ -153,7 +154,7 @@ export function buildFactionSummary(
     total++;
     if (!scanned.isSpecial) {
       const hierarchy = scanned.hierarchy;
-      if (!hierarchy || !normalHierarchyKeys.includes(hierarchy)) continue;
+      if (!hierarchy || !normalHierarchyKeys.includes(hierarchy as UnitHierarchyId)) continue;
 
       if (hierarchy === UnitHierarchy.BASIC) basic++;
       else if (hierarchy === UnitHierarchy.LEADER) leader++;

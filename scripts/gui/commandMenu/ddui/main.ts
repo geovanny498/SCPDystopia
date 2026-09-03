@@ -2,15 +2,19 @@
 
 import { Player, system, world } from "@minecraft/server";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
-import { getRoleInfo } from "./helpers/roleHelpers.js";
+import { ERROR_MESSAGES } from "../../shared/systemCatalog.js";
+import { PlayerPermissionManager } from "../../shared/playerPermissionManager.js";
+import { EquipmentDetector } from "../../shared/equipmentDetector.js";
 import { showMainPanel } from "./panels/mainPanel.js";
 import { commandMenuSessionStore } from "./sessionStore.js";
 
 export function openCommandMenuDDUI(player: Player): void {
   try {
-    const roleInfo = getRoleInfo(player);
-    if (!roleInfo) {
-      player.sendMessage("§c[SCPDystopia] Necesitas llevar el casco de tu facción para acceder al menú.");
+    const isAdmin = PlayerPermissionManager.isAdmin(player);
+    const helmetFaction = EquipmentDetector.getActiveFaction(player);
+
+    if (!helmetFaction && !isAdmin) {
+      player.sendMessage(ERROR_MESSAGES.NEED_FACTION_HELMET);
       return;
     }
 
@@ -18,7 +22,7 @@ export function openCommandMenuDDUI(player: Player): void {
     showMainPanel(player);
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error abriendo menú DDUI: ${e}`, "red");
-    player.sendMessage("§c[SCPDystopia] Error al abrir el menú.");
+    player.sendMessage(ERROR_MESSAGES.OPEN_MENU);
   }
 }
 

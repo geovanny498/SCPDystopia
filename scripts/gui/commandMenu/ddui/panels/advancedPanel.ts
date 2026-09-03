@@ -3,6 +3,7 @@
 import { Player, system } from "@minecraft/server";
 import { CustomForm } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { Factions } from "../../../../constants/domains.js";
 import {
   PANEL_TITLES,
   PANEL_DESCRIPTIONS,
@@ -16,7 +17,7 @@ import { commandMenuSessionStore } from "../sessionStore.js";
 import { buildSystemView } from "../builders/systemBuilder.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 
-export function showAdvancedPanel(player: Player, targetFaction: string = "foundation"): void {
+export function showAdvancedPanel(player: Player, targetFaction: string = Factions.FOUNDATION): void {
   try {
     let closeReason: "navigation" | undefined = undefined;
 

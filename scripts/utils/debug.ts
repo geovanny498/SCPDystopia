@@ -36,6 +36,7 @@ export const DEBUG_MODULES: string[] = [
   "commandMenuDDUI",
   "roleMenu",
   "lifecycle",
+  "scope",
   // "player",
   // "menuScanner",
   // "menuScanner:buckets",

@@ -39,7 +39,7 @@ system.beforeEvents.startup.subscribe((init) => {
       {
         name: "scpd:reset_systems_undefined",
         description: "[TESTEO] Simula estados de guardado de sistemas.",
-        permissionLevel: CommandPermissionLevel.Any,
+        permissionLevel: CommandPermissionLevel.Admin,
         cheatsRequired: false,
         optionalParameters: [{ name: modeEnumName, type: CustomCommandParamType.Enum }],
       },

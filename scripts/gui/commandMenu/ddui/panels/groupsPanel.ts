@@ -9,6 +9,7 @@ import {
   GROUP_PANEL_BUTTONS,
   FACTION_DISPLAY_NAMES,
   GROUP_LABELS,
+  ERROR_MESSAGES,
 } from "../../../shared/systemCatalog.js";
 import { SYSTEM_PANEL_FEEDBACK_INITIAL } from "../../../shared/dduiFeedback.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
@@ -18,9 +19,10 @@ import { setUnitGroup } from "../../model/menu_groups.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { compareNametags } from "../../../../utils/nametagSort.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
-import { getGroupsOrderForSystems, SpecialGroups, getGroupsOrderForAssignment, SpecialGroupLabels } from "../../menu_config.js";
+import { SpecialGroups, getGroupsOrderForSystems, getGroupsOrderForAssignment, SpecialGroupLabels } from "../../menu_config.js";
+import { Factions } from "../../../../constants/domains.js";
 
-export function showGroupsPanel(player: Player, targetFaction: string = "foundation"): void {
+export function showGroupsPanel(player: Player, targetFaction: string = Factions.FOUNDATION): void {
   system.run(() => showGroupsByFaction(player, targetFaction));
 }
 
@@ -39,7 +41,7 @@ function showGroupsByFaction(player: Player, faction: string): void {
 
     const dimension = player.dimension;
     if (!dimension) {
-      player.sendMessage("§c[SCPDystopia] Dimensión no disponible.");
+      player.sendMessage(ERROR_MESSAGES.NO_DIMENSION);
       return;
     }
 
@@ -48,7 +50,7 @@ function showGroupsByFaction(player: Player, faction: string): void {
     const groupCounts: Record<string, number> = {};
     for (const entity of scanResult.entities) {
       if (!entity.isSpecial) continue;
-      const group = entity.group ?? "noGroup";
+      const group = entity.group ?? SpecialGroups.NO_GROUP;
       groupCounts[group] = (groupCounts[group] ?? 0) + 1;
     }
 
@@ -129,20 +131,20 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
   try {
     const dimension = player.dimension;
     if (!dimension) {
-      player.sendMessage("§c[SCPDystopia] Dimensión no disponible.");
+      player.sendMessage(ERROR_MESSAGES.NO_DIMENSION);
       return;
     }
 
     const session = commandMenuSessionStore.get(player.id);
     if (!session) {
-      player.sendMessage("§c[SCPDystopia] Sesión no encontrada para el menú de comandos.");
+      player.sendMessage(ERROR_MESSAGES.NO_SESSION);
       return;
     }
 
     const scanResult = scanActiveUnits(dimension, faction);
     const bucket = scanResult.buckets[bucketId];
     if (!bucket) {
-      player.sendMessage("§c[SCPDystopia] Bucket no encontrado.");
+      player.sendMessage(ERROR_MESSAGES.NO_BUCKET);
       return;
     }
 
@@ -197,11 +199,11 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       const ntCount = bucket.nametags[nt] || 0;
       const preferredGroup = nametagPreferredGroup[nt] ?? SpecialGroups.NO_GROUP;
       const currentIndex = groupOptions.findIndex((opt) => opt.value === preferredGroup);
-      const initialIndex = currentIndex >= 0 ? currentIndex : groupOptions.findIndex((opt) => opt.value === "noGroup");
+        const initialIndex = currentIndex >= 0 ? currentIndex : groupOptions.findIndex((opt) => opt.value === SpecialGroups.NO_GROUP);
       const obs = new ObservableNumber(initialIndex >= 0 ? initialIndex : 0, { clientWritable: true });
       obs.subscribe((newIndex) => {
         if (newIndex < 0) return;
-        const selectedGroup = groupOptions[newIndex]?.value ?? "noGroup";
+          const selectedGroup = groupOptions[newIndex]?.value ?? SpecialGroups.NO_GROUP;
         applyGroupToNametag(player, faction, nt, selectedGroup);
       });
       form.dropdown(`${stripColorCodes(nt)}${ntCount > 1 ? ` (${ntCount})` : ""}`, obs, items);
@@ -254,7 +256,7 @@ function applyGroupToNametag(player: Player, faction: string, nametag: string, g
   try {
     const dimension = player.dimension;
     if (!dimension) {
-      player.sendMessage("§c[SCPDystopia] Dimensión no disponible.");
+      player.sendMessage(ERROR_MESSAGES.NO_DIMENSION);
       return;
     }
 
@@ -292,6 +294,6 @@ function applyGroupToNametag(player: Player, faction: string, nametag: string, g
     });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error asignando grupo: ${e}`, "red");
-    player.sendMessage("§c[SCPDystopia] Error asignando grupo.");
+    player.sendMessage(ERROR_MESSAGES.ASSIGN_GROUP);
   }
 }
