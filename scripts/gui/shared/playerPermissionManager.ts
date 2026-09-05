@@ -6,6 +6,17 @@ import { debugWarn, debugMessage } from "../../utils/debug.js";
 export type FactionId = "foundation" | "chaos";
 export type RoleId = "member" | "commander" | "admin";
 
+/**
+ * Identificadores canónicos de rol como objeto de constantes.
+ * Permite propagación: si renombras aquí, todos los consumidores
+ * que usan `RoleIds.ADMIN` se actualizan automáticamente.
+ */
+export const RoleIds = {
+  MEMBER: "member",
+  COMMANDER: "commander",
+  ADMIN: "admin",
+} as const;
+
 export const ROLE_DP_KEY_FOUNDATION = "scpd_role_foundation";
 export const ROLE_DP_KEY_CHAOS = "scpd_role_chaos";
 

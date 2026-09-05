@@ -82,3 +82,28 @@ Pon nombres claros a los planes para poder identificarlos.
 Registra siempre fecha y hora de la última modificación de los planes con el formato `dd/mm/yyyy`. También registra si el plan fue implementado o si está pendiente de implementación.
 
 Nunca implementes los planes sin aprobación explícita del usuario, y cuando lo hagas actualiza el plan indicando que se implementó.
+
+## Clasificación de menús: legacy vs DDUI vs compartido
+
+**Regla de detección:**
+
+* Importa `ActionFormData`/`ModalFormData` → **legacy** (NO modificar sin aprobación)
+* Importa `CustomForm`/`MessageBox` → **DDUI** (refactorizable)
+* NO importa API de UI → **compartido/core** (refactorizable si no rompe firmas)
+
+**Importante:** un archivo puede ser híbrido. La regla aplica por archivo, pero para funciones específicas dentro de un archivo híbrido (ej: `interactMenu/gui.ts` mezcla DDUI handler + legacy forms), clasifica cada función individualmente.
+
+**commandMenu:**
+
+* `ui/`, `builder/` → legacy (protegido)
+* `core/` (`menu_apply.ts`, `menu_state.ts`, `menu_events.ts`) → compartido (SÍ refactorizable)
+* `model/` → compartido (SÍ refactorizable, NO es legacy). Contiene lógica de dominio pura: detección de facción, jerarquía, familias, grupos, scope, scanner de entidades. Consumido por legacy (vía `ui/`, `builder/`) y por DDUI. **Se puede extender, exportar funciones nuevas y agregar helpers de visibilidad/familias sin tocar legacy.**
+* `ddui/` → DDUI (refactorizable)
+* `menu_config.ts` → shim legacy (mantener hasta descontinuación)
+
+**interactMenu:**
+
+* `gui.ts` → híbrido: funciones `show*Menu` son legacy (protegidas), helpers puros son compartidos
+* `ddui/` → DDUI (refactorizable)
+
+**Verificación de clasificación:** `rg "@minecraft/server-ui|ActionFormData|ModalFormData|CustomForm|MessageBox" scripts/gui/<ruta>/` para confirmar antes de modificar.

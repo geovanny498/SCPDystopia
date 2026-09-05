@@ -1,7 +1,19 @@
 // scripts/gui/shared/systemCatalog.ts
 
 import type { Entity } from "@minecraft/server";
-import { FactionId, SpecialGroupId, DefaultsKey, NAMETAG_FAMILY_MAP } from "../../constants/domains.js";
+import {
+  Factions,
+  UnitHierarchy,
+  SpecialGroups,
+  FactionId,
+  SpecialGroupId,
+  DefaultsKey,
+  NAMETAG_FAMILY_MAP,
+  UnitHierarchyId,
+  TargetFaction,
+} from "../../constants/domains.js";
+import { RoleIds } from "./playerPermissionManager.js";
+import type { RoleId } from "./playerPermissionManager.js";
 
 // ── Tipos de dominio ────────────────────────────────────────────────────────
 
@@ -27,11 +39,15 @@ export type SystemId = (typeof SystemIds)[keyof typeof SystemIds];
 /**
  * Identificadores canónicos de categoría de catálogo como objeto de constantes.
  * Permite propagación: si renombras aquí, todos los consumidores
- * que usan `CategoryIds.MOVEMENT_PATROL` se actualizan automáticamente.
+ * que usan `CategoryIds.MOVEMENT` se actualizan automáticamente.
+ *
+ * Nota: Los IDs de categoría para sistemas individuales (movement, fire)
+ * coinciden con los IDs de sistema para evitar duplicación semántica.
+ * Las categorías avanzadas y "all" agrupan múltiples sistemas.
  */
 export const CategoryIds = {
-  MOVEMENT_PATROL: "movement_patrol",
-  COMBAT: "combat",
+  MOVEMENT: "movement",
+  FIRE: "fire",
   ADVANCED: "advanced",
   ALL: "all",
 } as const;
@@ -57,16 +73,6 @@ export interface SystemOption {
   autoTame?: boolean;
 }
 
-export interface AdvancedToggleSystem {
-  id: SystemId;
-  displayName: string;
-  description: string;
-  eventTrue: string;
-  eventFalse: string;
-  labelTrue?: string;
-  labelFalse?: string;
-}
-
 export interface CatalogSystem {
   id: SystemId;
   displayName: string;
@@ -84,6 +90,10 @@ export interface CatalogSystem {
   defaults: Record<FactionId, Record<DefaultsKey, OptionValue>>;
   labelTrue?: string;
   labelFalse?: string;
+  minRole?: RoleId;
+  blockedByHierarchy?: Partial<Record<UnitHierarchyId, boolean>>;
+  allowedFamilies?: string[];
+  blockedFamilies?: string[];
 }
 
 export interface CatalogCategory {
@@ -185,157 +195,128 @@ export const TELEPORT_OPTIONS: SystemOption[] = [
   },
 ];
 
-// ── Sistemas avanzados (toggle) ─────────────────────────────────────────────
-
-export const ADVANCED_TOGGLE_SYSTEMS: AdvancedToggleSystem[] = [
-  {
-    id: "spawn",
-    displayName: "§bTraer refuerzos",
-    description: "Activa o detiene el spawn automático de refuerzos",
-    eventTrue: "humanoid:start_spawn_soldiers",
-    eventFalse: "humanoid:stop_spawn_soldiers",
-    labelTrue: "§aActivar",
-    labelFalse: "§cDesactivar",
-  },
-  {
-    id: "health",
-    displayName: "§cBarra de vida",
-    description: "Muestra u oculta la barra de vida de la entidad",
-    eventTrue: "humanoid:show_boss_bar",
-    eventFalse: "humanoid:dont_show_boss_bar",
-    labelTrue: "§aMostrar",
-    labelFalse: "§cOcultar",
-  },
-  {
-    id: "invincible",
-    displayName: "Invencibilidad",
-    description: "Hace que la entidad ignore todo el daño recibido",
-    eventTrue: "humanoid:start_invincible",
-    eventFalse: "humanoid:stop_invincible",
-    labelTrue: "§aActivar",
-    labelFalse: "§cDesactivar",
-  },
-];
-
 // ── Catálogo de sistemas ────────────────────────────────────────────────────
 
 export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
   movement: {
-    id: "movement",
+    id: SystemIds.MOVEMENT,
     displayName: "§1Movimiento / Patrulla",
     controlType: "dropdown",
     options: MOVEMENT_OPTIONS,
     description: "§8(Sólo entidades existentes)",
-    category: "movement_patrol",
+    category: CategoryIds.MOVEMENT,
     dynamicProperty: "scpd_system_movement",
     tooltip:
       "§7Define cómo se desplazan las unidades en terreno.\n\nModos:\n- Seguir jugador (§aCerca/§eMedia/§6Lejos§7)\n- §9Caminar libremente\n§7- §cDetenerse",
     supportsSpecials: true,
     supportsHierarchy: true,
     supportsGroups: true,
+    minRole: RoleIds.MEMBER,
     defaults: {
-      foundation: {
-        basic: "free",
-        leader: "free",
-        commander: "free",
-        groupA: "free",
-        groupB: "free",
-        groupC: "free",
-        groupD: "free",
-        noGroup: "free",
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: "free",
+        [UnitHierarchy.LEADER]: "free",
+        [UnitHierarchy.COMMANDER]: "free",
+        [SpecialGroups.GROUP_A]: "free",
+        [SpecialGroups.GROUP_B]: "free",
+        [SpecialGroups.GROUP_C]: "free",
+        [SpecialGroups.GROUP_D]: "free",
+        [SpecialGroups.NO_GROUP]: "free",
       },
-      chaos: {
-        basic: "free",
-        leader: "free",
-        commander: "free",
-        groupA: "free",
-        groupB: "free",
-        groupC: "free",
-        groupD: "free",
-        noGroup: "free",
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: "free",
+        [UnitHierarchy.LEADER]: "free",
+        [UnitHierarchy.COMMANDER]: "free",
+        [SpecialGroups.GROUP_A]: "free",
+        [SpecialGroups.GROUP_B]: "free",
+        [SpecialGroups.GROUP_C]: "free",
+        [SpecialGroups.GROUP_D]: "free",
+        [SpecialGroups.NO_GROUP]: "free",
       },
     },
   },
   fire: {
-    id: "fire",
+    id: SystemIds.FIRE,
     displayName: "§cIniciativa de Combate",
     controlType: "dropdown",
     options: FIRE_OPTIONS,
     description: "",
-    category: "combat",
+    category: CategoryIds.FIRE,
     dynamicProperty: "scpd_system_fire",
     tooltip:
       "§7Define el radio de conciencia y respuesta ante amenazas.\n\nModos:\n- §cMáxima\n§7- §9Avanzada\n§7- §aIntermedia\n§7- §bCercana\n§7- §eNeutral / Sigilo",
     supportsSpecials: true,
     supportsHierarchy: true,
     supportsGroups: true,
+    minRole: RoleIds.MEMBER,
     defaults: {
-      foundation: {
-        basic: "intermediate",
-        leader: "intermediate",
-        commander: "intermediate",
-        groupA: "intermediate",
-        groupB: "intermediate",
-        groupC: "intermediate",
-        groupD: "intermediate",
-        noGroup: "intermediate",
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: "intermediate",
+        [UnitHierarchy.LEADER]: "intermediate",
+        [UnitHierarchy.COMMANDER]: "intermediate",
+        [SpecialGroups.GROUP_A]: "intermediate",
+        [SpecialGroups.GROUP_B]: "intermediate",
+        [SpecialGroups.GROUP_C]: "intermediate",
+        [SpecialGroups.GROUP_D]: "intermediate",
+        [SpecialGroups.NO_GROUP]: "intermediate",
       },
-      chaos: {
-        basic: "intermediate",
-        leader: "intermediate",
-        commander: "intermediate",
-        groupA: "intermediate",
-        groupB: "intermediate",
-        groupC: "intermediate",
-        groupD: "intermediate",
-        noGroup: "intermediate",
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: "intermediate",
+        [UnitHierarchy.LEADER]: "intermediate",
+        [UnitHierarchy.COMMANDER]: "intermediate",
+        [SpecialGroups.GROUP_A]: "intermediate",
+        [SpecialGroups.GROUP_B]: "intermediate",
+        [SpecialGroups.GROUP_C]: "intermediate",
+        [SpecialGroups.GROUP_D]: "intermediate",
+        [SpecialGroups.NO_GROUP]: "intermediate",
       },
     },
   },
   teleport: {
-    id: "teleport",
+    id: SystemIds.TELEPORT,
     displayName: "§2Teletransporte",
     controlType: "dropdown",
     options: TELEPORT_OPTIONS,
     description: "",
-    category: "advanced",
+    category: CategoryIds.ADVANCED,
     dynamicProperty: "scpd_system_teleport",
     tooltip:
       "§7Define la agresividad del teletransporte hacia el enemigo cuando hay distancia.\n\nModos:\n- §aModerado\n§7- §6Cercano\n§7- §cDesactivado",
     supportsSpecials: true,
     supportsHierarchy: true,
     supportsGroups: true,
+    minRole: RoleIds.MEMBER,
     defaults: {
-      foundation: {
-        basic: "false",
-        leader: "false",
-        commander: "false",
-        groupA: "false",
-        groupB: "false",
-        groupC: "false",
-        groupD: "false",
-        noGroup: "false",
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: "false",
+        [UnitHierarchy.LEADER]: "false",
+        [UnitHierarchy.COMMANDER]: "false",
+        [SpecialGroups.GROUP_A]: "false",
+        [SpecialGroups.GROUP_B]: "false",
+        [SpecialGroups.GROUP_C]: "false",
+        [SpecialGroups.GROUP_D]: "false",
+        [SpecialGroups.NO_GROUP]: "false",
       },
-      chaos: {
-        basic: "false",
-        leader: "false",
-        commander: "false",
-        groupA: "false",
-        groupB: "false",
-        groupC: "false",
-        groupD: "false",
-        noGroup: "false",
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: "false",
+        [UnitHierarchy.LEADER]: "false",
+        [UnitHierarchy.COMMANDER]: "false",
+        [SpecialGroups.GROUP_A]: "false",
+        [SpecialGroups.GROUP_B]: "false",
+        [SpecialGroups.GROUP_C]: "false",
+        [SpecialGroups.GROUP_D]: "false",
+        [SpecialGroups.NO_GROUP]: "false",
       },
     },
   },
   spawn: {
-    id: "spawn",
+    id: SystemIds.SPAWN,
     displayName: "§bTraer refuerzos",
     controlType: "toggle",
     eventTrue: "humanoid:start_spawn_soldiers",
     eventFalse: "humanoid:stop_spawn_soldiers",
     description: "",
-    category: "advanced",
+    category: CategoryIds.ADVANCED,
     dynamicProperty: "scpd_system_spawn",
     tooltip:
       "§7Habilita la capacidad de generar refuerzos adicionales (Sólo líderes y algunos comandantes).\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
@@ -344,37 +325,52 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     supportsSpecials: true,
     supportsHierarchy: true,
     supportsGroups: true,
+    minRole: RoleIds.COMMANDER, // Solo comandantes y admins ven este sistema
+    // Compatibilidad por jerarquía (commandMenu)
+    blockedByHierarchy: {
+      [UnitHierarchy.BASIC]: true, // Dropdown "Básicos" se muestra disabled
+      // [UnitHierarchy.LEADER]: true, //no definido → habilitado
+      // [UnitHierarchy.COMMANDER]: true, //no definido → habilitado
+    },
+    // Compatibilidad por familia (interactMenu)
+    allowedFamilies: [
+      "hierarchy_leader", // Líderes pueden usar spawn
+      "hierarchy_commander", // Comandantes pueden usar spawn (con excepciones)
+    ],
+    blockedFamilies: [
+      "mtf_delta1", // Comandantes Delta-1 NO pueden usar spawn
+    ],
     defaults: {
-      foundation: {
-        basic: false,
-        leader: false,
-        commander: false,
-        groupA: false,
-        groupB: false,
-        groupC: false,
-        groupD: false,
-        noGroup: false,
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
       },
-      chaos: {
-        basic: false,
-        leader: false,
-        commander: false,
-        groupA: false,
-        groupB: false,
-        groupC: false,
-        groupD: false,
-        noGroup: false,
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
       },
     },
   },
   health: {
-    id: "health",
+    id: SystemIds.HEALTH,
     displayName: "§cBarra de vida",
     controlType: "toggle",
     eventTrue: "humanoid:show_boss_bar",
     eventFalse: "humanoid:dont_show_boss_bar",
     description: "",
-    category: "advanced",
+    category: CategoryIds.ADVANCED,
     dynamicProperty: "scpd_system_health",
     tooltip:
       "§7Visualización de la salud de las unidades cercanas en la interfaz.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
@@ -383,65 +379,66 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     supportsSpecials: true,
     supportsHierarchy: true,
     supportsGroups: true,
+    minRole: RoleIds.MEMBER,
     defaults: {
-      foundation: {
-        basic: false,
-        leader: false,
-        commander: false,
-        groupA: false,
-        groupB: false,
-        groupC: false,
-        groupD: false,
-        noGroup: false,
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
       },
-      chaos: {
-        basic: false,
-        leader: false,
-        commander: false,
-        groupA: false,
-        groupB: false,
-        groupC: false,
-        groupD: false,
-        noGroup: false,
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
       },
     },
   },
   invincible: {
-    id: "invincible",
+    id: SystemIds.INVINCIBLE,
     displayName: "Invencibilidad",
     controlType: "toggle",
     eventTrue: "humanoid:start_invincible",
     eventFalse: "humanoid:stop_invincible",
     description: "",
-    category: "advanced",
+    category: CategoryIds.ADVANCED,
     dynamicProperty: "scpd_system_invincible",
-    tooltip:
-      "§7Hace invulnerable a la unidad. Usar con precaución.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
+    tooltip: "§7Hace invulnerable a la unidad. Usar con precaución.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
     labelTrue: "§aActivar",
     labelFalse: "§cDesactivar",
     supportsSpecials: true,
     supportsHierarchy: true,
     supportsGroups: true,
+    minRole: RoleIds.ADMIN,
     defaults: {
-      foundation: {
-        basic: false,
-        leader: false,
-        commander: false,
-        groupA: false,
-        groupB: false,
-        groupC: false,
-        groupD: false,
-        noGroup: false,
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
       },
-      chaos: {
-        basic: false,
-        leader: false,
-        commander: false,
-        groupA: false,
-        groupB: false,
-        groupC: false,
-        groupD: false,
-        noGroup: false,
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: false,
+        [UnitHierarchy.LEADER]: false,
+        [UnitHierarchy.COMMANDER]: false,
+        [SpecialGroups.GROUP_A]: false,
+        [SpecialGroups.GROUP_B]: false,
+        [SpecialGroups.GROUP_C]: false,
+        [SpecialGroups.GROUP_D]: false,
+        [SpecialGroups.NO_GROUP]: false,
       },
     },
   },
@@ -450,29 +447,36 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
 // ── Categorías ──────────────────────────────────────────────────────────────
 
 export const CATALOG_CATEGORIES: Record<CategoryId, CatalogCategory> = {
-  movement_patrol: {
-    id: "movement_patrol",
+  movement: {
+    id: SystemIds.MOVEMENT,
     displayName: "§1Movimiento / Patrulla",
     description: "",
     systemIds: [SystemIds.MOVEMENT],
   },
-  combat: {
-    id: "combat",
+  fire: {
+    id: SystemIds.FIRE,
     displayName: "§cIniciativa de Combate",
     description: "",
     systemIds: [SystemIds.FIRE],
   },
   advanced: {
-    id: "advanced",
+    id: CategoryIds.ADVANCED,
     displayName: "§6Configuración avanzada",
     description: "",
     systemIds: [SystemIds.SPAWN, SystemIds.HEALTH, SystemIds.TELEPORT, SystemIds.INVINCIBLE],
   },
   all: {
-    id: "all",
+    id: CategoryIds.ALL,
     displayName: "§lTodos los Sistemas",
     description: "",
-    systemIds: [SystemIds.MOVEMENT, SystemIds.FIRE, SystemIds.SPAWN, SystemIds.HEALTH, SystemIds.TELEPORT, SystemIds.INVINCIBLE],
+    systemIds: [
+      SystemIds.MOVEMENT,
+      SystemIds.FIRE,
+      SystemIds.SPAWN,
+      SystemIds.HEALTH,
+      SystemIds.TELEPORT,
+      SystemIds.INVINCIBLE,
+    ],
   },
 };
 
@@ -492,6 +496,8 @@ export const SYSTEM_SHORT_NAMES: Record<string, string> = {
   health: "§cBarra de vida§r",
   teleport: "§2Teletransporte§r",
   invincible: "Invencibilidad",
+  group_assignment: "§9Grupos§r",
+  scope: "§dScope§r",
 };
 
 // ── Nombres de display de sistemas ─────────────────────────────────────────
@@ -515,8 +521,8 @@ export const SYSTEM_DISPLAY_NAMES: Record<SystemId, string> = {
  * de `advanced` (categoría de sistemas del catálogo).
  */
 export const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
-  movement_patrol: "§1Movimiento / Patrulla",
-  combat: "§cIniciativa de Combate",
+  movement: "§1Movimiento / Patrulla",
+  fire: "§cIniciativa de Combate",
   advanced: "§6Configuración avanzada",
   advanced_menu: "§6Más sistemas",
 };
@@ -567,13 +573,24 @@ export const HIERARCHY_LABELS: Record<string, string> = {
 export const FACTION_DISPLAY_NAMES: Record<string, string> = {
   foundation: "§lFoundation",
   chaos: "§2§lChaos",
+  both: "§dAmbas facciones",
+};
+
+// ── Nombres de display de cascos (roles por facción) ───────────────────────
+
+export const HELMET_DISPLAY_NAMES: Record<string, string> = {
+  "minecraft:netherite_helmet": "§5Netherite",
+  "minecraft:diamond_helmet": "§bDiamante",
+  "minecraft:iron_helmet": "§7Hierro",
+  "minecraft:golden_helmet": "§6Oro",
+  "gabrielaplok:nv_goggles": "§2Gafas NV",
 };
 
 // ── Configuración del menú principal ────────────────────────────────────────
 
 export const MENU_CONFIG = {
   title: "SCPDystopia | Panel de Comandos",
-  categoryOrder: [CategoryIds.MOVEMENT_PATROL, CategoryIds.COMBAT, CategoryIds.ADVANCED, CategoryIds.ALL] as CategoryId[],
+  categoryOrder: [CategoryIds.MOVEMENT, CategoryIds.FIRE, CategoryIds.ADVANCED, CategoryIds.ALL] as CategoryId[],
   useDividers: true,
   messages: {
     allSystems:
@@ -581,6 +598,60 @@ export const MENU_CONFIG = {
     specificSystems: "§8[MENU] §7{player} §rconfiguró: §6{systems}§r.",
   },
 };
+
+// ── Reglas de acceso a features de menú ──────────────────────────────────────
+
+/**
+ * Features de menú del commandMenu DDUI cuyo acceso depende del rol del
+ * jugador. Cada feature tiene un `minRole` que sigue la jerarquía estándar
+ * (member < commander < admin). Las features no listadas aquí son visibles
+ * para todos los roles (no se filtran).
+ *
+ * Aplica a: commandMenu DDUI (mainPanel, advancedPanel, scopePanel,
+ * systemBuilder, historyPanel). NO aplica a interactMenu DDUI (que filtra
+ * por sistemas, no por features de menú).
+ */
+export type MenuFeature = "scope" | "history";
+
+/**
+ * Tabla canónica de reglas de acceso por feature de menú. Para añadir una
+ * nueva feature restringida, agrégala aquí y consume `isMenuFeatureVisible`
+ * en su panel y en el botón que lo invoca.
+ */
+export const MENU_ACCESS: Record<MenuFeature, { minRole: RoleId }> = {
+  scope: { minRole: RoleIds.COMMANDER },
+  history: { minRole: RoleIds.COMMANDER },
+};
+
+/**
+ * Determina si un jugador con el role dado puede acceder a una feature de
+ * menú del commandMenu DDUI. Centraliza la regla; reemplaza los 4 checks
+ * in-line que hoy duplican el patrón `commander || admin` con literales.
+ *
+ * Comportamiento:
+ * - Si `isAdmin` es true, siempre retorna true (short-circuit).
+ * - Si se pasa una `targetFaction` específica, evalúa `isRoleAtLeast(role, minRole)`.
+ * - Si se pasa `"both"` o no se pasa, evalúa `isRoleAtLeast(role, minRole)`.
+ *   El caller es responsable de iterar ambas facciones y hacer OR cuando
+ *   corresponda (modo any-faction).
+ *
+ * @param feature - Identificador de la feature de menú.
+ * @param role - Rol del jugador en la facción de la sesión (`effectiveRole`).
+ * @param isAdmin - Si el jugador es admin global (short-circuit).
+ * @param targetFaction - Facción objetivo de la sesión. `"both"` u `undefined`
+ *   activa el modo any-faction.
+ * @returns true si la feature debe mostrarse/ser accesible.
+ */
+export function isMenuFeatureVisible(
+  feature: MenuFeature,
+  role: RoleId,
+  isAdmin: boolean,
+  targetFaction?: TargetFaction
+): boolean {
+  if (isAdmin) return true;
+  const { minRole } = MENU_ACCESS[feature];
+  return isRoleAtLeast(role, minRole);
+}
 
 // ── Títulos y descripciones de paneles ──────────────────────────────────────
 
@@ -592,6 +663,7 @@ export const PANEL_TITLES: Record<string, string> = {
   history: "§lHistorial",
   scope: "§lPrioridad de Aplicación",
   system: "§lSistemas",
+  roleMenu: "§l§6GESTIÓN DE ROLES",
 };
 
 export const PANEL_DESCRIPTIONS: Record<string, string> = {
@@ -642,9 +714,9 @@ export const GROUP_ASSIGNMENT_BUTTONS = {
 };
 
 export const ROLE_LABELS: Record<string, string> = {
-  admin: "Admin",
-  commander: "Comandante",
-  member: "Miembro",
+  admin: "§cAdmin§r",
+  commander: "§6Comandante§r",
+  member: "§7Miembro§r",
 };
 
 export const BACK_BUTTON_LABEL = "<- Volver";
@@ -664,7 +736,7 @@ export const TARGET_FACTION_OPTIONS = [
 export const SYSTEM_VIEW_FILTER_OPTIONS = [
   { value: "all", label: "§fAmbos" },
   { value: "hierarchy", label: "§7No especiales" },
-  { value: "specials", label: "§6Especiales" },
+  { value: "specials", label: "§9Especiales" },
 ];
 
 export const HIERARCHY_AND_GROUP_OPTIONS = [
@@ -739,7 +811,10 @@ export function getSystemOption(systemId: SystemId, value: string): SystemOption
 /**
  * Obtiene el evento asociado a un valor de sistema.
  */
-export function getSystemEvent(systemId: SystemId, value: OptionValue): { event: string; autoTame?: boolean } | undefined {
+export function getSystemEvent(
+  systemId: SystemId,
+  value: OptionValue
+): { event: string; autoTame?: boolean } | undefined {
   const sys = CATALOG_SYSTEMS[systemId];
   if (!sys) return undefined;
 
@@ -786,7 +861,11 @@ export function getSystemDefaults(systemId: SystemId): Record<FactionId, Record<
 /**
  * Obtiene el default para una facción y clave específicas.
  */
-export function getSystemDefaultForKey(systemId: SystemId, faction: FactionId, key: DefaultsKey): OptionValue | undefined {
+export function getSystemDefaultForKey(
+  systemId: SystemId,
+  faction: FactionId,
+  key: DefaultsKey
+): OptionValue | undefined {
   return getSystemDefaults(systemId)?.[faction]?.[key];
 }
 
@@ -802,4 +881,57 @@ export function getGroupsOrderForAssignment(): SpecialGroupId[] {
  */
 export function getGroupsOrderForSystems(): SpecialGroupId[] {
   return ["groupA", "groupB", "groupC", "groupD", "noGroup"];
+}
+
+/**
+ * Orden jerárquico de roles para comparación.
+ * member (0) < commander (1) < admin (2)
+ */
+export const ROLE_ORDER: Record<RoleId, number> = {
+  member: 0,
+  commander: 1,
+  admin: 2,
+};
+
+/**
+ * Compara dos roles en la jerarquía member(0) < commander(1) < admin(2).
+ *
+ * Helper base para cualquier filtro de visibilidad por rol. Promovido desde
+ * `isSystemVisibleForRole` para que tanto sistemas (`CatalogSystem.minRole`)
+ * como features de menú (`MENU_ACCESS`) lo reutilicen sin duplicar la lógica.
+ *
+ * @param role - Rol del jugador.
+ * @param minRole - Rol mínimo requerido.
+ * @returns true si `role >= minRole` en la jerarquía.
+ */
+export function isRoleAtLeast(role: RoleId, minRole: RoleId): boolean {
+  return ROLE_ORDER[role] >= ROLE_ORDER[minRole];
+}
+
+/**
+ * Indica si un jugador con un rol específico puede VER un sistema en el menú.
+ *
+ * Si el sistema no define `minRole`, todos los roles pueden verlo.
+ * Si el sistema define `minRole`, solo roles iguales o superiores pueden verlo.
+ *
+ * Aplica a: commandMenu DDUI e interactMenu DDUI
+ *
+ * @param system - Configuración del sistema desde el catálogo
+ * @param role - Rol del jugador ("member" | "commander" | "admin")
+ * @returns true si el jugador puede ver el sistema, false si debe ocultarse
+ */
+export function isSystemVisibleForRole(system: CatalogSystem, role: RoleId): boolean {
+  if (!system.minRole) return true;
+  return isRoleAtLeast(role, system.minRole);
+}
+
+/**
+ * Filtra un array de sistemas por los que un rol puede ver.
+ *
+ * @param systems - Array de sistemas del catálogo
+ * @param role - Rol del jugador
+ * @returns Array de sistemas visibles para ese rol
+ */
+export function filterSystemsByRole(systems: CatalogSystem[], role: RoleId): CatalogSystem[] {
+  return systems.filter((s) => isSystemVisibleForRole(s, role));
 }

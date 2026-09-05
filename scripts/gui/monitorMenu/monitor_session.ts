@@ -2,7 +2,7 @@
 
 import { Player, system } from "@minecraft/server";
 import { ObservableString } from "@minecraft/server-ui";
-import { MonitorConfig, MonitorConfigDefaults } from "./monitor_config.js";
+import { MonitorConfig, MonitorConfigDefaults, MonitorConfigLabels } from "./monitor_config.js";
 import { loadMonitorConfig, saveMonitorConfig, clearMonitorConfig } from "./monitor_state.js";
 import { debugMessage, debugWarn } from "../../utils/debug.js";
 
@@ -148,12 +148,18 @@ export class MonitorMenuSession {
    * @returns Texto listo para mostrar con el resumen de la configuración.
    */
   getConfigText(): string {
+    const cfg = this.config;
+    const factionLabel = MonitorConfigLabels.faction[cfg.faction] ?? cfg.faction;
+    const unitTypeLabel = MonitorConfigLabels.unitType[cfg.unitType] ?? cfg.unitType;
+    const normalListModeLabel = MonitorConfigLabels.normalListMode[cfg.normalListMode] ?? cfg.normalListMode;
+    const specialListModeLabel = MonitorConfigLabels.specialListMode[cfg.specialListMode] ?? cfg.specialListMode;
+    const sortByLabel = MonitorConfigLabels.sortBy[cfg.sortBy] ?? cfg.sortBy;
     const lines: string[] = [
-      `§bFacción: §r${this.config.faction}`,
-      `§eTipo: §r${this.config.unitType}`,
-      `§aLista (No especiales): §r${this.config.normalListMode}`,
-      `§dLista (Especiales): §r${this.config.specialListMode}`,
-      `§cOrden: §r${this.config.sortBy}`,
+      `§bFacción: §r${factionLabel}`,
+      `§eTipo: §r${unitTypeLabel}`,
+      `§aLista (No especiales): §r${normalListModeLabel}`,
+      `§dLista (Especiales): §r${specialListModeLabel}`,
+      `§cOrden: §r${sortByLabel}`,
     ];
     return lines.join("\n");
   }

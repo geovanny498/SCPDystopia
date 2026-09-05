@@ -5,9 +5,11 @@ import { debugMessage } from "../../utils/debug.js";
 
 /**
  * Estado semántico de una entrada de feedback DDUI. Determina el prefijo
- * visual (`§a✓` ok, `§e⚠` warn, `§c✗` error) en `formatFeedbackText`.
+ * visual (`§a✓` ok, `§e⚠` warn, `§c✗` error, sin prefijo idle) en
+ * `formatFeedbackText`. Usar `"idle"` para placeholders iniciales donde aún
+ * no hay resultado de acción.
  */
-export type DDUIFeedbackStatus = "ok" | "warn" | "error";
+export type DDUIFeedbackStatus = "ok" | "warn" | "error" | "idle";
 
 /**
  * Entrada de feedback visual de una vista DDUI. Se sobreescribe por
@@ -34,8 +36,10 @@ export interface DDUIFeedbackEntry {
  * @returns Cadena con códigos de color lista para mostrar en un label.
  */
 export function formatFeedbackText(entry: DDUIFeedbackEntry): string {
-  const prefix = entry.status === "ok" ? "§a✓" : entry.status === "warn" ? "§e⚠" : "§c✗";
-  return `${prefix} §7${entry.context}: §f${entry.value}`;
+  const prefix =
+    entry.status === "ok" ? "§a✓" : entry.status === "warn" ? "§e⚠" : entry.status === "error" ? "§c✗" : "";
+  const body = `§7${entry.context}: §f${entry.value}`;
+  return prefix ? `${prefix} ${body}` : body;
 }
 
 /**
@@ -140,8 +144,8 @@ export class DDUIFeedbackPresenter {
 /** Texto inicial por defecto para vistas del commandMenu. */
 export const SYSTEM_PANEL_FEEDBACK_INITIAL: string = formatFeedbackText({
   context: "Sistema",
-  value: "Listo",
-  status: "ok",
+  value: "N/A",
+  status: "idle",
   timestamp: 0,
   viewId: "system:*",
 });
@@ -150,7 +154,16 @@ export const SYSTEM_PANEL_FEEDBACK_INITIAL: string = formatFeedbackText({
 export const INTERACT_PANEL_FEEDBACK_DEFAULT: string = formatFeedbackText({
   context: "Vista",
   value: "N/A",
-  status: "ok",
+  status: "idle",
   timestamp: 0,
   viewId: "*",
+});
+
+/** Texto inicial por defecto para el panel de roles. */
+export const ROLE_PANEL_FEEDBACK_INITIAL: string = formatFeedbackText({
+  context: "Vista",
+  value: "N/A",
+  status: "idle",
+  timestamp: 0,
+  viewId: "roleMenu:*",
 });

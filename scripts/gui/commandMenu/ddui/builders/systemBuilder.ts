@@ -11,11 +11,13 @@ import {
   SPECIAL_GROUP_OPTIONS,
   HIERARCHY_OPTIONS,
   SYSTEM_VIEW_FILTER_OPTIONS,
-  ADVANCED_TOGGLE_SYSTEMS,
   TOGGLE_ON_LABEL,
   TOGGLE_OFF_LABEL,
   ERROR_MESSAGES,
   SystemId,
+  isSystemVisibleForRole,
+  isMenuFeatureVisible,
+  type CatalogSystem,
 } from "../../../shared/systemCatalog.js";
 import {
   SYSTEM_PANEL_FEEDBACK_INITIAL,
@@ -24,11 +26,10 @@ import {
 } from "../../../shared/dduiFeedback.js";
 import { PlayerPermissionManager, FactionId } from "../../../shared/playerPermissionManager.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
-import { showAdvancedPanel } from "../panels/advancedPanel.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
-import { SpecialGroups, Factions, FACTION_IDS } from "../../../../constants/domains.js";
-import { getSystemDefaults, getEntitySystemState } from "../../menu_config.js";
+import { SpecialGroups, Factions, FACTION_IDS, UnitHierarchyId, TargetFaction } from "../../../../constants/domains.js";
+import { getSystemDefaults } from "../../menu_config.js";
 import { loadSystemStates, saveSystemAndUpdateMemory } from "../../core/menu_state.js";
 import { applySystemsToEntities } from "../../../commandMenu/core/menu_apply.js";
 import { scanActiveEntities } from "../../../commandMenu/model/menu_entity_scanner.js";
@@ -36,7 +37,7 @@ import { scanActiveEntities } from "../../../commandMenu/model/menu_entity_scann
 export interface SystemViewParams {
   systemId: SystemId;
   player: Player;
-  targetFaction?: string;
+  targetFaction?: TargetFaction;
   returnTo?: "main" | "advanced";
   viewFilter?: "all" | "hierarchy" | "specials";
 }
@@ -91,7 +92,17 @@ function buildInitialState(
   return result;
 }
 
-function buildDropdownItems(options: { label: string; value: unknown }[]): { label: string; value: number }[] {
+function buildDropdownItems(
+  options: { label: string; value: unknown; description?: string }[]
+): { label: string; value: number; description?: string }[] {
+  return options.map((o, idx) => ({
+    label: stripColorCodes(o.label),
+    value: idx,
+    description: o.description ? stripColorCodes(o.description) : undefined,
+  }));
+}
+
+function buildDropdownItemsPlain(options: { label: string; value: unknown }[]): { label: string; value: number }[] {
   return options.map((o, idx) => ({ label: stripColorCodes(o.label), value: idx }));
 }
 
@@ -139,13 +150,13 @@ function updateControlLabels(
     const nametagSet = nametagsByKey[ctrl.key];
     if (ctrl.descriptionObs) {
       if (count === 0 || !nametagSet || nametagSet.size === 0) {
-        ctrl.descriptionObs.setData(`(N/A)`);
+        ctrl.descriptionObs.setData(`N/A`);
       } else {
         const sorted = Array.from(nametagSet).sort();
         const MAX_DISPLAY = 3;
         const truncated = sorted.slice(0, MAX_DISPLAY).join(", ");
         const more = sorted.length > MAX_DISPLAY ? ` +${sorted.length - MAX_DISPLAY} más` : "";
-        ctrl.descriptionObs.setData(`(${truncated}${more})`);
+        ctrl.descriptionObs.setData(`${truncated}${more}`);
       }
     }
   }
@@ -153,48 +164,83 @@ function updateControlLabels(
 
 function buildControls(
   controlOptions: { value: string; label: string }[],
-  systemOptions: { label: string; value: unknown }[] | undefined,
+  systemOptions: { label: string; value: unknown; description?: string }[] | undefined,
   initialStates: Record<string, Record<string, unknown>>,
   factions: string[],
   form: CustomForm,
   controlType: "dropdown" | "toggle",
   isGroup: boolean,
-  visibleObs?: ObservableBoolean
+  systemConfig: CatalogSystem,
+  visibleObs?: ObservableBoolean,
+  firstVisibleIndex: number = -1
 ): ControlRecord[] {
   const controls: ControlRecord[] = [];
   const systemOptionsForIndex = systemOptions?.map((o) => ({ value: String(o.value), label: o.label })) ?? [];
 
-  for (const opt of controlOptions) {
+  for (let i = 0; i < controlOptions.length; i++) {
+    const opt = controlOptions[i];
     let initialValue: number | boolean = controlType === "dropdown" ? 0 : false;
+    let foundationValue: number | boolean | undefined;
+    let otherValue: number | boolean | undefined;
+
     for (const fac of factions) {
       const factionState = initialStates[fac as string] || {};
       const currentValue = factionState[opt.value];
       if (controlType === "dropdown") {
         const foundIndex = findOptionIndex(systemOptionsForIndex, currentValue);
         if (foundIndex >= 0) {
-          initialValue = foundIndex;
-          break;
+          if (fac === Factions.FOUNDATION) foundationValue = foundIndex;
+          else if (otherValue === undefined) otherValue = foundIndex;
+          if (foundIndex !== initialValue && (foundIndex !== 0 || factions.indexOf(fac as any) === 0)) {
+            initialValue = foundIndex;
+          }
         }
       } else {
         if (typeof currentValue === "boolean") {
+          if (fac === Factions.FOUNDATION) foundationValue = currentValue;
+          else if (otherValue === undefined) otherValue = currentValue;
           initialValue = currentValue;
-          break;
         }
       }
     }
 
-    const labelObs = new ObservableString(`${stripColorCodes(opt.label)}: (0)`);
-    const descObs = isGroup ? new ObservableString(`(N/A)`) : undefined;
+    const hasDivergence =
+      factions.length > 1 &&
+      foundationValue !== undefined &&
+      otherValue !== undefined &&
+      foundationValue !== otherValue;
+
+    if (hasDivergence && controlType === "dropdown") {
+      initialValue = foundationValue as number;
+    }
+
+    const baseLabel = stripColorCodes(opt.label);
+    let labelText = `${baseLabel}: (0)`;
+    if (hasDivergence) {
+      labelText = `${baseLabel}: §e⚠ Valor distinto en Chaos`;
+    }
+
+    const labelObs = new ObservableString(labelText);
+    const descObs = isGroup ? new ObservableString(`N/A`) : undefined;
+
+    let disabled = false;
+    if (!isGroup) {
+      const hierarchyKey = opt.value as UnitHierarchyId;
+      disabled = systemConfig.blockedByHierarchy?.[hierarchyKey] === true;
+    }
 
     if (controlType === "dropdown") {
       const obs = new ObservableNumber(initialValue as number, { clientWritable: true });
       const dropdownOptions: Record<string, unknown> = {};
+      if (disabled) dropdownOptions.disabled = true;
       if (isGroup) dropdownOptions.description = descObs;
       if (visibleObs) dropdownOptions.visible = visibleObs;
       form.dropdown(
         labelObs,
         obs,
-        buildDropdownItems(systemOptions ?? []),
+        controlType === "dropdown" && i === firstVisibleIndex
+          ? buildDropdownItems(systemOptions ?? [])
+          : buildDropdownItemsPlain(systemOptions ?? []),
         Object.keys(dropdownOptions).length > 0 ? dropdownOptions : undefined
       );
       controls.push({
@@ -209,6 +255,7 @@ function buildControls(
     } else {
       const obs = new ObservableBoolean(initialValue as boolean, { clientWritable: true });
       const toggleOptions: Record<string, unknown> = {};
+      if (disabled) toggleOptions.disabled = true;
       if (isGroup && descObs) toggleOptions.description = descObs;
       if (visibleObs) toggleOptions.visible = visibleObs;
       form.toggle(labelObs, obs, Object.keys(toggleOptions).length > 0 ? toggleOptions : undefined);
@@ -290,7 +337,7 @@ function applySystemToEntitiesForSystem(
     });
 
     const summary = appliedEntries.length > 0 ? appliedEntries.join(" | ") : "0 unidades";
-    const displayName = stripColorCodes(CATALOG_SYSTEMS[systemId].displayName);
+    const displayName = getSystemShortName(systemId);
     const cleanLabel = stripColorCodes(label);
     const cleanValue = stripColorCodes(valueLabel);
 
@@ -304,17 +351,29 @@ function applySystemToEntitiesForSystem(
       debugWarn("commandMenuDDUI", `Error guardando estado de sistema ${systemId}: ${e}`, "red");
     }
 
-    addHistoryEntry({
-      playerName: player.name,
-      faction: targetFaction ?? Factions.FOUNDATION,
-      systemShortName: getSystemShortName(systemId),
-      key: cleanLabel,
-      value: cleanValue,
-    });
+    if (targetFaction === "both") {
+      for (const fac of FACTION_IDS) {
+        addHistoryEntry({
+          playerName: player.name,
+          faction: fac,
+          systemShortName: getSystemShortName(systemId),
+          key: cleanLabel,
+          value: cleanValue,
+        });
+      }
+    } else {
+      addHistoryEntry({
+        playerName: player.name,
+        faction: targetFaction ?? Factions.FOUNDATION,
+        systemShortName: getSystemShortName(systemId),
+        key: cleanLabel,
+        value: cleanValue,
+      });
+    }
 
     return {
       context: displayName,
-      value: `${cleanLabel}: ${cleanValue} (${summary})`,
+      value: `${label}: ${valueLabel} (${summary})`,
       status: "ok" as DDUIFeedbackStatus,
       timestamp: Date.now(),
       viewId: `system:${systemId}`,
@@ -339,14 +398,26 @@ export function buildSystemView({
     };
   }
 
+  const isAdmin = PlayerPermissionManager.isAdmin(player);
+  const role = isAdmin
+    ? "admin"
+    : PlayerPermissionManager.getPlayerRole(player, (targetFaction ?? Factions.FOUNDATION) as FactionId);
+
+  if (!isSystemVisibleForRole(systemConfig, role)) {
+    return () => {
+      player.sendMessage("§c[SCPDystopia] No tienes permiso para acceder a este sistema.");
+    };
+  }
+
   return () => {
     try {
       let closeReason: "navigation" | undefined = undefined;
 
-      const form = new CustomForm(player, `${PANEL_TITLES.system} - ${stripColorCodes(systemConfig.displayName)}`);
+      const form = new CustomForm(player, `${PANEL_TITLES.system} - ${systemConfig.displayName}`);
 
       const dimension = player.dimension;
-      const factions: FactionId[] = targetFaction === "both" ? FACTION_IDS : [(targetFaction ?? Factions.FOUNDATION) as FactionId];
+      const factions: FactionId[] =
+        targetFaction === "both" ? FACTION_IDS : [(targetFaction ?? Factions.FOUNDATION) as FactionId];
       const initialStates = buildInitialState(systemId, factions, systemId);
       const session = commandMenuSessionStore.get(player.id);
 
@@ -356,7 +427,7 @@ export function buildSystemView({
 
       form.spacer();
       form.label(
-        `§7Facción: §f${targetFaction === "both" ? "Ambas facciones" : (FACTION_DISPLAY_NAMES[targetFaction as keyof typeof FACTION_DISPLAY_NAMES] ?? targetFaction)}`
+        `§7Facción: ${FACTION_DISPLAY_NAMES[(targetFaction ?? Factions.FOUNDATION) as keyof typeof FACTION_DISPLAY_NAMES] ?? targetFaction}`
       );
       form.spacer();
       if (feedbackPresenter) {
@@ -366,18 +437,33 @@ export function buildSystemView({
       if ((systemConfig.controlType === "dropdown" && systemConfig.options) || systemConfig.controlType === "toggle") {
         const isAdmin = PlayerPermissionManager.isAdmin(player);
         let canFilter = isAdmin;
-        if (!canFilter && targetFaction === "both") {
-          const foundationRole = PlayerPermissionManager.getPlayerRole(player, Factions.FOUNDATION);
-          const chaosRole = PlayerPermissionManager.getPlayerRole(player, Factions.CHAOS);
-          canFilter = foundationRole === "commander" || chaosRole === "commander";
-        } else if (!canFilter && targetFaction) {
-          canFilter = PlayerPermissionManager.getPlayerRole(player, targetFaction as FactionId) === "commander";
+        if (!canFilter) {
+          if (targetFaction === "both") {
+            const foundationRole = PlayerPermissionManager.getPlayerRole(player, Factions.FOUNDATION);
+            const chaosRole = PlayerPermissionManager.getPlayerRole(player, Factions.CHAOS);
+            canFilter =
+              isMenuFeatureVisible("scope", foundationRole, false, "foundation") ||
+              isMenuFeatureVisible("scope", chaosRole, false, "chaos");
+          } else if (targetFaction) {
+            const role = PlayerPermissionManager.getPlayerRole(player, targetFaction as FactionId);
+            canFilter = isMenuFeatureVisible("scope", role, false, targetFaction);
+          }
         }
 
         let resolvedViewFilter: "all" | "hierarchy" | "specials";
         if (canFilter) {
+          let persistedFilter: "all" | "hierarchy" | "specials" | undefined;
+          try {
+            const dp = player.getDynamicProperty("scpd_system_view_filter");
+            if (dp === "all" || dp === "hierarchy" || dp === "specials") {
+              persistedFilter = dp;
+            }
+          } catch {
+            // DP no disponible
+          }
           resolvedViewFilter =
             viewFilter ??
+            persistedFilter ??
             (session?.formState.systemViewFilter as "all" | "hierarchy" | "specials" | undefined) ??
             "all";
         } else {
@@ -408,6 +494,11 @@ export function buildSystemView({
             if (session) {
               session.formState.systemViewFilter = newFilter;
             }
+            try {
+              player.setDynamicProperty("scpd_system_view_filter", newFilter);
+            } catch {
+              // DP no disponible
+            }
             hierarchyVisibleObs.setData(newFilter === "all" || newFilter === "hierarchy");
             groupVisibleObs.setData(newFilter === "all" || newFilter === "specials");
           });
@@ -419,6 +510,8 @@ export function buildSystemView({
         });
         form.spacer({ visible: hierarchyVisibleObs });
 
+        const isDropdown = systemConfig.controlType === "dropdown";
+
         const hierarchyControls = buildControls(
           HIERARCHY_OPTIONS,
           systemConfig.options!,
@@ -427,7 +520,9 @@ export function buildSystemView({
           form,
           systemConfig.controlType,
           false,
-          hierarchyVisibleObs
+          systemConfig,
+          hierarchyVisibleObs,
+          isDropdown ? 0 : -1
         );
         // form.spacer({ visible: hierarchyVisibleObs });
 
@@ -445,7 +540,9 @@ export function buildSystemView({
           form,
           systemConfig.controlType,
           true,
-          groupVisibleObs
+          systemConfig,
+          groupVisibleObs,
+          isDropdown ? 0 : -1
         );
 
         let intervalId: number | null = null;
@@ -484,7 +581,7 @@ export function buildSystemView({
                 feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
               } else if (feedbackPresenter) {
                 feedbackPresenter.present({
-                  context: stripColorCodes(systemConfig.displayName),
+                  context: systemConfig.displayName,
                   value: "Error al aplicar",
                   status: "error",
                 });
@@ -509,7 +606,7 @@ export function buildSystemView({
                 feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
               } else if (feedbackPresenter) {
                 feedbackPresenter.present({
-                  context: stripColorCodes(systemConfig.displayName),
+                  context: systemConfig.displayName,
                   value: ERROR_MESSAGES.APPLY,
                   status: "error",
                 });
@@ -540,7 +637,7 @@ export function buildSystemView({
                 feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
               } else if (feedbackPresenter) {
                 feedbackPresenter.present({
-                  context: stripColorCodes(systemConfig.displayName),
+                  context: systemConfig.displayName,
                   value: ERROR_MESSAGES.APPLY,
                   status: "error",
                 });
@@ -565,7 +662,7 @@ export function buildSystemView({
                 feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
               } else if (feedbackPresenter) {
                 feedbackPresenter.present({
-                  context: stripColorCodes(systemConfig.displayName),
+                  context: systemConfig.displayName,
                   value: ERROR_MESSAGES.APPLY,
                   status: "error",
                 });
@@ -581,15 +678,6 @@ export function buildSystemView({
         form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
           closeReason = "navigation";
           form.close();
-          if (returnTo === "advanced") {
-            system.run(() =>
-              import("../panels/advancedPanel.js").then(({ showAdvancedPanel }) =>
-                showAdvancedPanel(player, targetFaction)
-              )
-            );
-          } else {
-            system.run(() => import("../panels/mainPanel.js").then(({ showMainPanel }) => showMainPanel(player)));
-          }
         });
 
         form
@@ -602,10 +690,19 @@ export function buildSystemView({
               debugWarn("commandMenuDDUI", `Sistema ${systemId} cerrado: UserBusy (${player.name})`, "yellow");
               commandMenuSessionStore.cleanup(player.id);
             } else if (reason === "ServerClosed") {
-              if (closeReason === "navigation" && intervalId !== null) {
+              if (closeReason === "navigation") {
                 debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: navegación (${player.name})`, "gray");
-                if (session) {
+                if (session && intervalId !== null) {
                   session.unregisterInterval(intervalId);
+                }
+                if (returnTo === "advanced") {
+                  import("../panels/advancedPanel.js").then(({ showAdvancedPanel }) =>
+                    showAdvancedPanel(player, targetFaction as TargetFaction)
+                  );
+                } else {
+                  import("../panels/mainPanel.js").then(({ showMainPanel }) =>
+                    showMainPanel(player, targetFaction as TargetFaction)
+                  );
                 }
               } else {
                 debugWarn(

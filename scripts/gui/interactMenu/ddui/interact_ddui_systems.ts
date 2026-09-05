@@ -10,14 +10,14 @@ import {
 import { Player, system, Entity } from "@minecraft/server";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
 import { getEntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
+import { isSystemVisibleForRole, CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
+import { PlayerPermissionManager, type FactionId, type RoleId } from "../../shared/playerPermissionManager.js";
+import { getEntityFamilies, isSystemBlockedByFamilies } from "../../commandMenu/model/menu_faction.js";
 import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../shared/entityScope.js";
-import { isAllowedByRule, type EntityConfig } from "../gui.js";
+import { type EntityConfig } from "../gui.js";
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
 import type { MenuCategory } from "../config.js";
-import {
-  interactMenuSessionStore,
-  refreshStatus,
-} from "./interact_ddui_shared.js";
+import { interactMenuSessionStore, refreshStatus } from "./interact_ddui_shared.js";
 import {
   getEntitySystemState,
   findSystemStateByEvent,
@@ -25,7 +25,10 @@ import {
   getSystemDefaults,
 } from "../../commandMenu/menu_config.js";
 import { SpecialGroups, UnitHierarchy, Factions } from "../../../constants/domains.js";
-import { HIERARCHY_LABELS as UnitHierarchyLabels, GROUP_LABELS as SpecialGroupLabels } from "../../shared/systemCatalog.js";
+import {
+  HIERARCHY_LABELS as UnitHierarchyLabels,
+  GROUP_LABELS as SpecialGroupLabels,
+} from "../../shared/systemCatalog.js";
 import { getUnitGroup, setUnitGroup } from "../../commandMenu/model/menu_groups.js";
 import { ERROR_MESSAGES, BACK_BUTTON_LABEL, FACTION_DISPLAY_NAMES } from "../../shared/systemCatalog.js";
 
@@ -68,11 +71,31 @@ export function showInteractDDUISystems(
         const advancedCategories = cfg.submenus?.advanced?.categories || [];
         const TOGGLE_SYSTEMS = new Set(["spawn", "health", "invincible"]);
 
+        const isAdmin = PlayerPermissionManager.isAdmin(player);
+        const factionInfo = session.factionInfo;
+        let role: RoleId;
+
+        if (isAdmin) {
+          role = "admin";
+        } else {
+          role = PlayerPermissionManager.getPlayerRole(player, (factionInfo?.faction ?? "foundation") as FactionId);
+        }
+
+        const entityFamilies = getEntityFamilies(entity);
+
         for (const adv of advancedCategories) {
           const entries = adv.entries || [];
           if (entries.length === 0 || !adv.id) continue;
 
+          const sysConfig = CATALOG_SYSTEMS[adv.id as SystemId];
+          if (!sysConfig) continue;
+
+          if (!isSystemVisibleForRole(sysConfig, role)) {
+            continue;
+          }
+
           const isToggleSystem = TOGGLE_SYSTEMS.has(adv.id);
+          const disabledByFamily = isSystemBlockedByFamilies(sysConfig, entityFamilies);
 
           if (isToggleSystem) {
             let enableEvent: string | undefined;
@@ -97,14 +120,14 @@ export function showInteractDDUISystems(
               }
               lastValue = newValue;
             });
-            const toggleDisabled = !isAllowedByRule(adv.id, typeId);
+            const toggleDisabled = disabledByFamily;
             form.toggle(stripColorCodes(adv.category), toggleObs, {
               description: adv.description ? stripColorCodes(adv.description) : undefined,
               disabled: toggleDisabled,
             });
           } else {
             const built = session.buildObservableFromEntries(entries, undefined, typeId, adv.category);
-            form.dropdown(stripColorCodes(adv.category), built.obs, built.items, { disabled: built.disabled });
+            form.dropdown(stripColorCodes(adv.category), built.obs, built.items, { disabled: disabledByFamily });
           }
         }
 
@@ -115,11 +138,6 @@ export function showInteractDDUISystems(
           try {
             closeReason = "navigation";
             form.close();
-            system.run(() => {
-              import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
-                showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
-              });
-            });
           } catch (e) {
             debugWarn("interactDDUI", `Error volviendo a Vista Principal: ${e}`, "red");
           }
@@ -140,8 +158,15 @@ export function showInteractDDUISystems(
               if (closeReason === "navigation") {
                 debugMessage("interactDDUI", `Vista Sistemas Avanzados cerrada: navegación (${player.name})`, "gray");
                 session.unregisterInterval(intervalId);
+                import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
+                  showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
+                });
               } else {
-                debugWarn("interactDDUI", `Vista Sistemas Avanzados cerrada: ServerClosed sin razón (${player.name})`, "yellow");
+                debugWarn(
+                  "interactDDUI",
+                  `Vista Sistemas Avanzados cerrada: ServerClosed sin razón (${player.name})`,
+                  "yellow"
+                );
                 interactMenuSessionStore.cleanup(player.id);
               }
             }
@@ -268,12 +293,12 @@ export function showInteractDDUIManagement(
                   session.recordFeedback("Asignar grupo", label);
                   const updatedGroup = getUnitGroup(entity);
                   const updatedLabel = SpecialGroupLabels[updatedGroup] || updatedGroup;
-                   const factionLabel =
-                     factionInfo!.faction === Factions.FOUNDATION
-                       ? FACTION_DISPLAY_NAMES.foundation
-                       : factionInfo!.faction === Factions.CHAOS
-                         ? FACTION_DISPLAY_NAMES.chaos
-                         : factionInfo!.faction;
+                  const factionLabel =
+                    factionInfo!.faction === Factions.FOUNDATION
+                      ? FACTION_DISPLAY_NAMES.foundation
+                      : factionInfo!.faction === Factions.CHAOS
+                        ? FACTION_DISPLAY_NAMES.chaos
+                        : factionInfo!.faction;
                   session.observables.groupDetailText.setData(
                     `§7Facción: §a${factionLabel}\n§7Grupo actual: §a${updatedLabel}`
                   );
@@ -329,11 +354,6 @@ export function showInteractDDUIManagement(
           try {
             closeReason = "navigation";
             form.close();
-            system.run(() => {
-              import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
-                showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
-              });
-            });
           } catch (e) {
             debugWarn("interactDDUI", `Error volviendo a Vista Principal: ${e}`, "red");
           }
@@ -354,8 +374,15 @@ export function showInteractDDUIManagement(
               if (closeReason === "navigation") {
                 debugMessage("interactDDUI", `Vista Gestión y Estado cerrada: navegación (${player.name})`, "gray");
                 session.unregisterInterval(intervalId);
+                import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
+                  showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
+                });
               } else {
-                debugWarn("interactDDUI", `Vista Gestión y Estado cerrada: ServerClosed sin razón (${player.name})`, "yellow");
+                debugWarn(
+                  "interactDDUI",
+                  `Vista Gestión y Estado cerrada: ServerClosed sin razón (${player.name})`,
+                  "yellow"
+                );
                 interactMenuSessionStore.cleanup(player.id);
               }
             }
@@ -429,11 +456,6 @@ export function showInteractDDUHistory(
           try {
             closeReason = "navigation";
             form.close();
-            system.run(() => {
-              import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
-                showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
-              });
-            });
           } catch (e) {
             debugWarn("interactDDUI", `Error volviendo a Vista Principal: ${e}`, "red");
           }
@@ -454,6 +476,9 @@ export function showInteractDDUHistory(
               if (closeReason === "navigation") {
                 debugMessage("interactDDUI", `Historial cerrado: navegación (${player.name})`, "gray");
                 session.unregisterInterval(intervalId);
+                import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
+                  showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
+                });
               } else {
                 debugWarn("interactDDUI", `Historial cerrado: ServerClosed sin razón (${player.name})`, "yellow");
                 interactMenuSessionStore.cleanup(player.id);

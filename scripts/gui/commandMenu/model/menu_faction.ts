@@ -14,6 +14,8 @@ import { Factions, UnitHierarchy, SpecialGroups } from "../menu_config.js";
 import { getUnitGroup } from "./menu_groups.js";
 import { getTeam, teamFamilies } from "../../../utils/teams.js";
 import { debugWarn } from "../../../utils/debug.js";
+import type { CatalogSystem } from "../../shared/systemCatalog.js";
+import type { UnitHierarchyId } from "../../../constants/domains.js";
 
 export interface EntityFactionInfo {
   faction: string;
@@ -172,4 +174,72 @@ export function getEntityConfigValue(systemState: Record<string, unknown>, facti
 
   // Fallback final
   return systemState[UnitHierarchy.BASIC] ?? systemState[SpecialGroups.NO_GROUP];
+}
+
+/**
+ * Lee las familias type_family de una entidad.
+ *
+ * Exportado para que otros módulos (catálogo, builders) puedan
+ * evaluar compatibilidad sin duplicar la lectura de EntityTypeFamilyComponent.
+ *
+ * @param ent - Entidad a consultar
+ * @returns Array de familias, o array vacío si no tiene el componente
+ */
+export function getEntityFamilies(ent: Entity): string[] {
+  const typeFamilies = ent.getComponent(EntityComponentTypes.TypeFamily);
+  if (!typeFamilies) return [];
+  return typeFamilies.getTypeFamilies();
+}
+
+/**
+ * Indica si un sistema está bloqueado para una entidad según sus familias.
+ *
+ * Lógica (orden de evaluación):
+ * 1. Si la entidad tiene alguna familia en `system.blockedFamilies` → true
+ * 2. Si `system.allowedFamilies` está definido y la entidad NO tiene ninguna → true
+ * 3. En otro caso → false
+ *
+ * Aplica a: interactMenu DDUI únicamente
+ *
+ * @param system - Configuración del sistema desde el catálogo
+ * @param families - Familias de la entidad (de getEntityFamilies)
+ * @returns true si el sistema está bloqueado, false si está permitido
+ */
+export function isSystemBlockedByFamilies(
+  system: CatalogSystem,
+  families: string[]
+): boolean {
+  // Paso 1: Verificar familias bloqueadas (tienen prioridad)
+  if (system.blockedFamilies && system.blockedFamilies.length > 0) {
+    if (system.blockedFamilies.some((f) => families.includes(f))) {
+      return true;
+    }
+  }
+
+  // Paso 2: Verificar familias permitidas (whitelist)
+  if (system.allowedFamilies && system.allowedFamilies.length > 0) {
+    if (!system.allowedFamilies.some((f) => families.includes(f))) {
+      return true;
+    }
+  }
+
+  // Paso 3: Si no hay restricciones o pasa ambas, permitir
+  return false;
+}
+
+/**
+ * Indica si un sistema está bloqueado para una jerarquía específica.
+ *
+ * Aplica a: commandMenu DDUI únicamente
+ *
+ * @param system - Configuración del sistema desde el catálogo
+ * @param hierarchy - Jerarquía de la unidad ("basic" | "leader" | "commander")
+ * @returns true si la jerarquía está bloqueada, false si está permitida
+ */
+export function isSystemBlockedByHierarchy(
+  system: CatalogSystem,
+  hierarchy: UnitHierarchyId | null
+): boolean {
+  if (!hierarchy || !system.blockedByHierarchy) return false;
+  return system.blockedByHierarchy[hierarchy] === true;
 }

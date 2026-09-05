@@ -3,21 +3,34 @@
 import { Player, system } from "@minecraft/server";
 import { CustomForm } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { TargetFaction, Factions } from "../../../../constants/domains.js";
 import {
   PANEL_TITLES,
   PANEL_DESCRIPTIONS,
   HISTORY_INITIAL_TEXT,
   BACK_BUTTON_LABEL,
   FACTION_DISPLAY_NAMES,
+  isMenuFeatureVisible,
 } from "../../../shared/systemCatalog.js";
+import { PlayerPermissionManager, type FactionId, type RoleId } from "../../../shared/playerPermissionManager.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { getHistoryEntries } from "../helpers/historyStore.js";
 
-export function showHistoryPanel(player: Player, targetFaction?: string): void {
+export function showHistoryPanel(player: Player, targetFaction?: TargetFaction): void {
   try {
+    const isAdmin = PlayerPermissionManager.isAdmin(player);
+    const role = PlayerPermissionManager.getPlayerRole(
+      player,
+      (targetFaction && targetFaction !== "both" ? targetFaction : Factions.FOUNDATION) as FactionId
+    );
+    if (!isMenuFeatureVisible("history", role, isAdmin, targetFaction)) {
+      player.sendMessage("§c[SCPDystopia] No tienes permiso para ver el historial de comandos.");
+      return;
+    }
+
     const session = commandMenuSessionStore.get(player.id);
-    const effectiveFaction = targetFaction ?? (session?.formState.targetFaction as string | undefined) ?? "both";
+    const effectiveFaction = targetFaction ?? session?.getTargetFaction() ?? "both";
     const entries = getHistoryEntries(effectiveFaction);
     const reversed = entries.slice(-20).reverse();
 
@@ -42,7 +55,7 @@ export function showHistoryPanel(player: Player, targetFaction?: string): void {
       const lines = reversed
         .map((e) => {
           const facName = FACTION_DISPLAY_NAMES[e.faction as keyof typeof FACTION_DISPLAY_NAMES] ?? e.faction;
-          return `§8[${e.timestamp}] §7${facName} | ${e.playerName}: ${e.systemShortName} ${e.key} → ${e.value}`;
+          return `§8[${e.timestamp}] §7${facName} \n${e.playerName}: ${e.systemShortName} \n${e.key} → ${e.value}`;
         })
         .join("\n");
       form.label(lines);
@@ -53,7 +66,6 @@ export function showHistoryPanel(player: Player, targetFaction?: string): void {
     form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
       closeReason = "navigation";
       form.close();
-      system.run(() => import("./mainPanel.js").then(({ showMainPanel }) => showMainPanel(player)));
     });
 
     form
@@ -68,6 +80,7 @@ export function showHistoryPanel(player: Player, targetFaction?: string): void {
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Historial cerrado: navegación (${player.name})`, "gray");
+            import("./mainPanel.js").then(({ showMainPanel }) => showMainPanel(player, effectiveFaction));
           } else {
             debugWarn("commandMenuDDUI", `Historial cerrado: ServerClosed sin razón (${player.name})`, "yellow");
             commandMenuSessionStore.cleanup(player.id);
@@ -77,7 +90,7 @@ export function showHistoryPanel(player: Player, targetFaction?: string): void {
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() historial: ${err}`, "red");
-          commandMenuSessionStore.cleanup(player.id);
+        commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showHistoryPanel: ${e}`, "red");

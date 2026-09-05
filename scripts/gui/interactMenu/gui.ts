@@ -26,6 +26,8 @@ import { getEntityFactionInfo } from "../commandMenu/model/menu_faction.js";
 import { tryAutoTame } from "../commandMenu/core/menu_apply.js";
 import { setUnitGroup } from "../commandMenu/model/menu_groups.js";
 import { showInteractDDUI } from "./ddui/interact_ddui_form.js";
+import { PlayerPermissionManager } from "../shared/playerPermissionManager.js";
+import { EquipmentDetector } from "../shared/equipmentDetector.js";
 
 export interface EntityConfig {
   specific: MenuCategory[];
@@ -203,7 +205,6 @@ function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null
     submenus: config.submenus,
   };
 }
-
 
 function itemMatches(mainId: string | null, opener: string): boolean {
   if (!mainId || !opener) return false;
@@ -593,6 +594,31 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
     } catch (e) {
       debugWarn("playerInteractWithEntity", `error reading mainhand: ${e}`, "red");
       return;
+    }
+
+    const isAdmin = PlayerPermissionManager.isAdmin(player);
+
+    if (!isAdmin) {
+      const helmetFaction = EquipmentDetector.getActiveFaction(player);
+      const entityFactionInfo = getEntityFactionInfo(entity);
+
+      if (!helmetFaction) {
+        player.sendMessage("§c[SCPDystopia] Necesitas llevar el casco de tu facción.");
+        return;
+      }
+
+      if (!entityFactionInfo) {
+        return;
+      }
+
+      if (helmetFaction !== entityFactionInfo.faction) {
+        const entityFactionName = entityFactionInfo.faction === "foundation" ? "Foundation" : "Chaos";
+        const playerFactionName = helmetFaction === "foundation" ? "Foundation" : "Chaos";
+        player.sendMessage(
+          `§c[SCPDystopia] No puedes modificar unidades de ${entityFactionName} si eres del bando ${playerFactionName}.`
+        );
+        return;
+      }
     }
 
     const typeId = entity.typeId;

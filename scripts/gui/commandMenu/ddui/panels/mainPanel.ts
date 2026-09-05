@@ -3,7 +3,7 @@
 import { Player, system } from "@minecraft/server";
 import { CustomForm, ObservableNumber, ObservableString } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
-import { Factions } from "../../../../constants/domains.js";
+import { Factions, TargetFaction } from "../../../../constants/domains.js";
 import { PlayerPermissionManager, FactionId, RoleId } from "../../../shared/playerPermissionManager.js";
 import { EquipmentDetector } from "../../../shared/equipmentDetector.js";
 import {
@@ -16,19 +16,18 @@ import {
   CATALOG_SYSTEMS,
   TARGET_FACTION_OPTIONS,
   ERROR_MESSAGES,
+  isSystemVisibleForRole,
+  isMenuFeatureVisible,
 } from "../../../shared/systemCatalog.js";
 import { showAdvancedPanel } from "./advancedPanel.js";
 import { showGroupsPanel } from "./groupsPanel.js";
 import { showHistoryPanel } from "./historyPanel.js";
 import { showScopePanel } from "./scopePanel.js";
-import {
-  commandMenuSessionStore,
-  CommandMenuSession,
-} from "../sessionStore.js";
+import { commandMenuSessionStore, CommandMenuSession } from "../sessionStore.js";
 import { buildSystemView } from "../builders/systemBuilder.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 
-export function showMainPanel(player: Player): void {
+export function showMainPanel(player: Player, rememberedTargetFaction?: TargetFaction): void {
   try {
     const isAdmin = PlayerPermissionManager.isAdmin(player);
     const helmetFaction = EquipmentDetector.getActiveFaction(player);
@@ -50,27 +49,40 @@ export function showMainPanel(player: Player): void {
         session.faction = helmetFaction ?? faction;
       }
     } else {
-      session = commandMenuSessionStore.create(player.id, player.name, player, isAdmin ? faction : (helmetFaction ?? faction), role);
+      session = commandMenuSessionStore.create(
+        player.id,
+        player.name,
+        player,
+        isAdmin ? faction : (helmetFaction ?? faction),
+        role
+      );
     }
 
-    const savedTarget = session.formState.targetFaction as string | undefined;
-    let selectedFaction: string;
+    const savedTarget = session.getTargetFaction();
+    let selectedFaction: TargetFaction;
     if (isAdmin) {
       try {
         const adminSaved = player.getDynamicProperty("scpd_admin_target_faction");
-        if (typeof adminSaved === "string" && (adminSaved === Factions.FOUNDATION || adminSaved === Factions.CHAOS)) {
-          selectedFaction = adminSaved;
-        } else if (savedTarget && (savedTarget === Factions.FOUNDATION || savedTarget === Factions.CHAOS)) {
+        const validTargets: TargetFaction[] = [Factions.FOUNDATION, Factions.CHAOS, "both"];
+        if (typeof adminSaved === "string" && (validTargets as string[]).includes(adminSaved)) {
+          selectedFaction = adminSaved as TargetFaction;
+        } else if (savedTarget && (validTargets as string[]).includes(savedTarget)) {
           selectedFaction = savedTarget;
+        } else if (rememberedTargetFaction && (validTargets as string[]).includes(rememberedTargetFaction)) {
+          selectedFaction = rememberedTargetFaction;
         } else {
-          selectedFaction = helmetFaction ?? Factions.FOUNDATION;
+          selectedFaction = (helmetFaction ?? Factions.FOUNDATION) as TargetFaction;
         }
       } catch {
-        selectedFaction = savedTarget ?? helmetFaction ?? Factions.FOUNDATION;
+        selectedFaction = savedTarget ?? ((helmetFaction ?? Factions.FOUNDATION) as TargetFaction);
       }
     } else {
-      selectedFaction = helmetFaction ?? faction;
+      selectedFaction = (helmetFaction ?? Factions.FOUNDATION) as TargetFaction;
     }
+
+    const effectiveRole: RoleId = isAdmin
+      ? "admin"
+      : PlayerPermissionManager.getPlayerRole(player, selectedFaction as FactionId);
 
     debugMessage(
       "commandMenuDDUI",
@@ -79,6 +91,7 @@ export function showMainPanel(player: Player): void {
     );
 
     let closeReason: "navigation" | undefined = undefined;
+    let nextPanel: (() => void) | undefined = undefined;
 
     const form = new CustomForm(player, PANEL_TITLES.main);
 
@@ -98,8 +111,8 @@ export function showMainPanel(player: Player): void {
         TARGET_FACTION_OPTIONS.map((opt, idx) => ({ label: stripColorCodes(opt.label), value: idx }))
       );
       factionObs.subscribe((index) => {
-        selectedFaction = TARGET_FACTION_OPTIONS[index]?.value ?? Factions.FOUNDATION;
-        session.formState.targetFaction = selectedFaction;
+        selectedFaction = (TARGET_FACTION_OPTIONS[index]?.value ?? Factions.FOUNDATION) as TargetFaction;
+        session.setTargetFaction(selectedFaction);
         factionLabelText.setData(`§7Facción: §f${FACTION_DISPLAY_NAMES[selectedFaction]}`);
         try {
           player.setDynamicProperty("scpd_admin_target_faction", selectedFaction);
@@ -123,52 +136,56 @@ export function showMainPanel(player: Player): void {
 
     form.spacer();
 
-    const nonAdvancedCategory = CATALOG_CATEGORIES.movement_patrol;
-    const combatCategory = CATALOG_CATEGORIES.combat;
+    const nonAdvancedCategory = CATALOG_CATEGORIES.movement;
+    const fireCategory = CATALOG_CATEGORIES.fire;
 
     if (nonAdvancedCategory) {
       for (const systemId of nonAdvancedCategory.systemIds) {
         const systemConfig = CATALOG_SYSTEMS[systemId];
         if (!systemConfig) continue;
+        if (!isSystemVisibleForRole(systemConfig, effectiveRole)) continue;
         form.button(stripColorCodes(systemConfig.displayName), () => {
           closeReason = "navigation";
+          nextPanel = () => buildSystemView({ systemId, player, targetFaction: selectedFaction })();
           form.close();
-          system.run(() => buildSystemView({ systemId, player, targetFaction: selectedFaction })());
         });
       }
     }
 
-    if (combatCategory) {
-      for (const systemId of combatCategory.systemIds) {
+    if (fireCategory) {
+      for (const systemId of fireCategory.systemIds) {
         const systemConfig = CATALOG_SYSTEMS[systemId];
         if (!systemConfig) continue;
+        if (!isSystemVisibleForRole(systemConfig, effectiveRole)) continue;
         form.button(stripColorCodes(systemConfig.displayName), () => {
           closeReason = "navigation";
+          nextPanel = () => buildSystemView({ systemId, player, targetFaction: selectedFaction })();
           form.close();
-          system.run(() => buildSystemView({ systemId, player, targetFaction: selectedFaction })());
         });
       }
     }
 
     form.button(stripColorCodes(MAIN_PANEL_BUTTONS.advanced), () => {
       closeReason = "navigation";
+      nextPanel = () => showAdvancedPanel(player, selectedFaction);
       form.close();
-      system.run(() => showAdvancedPanel(player, selectedFaction));
     });
 
     form.divider();
 
     form.button(stripColorCodes(MAIN_PANEL_BUTTONS.groups), () => {
       closeReason = "navigation";
+      nextPanel = () => showGroupsPanel(player, selectedFaction);
       form.close();
-      system.run(() => showGroupsPanel(player, selectedFaction));
     });
 
-    form.button(stripColorCodes(MAIN_PANEL_BUTTONS.history), () => {
-      closeReason = "navigation";
-      form.close();
-      system.run(() => showHistoryPanel(player, selectedFaction));
-    });
+    if (isMenuFeatureVisible("history", effectiveRole, isAdmin, selectedFaction)) {
+      form.button(stripColorCodes(MAIN_PANEL_BUTTONS.history), () => {
+        closeReason = "navigation";
+        nextPanel = () => showHistoryPanel(player, selectedFaction);
+        form.close();
+      });
+    }
 
     form
       .show()
@@ -183,16 +200,18 @@ export function showMainPanel(player: Player): void {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Panel Principal cerrado: navegación (${player.name})`, "gray");
             session.stopHelmetWatch();
+            nextPanel?.();
           } else {
             debugWarn("commandMenuDDUI", `Panel Principal cerrado: ServerClosed sin razón (${player.name})`, "yellow");
             commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
+        nextPanel = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error mostrando Panel Principal: ${err}`, "red");
-          commandMenuSessionStore.cleanup(player.id);
+        commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showMainPanel: ${e}`, "red");

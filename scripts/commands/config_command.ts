@@ -33,7 +33,10 @@ system.beforeEvents.startup.subscribe((init) => {
         const selectedMode = typeof mode === "string" ? mode.toLowerCase() : "";
 
         try {
-          if (selectedMode === "ddui") {
+          if (selectedMode === "legacy") {
+            buildAndShowMenu(player);
+            debugMessage("configCommand", `Menú legacy abierto para ${player.name}`, "cyan");
+          } else {
             system.run(() => {
               try {
                 openCommandMenuDDUI(player);
@@ -43,9 +46,6 @@ system.beforeEvents.startup.subscribe((init) => {
                 player.sendMessage("§c[SCPDystopia] Error abriendo el menú DDUI. Revisa la consola.");
               }
             });
-          } else {
-            buildAndShowMenu(player);
-            debugMessage("configCommand", `Menú legacy abierto para ${player.name}`, "cyan");
           }
         } catch (e) {
           debugWarn("configCommand", `Error mostrando menú desde scpd:config: ${e}`, "red");
@@ -57,7 +57,7 @@ system.beforeEvents.startup.subscribe((init) => {
 
         return {
           status: CustomCommandStatus.Success,
-          message: selectedMode === "ddui" ? "Abriendo menú DDUI..." : "Abriendo menú de configuración...",
+            message: selectedMode === "legacy" ? "Abriendo menú legacy..." : "Abriendo menú DDUI...",
         };
       } catch (e) {
         debugWarn("configCommand", `scpd:config handler error: ${e}`, "red");

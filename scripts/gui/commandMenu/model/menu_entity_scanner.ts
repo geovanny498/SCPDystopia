@@ -13,6 +13,7 @@ import { compareNametags } from "../../../utils/nametagSort.js";
 import { getEntitiesByFaction } from "../../../utils/entityQuery.js";
 import { teamFamilies } from "../../../utils/teams.js";
 import { loadScope, isEntityInScope } from "./menu_scope.js";
+import type { UnitHierarchyId } from "../../../constants/domains.js";
 
 // ── Cache TTL ────────────────────────────────────────────────────────────────
 
@@ -149,7 +150,13 @@ function detectFaction(ent: Entity): string | null {
 // paquetes de comportamiento (Normal/, Leaders/, Commanders/). Se extrae
 // directamente de type_family, sin depender de convenciones en el typeId.
 
-function detectHierarchyFromFamilies(families: string[]): string {
+/**
+ * Detecta la jerarquía de una unidad desde sus familias type_family.
+ *
+ * @param families - Array de familias de la entidad (de EntityTypeFamilyComponent)
+ * @returns Jerarquía detectada: "basic" | "leader" | "commander"
+ */
+export function detectHierarchyFromFamilies(families: string[]): UnitHierarchyId {
   for (const f of families) {
     if (f === "hierarchy_commander") return UnitHierarchy.COMMANDER;
     if (f === "hierarchy_leader") return UnitHierarchy.LEADER;
@@ -160,7 +167,13 @@ function detectHierarchyFromFamilies(families: string[]): string {
 
 // ── Extracción de familia MTF para agrupación UI ─────────────────────────────
 
-function extractMtfFamily(families: string[]): string {
+/**
+ * Extrae la familia MTF/Chaos principal de una unidad especial.
+ *
+ * @param families - Array de familias de la entidad
+ * @returns Primera familia que empiece con "mtf_" o "chaos_", o fallback
+ */
+export function extractMtfFamily(families: string[]): string {
   for (const f of families) {
     if (f.startsWith("mtf_") || f.startsWith("chaos_")) return f;
   }
@@ -172,7 +185,7 @@ function extractMtfFamily(families: string[]): string {
 // donde bucketId combina jerarquía y familia MTF para crear agrupaciones
 // sin duplicar nametags aunque aparezcan en múltiples familias.
 
-function groupNametagsByBucket(
+export function groupNametagsByBucket(
   entities: ScannedEntity[],
   nametagGroups: Record<string, ScannedEntity[]>
 ): { buckets: Record<string, BucketData>; bucketEntityMap: Record<string, string[]> } {
@@ -372,6 +385,20 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
   const nametagGroups: Record<string, ScannedEntity[]> = {};
   const activeFamilyTags: { [tagId: string]: { label: string; unitCount: number } } = {};
 
+  if (faction === "both") {
+    debugWarn("menuScanner:base", "scanActiveEntities no soporta 'both'; usar scanActiveUnitsMerged para fusión", "red");
+    return {
+      entities: [],
+      byHierarchy: {},
+      byFamilyTag: {},
+      nametagGroups: {},
+      activeHierarchies: [],
+      activeFamilyTags: {},
+      dimension: dimension.id,
+      faction,
+    };
+  }
+
   const rawEntities = getEntitiesByFaction(dimension, faction as "foundation" | "chaos");
 
   debugWarn("menuScanner:base", `Scan START: faction=${faction} rawEntities=${rawEntities.length}`, "dark_gray");
@@ -461,6 +488,22 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
 }
 
 export function scanActiveUnits(dimension: Dimension, faction: string): ScanResult {
+  if (faction === "both") {
+    debugWarn("menuScanner:base", "scanActiveUnits no soporta 'both'; usar scanActiveUnitsMerged para fusión", "red");
+    const emptyBuckets: Record<string, any> = {};
+    return {
+      entities: [],
+      byHierarchy: {},
+      byFamilyTag: {},
+      nametagGroups: {},
+      activeHierarchies: [],
+      activeFamilyTags: {},
+      buckets: emptyBuckets,
+      bucketIdMap: {},
+      dimension: dimension.id,
+      faction,
+    };
+  }
   const now = Date.now();
   const cacheKey = `${dimension.id}:${faction}:buckets`;
 
@@ -507,5 +550,82 @@ export function scanActiveUnits(dimension: Dimension, faction: string): ScanResu
     "cyan"
   );
 
+  return result;
+}
+
+/**
+ * Wrapper para escanear unidades en una o dos facciones. Si faction === "both",
+ * escanea foundation y chaos por separado y mergea los resultados, reusando
+ * groupNametagsByBucket (los buckets son agnósticos de facción por diseño).
+ *
+ * Cache dedicada con key `${dimension.id}:both:buckets` y TTL idéntico a
+ * scanActiveUnits.
+ *
+ * @param dimension - Dimensión a escanear
+ * @param faction - FactionId | "both"
+ * @returns ScanResult con entidades, nametagGroups y buckets combinados
+ */
+export function scanActiveUnitsMerged(dimension: Dimension, faction: string): ScanResult {
+  if (faction !== "both") {
+    return scanActiveUnits(dimension, faction);
+  }
+
+  const cacheKey = `${dimension.id}:both:buckets`;
+  const now = Date.now();
+  const cached = _scanCache.get(cacheKey);
+  if (cached) {
+    const age = now - cached.tick;
+    if (age < CACHE_TTL_TICKS * 50) {
+      return cached.result as ScanResult;
+    }
+  }
+
+  const partials: BaseScanResult[] = [
+    scanActiveEntities(dimension, Factions.FOUNDATION),
+    scanActiveEntities(dimension, Factions.CHAOS),
+  ];
+
+  const mergedEntities: ScannedEntity[] = partials.flatMap((r) => r.entities);
+
+  const byHierarchy: Record<string, ScannedEntity[]> = {};
+  const byFamilyTag: Record<string, ScannedEntity[]> = {};
+  const nametagGroups: Record<string, ScannedEntity[]> = {};
+  const activeFamilyTags: { [tagId: string]: { label: string; unitCount: number } } = {};
+
+  for (const se of mergedEntities) {
+    if (!byHierarchy[se.hierarchy]) byHierarchy[se.hierarchy] = [];
+    byHierarchy[se.hierarchy].push(se);
+
+    if (se.isSpecial && se.nametagFamilyId) {
+      if (!byFamilyTag[se.nametagFamilyId]) {
+        byFamilyTag[se.nametagFamilyId] = [];
+        activeFamilyTags[se.nametagFamilyId] = { label: se.nametagFamilyId, unitCount: 0 };
+      }
+      byFamilyTag[se.nametagFamilyId].push(se);
+      activeFamilyTags[se.nametagFamilyId].unitCount++;
+
+      if (!nametagGroups[se.nametag]) nametagGroups[se.nametag] = [];
+      nametagGroups[se.nametag].push(se);
+    }
+  }
+
+  const activeHierarchies = Object.keys(byHierarchy).filter((h) => byHierarchy[h].length > 0);
+
+  const bucketResult = groupNametagsByBucket(mergedEntities, nametagGroups);
+
+  const result: ScanResult = {
+    entities: mergedEntities,
+    byHierarchy,
+    byFamilyTag,
+    nametagGroups,
+    activeHierarchies,
+    activeFamilyTags,
+    buckets: bucketResult.buckets,
+    bucketIdMap: bucketResult.bucketEntityMap,
+    dimension: dimension.id,
+    faction,
+  };
+
+  _scanCache.set(cacheKey, { result, tick: now });
   return result;
 }

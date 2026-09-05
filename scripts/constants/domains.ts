@@ -40,6 +40,11 @@ export type FactionId = (typeof Factions)[keyof typeof Factions];
  */
 export const FACTION_IDS: FactionId[] = Object.values(Factions) as FactionId[];
 
+/**
+ * Tipo unión para facciones objetivo, incluyendo el modo fusionado.
+ */
+export type TargetFaction = FactionId | "both";
+
 // ── Grupos para especiales (A-D + Sin grupo) ────────────────────────────────
 
 /**

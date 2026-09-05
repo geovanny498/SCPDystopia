@@ -3,6 +3,7 @@
 import { Player, system } from "@minecraft/server";
 import { CustomForm, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { TargetFaction, FACTION_IDS } from "../../../../constants/domains.js";
 import {
   PANEL_TITLES,
   PANEL_DESCRIPTIONS,
@@ -11,20 +12,37 @@ import {
   SCOPE_RESPECT_LABEL,
   SCOPE_GLOBAL_LABEL,
   SCOPE_CONTEXT,
+  isMenuFeatureVisible,
 } from "../../../shared/systemCatalog.js";
+import { PlayerPermissionManager } from "../../../shared/playerPermissionManager.js";
 import { loadScope, saveScope, getScopeSummary } from "../../../commandMenu/model/menu_scope.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
 
-export function showScopePanel(player: Player): void {
+export function showScopePanel(player: Player, targetFaction?: TargetFaction): void {
   try {
+    const isAdmin = PlayerPermissionManager.isAdmin(player);
+    if (isAdmin) {
+      // admin short-circuit, ok
+    } else {
+      const foundationRole = PlayerPermissionManager.getPlayerRole(player, "foundation");
+      const chaosRole = PlayerPermissionManager.getPlayerRole(player, "chaos");
+      const foundationVisible = isMenuFeatureVisible("scope", foundationRole, false, "foundation");
+      const chaosVisible = isMenuFeatureVisible("scope", chaosRole, false, "chaos");
+      if (!foundationVisible && !chaosVisible) {
+        player.sendMessage("§c[SCPDystopia] No tienes permiso para acceder a la prioridad de aplicación.");
+        return;
+      }
+    }
+
     const scope = loadScope();
     const session = commandMenuSessionStore.get(player.id);
     if (!session) {
       player.sendMessage(ERROR_MESSAGES.NO_SESSION);
       return;
     }
+    const effectiveTarget = targetFaction ?? session.getTargetFaction() ?? "both";
     let closeReason: "navigation" | undefined = undefined;
 
     const form = new CustomForm(player, PANEL_TITLES.scope);
@@ -48,13 +66,25 @@ export function showScopePanel(player: Player): void {
         );
 
         descriptionText.setData(getScopeSummary({ respectEntityBlocks }));
-        addHistoryEntry({
-          playerName: player.name,
-          faction: (session.formState.targetFaction as string) ?? "both",
-          systemShortName: getSystemShortName("scope"),
-          key: SCOPE_CONTEXT,
-          value: respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL,
-        });
+        if (effectiveTarget === "both") {
+          for (const fac of FACTION_IDS) {
+            addHistoryEntry({
+              playerName: player.name,
+              faction: fac,
+              systemShortName: getSystemShortName("scope"),
+              key: SCOPE_CONTEXT,
+              value: respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL,
+            });
+          }
+        } else {
+          addHistoryEntry({
+            playerName: player.name,
+            faction: effectiveTarget,
+            systemShortName: getSystemShortName("scope"),
+            key: SCOPE_CONTEXT,
+            value: respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL,
+          });
+        }
       } catch (e) {
         debugWarn("commandMenuDDUI", `Error guardando scope: ${e}`, "red");
         player.sendMessage(ERROR_MESSAGES.SCOPE_SAVE);
@@ -66,7 +96,6 @@ export function showScopePanel(player: Player): void {
     form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
       closeReason = "navigation";
       form.close();
-      system.run(() => import("./advancedPanel.js").then(({ showAdvancedPanel }) => showAdvancedPanel(player)));
     });
 
     form
@@ -81,6 +110,7 @@ export function showScopePanel(player: Player): void {
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Scope cerrado: navegación (${player.name})`, "gray");
+            import("./advancedPanel.js").then(({ showAdvancedPanel }) => showAdvancedPanel(player, effectiveTarget));
           } else {
             debugWarn("commandMenuDDUI", `Scope cerrado: ServerClosed sin razón (${player.name})`, "yellow");
             commandMenuSessionStore.cleanup(player.id);
@@ -90,7 +120,7 @@ export function showScopePanel(player: Player): void {
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() scope: ${err}`, "red");
-          commandMenuSessionStore.cleanup(player.id);
+        commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showScopePanel: ${e}`, "red");

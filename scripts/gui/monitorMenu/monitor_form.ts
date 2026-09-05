@@ -100,12 +100,13 @@ export function showMonitorMenu(player: Player): void {
         form.label(chaosText, { visible: config.faction === "ambas" || config.faction === "chaos" });
         form.spacer();
         let closeReason: "navigation" | undefined = undefined;
+        let nextPanel: (() => void) | undefined = undefined;
 
         form.button(MonitorButtons.config, () => {
           try {
             closeReason = "navigation";
+            nextPanel = () => showConfigMenu(player);
             form.close();
-            showConfigMenu(player);
           } catch (e) {
             debugWarn("monitorCommand", `Error abriendo config desde monitor: ${e}`, "red");
           }
@@ -136,12 +137,14 @@ export function showMonitorMenu(player: Player): void {
                 if (intervalId !== null) {
                   session.unregisterInterval(intervalId);
                 }
+                nextPanel?.();
               } else {
                 debugWarn("monitorCommand", `Monitor cerrado: ServerClosed sin razón (${player.name})`, "yellow");
                 monitorMenuSessionStore.cleanup(player.id);
               }
             }
             closeReason = undefined;
+            nextPanel = undefined;
           })
           .catch((showError) => {
             debugWarn("monitorCommand", `Error en form.show(): ${showError}`, "red");
@@ -235,6 +238,7 @@ export function showConfigMenu(player: Player): void {
           configTextObs.setData(session.getConfigText());
         });
 
+        form.spacer();
         form.label(configTextObs);
         form.spacer();
 
@@ -267,13 +271,13 @@ export function showConfigMenu(player: Player): void {
 
         form.spacer();
         let closeReason: "navigation" | undefined = undefined;
+        let nextPanel: (() => void) | undefined = undefined;
 
         form.button(
           MonitorButtons.reset,
           () => {
             closeReason = "navigation";
-            form.close();
-            system.run(() => {
+            nextPanel = () => {
               debugMessage("monitorCommand", "Navegando a MessageBox de confirmación de restablecimiento", "gray");
               new MessageBox(player, "Restablecer ajustes")
                 .body("¿Seguro que querés volver a los ajustes predeterminados del monitor?")
@@ -298,15 +302,16 @@ export function showConfigMenu(player: Player): void {
                 .catch(() => {
                   showConfigMenu(player);
                 });
-            });
+            };
+            form.close();
           },
           { tooltip: "§cVuelve a los ajustes predeterminados del monitor" }
         );
 
         form.button(MonitorButtons.back, () => {
           closeReason = "navigation";
+          nextPanel = () => showMonitorMenu(player);
           form.close();
-          system.run(() => showMonitorMenu(player));
         });
 
         form
@@ -321,12 +326,14 @@ export function showConfigMenu(player: Player): void {
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
                 debugMessage("monitorCommand", `Config cerrada: navegación (${player.name})`, "gray");
+                nextPanel?.();
               } else {
                 debugWarn("monitorCommand", `Config cerrada: ServerClosed sin razón (${player.name})`, "yellow");
                 monitorMenuSessionStore.cleanup(player.id);
               }
             }
             closeReason = undefined;
+            nextPanel = undefined;
           })
           .catch((showError) => {
             debugWarn("monitorCommand", `Error en form.show() de config: ${showError}`, "red");

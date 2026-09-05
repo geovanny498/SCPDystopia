@@ -22,7 +22,7 @@ export type AllSystemStates = Record<string, Record<string, SystemState>>;
  * Definición de reglas de compatibilidad para cada sistema
  *
  * Propiedades:
- * - domain: Dominio al que pertenece el sistema (ej: "movement", "combat")
+ * - domain: Dominio al que pertenece el sistema (ej: "movement", "fire")
  * - requires: Objeto con dominios y valores requeridos para que este sistema se aplique
  * - locks: Array de dominios que este sistema bloquea (no se pueden aplicar simultáneamente)
  * - applyMode: "all" | "existing_only"
@@ -44,7 +44,7 @@ export const systemRules: Record<
   },
 
   fire: {
-    domain: "combat",
+    domain: "fire",
     applyMode: "all", // Algunas unidades dependen de all para ser hostiles por defecto
   },
 

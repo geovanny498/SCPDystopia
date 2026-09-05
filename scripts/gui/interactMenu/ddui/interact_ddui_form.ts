@@ -13,6 +13,8 @@ import {
   refreshStatus,
 } from "./interact_ddui_shared.js";
 import { getUnitGroup } from "../../commandMenu/model/menu_groups.js";
+import { PlayerPermissionManager, type RoleId, type FactionId } from "../../shared/playerPermissionManager.js";
+import { isSystemVisibleForRole, CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
 
 export function showInteractDDUI(
   player: Player,
@@ -28,6 +30,11 @@ export function showInteractDDUI(
     debugMessage("interactDDUI", `Mostrando interact DDUI para ${player.name} en ${typeId}`, "cyan");
 
     const factionInfo = session.factionInfo;
+
+    const isAdmin = PlayerPermissionManager.isAdmin(player);
+    const entityFaction = factionInfo?.faction ?? "foundation";
+
+    const role: RoleId = isAdmin ? "admin" : PlayerPermissionManager.getPlayerRole(player, entityFaction as FactionId);
 
     const form = new CustomForm(player, `§dMenú de Interacción`);
 
@@ -54,6 +61,14 @@ export function showInteractDDUI(
 
         for (const globalCat of cfg.global) {
           if (globalCat.submenu) continue;
+
+          if (globalCat.id) {
+            const sysConfig = CATALOG_SYSTEMS[globalCat.id as SystemId];
+            if (sysConfig && !isSystemVisibleForRole(sysConfig, role)) {
+              continue;
+            }
+          }
+
           const entries = globalCat.entries || [];
           if (entries.length === 0) continue;
           const built = session.buildObservableFromEntries(entries, undefined, typeId, globalCat.category);
@@ -77,6 +92,7 @@ export function showInteractDDUI(
 
         form.spacer();
         let closeReason: "navigation" | undefined = undefined;
+        let nextPanel: (() => void) | undefined = undefined;
         let intervalId: number | null = null;
 
         const advancedMenuCat = cfg.global.find((c: MenuCategory) => c.id === "advanced_menu");
@@ -84,12 +100,11 @@ export function showInteractDDUI(
           form.button(stripColorCodes(advancedMenuCat.category), () => {
             try {
               closeReason = "navigation";
-              form.close();
-              system.run(() => {
+              nextPanel = () =>
                 import("./interact_ddui_systems.js").then(({ showInteractDDUISystems }) => {
                   showInteractDDUISystems(player, entity, cfg, soldierName, displayName, typeId);
                 });
-              });
+              form.close();
             } catch (e) {
               debugWarn("interactDDUI", `Error abriendo Vista Sistemas Avanzados: ${e}`, "red");
             }
@@ -101,12 +116,11 @@ export function showInteractDDUI(
           form.button(stripColorCodes(unitManagementCat.category), () => {
             try {
               closeReason = "navigation";
-              form.close();
-              system.run(() => {
+              nextPanel = () =>
                 import("./interact_ddui_systems.js").then(({ showInteractDDUIManagement }) => {
                   showInteractDDUIManagement(player, entity, cfg, soldierName, displayName, typeId);
                 });
-              });
+              form.close();
             } catch (e) {
               debugWarn("interactDDUI", `Error abriendo Vista Gestión y Estado: ${e}`, "red");
             }
@@ -116,12 +130,11 @@ export function showInteractDDUI(
         form.button("Historial", () => {
           try {
             closeReason = "navigation";
-            form.close();
-            system.run(() => {
+            nextPanel = () =>
               import("./interact_ddui_systems.js").then(({ showInteractDDUHistory }) => {
                 showInteractDDUHistory(player, entity, cfg, soldierName, displayName, typeId);
               });
-            });
+            form.close();
           } catch (e) {
             debugWarn("interactDDUI", `Error abriendo Historial: ${e}`, "red");
           }
@@ -142,12 +155,14 @@ export function showInteractDDUI(
                 if (intervalId !== null) {
                   session.unregisterInterval(intervalId);
                 }
+                nextPanel?.();
               } else {
                 debugWarn("interactDDUI", `DDUI cerrado: ServerClosed sin razón (${player.name})`, "yellow");
                 interactMenuSessionStore.cleanup(player.id);
               }
             }
             closeReason = undefined;
+            nextPanel = undefined;
           })
           .catch((showError) => {
             debugWarn("interactDDUI", `Error en form.show(): ${showError}`, "red");

@@ -3,6 +3,7 @@
 import { Player, system, EquipmentSlot } from "@minecraft/server";
 import { debugMessage, debugWarn } from "../../../utils/debug.js";
 import { EquipmentDetector, FactionId } from "../../shared/equipmentDetector.js";
+import { TargetFaction } from "../../../constants/domains.js";
 import { DDUIFeedbackEntry, DDUIFeedbackPresenter, DDUIFeedbackStore } from "../../shared/dduiFeedback.js";
 
 /**
@@ -61,8 +62,8 @@ export class CommandMenuSession {
   readonly playerName: string;
   /** Referencia al `Player` de Bedrock. */
   player: Player;
-  /** Facción activa del jugador al momento de crear la sesión. */
-  faction: string;
+  /** Facción activa del jugador al momento de crear la sesión (FactionId, nunca "both"). */
+  faction: FactionId;
   /** Rol del jugador dentro de la facción. */
   role: string;
   /** Intervalos registrados en la sesión, se limpian en `cleanup()`. */
@@ -91,7 +92,7 @@ export class CommandMenuSession {
     this.playerId = playerId;
     this.playerName = playerName;
     this.player = player;
-    this.faction = faction;
+    this.faction = faction as FactionId;
     this.role = role;
   }
 
@@ -210,6 +211,23 @@ export class CommandMenuSession {
     }
     this.feedbackPresenters.clear();
     debugMessage("commandMenuDDUI", `Sesión limpiada: ${this.playerName}`, "gray");
+  }
+
+  /**
+   * Facción objetivo del admin (incluye "both").
+   * Alias tipado sobre `formState.targetFaction`.
+   * @returns Facción objetivo, o `undefined` si no está seteada.
+   */
+  getTargetFaction(): TargetFaction | undefined {
+    return this.formState.targetFaction as TargetFaction | undefined;
+  }
+
+  /**
+   * Setea la facción objetivo del admin.
+   * @param faction Facción objetivo a guardar.
+   */
+  setTargetFaction(faction: TargetFaction): void {
+    this.formState.targetFaction = faction;
   }
 }
 

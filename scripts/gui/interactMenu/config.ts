@@ -60,7 +60,7 @@ import {
   MOVEMENT_OPTIONS,
   FIRE_OPTIONS,
   TELEPORT_OPTIONS,
-  ADVANCED_TOGGLE_SYSTEMS,
+  CATALOG_SYSTEMS,
   GROUP_DESCRIPTIONS,
   GROUP_LABELS,
   type SystemOption,
@@ -78,7 +78,7 @@ const config: GuiConfig = {
   // key = grupo en `entities`
   openItem: {
     foundation: "lc:dt_commander",
-    chaos: "breeze_rod",
+    chaos: "lc:dt_commander",
   },
 
   // Lista de entidades que abrirán el GUI.
@@ -114,8 +114,8 @@ const config: GuiConfig = {
   global: {
     categories: [
       {
-        id: CategoryIds.MOVEMENT_PATROL,
-        category: `${CATEGORY_DISPLAY_NAMES.movement_patrol}§r`,
+        id: SystemIds.MOVEMENT,
+        category: `${CATEGORY_DISPLAY_NAMES.movement}§r`,
         entries: MOVEMENT_OPTIONS.map((opt: SystemOption) => ({
           label: opt.label,
           event: opt.eventStart,
@@ -123,8 +123,8 @@ const config: GuiConfig = {
         })),
       },
       {
-        id: CategoryIds.COMBAT,
-        category: `${CATEGORY_DISPLAY_NAMES.combat}§r`,
+        id: SystemIds.FIRE,
+        category: `${CATEGORY_DISPLAY_NAMES.fire}§r`,
         entries: FIRE_OPTIONS.map((opt: SystemOption) => ({
           label: opt.label,
           event: opt.eventStart,
@@ -181,10 +181,10 @@ const config: GuiConfig = {
           category: `${SYSTEM_DISPLAY_NAMES.spawn}§r`,
           description: "Activa o detiene el spawn automático de refuerzos",
           entries: (() => {
-            const sys = ADVANCED_TOGGLE_SYSTEMS.find((s) => s.id === SystemIds.SPAWN)!;
+            const sys = CATALOG_SYSTEMS[SystemIds.SPAWN];
             return [
-              { label: sys.labelTrue!, event: sys.eventTrue!, description: sys.description },
-              { label: sys.labelFalse!, event: sys.eventFalse!, description: sys.description },
+              { label: sys.labelTrue!, event: sys.eventTrue!, description: "Activa o detiene el spawn automático de refuerzos" },
+              { label: sys.labelFalse!, event: sys.eventFalse!, description: "Activa o detiene el spawn automático de refuerzos" },
             ];
           })(),
         },
@@ -193,10 +193,10 @@ const config: GuiConfig = {
           category: `${SYSTEM_DISPLAY_NAMES.health}§r`,
           description: "Muestra u oculta la barra de vida de la entidad",
           entries: (() => {
-            const sys = ADVANCED_TOGGLE_SYSTEMS.find((s) => s.id === SystemIds.HEALTH)!;
+            const sys = CATALOG_SYSTEMS[SystemIds.HEALTH];
             return [
-              { label: sys.labelTrue!, event: sys.eventTrue!, description: sys.description },
-              { label: sys.labelFalse!, event: sys.eventFalse!, description: sys.description },
+              { label: sys.labelTrue!, event: sys.eventTrue!, description: "Muestra u oculta la barra de vida de la entidad" },
+              { label: sys.labelFalse!, event: sys.eventFalse!, description: "Muestra u oculta la barra de vida de la entidad" },
             ];
           })(),
         },
@@ -214,10 +214,10 @@ const config: GuiConfig = {
           category: `${SYSTEM_DISPLAY_NAMES.invincible}§r`,
           description: "Hace que la entidad ignore todo el daño recibido",
           entries: (() => {
-            const sys = ADVANCED_TOGGLE_SYSTEMS.find((s) => s.id === SystemIds.INVINCIBLE)!;
+            const sys = CATALOG_SYSTEMS[SystemIds.INVINCIBLE];
             return [
-              { label: sys.labelTrue!, event: sys.eventTrue!, description: sys.description },
-              { label: sys.labelFalse!, event: sys.eventFalse!, description: sys.description },
+              { label: sys.labelTrue!, event: sys.eventTrue!, description: "Hace que la entidad ignore todo el daño recibido" },
+              { label: sys.labelFalse!, event: sys.eventFalse!, description: "Hace que la entidad ignore todo el daño recibido" },
             ];
           })(),
         },

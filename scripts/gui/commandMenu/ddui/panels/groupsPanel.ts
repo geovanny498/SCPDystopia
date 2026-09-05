@@ -3,37 +3,47 @@
 import { Player, system, world } from "@minecraft/server";
 import { CustomForm, ObservableNumber } from "@minecraft/server-ui";
 import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { Factions, FACTION_IDS, TargetFaction } from "../../../../constants/domains.js";
 import {
   PANEL_TITLES,
   PANEL_DESCRIPTIONS,
   GROUP_PANEL_BUTTONS,
   FACTION_DISPLAY_NAMES,
   GROUP_LABELS,
+  GROUP_DESCRIPTIONS,
   ERROR_MESSAGES,
 } from "../../../shared/systemCatalog.js";
 import { SYSTEM_PANEL_FEEDBACK_INITIAL } from "../../../shared/dduiFeedback.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { showMainPanel } from "./mainPanel.js";
-import { scanActiveUnits, invalidateScanCache, invalidateEntityQueryCache } from "../../model/menu_entity_scanner.js";
+import {
+  scanActiveUnits,
+  scanActiveUnitsMerged,
+  invalidateScanCache,
+  invalidateEntityQueryCache,
+} from "../../model/menu_entity_scanner.js";
 import { setUnitGroup } from "../../model/menu_groups.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { compareNametags } from "../../../../utils/nametagSort.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
-import { SpecialGroups, getGroupsOrderForSystems, getGroupsOrderForAssignment, SpecialGroupLabels } from "../../menu_config.js";
-import { Factions } from "../../../../constants/domains.js";
+import {
+  SpecialGroups,
+  getGroupsOrderForSystems,
+  getGroupsOrderForAssignment,
+  SpecialGroupLabels,
+} from "../../menu_config.js";
+import { SpecialGroupId } from "../../../../constants/domains.js";
 
-export function showGroupsPanel(player: Player, targetFaction: string = Factions.FOUNDATION): void {
-  system.run(() => showGroupsByFaction(player, targetFaction));
+export function showGroupsPanel(player: Player, targetFaction: TargetFaction = Factions.FOUNDATION): void {
+  showGroupsByFaction(player, targetFaction);
 }
 
-function showGroupsByFaction(player: Player, faction: string): void {
+function showGroupsByFaction(player: Player, faction: TargetFaction): void {
   try {
     let closeReason: "navigation" | undefined = undefined;
+    let nextPanel: (() => void) | undefined = undefined;
 
-    const form = new CustomForm(
-      player,
-      `${PANEL_TITLES.groupsByFaction} - ${FACTION_DISPLAY_NAMES[faction as keyof typeof FACTION_DISPLAY_NAMES]}`
-    );
+    const form = new CustomForm(player, `${PANEL_TITLES.groupsByFaction} - ${FACTION_DISPLAY_NAMES[faction]}`);
 
     form.spacer();
     form.label(PANEL_DESCRIPTIONS.groupsByFaction);
@@ -45,45 +55,44 @@ function showGroupsByFaction(player: Player, faction: string): void {
       return;
     }
 
-    const scanResult = scanActiveUnits(dimension, faction);
+    const scanResult = scanActiveUnitsMerged(dimension, faction);
 
-    const groupCounts: Record<string, number> = {};
+    const groupCounts: Record<string, { total: number; foundation: number; chaos: number }> = {};
     for (const entity of scanResult.entities) {
       if (!entity.isSpecial) continue;
       const group = entity.group ?? SpecialGroups.NO_GROUP;
-      groupCounts[group] = (groupCounts[group] ?? 0) + 1;
+      if (!groupCounts[group]) groupCounts[group] = { total: 0, foundation: 0, chaos: 0 };
+      groupCounts[group].total++;
+      if (entity.faction === Factions.FOUNDATION) groupCounts[group].foundation++;
+      if (entity.faction === Factions.CHAOS) groupCounts[group].chaos++;
     }
 
     const groupOrder = getGroupsOrderForSystems();
     for (let i = 0; i < groupOrder.length; i++) {
       const groupId = groupOrder[i];
       const label = GROUP_LABELS[groupId as keyof typeof GROUP_LABELS] ?? groupId;
-      const count = groupCounts[groupId] ?? 0;
+      const counts = groupCounts[groupId];
+      const count = counts?.total ?? 0;
       if (i > 0) form.spacer();
-      form.label(`§7${label}: §f${count} unidades`);
+      if (faction === "both" && counts) {
+        form.label(`§7${label}: §f${count} unidades §8(F:${counts.foundation} | C:${counts.chaos})`);
+      } else {
+        form.label(`§7${label}: §f${count} unidades`);
+      }
     }
 
     form.spacer();
 
-    const bucketOrder = [
-      "commander_alpha1",
-      "commander_delta1",
-      "commander_other",
-      "leader_any",
-      "basic_any",
-      "other_units",
-    ];
-
-    for (const bucketId of bucketOrder) {
-      const bucket = scanResult.buckets[bucketId];
-      if (!bucket || bucket.unitCount === 0) continue;
+    const bucketEntries = Object.entries(scanResult.buckets);
+    for (const [bucketId, bucket] of bucketEntries) {
+      if (bucket.unitCount === 0) continue;
 
       const ntCount = Object.keys(bucket.nametags).length;
       const counterLabel = ntCount > 1 ? ` (${ntCount} nametags)` : "";
       form.button(`${stripColorCodes(bucket.label)}${counterLabel}`, () => {
         closeReason = "navigation";
+        nextPanel = () => showBucketAssignment(player, faction, bucketId);
         form.close();
-        system.run(() => showBucketAssignment(player, faction, bucketId));
       });
     }
 
@@ -91,8 +100,8 @@ function showGroupsByFaction(player: Player, faction: string): void {
 
     form.button(stripColorCodes(GROUP_PANEL_BUTTONS.back), () => {
       closeReason = "navigation";
+      nextPanel = () => showMainPanel(player, faction);
       form.close();
-      system.run(() => showMainPanel(player));
     });
 
     form
@@ -107,6 +116,7 @@ function showGroupsByFaction(player: Player, faction: string): void {
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Grupos por Facción cerrado: navegación (${player.name})`, "gray");
+            nextPanel?.();
           } else {
             debugWarn(
               "commandMenuDDUI",
@@ -117,17 +127,18 @@ function showGroupsByFaction(player: Player, faction: string): void {
           }
         }
         closeReason = undefined;
+        nextPanel = undefined;
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() grupos por facción: ${err}`, "red");
-          commandMenuSessionStore.cleanup(player.id);
+        commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showGroupsByFaction: ${e}`, "red");
   }
 }
 
-function showBucketAssignment(player: Player, faction: string, bucketId: string): void {
+function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: string): void {
   try {
     const dimension = player.dimension;
     if (!dimension) {
@@ -141,7 +152,7 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       return;
     }
 
-    const scanResult = scanActiveUnits(dimension, faction);
+    const scanResult = scanActiveUnitsMerged(dimension, faction);
     const bucket = scanResult.buckets[bucketId];
     if (!bucket) {
       player.sendMessage(ERROR_MESSAGES.NO_BUCKET);
@@ -153,7 +164,7 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
     const form = new CustomForm(player, `${stripColorCodes(bucket.label)} §8- Asignar Grupos`);
 
     form.spacer();
-    form.label(`§7Facción: §f${FACTION_DISPLAY_NAMES[faction as keyof typeof FACTION_DISPLAY_NAMES]}`);
+    form.label(`§7Facción: §f${FACTION_DISPLAY_NAMES[faction]}`);
     form.spacer();
     form.label(`§7Rol: §f${stripColorCodes(bucket.label)} §8(${bucket.unitCount} unidades)`);
     form.spacer();
@@ -168,7 +179,13 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       label: SpecialGroupLabels[groupId] ?? groupId,
     }));
 
-    const items = groupOptions.map((opt, idx) => ({ label: stripColorCodes(opt.label), value: idx }));
+    const items = groupOptions.map((opt, idx) => ({
+      label: stripColorCodes(opt.label),
+      value: idx,
+      description: GROUP_DESCRIPTIONS[opt.value as SpecialGroupId]
+        ? stripColorCodes(GROUP_DESCRIPTIONS[opt.value as SpecialGroupId])
+        : undefined,
+    }));
 
     const prioritySystemOrder = getGroupsOrderForSystems();
     const priorityMap: Record<string, number> = {};
@@ -199,11 +216,12 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       const ntCount = bucket.nametags[nt] || 0;
       const preferredGroup = nametagPreferredGroup[nt] ?? SpecialGroups.NO_GROUP;
       const currentIndex = groupOptions.findIndex((opt) => opt.value === preferredGroup);
-        const initialIndex = currentIndex >= 0 ? currentIndex : groupOptions.findIndex((opt) => opt.value === SpecialGroups.NO_GROUP);
+      const initialIndex =
+        currentIndex >= 0 ? currentIndex : groupOptions.findIndex((opt) => opt.value === SpecialGroups.NO_GROUP);
       const obs = new ObservableNumber(initialIndex >= 0 ? initialIndex : 0, { clientWritable: true });
       obs.subscribe((newIndex) => {
         if (newIndex < 0) return;
-          const selectedGroup = groupOptions[newIndex]?.value ?? SpecialGroups.NO_GROUP;
+        const selectedGroup = groupOptions[newIndex]?.value ?? SpecialGroups.NO_GROUP;
         applyGroupToNametag(player, faction, nt, selectedGroup);
       });
       form.dropdown(`${stripColorCodes(nt)}${ntCount > 1 ? ` (${ntCount})` : ""}`, obs, items);
@@ -217,7 +235,6 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       invalidateScanCache();
       invalidateEntityQueryCache();
       form.close();
-      system.run(() => showGroupsByFaction(player, faction));
     });
 
     form
@@ -232,6 +249,7 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
             debugMessage("commandMenuDDUI", `Asignación por bucket cerrada: navegación (${player.name})`, "gray");
+            showGroupsByFaction(player, faction);
           } else {
             debugWarn(
               "commandMenuDDUI",
@@ -245,14 +263,14 @@ function showBucketAssignment(player: Player, faction: string, bucketId: string)
       })
       .catch((err) => {
         debugWarn("commandMenuDDUI", `Error en form.show() asignación por bucket: ${err}`, "red");
-          commandMenuSessionStore.cleanup(player.id);
+        commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error en showBucketAssignment: ${e}`, "red");
   }
 }
 
-function applyGroupToNametag(player: Player, faction: string, nametag: string, groupId: string): void {
+function applyGroupToNametag(player: Player, faction: TargetFaction, nametag: string, groupId: string): void {
   try {
     const dimension = player.dimension;
     if (!dimension) {
@@ -260,20 +278,30 @@ function applyGroupToNametag(player: Player, faction: string, nametag: string, g
       return;
     }
 
-    const scanResult = scanActiveUnits(dimension, faction);
-    const entities = scanResult.entities.filter((e) => e.nametag === nametag);
+    const scanResult = scanActiveUnitsMerged(dimension, faction);
+    const entities = scanResult.entities.filter((e: any) => e.nametag === nametag);
 
+    let foundationCount = 0;
+    let chaosCount = 0;
     let appliedCount = 0;
     for (const scanned of entities) {
       setUnitGroup(scanned.entity, groupId);
       appliedCount++;
+      if (scanned.faction === Factions.FOUNDATION) foundationCount++;
+      if (scanned.faction === Factions.CHAOS) chaosCount++;
     }
 
     const groupLabel = GROUP_LABELS[groupId as keyof typeof GROUP_LABELS] ?? groupId;
     if (appliedCount > 0) {
-      player.sendMessage(
-        `§a[SCPDystopia] §7${groupLabel} asignado a ${appliedCount} unidad/es de ${nametag} §fen ${FACTION_DISPLAY_NAMES[faction as keyof typeof FACTION_DISPLAY_NAMES]}.`
-      );
+      if (faction === "both") {
+        player.sendMessage(
+          `§a[SCPDystopia] §7${groupLabel} asignado a ${appliedCount} unidad/es de ${nametag} §f(F:${foundationCount} | C:${chaosCount}).`
+        );
+      } else {
+        player.sendMessage(
+          `§a[SCPDystopia] §7${groupLabel} asignado a ${appliedCount} unidad/es de ${nametag} §fen ${FACTION_DISPLAY_NAMES[faction]}.`
+        );
+      }
     }
 
     const session = commandMenuSessionStore.get(player.id);
@@ -285,13 +313,34 @@ function applyGroupToNametag(player: Player, faction: string, nametag: string, g
       });
     }
 
-    addHistoryEntry({
-      playerName: player.name,
-      faction,
-      systemShortName: getSystemShortName("group_assignment"),
-      key: nametag,
-      value: groupLabel,
-    });
+    if (faction === "both") {
+      if (foundationCount > 0) {
+        addHistoryEntry({
+          playerName: player.name,
+          faction: Factions.FOUNDATION,
+          systemShortName: getSystemShortName("group_assignment"),
+          key: nametag,
+          value: groupLabel,
+        });
+      }
+      if (chaosCount > 0) {
+        addHistoryEntry({
+          playerName: player.name,
+          faction: Factions.CHAOS,
+          systemShortName: getSystemShortName("group_assignment"),
+          key: nametag,
+          value: groupLabel,
+        });
+      }
+    } else {
+      addHistoryEntry({
+        playerName: player.name,
+        faction,
+        systemShortName: getSystemShortName("group_assignment"),
+        key: nametag,
+        value: groupLabel,
+      });
+    }
   } catch (e) {
     debugWarn("commandMenuDDUI", `Error asignando grupo: ${e}`, "red");
     player.sendMessage(ERROR_MESSAGES.ASSIGN_GROUP);
