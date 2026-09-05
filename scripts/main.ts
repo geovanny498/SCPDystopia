@@ -70,10 +70,18 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
   }
 });
 
-world.afterEvents.entityRemove.subscribe((event) => {
-  const removedEntityId = event.removedEntityId;
-  const entityType = event.typeId;
-  debugWarn("entityDeath", `Entidad eliminada: ${entityType} Id: ${removedEntityId}`, "magenta");
-  interactMenuSessionStore.cleanupEntityData(removedEntityId);
-  interactMenuSessionStore.cleanupByEntity(removedEntityId);
+// No es llamado por entity.remove()
+// Si acepta EntityDamageCause.override
+world.afterEvents.entityDie.subscribe((event) => {
+  const deadEntity = event.deadEntity;
+  const damageSource = event.damageSource;
+  const deadEntityId = deadEntity.id;
+  const entityType = deadEntity.typeId;
+  debugWarn("entityDie", `Entidad eliminada: ${entityType} por: ${damageSource}`, "magenta");
+  try {
+    interactMenuSessionStore.clearEntityFeedbackForAll(deadEntityId);
+  } catch (e) {
+    debugWarn("entityDie", `Error limpiando interactMenu feedback: ${e}`, "red");
+  }
+  interactMenuSessionStore.cleanupByEntity(deadEntityId);
 });

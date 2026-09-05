@@ -24,10 +24,16 @@ export function registerLifecycleCleanups(): void {
       debugWarn("lifecycle", `Error limpiando interactMenu session: ${e}`, "red");
     }
     try {
+      interactMenuSessionStore.clearPlayerFeedback(event.playerId);
+    } catch (e) {
+      debugWarn("lifecycle", `Error limpiando interactMenu feedback: ${e}`, "red");
+    }
+    try {
       monitorMenuSessionStore.cleanup(event.playerId);
     } catch (e) {
       debugWarn("lifecycle", `Error limpiando monitorMenu session: ${e}`, "red");
     }
+    debugMessage("lifecycle", `${event.playerName} se desconectó`, "green");
   });
 
   debugMessage("lifecycle", "Registro de lifecycle cleanups completado.", "green");

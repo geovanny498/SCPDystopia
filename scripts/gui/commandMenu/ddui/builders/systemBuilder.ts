@@ -338,8 +338,6 @@ function applySystemToEntitiesForSystem(
 
     const summary = appliedEntries.length > 0 ? appliedEntries.join(" | ") : "0 unidades";
     const displayName = getSystemShortName(systemId);
-    const cleanLabel = stripColorCodes(label);
-    const cleanValue = stripColorCodes(valueLabel);
 
     const partialState: Record<string, Record<string, unknown>> = {};
     for (const fac of factions) {
@@ -357,8 +355,8 @@ function applySystemToEntitiesForSystem(
           playerName: player.name,
           faction: fac,
           systemShortName: getSystemShortName(systemId),
-          key: cleanLabel,
-          value: cleanValue,
+          key: label,
+          value: valueLabel,
         });
       }
     } else {
@@ -366,8 +364,8 @@ function applySystemToEntitiesForSystem(
         playerName: player.name,
         faction: targetFaction ?? Factions.FOUNDATION,
         systemShortName: getSystemShortName(systemId),
-        key: cleanLabel,
-        value: cleanValue,
+        key: label,
+        value: valueLabel,
       });
     }
 

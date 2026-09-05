@@ -25,7 +25,7 @@ export const DEBUG_MODULES: string[] = [
   // ═══════════════════════════════════════════════════════════════════════════
   // "projectileHitEntity",
   // "damage",
-  // "entityDeath",
+  "entityDie",
   // "entityDamageConfig",
 
   // ═══════════════════════════════════════════════════════════════════════════
