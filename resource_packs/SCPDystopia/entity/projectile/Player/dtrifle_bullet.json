@@ -3,7 +3,7 @@
   "format_version": "1.10.0",
   "minecraft:client_entity": {
     "description": {
-      "identifier": "lc:dt_dtrifle_bullet_player",
+      "identifier": "lc:dt_dtrifle_bullet",
       "materials": {
         "default": "arrow"
       },

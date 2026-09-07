@@ -1,0 +1,210 @@
+// CC-BY-SA 3.0
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.scpdt_de.humanoid.firearm_combat": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            {
+              "define_pistols": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:pistol')"
+            },
+            {
+              "define_rifles_or_smgs": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:rifle_or_smg')"
+            }
+          ]
+        },
+        "define_pistols": {
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:gun') == 0"
+            },
+            {
+              "357_magnum": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:357_magnum')"
+            }
+          ]
+        },
+        "define_rifles_or_smgs": {
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:gun') == 0"
+            },
+            {
+              "hk416": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:hk416')"
+            },
+            {
+              "m4a1": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:m4a1')"
+            },
+            {
+              "suscharger": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:suscharger')"
+            },
+            {
+              "m16": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:m16')"
+            },
+            {
+              "scar": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:scar')"
+            },
+            {
+              "dtrifle": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:dtrifle')"
+            },
+            {
+              "ak47": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:ak47')"
+            },
+            {
+              "mp7": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:mp7')"
+            },
+            {
+              "mp5a3": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:mp5a3')"
+            },
+            {
+              "p90": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:p90')"
+            }
+          ]
+        },
+
+        /* #region Pistol States */
+
+        "357_magnum": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:357_magnum"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:357_magnum') == 0"
+            }
+          ]
+        },
+
+        /* #endregion */
+
+        /* #region Rifle or SMG States */
+
+        "hk416": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:hk416"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:hk416') == 0"
+            }
+          ]
+        },
+        "m4a1": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:m4a1"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:m4a1') == 0"
+            }
+          ]
+        },
+        "suscharger": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:suscharger"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:suscharger') == 0"
+            }
+          ]
+        },
+        "m16": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:m16"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:m16') == 0"
+            }
+          ]
+        },
+        "scar": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:scar"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:scar') == 0"
+            }
+          ]
+        },
+        "dtrifle": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:dtrifle"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:dtrifle') == 0"
+            }
+          ]
+        },
+        "ak47": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:ak47"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:ak47') == 0"
+            }
+          ]
+        },
+        "mp7": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:mp7"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:mp7') == 0"
+            }
+          ]
+        },
+        "mp5a3": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:mp5a3"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:mp5a3') == 0"
+            }
+          ]
+        },
+        "p90": {
+          "on_entry": [
+            "/playsound scpdt.firearm_combat.equip_firearm @a[r=20] ~~~",
+            "/event entity @s humanoid:firearm_combat:equip_gun:p90"
+          ],
+          "on_exit": ["/event entity @s humanoid:firearm_combat:lost_weapon"],
+          "transitions": [
+            {
+              "default": "q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:firearm:p90') == 0"
+            }
+          ]
+        }
+
+        /* #endregion */
+      }
+    }
+  }
+}

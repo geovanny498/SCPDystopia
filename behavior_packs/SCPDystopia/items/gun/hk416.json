@@ -1,0 +1,47 @@
+{
+  "format_version": "1.21.120",
+  "minecraft:item": {
+    "description": {
+      "identifier": "lc:dt_hk416",
+      "menu_category": {
+        "category": "equipment"
+      }
+    },
+    "components": {
+      "scpdt:dont_damage_durability_on_hit": {},
+      // "scpdt:m4a1": {},
+      "minecraft:use_modifiers": {
+        "movement_modifier": 0.5,
+        "use_duration": 0.01
+      },
+      "minecraft:damage": 4,
+      "minecraft:can_destroy_in_creative": false,
+      "minecraft:durability": {
+        "max_durability": 10000,
+        "damage_chance": {
+          "min": 0,
+          "max": 0
+        }
+      },
+      "minecraft:hand_equipped": true,
+      "minecraft:max_stack_size": 1,
+      "minecraft:icon": "dt_de_hk416_icon",
+      "minecraft:display_name": {
+        "value": "dt.nameslot.hk416"
+      },
+      "minecraft:cooldown": {
+        "duration": 0.01,
+        "category": "hk416"
+      },
+      "minecraft:tags": {
+        "tags": [
+          "lc:firearm:humanoid_can_equip",
+          "lc:firearm:gun",
+          "lc:firearm:rifle_or_smg",
+          "lc:firearm:hk416",
+          "lc:class_d_can_equip"
+        ]
+      }
+    }
+  }
+}

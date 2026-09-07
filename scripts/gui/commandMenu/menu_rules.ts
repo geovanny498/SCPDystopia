@@ -61,6 +61,11 @@ export const systemRules: Record<
     }, 
     */
 
+  weapon: {
+    domain: "weapon",
+    applyMode: "existing_only", // Para evitar colisiones con las armas base de las unidades
+  },
+
   spawn: {
     domain: "spawn",
     applyMode: "all",

@@ -1,0 +1,37 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.dt_big_plant2",
+				"texture_width": 96,
+				"texture_height": 96,
+				"visible_bounds_width": 6,
+				"visible_bounds_height": 5.5,
+				"visible_bounds_offset": [0, 2.25, 0]
+			},
+			"bones": [
+				{
+					"name": "big_plant",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-6, 0, -6], "size": [12, 11, 12], "uv": [0, 0]},
+						{"origin": [5, 11, -6], "size": [1, 1, 12], "uv": [48, 0]},
+						{"origin": [-6, 11, -6], "size": [1, 1, 12], "uv": [50, 0]},
+						{"origin": [-5, 11, -6], "size": [10, 1, 1], "uv": [51, 5]},
+						{"origin": [-5, 11, 5], "size": [10, 1, 1], "uv": [51, 8]}
+					]
+				},
+				{
+					"name": "plant",
+					"parent": "big_plant",
+					"pivot": [0, 11, 0],
+					"cubes": [
+						{"origin": [-7, 11, 0], "size": [14, 25, 1], "pivot": [0, 11, 0], "rotation": [0, -45, 0], "uv": [66, 70]},
+						{"origin": [-7, 11, 0], "size": [14, 25, 1], "pivot": [0, 11, 0], "rotation": [0, 45, 0], "uv": [66, 70]}
+					]
+				}
+			]
+		}
+	]
+}

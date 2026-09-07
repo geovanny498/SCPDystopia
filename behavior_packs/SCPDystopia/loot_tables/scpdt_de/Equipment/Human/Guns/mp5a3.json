@@ -1,0 +1,16 @@
+// CC-BY-SA 3.0
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "lc:dt_mp5a3",
+          "weight": 1,
+          "functions": []
+        }
+      ]
+    }
+  ]
+}

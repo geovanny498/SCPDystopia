@@ -1,0 +1,70 @@
+// CC-BY-SA 3.0
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "lc:dt_mp7",
+          "weight": 25,
+          "functions": []
+        },
+        {
+          "type": "item",
+          "name": "lc:dt_mp5a3",
+          "weight": 25,
+          "functions": []
+        },
+        {
+          "type": "item",
+          "name": "lc:dt_p90",
+          "weight": 25,
+          "functions": []
+        },
+        {
+          "type": "item",
+          "name": "lc:dt_m16",
+          "weight": 15,
+          "functions": []
+        },
+        {
+          "type": "item",
+          "name": "lc:dt_ak47",
+          "weight": 15,
+          "functions": []
+        },
+        {
+          "type": "item",
+          "name": "lc:dt_scar",
+          "weight": 15,
+          "functions": []
+        },
+        {
+          "type": "item",
+          "name": "lc:dt_m4a1",
+          "weight": 10,
+          "functions": []
+        },
+        {
+          "type": "item",
+          "name": "lc:dt_hk416",
+          "weight": 5,
+          "functions": []
+        },
+        {
+          "type": "item",
+          "name": "lc:dt_dystopia_rifle",
+          "weight": 5,
+          "functions": []
+        },
+        {
+          "type": "item",
+          "name": "lc:dt_suscharger",
+          "weight": 5,
+          "functions": []
+        }
+      ]
+    }
+  ]
+}

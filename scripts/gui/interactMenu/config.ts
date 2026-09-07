@@ -60,6 +60,7 @@ import {
   MOVEMENT_OPTIONS,
   FIRE_OPTIONS,
   TELEPORT_OPTIONS,
+  WEAPON_OPTIONS,
   CATALOG_SYSTEMS,
   GROUP_DESCRIPTIONS,
   GROUP_LABELS,
@@ -144,7 +145,7 @@ const config: GuiConfig = {
     ],
   },
 
-  /** Reglas para aplicar/ocultar sistemas globales por entidad.
+  /** Reglas legacy para aplicar/ocultar sistemas globales por entidad.
    * Cada clave representa un "sistema global"
    * los submenús cuentan como sistemas globales.
    * Cada regla admite:
@@ -155,20 +156,24 @@ const config: GuiConfig = {
    */
   global_rules: {
     // categoría del submenu (ver abajo: "spawn").
-    spawn: {
-      mode: "whitelist",
-      list: [
-        "lc:dt_alpha1l",
-        "lc:dt_epsilon11c",
-        "lc:dt_eta10c",
-        "lc:dt_nu7c",
-        "lc:dt_beta7c",
-        "lc:dt_epsilon6c",
-        "lc:dt_cd_commander",
-        "lc:dt_cd_leader",
-        "lc:dt_cd",
-      ],
-    },
+    // spawn: {
+    //   mode: "whitelist",
+    //   list: [
+    //     "lc:dt_alpha1l",
+    //     "lc:dt_epsilon11c",
+    //     "lc:dt_eta10c",
+    //     "lc:dt_nu7c",
+    //     "lc:dt_beta7c",
+    //     "lc:dt_epsilon6c",
+    //     "lc:dt_cd_commander",
+    //     "lc:dt_cd_leader",
+    //     "lc:dt_cd",
+    //   ],
+    // },
+    // weapon: {
+    //   mode: "whitelist",
+    //   list: ["lc:dt_chara"],
+    // },
   },
 
   // Submenus — permite definir conjuntos de categorías reutilizables
@@ -177,14 +182,32 @@ const config: GuiConfig = {
     advanced: {
       categories: [
         {
+          id: SystemIds.WEAPON,
+          category: `${SYSTEM_DISPLAY_NAMES.weapon}§r`,
+          description: "Cambia el arma equipada de la unidad",
+          entries: WEAPON_OPTIONS.map((opt: SystemOption) => ({
+            label: opt.label,
+            event: opt.eventStart ?? opt.eventStop,
+            description: opt.description,
+          })),
+        },
+        {
           id: SystemIds.SPAWN,
           category: `${SYSTEM_DISPLAY_NAMES.spawn}§r`,
           description: "Activa o detiene el spawn automático de refuerzos",
           entries: (() => {
             const sys = CATALOG_SYSTEMS[SystemIds.SPAWN];
             return [
-              { label: sys.labelTrue!, event: sys.eventTrue!, description: "Activa o detiene el spawn automático de refuerzos" },
-              { label: sys.labelFalse!, event: sys.eventFalse!, description: "Activa o detiene el spawn automático de refuerzos" },
+              {
+                label: sys.labelTrue!,
+                event: sys.eventTrue!,
+                description: "Activa o detiene el spawn automático de refuerzos",
+              },
+              {
+                label: sys.labelFalse!,
+                event: sys.eventFalse!,
+                description: "Activa o detiene el spawn automático de refuerzos",
+              },
             ];
           })(),
         },
@@ -195,8 +218,16 @@ const config: GuiConfig = {
           entries: (() => {
             const sys = CATALOG_SYSTEMS[SystemIds.HEALTH];
             return [
-              { label: sys.labelTrue!, event: sys.eventTrue!, description: "Muestra u oculta la barra de vida de la entidad" },
-              { label: sys.labelFalse!, event: sys.eventFalse!, description: "Muestra u oculta la barra de vida de la entidad" },
+              {
+                label: sys.labelTrue!,
+                event: sys.eventTrue!,
+                description: "Muestra u oculta la barra de vida de la entidad",
+              },
+              {
+                label: sys.labelFalse!,
+                event: sys.eventFalse!,
+                description: "Muestra u oculta la barra de vida de la entidad",
+              },
             ];
           })(),
         },
@@ -216,8 +247,16 @@ const config: GuiConfig = {
           entries: (() => {
             const sys = CATALOG_SYSTEMS[SystemIds.INVINCIBLE];
             return [
-              { label: sys.labelTrue!, event: sys.eventTrue!, description: "Hace que la entidad ignore todo el daño recibido" },
-              { label: sys.labelFalse!, event: sys.eventFalse!, description: "Hace que la entidad ignore todo el daño recibido" },
+              {
+                label: sys.labelTrue!,
+                event: sys.eventTrue!,
+                description: "Hace que la entidad ignore todo el daño recibido",
+              },
+              {
+                label: sys.labelFalse!,
+                event: sys.eventFalse!,
+                description: "Hace que la entidad ignore todo el daño recibido",
+              },
             ];
           })(),
         },

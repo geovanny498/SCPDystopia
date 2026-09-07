@@ -24,11 +24,7 @@ import { tryAutoTame } from "../../commandMenu/core/menu_apply.js";
 import { getGlobalOverwriteLabel } from "../../shared/entityScope.js";
 import type { MenuEntry } from "../config.js";
 import { SYSTEM_SHORT_NAMES } from "../config.js";
-import {
-  DDUIFeedbackEntry,
-  INTERACT_PANEL_FEEDBACK_DEFAULT,
-  formatFeedbackText,
-} from "../../shared/dduiFeedback.js";
+import { DDUIFeedbackEntry, INTERACT_PANEL_FEEDBACK_DEFAULT, formatFeedbackText } from "../../shared/dduiFeedback.js";
 
 /**
  * Presenter local del interactMenu DDUI para feedback visual por jugador +
@@ -176,7 +172,13 @@ export class InteractDDUISession {
     this.factionInfo = getEntityFactionInfo(entity);
     const initialEntry = interactMenuSessionStore.getLastFeedback(playerId, entity.id, "main");
     const initialText = initialEntry ? formatFeedbackText(initialEntry) : INTERACT_PANEL_FEEDBACK_DEFAULT;
-    this.feedbackPresenter = new InteractDDUIFeedbackPresenter(playerId, entity.id, "main", interactMenuSessionStore, initialText);
+    this.feedbackPresenter = new InteractDDUIFeedbackPresenter(
+      playerId,
+      entity.id,
+      "main",
+      interactMenuSessionStore,
+      initialText
+    );
     this.observables = {
       healthText: new ObservableString("§cVida: §a-- / --"),
       systemStateDetailText: new ObservableString(""),
@@ -194,7 +196,13 @@ export class InteractDDUISession {
     this.viewId = viewId;
     const initialEntry = interactMenuSessionStore.getLastFeedback(this.playerId, this.entity.id, viewId);
     const initialText = initialEntry ? formatFeedbackText(initialEntry) : INTERACT_PANEL_FEEDBACK_DEFAULT;
-    this.feedbackPresenter = new InteractDDUIFeedbackPresenter(this.playerId, this.entity.id, viewId, interactMenuSessionStore, initialText);
+    this.feedbackPresenter = new InteractDDUIFeedbackPresenter(
+      this.playerId,
+      this.entity.id,
+      viewId,
+      interactMenuSessionStore,
+      initialText
+    );
     this.observables.actionResultText = this.feedbackPresenter.getObservable();
   }
 
@@ -551,12 +559,7 @@ export interface InteractMenuSessionStore {
    * @param viewId Identificador de la vista.
    * @param entry Entry a almacenar.
    */
-  setLastFeedback(
-    playerId: string,
-    entityId: string,
-    viewId: string,
-    entry: DDUIFeedbackEntry
-  ): void;
+  setLastFeedback(playerId: string, entityId: string, viewId: string, entry: DDUIFeedbackEntry): void;
   /**
    * Elimina todo el feedback asociado a un jugador. Se invoca en
    * `playerLeave` para limpiar el scope per-jugador.
@@ -591,12 +594,7 @@ export interface InteractMenuSessionStore {
    * @param viewId Identificador de la vista.
    * @param text Texto a almacenar.
    */
-  setLastFeedbackText(
-    playerId: string,
-    entityId: string,
-    viewId: string,
-    text: string
-  ): void;
+  setLastFeedbackText(playerId: string, entityId: string, viewId: string, text: string): void;
   /**
    * Devuelve el historial reciente de cambios aplicados a la entidad.
    * @param entityId Identificador de la entidad.
@@ -707,12 +705,7 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
     if (!entityMap) return null;
     return entityMap.get(entityId)?.[viewId] ?? null;
   },
-  setLastFeedback(
-    playerId: string,
-    entityId: string,
-    viewId: string,
-    entry: DDUIFeedbackEntry
-  ): void {
+  setLastFeedback(playerId: string, entityId: string, viewId: string, entry: DDUIFeedbackEntry): void {
     let playerMap = lastFeedback.get(playerId);
     if (!playerMap) {
       playerMap = new Map();
@@ -744,12 +737,7 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
     if (entry) return formatFeedbackText(entry);
     return INTERACT_PANEL_FEEDBACK_DEFAULT;
   },
-  setLastFeedbackText(
-    playerId: string,
-    entityId: string,
-    viewId: string,
-    text: string
-  ): void {
+  setLastFeedbackText(playerId: string, entityId: string, viewId: string, text: string): void {
     // Compatibilidad hacia atrás: se mantiene la firma legacy que recibe un
     // texto formateado. Internamente se descompone para almacenar la entry.
     this.setLastFeedback(playerId, entityId, viewId, {
@@ -807,7 +795,9 @@ export function refreshStatus(
   if (systemStatuses.length) {
     systemStateLines.push("§7Configuración de la entidad:");
     for (const status of systemStatuses) {
-      systemStateLines.push(`§7- §6${status.displayName}§r: ${status.label}`);
+      const shortName = SYSTEM_SHORT_NAMES[status.systemId] || status.displayName;
+
+      systemStateLines.push(`§7- §6${shortName}§r: ${status.label}`);
     }
   } else {
     systemStateLines.push("§7No hay sistemas configurados para esta unidad.");

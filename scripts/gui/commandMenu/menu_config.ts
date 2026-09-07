@@ -148,8 +148,6 @@ export const UnitHierarchyLabels = HIERARCHY_LABELS;
 
 export { NAMETAG_FAMILY_MAP, getFamilyTagLabel, getFamilyTagOrder };
 
-
-
 // ── Re-exportar scanner ─────────────────────────────────────────────────────
 
 export {
@@ -224,6 +222,7 @@ function mapSystemToLegacy(sys: CatalogSystem): MenuSystem {
 export const systems: MenuSystems = {
   movement: mapSystemToLegacy(CATALOG_SYSTEMS.movement),
   fire: mapSystemToLegacy(CATALOG_SYSTEMS.fire),
+  weapon: mapSystemToLegacy(CATALOG_SYSTEMS.weapon),
   teleport: mapSystemToLegacy(CATALOG_SYSTEMS.teleport),
   spawn: mapSystemToLegacy(CATALOG_SYSTEMS.spawn),
   health: mapSystemToLegacy(CATALOG_SYSTEMS.health),
@@ -309,11 +308,7 @@ export function setEntitySystemState(entity: Entity, systemId: string, value: un
     if (normalized === undefined) return;
     entity.setDynamicProperty(propertyId, normalized);
   } catch (err) {
-    debugWarn(
-      "menu_config",
-      `Error al guardar propiedad dinámica en entidad (${propertyId}): ${err}`,
-      "red"
-    );
+    debugWarn("menu_config", `Error al guardar propiedad dinámica en entidad (${propertyId}): ${err}`, "red");
   }
 }
 
@@ -331,11 +326,7 @@ export function getEntitySystemState(entity: Entity, systemId: string) {
     }
     return raw;
   } catch (err) {
-    debugWarn(
-      "menu_config",
-      `Error al leer propiedad dinámica de entidad (${propertyId}): ${err}`,
-      "red"
-    );
+    debugWarn("menu_config", `Error al leer propiedad dinámica de entidad (${propertyId}): ${err}`, "red");
     return undefined;
   }
 }

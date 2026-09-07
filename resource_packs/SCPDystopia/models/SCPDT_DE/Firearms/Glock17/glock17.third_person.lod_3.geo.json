@@ -1,0 +1,236 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.scpdt_de.firearm.glock17.third_person.lod_3",
+				"texture_width": 512,
+				"texture_height": 256,
+				"visible_bounds_width": 4,
+				"visible_bounds_height": 4,
+				"visible_bounds_offset": [0, 1, 0]
+			},
+			"bones": [
+				{
+					"name": "root",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "waist",
+					"parent": "root",
+					"pivot": [0, 12, 0]
+				},
+				{
+					"name": "body",
+					"parent": "waist",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "leftarm",
+					"parent": "body",
+					"pivot": [5, 22, 0]
+				},
+				{
+					"name": "leftItem",
+					"parent": "leftarm",
+					"pivot": [6, 15, 1]
+				},
+				{
+					"name": "rightArm",
+					"parent": "body",
+					"pivot": [-5, 22, 0]
+				},
+				{
+					"name": "rightItem",
+					"parent": "rightArm",
+					"pivot": [-6, 15, 1]
+				},
+				{
+					"name": "rightArm_itemGroup",
+					"parent": "rightItem",
+					"pivot": [-6, 15, 1]
+				},
+				{
+					"name": "Glock17_ra",
+					"parent": "rightArm_itemGroup",
+					"pivot": [-5, 17, 2],
+					"rotation": [90, 0, 0]
+				},
+				{
+					"name": "_ammoej",
+					"parent": "Glock17_ra",
+					"pivot": [-5, 21.875, 2.075]
+				},
+				{
+					"name": "_slide",
+					"parent": "Glock17_ra",
+					"pivot": [-5, 21.9, 2],
+					"cubes": [
+						{
+							"origin": [-5.7, 21.5, 1.1],
+							"size": [1.4, 1.2, 2.2],
+							"uv": {
+								"north": {"uv": [360, 88], "uv_size": [11, 10]},
+								"east": {"uv": [328, 80], "uv_size": [18, 10]},
+								"south": {"uv": [360, 104], "uv_size": [11, 10]},
+								"west": {"uv": [344, 0], "uv_size": [18, 10]},
+								"up": {"uv": [336, 48], "uv_size": [11, 18]},
+								"down": {"uv": [312, 98], "uv_size": [11, -18]}
+							}
+						},
+						{
+							"origin": [-5.7, 21.5, -3.5],
+							"size": [1.4, 1.2, 3.3],
+							"uv": {
+								"north": {"uv": [368, 0], "uv_size": [11, 10]},
+								"east": {"uv": [320, 32], "uv_size": [26, 10]},
+								"south": {"uv": [368, 16], "uv_size": [11, 10]},
+								"west": {"uv": [304, 64], "uv_size": [26, 10]},
+								"up": {"uv": [304, 0], "uv_size": [11, 26]},
+								"down": {"uv": [304, 58], "uv_size": [11, -26]}
+							}
+						}
+					]
+				},
+				{
+					"name": "_rearSight",
+					"parent": "_slide",
+					"pivot": [-5, 22.8, 2.8]
+				},
+				{
+					"name": "_frontSight",
+					"parent": "_slide",
+					"pivot": [-5, 22.8, -3.2]
+				},
+				{
+					"name": "_receiver",
+					"parent": "Glock17_ra",
+					"pivot": [-5, 20.9, 1],
+					"cubes": [
+						{
+							"origin": [-5.3, 21.8, -1.84],
+							"size": [0.6, 0.6, 1.9],
+							"inflate": 0.03,
+							"uv": {
+								"north": {"uv": [392, 128], "uv_size": [5, 5]},
+								"east": {"uv": [272, 120], "uv_size": [15, 5]},
+								"south": {"uv": [256, 144], "uv_size": [5, 5]},
+								"west": {"uv": [376, 72], "uv_size": [15, 5]},
+								"up": {"uv": [312, 120], "uv_size": [5, 15]},
+								"down": {"uv": [376, 103], "uv_size": [5, -15]}
+							}
+						},
+						{
+							"origin": [-5.5, 21.65, -0.2],
+							"size": [1, 1, 1.3],
+							"uv": {
+								"north": {"uv": [352, 88], "uv_size": [8, 8]},
+								"east": {"uv": [368, 64], "uv_size": [10, 8]},
+								"south": {"uv": [320, 104], "uv_size": [8, 8]},
+								"west": {"uv": [256, 120], "uv_size": [10, 8]},
+								"up": {"uv": [304, 112], "uv_size": [8, 10]},
+								"down": {"uv": [352, 122], "uv_size": [8, -10]}
+							}
+						},
+						{
+							"origin": [-4.7, 21.4, 0.9],
+							"size": [0.2, 0.4, 1.7],
+							"uv": {
+								"north": {"uv": [424, 96], "uv_size": [2, 3]},
+								"east": {"uv": [384, 40], "uv_size": [14, 3]},
+								"south": {"uv": [360, 168], "uv_size": [2, 3]},
+								"west": {"uv": [384, 48], "uv_size": [14, 3]},
+								"up": {"uv": [296, 136], "uv_size": [2, 14]},
+								"down": {"uv": [304, 150], "uv_size": [2, -14]}
+							}
+						},
+						{
+							"origin": [-5.65, 21, -1.3],
+							"size": [1.3, 0.5, 4.3],
+							"uv": {
+								"north": {"uv": [384, 64], "uv_size": [10, 4]},
+								"east": {"uv": [336, 72], "uv_size": [34, 4]},
+								"south": {"uv": [336, 128], "uv_size": [10, 4]},
+								"west": {"uv": [352, 80], "uv_size": [34, 4]},
+								"up": {"uv": [272, 32], "uv_size": [10, 34]},
+								"down": {"uv": [288, 66], "uv_size": [10, -34]}
+							}
+						}
+					]
+				},
+				{
+					"name": "_muzzletilt",
+					"parent": "_receiver",
+					"pivot": [-5, 21.8, -1.875]
+				},
+				{
+					"name": "_trigger",
+					"parent": "Glock17_ra",
+					"pivot": [-5, 21.1, 0.4],
+					"rotation": [-5, 0, 0]
+				},
+				{
+					"name": "_grip",
+					"parent": "Glock17_ra",
+					"pivot": [-5, 21, 0.9],
+					"rotation": [12, 0, 0],
+					"cubes": [
+						{
+							"origin": [-5.6, 17.5, 0.9],
+							"size": [1.2, 3.5, 1.9],
+							"uv": {
+								"north": {"uv": [256, 64], "uv_size": [10, 28]},
+								"east": {"uv": [256, 0], "uv_size": [15, 28]},
+								"south": {"uv": [320, 0], "uv_size": [10, 28]},
+								"west": {"uv": [272, 0], "uv_size": [15, 28]},
+								"up": {"uv": [320, 48], "uv_size": [10, 15]},
+								"down": {"uv": [352, 55], "uv_size": [10, -15]}
+							}
+						}
+					]
+				},
+				{
+					"name": "_e",
+					"parent": "_grip",
+					"pivot": [-4.4, 19.9, 1.2]
+				},
+				{
+					"name": "_mag",
+					"parent": "Glock17_ra",
+					"pivot": [-5, 18, 2]
+				},
+				{
+					"name": "_ammomag",
+					"parent": "_mag",
+					"pivot": [-5, 21.275, 2.15],
+					"rotation": [13, 0, 0]
+				},
+				{
+					"name": "_slidestop",
+					"parent": "Glock17_ra",
+					"pivot": [-5, 21.2625, 1.1625]
+				},
+				{
+					"name": "head",
+					"parent": "body",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "head_itemGroup",
+					"parent": "head",
+					"pivot": [0, 24, 0]
+				},
+				{
+					"name": "leftLeg",
+					"parent": "root",
+					"pivot": [1.9, 12, 0]
+				},
+				{
+					"name": "rightLeg",
+					"parent": "root",
+					"pivot": [-1.9, 12, 0]
+				}
+			]
+		}
+	]
+}

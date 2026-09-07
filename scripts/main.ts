@@ -1,16 +1,10 @@
 // main.ts
 import { world, system, Entity } from "@minecraft/server";
 import { getTeam } from "./utils/teams.js";
-import { projectileConfig } from "./utils/projectileConfig.js";
+import { projectileConfig, type ProjectileConfigEntry } from "./utils/projectileConfig.js";
 import { applyDamageAndCfg } from "./utils/damage.js";
 import { debugMessage, debugWarn } from "./utils/debug.js";
 import { interactMenuSessionStore } from "./gui/interactMenu/ddui/interact_ddui_shared.js";
-
-interface ProjectileConfigEntry {
-  damage: number;
-  knockback: number;
-  pierce: number;
-}
 
 const projectilePierceMap = new WeakMap<Entity, number>();
 
@@ -48,7 +42,11 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
 
   try {
     if (cfg.pierce === Infinity) {
-      debugWarn("projectileHitEntity", `Pierce es Infinity. Solo aplicamos daño y knockback.`, "green");
+      debugWarn(
+        "projectileHitEntity",
+        `Projectile: ${projectile.typeId}. Pierce es Infinity. Solo aplicamos daño y knockback.`,
+        "green"
+      );
       applyDamageAndCfg(projectile, target, cfg, shooter);
       return;
     }
@@ -56,12 +54,20 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
     let pierced = projectilePierceMap.get(projectile) ?? 0;
     const pierceLimit = cfg.pierce ?? 1;
     if (pierced >= pierceLimit) {
-      debugWarn("projectileHitEntity", `Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`, "cyan");
+      debugWarn(
+        "projectileHitEntity",
+        `Projectile: ${projectile.typeId}. Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`,
+        "cyan"
+      );
       debugWarn("projectileHitEntity", "Límite de pierce alcanzado. Eliminando proyectil.", "cyan");
       return;
     }
 
-    debugWarn("projectileHitEntity", `Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`, "green");
+    debugWarn(
+      "projectileHitEntity",
+      `Projectile: ${projectile.typeId}. Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`,
+      "green"
+    );
     applyDamageAndCfg(projectile, target, cfg, shooter);
 
     projectilePierceMap.set(projectile, pierced + 1);
@@ -74,14 +80,24 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
 // Si acepta EntityDamageCause.override
 world.afterEvents.entityDie.subscribe((event) => {
   const deadEntity = event.deadEntity;
-  const damageSource = event.damageSource;
+  const cause = event.damageSource.cause;
   const deadEntityId = deadEntity.id;
   const entityType = deadEntity.typeId;
-  debugWarn("entityDie", `Entidad eliminada: ${entityType} por: ${damageSource}`, "magenta");
+  debugWarn("entityDie", `Entidad eliminada: ${entityType} por: ${cause}`, "magenta");
   try {
     interactMenuSessionStore.clearEntityFeedbackForAll(deadEntityId);
   } catch (e) {
     debugWarn("entityDie", `Error limpiando interactMenu feedback: ${e}`, "red");
   }
   interactMenuSessionStore.cleanupByEntity(deadEntityId);
+});
+
+world.afterEvents.entitySpawn.subscribe((event) => {
+  const entity = event.entity;
+  const cfg = (projectileConfig as Record<string, ProjectileConfigEntry>)[entity.typeId];
+  if (!cfg?.sound) {
+    return;
+  }
+  entity.dimension.playSound(cfg.sound, entity.location);
+  debugWarn("projectileSound", `Projectile: ${entity.typeId}. Sound: ${cfg.sound}`, "blue");
 });

@@ -1,0 +1,31 @@
+{
+  "format_version": "1.8.0",
+  "animations": {
+    "animation.item.firearm.size": {
+      "loop": true,
+      "bones": {
+        "scar2": {
+          "scale": 0.7
+        },
+        "m4a1_2": {
+          "scale": 0.9
+        },
+        "HK416D_ra": {
+          "scale": 0.9
+        },
+        "MP7_RA": {
+          "scale": 0.8
+        },
+        "mp5_ra": {
+          "scale": 0.8
+        },
+        "dystopia_rifle_ra": {
+          "scale": 0.8
+        },
+        "suscharger2": {
+          "scale": 0.8
+        }
+      }
+    }
+  }
+}

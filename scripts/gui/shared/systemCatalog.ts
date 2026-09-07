@@ -25,6 +25,7 @@ import type { RoleId } from "./playerPermissionManager.js";
 export const SystemIds = {
   MOVEMENT: "movement",
   FIRE: "fire",
+  WEAPON: "weapon",
   SPAWN: "spawn",
   HEALTH: "health",
   TELEPORT: "teleport",
@@ -195,6 +196,75 @@ export const TELEPORT_OPTIONS: SystemOption[] = [
   },
 ];
 
+export const WEAPON_OPTIONS: SystemOption[] = [
+  {
+    value: "none",
+    label: "Ninguna",
+    description: "",
+    eventStart: "humanoid:remove_weapon",
+  },
+  {
+    value: "hk416",
+    label: "§9HK416",
+    description: "Fusil de asalto moderno.",
+    eventStart: "humanoid:give_hk416",
+  },
+  {
+    value: "m4a1",
+    label: "§1M4A1",
+    description: "Fusil de asalto versátil.",
+    eventStart: "humanoid:give_m4a1",
+  },
+  {
+    value: "scar",
+    label: "§6Scar-H",
+    description: "Fusil de combate robusto.",
+    eventStart: "humanoid:give_scar",
+  },
+  {
+    value: "ak47",
+    label: "§fAK-47",
+    description: "Fusil de asalto estándar.",
+    eventStart: "humanoid:give_ak47",
+  },
+  {
+    value: "m16",
+    label: "§bM16",
+    description: "Fusil de combate clásico.",
+    eventStart: "humanoid:give_m16",
+  },
+  {
+    value: "p90",
+    label: "§6P90",
+    description: "Subfusil bullpup.",
+    eventStart: "humanoid:give_p90",
+  },
+  {
+    value: "mp7",
+    label: "§bMP7",
+    description: "Subfusil táctica.",
+    eventStart: "humanoid:give_mp7",
+  },
+  {
+    value: "mp5a3",
+    label: "§7MP5A3",
+    description: "Subfusil compacto.",
+    eventStart: "humanoid:give_mp5a3",
+  },
+  {
+    value: "dystopia_rifle",
+    label: "§dDystopia Rifle",
+    description: "Sniper experimental.",
+    eventStart: "humanoid:give_dystopia_rifle",
+  },
+  {
+    value: "suscharger",
+    label: "§5Suscharger",
+    description: "Arma especial.",
+    eventStart: "humanoid:give_suscharger",
+  },
+];
+
 // ── Catálogo de sistemas ────────────────────────────────────────────────────
 
 export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
@@ -269,6 +339,43 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
         [SpecialGroups.GROUP_C]: "intermediate",
         [SpecialGroups.GROUP_D]: "intermediate",
         [SpecialGroups.NO_GROUP]: "intermediate",
+      },
+    },
+  },
+  weapon: {
+    id: SystemIds.WEAPON,
+    displayName: "§6Arma equipada",
+    controlType: "dropdown",
+    options: WEAPON_OPTIONS,
+    description: "",
+    category: CategoryIds.ADVANCED,
+    dynamicProperty: "scpd_system_weapon",
+    tooltip:
+      "§7Cambia el arma equipada de la unidad.\n\nArmas disponibles:\n- §7MP5A3\n§7- §fAK-47\n§7- §8Dystopia Rifle\n§7- §aHK416\n§7- §eM4A1\n§7- §bM16\n§7- §dMP7\n§7- §6P90\n§7- §cScar-H\n§7- §5Suscharger",
+    supportsSpecials: true,
+    supportsHierarchy: true,
+    supportsGroups: true,
+    minRole: RoleIds.MEMBER,
+    defaults: {
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: "none",
+        [UnitHierarchy.LEADER]: "none",
+        [UnitHierarchy.COMMANDER]: "none",
+        [SpecialGroups.GROUP_A]: "none",
+        [SpecialGroups.GROUP_B]: "none",
+        [SpecialGroups.GROUP_C]: "none",
+        [SpecialGroups.GROUP_D]: "none",
+        [SpecialGroups.NO_GROUP]: "none",
+      },
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: "none",
+        [UnitHierarchy.LEADER]: "none",
+        [UnitHierarchy.COMMANDER]: "none",
+        [SpecialGroups.GROUP_A]: "none",
+        [SpecialGroups.GROUP_B]: "none",
+        [SpecialGroups.GROUP_C]: "none",
+        [SpecialGroups.GROUP_D]: "none",
+        [SpecialGroups.NO_GROUP]: "none",
       },
     },
   },
@@ -492,6 +599,7 @@ export const CATALOG_CATEGORIES: Record<CategoryId, CatalogCategory> = {
 export const SYSTEM_SHORT_NAMES: Record<string, string> = {
   movement: "§1Movimiento§r",
   fire: "§cIniciativa§r",
+  weapon: "§6Arma§r",
   spawn: "§bRefuerzos§r",
   health: "§cBarra de vida§r",
   teleport: "§2Teletransporte§r",
@@ -505,6 +613,7 @@ export const SYSTEM_SHORT_NAMES: Record<string, string> = {
 export const SYSTEM_DISPLAY_NAMES: Record<SystemId, string> = {
   movement: "§1Movimiento / Patrulla",
   fire: "§cIniciativa de Combate",
+  weapon: "§6Arma equipada",
   spawn: "§bTraer refuerzos",
   health: "§cBarra de vida",
   teleport: "§2Teletransporte",
@@ -523,6 +632,7 @@ export const SYSTEM_DISPLAY_NAMES: Record<SystemId, string> = {
 export const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
   movement: "§1Movimiento / Patrulla",
   fire: "§cIniciativa de Combate",
+  weapon: "§6Arma equipada",
   advanced: "§6Configuración avanzada",
   advanced_menu: "§6Más sistemas",
 };
@@ -686,6 +796,7 @@ export const MAIN_PANEL_BUTTONS = {
 };
 
 export const ADVANCED_PANEL_BUTTONS = {
+  weapon: "§6Arma equipada",
   spawn: "§bTraer refuerzos",
   health: "§cBarra de vida",
   teleport: "§2Teletransporte",

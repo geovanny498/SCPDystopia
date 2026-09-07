@@ -10,7 +10,7 @@
         "default": "textures/entity/humanoid/Normal/nu7_1"
       },
       "geometry": {
-        "default": "geometry.dt_nu7"
+        "default": "geometry.humanoid.base"
       },
       "animations": {
         "death": "animation.dt_misc.dead_body.death2",
@@ -28,7 +28,8 @@
       "spawn_egg": {
         "base_color": "#F5A30B",
         "overlay_color": "#5A3E18"
-      }
+      },
+      "enable_attachables": true
     }
   }
 }

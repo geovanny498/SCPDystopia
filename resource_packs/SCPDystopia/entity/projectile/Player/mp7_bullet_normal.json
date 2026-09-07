@@ -3,7 +3,7 @@
   "format_version": "1.10.0",
   "minecraft:client_entity": {
     "description": {
-      "identifier": "lc:dt_mp7_bullet_player_normal",
+      "identifier": "lc:dt_mp5a3_bullet_player_normal",
       "materials": {
         "default": "arrow"
       },

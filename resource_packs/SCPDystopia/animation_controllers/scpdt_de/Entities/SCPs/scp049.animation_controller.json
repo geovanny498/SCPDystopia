@@ -1,0 +1,17 @@
+// CC-BY-SA 3.0
+{
+	"format_version": "1.10.0",
+	"animation_controllers": {
+		"controller.animation.scpdt_de.scp049": {
+			"initial_state": "default",
+			"states": {
+				"default": {
+					"animations": [
+						"general",
+						"movement"
+					]
+				}
+			}
+		}
+	}
+}

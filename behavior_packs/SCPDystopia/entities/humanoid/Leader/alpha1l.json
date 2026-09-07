@@ -1,3 +1,9 @@
+// behavior_packs\SCPDystopia\entities\humanoid\Commanders\chara.json
+// CC-BY-SA 3.0
+//
+// Mark Variant 0 = Normal (Combat), Include: Gun Melee
+// Mark Variant 1 = Melee, No Weapon
+//
 {
   "format_version": "1.26.20",
   "minecraft:entity": {
@@ -7,11 +13,197 @@
       "is_summonable": true,
       "is_experimental": false,
       "scripts": {
-        "animate": []
+        "animate": [
+          // "controller_retreat",
+          "controller_firearm_combat"
+        ]
       },
-      "animations": {}
+      "animations": {
+        // "controller_retreat": "controller.animation.scpdt_de.humanoid.low_health_retreat",
+        "controller_firearm_combat": "controller.animation.scpdt_de.humanoid.firearm_combat"
+      }
     },
     "component_groups": {
+      "firearm_combat:ranged_weapon:hk416": {
+        "minecraft:shooter": {
+          "def": "lc:dt_hk416_bullet_player_normal"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 50,
+          "burst_interval": 0.13,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 1.0,
+          "attack_interval_min": 1.0,
+          "attack_interval_max": 1.0,
+          "attack_radius": 55.0,
+          "speed_multiplier": 1.0
+        }
+      },
+      "firearm_combat:ranged_weapon:m4a1": {
+        "minecraft:shooter": {
+          "def": "lc:dt_m4a1_bullet_player"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 50,
+          "burst_interval": 0.13,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 1.0,
+          "attack_interval_min": 1.0,
+          "attack_interval_max": 1.0,
+          "attack_radius": 55.0,
+          "speed_multiplier": 1.0
+        }
+      },
+      "firearm_combat:ranged_weapon:scar": {
+        "minecraft:shooter": {
+          "def": "lc:dt_scar_bullet_player"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 40,
+          "burst_interval": 0.13,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 1.0,
+          "attack_interval_min": 1.0,
+          "attack_interval_max": 1.0,
+          "attack_radius": 55.0,
+          "speed_multiplier": 1.0
+        }
+      },
+      "firearm_combat:ranged_weapon:ak47": {
+        "minecraft:shooter": {
+          "def": "lc:dt_ak47_bullet_player_normal"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 40,
+          "burst_interval": 0.14,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 1.0,
+          "attack_interval_min": 1.0,
+          "attack_interval_max": 1.0,
+          "attack_radius": 55.0,
+          "speed_multiplier": 1.0
+        }
+      },
+      "firearm_combat:ranged_weapon:m16": {
+        "minecraft:shooter": {
+          "def": "lc:dt_m16_bullet_player"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 40,
+          "burst_interval": 0.14,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 1.0,
+          "attack_interval_min": 1.0,
+          "attack_interval_max": 1.0,
+          "attack_radius": 45.0,
+          "speed_multiplier": 1.0
+        }
+      },
+      "firearm_combat:ranged_weapon:p90": {
+        "minecraft:shooter": {
+          "def": "lc:dt_p90_bullet_player_normal"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 50,
+          "burst_interval": 0.13,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 1.0,
+          "attack_interval_min": 1.0,
+          "attack_interval_max": 1.0,
+          "attack_radius": 45.0,
+          "speed_multiplier": 1.0
+        }
+      },
+      "firearm_combat:ranged_weapon:mp7": {
+        "minecraft:shooter": {
+          "def": "lc:dt_mp7_bullet_player_normal"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 40,
+          "burst_interval": 0.14,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 1.0,
+          "attack_interval_min": 1.0,
+          "attack_interval_max": 1.0,
+          "attack_radius": 35.0,
+          "speed_multiplier": 1.0
+        }
+      },
+      "firearm_combat:ranged_weapon:mp5a3": {
+        "minecraft:shooter": {
+          "def": "lc:dt_mp5a3_bullet_player_normal"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 40,
+          "burst_interval": 0.14,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 1.0,
+          "attack_interval_min": 1.0,
+          "attack_interval_max": 1.0,
+          "attack_radius": 35.0,
+          "speed_multiplier": 1.0
+        }
+      },
+      "firearm_combat:ranged_weapon:dtrifle": {
+        "minecraft:shooter": {
+          "def": "lc:dt_dtrifle_bullet_player_sneak"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 30,
+          "burst_interval": 3.25,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 2.5,
+          "attack_interval_min": 2.5,
+          "attack_interval_max": 2.5,
+          "attack_radius": 128.0,
+          "speed_multiplier": 1.0
+        }
+      },
+      "firearm_combat:ranged_weapon:suscharger": {
+        "minecraft:shooter": {
+          "def": "lc:dt_suscharger_shot_player_sneak"
+        },
+        "minecraft:behavior.ranged_attack": {
+          "attack_radius_min": 4,
+          "priority": 5,
+          "target_in_sight_time": 0.3,
+          "burst_shots": 30,
+          "burst_interval": 3.25,
+          "charge_charged_trigger": 0.0,
+          "charge_shoot_trigger": 2.5,
+          "attack_interval_min": 2.5,
+          "attack_interval_max": 2.5,
+          "attack_radius": 55.0,
+          "speed_multiplier": 1.0
+        }
+      },
       "zombie": {
         "minecraft:transformation": {
           "into": "lc:dt_mtf_scp049_2<scp049_2:hammerdown>"
@@ -90,40 +282,25 @@
           "always_show": true
         }
       },
-      "minecraft:mode_switcher": {
+      "firearm_combat:switcher": {
+        "minecraft:mark_variant": {
+          "value": 0
+        },
         "minecraft:target_nearby_sensor": {
           "inside_range": 3.0,
           "outside_range": 3.5,
           "must_see": true,
           "on_inside_range": {
-            "event": "minecraft:to_melee_attack",
+            "event": "humanoid:firearm_combat:switch_to_melee",
             "target": "self"
           },
           "on_outside_range": {
-            "event": "minecraft:to_ranged_attack",
+            "event": "humanoid:firearm_combat:switch_to_ranged",
             "target": "self"
           }
         }
       },
-      "minecraft:ranged_attack": {
-        "minecraft:shooter": {
-          "def": "lc:dt_m4a1_bullet_player"
-        },
-        "minecraft:behavior.ranged_attack": {
-          "attack_radius_min": 4,
-          "priority": 5,
-          "target_in_sight_time": 0.3,
-          "burst_shots": 50,
-          "burst_interval": 0.13,
-          "charge_charged_trigger": 0.0,
-          "charge_shoot_trigger": 1.0,
-          "attack_interval_min": 1.0,
-          "attack_interval_max": 1.0,
-          "attack_radius": 55.0,
-          "speed_multiplier": 1.0
-        }
-      },
-      "minecraft:melee_attack": {
+      "firearm_combat:gun_melee": {
         "minecraft:behavior.leap_at_target": {
           "priority": 4,
           "must_be_on_ground": false,
@@ -747,6 +924,30 @@
           "into": "lc:dt_nu7_dead<nu7>"
         }
       },
+      "humanoid:melee_no_firearm": {
+        "minecraft:mark_variant": {
+          "value": 1
+        },
+        "minecraft:behavior.leap_at_target": {
+          "priority": 4,
+          "must_be_on_ground": false,
+          "yd": 0.33
+        },
+        "minecraft:behavior.delayed_attack": {
+          "priority": 4,
+          "attack_once": false,
+          "track_target": true,
+          "require_complete_path": false,
+          "random_stop_interval": 0,
+          "reach_multiplier": 5,
+          "speed_multiplier": 1.16,
+          "attack_duration": 0.05,
+          "hit_delay_pct": 0.45
+        },
+        "minecraft:attack": {
+          "damage": 16
+        }
+      },
       "humanoid:show_health": {
         "minecraft:boss": {
           "should_darken_sky": false,
@@ -834,6 +1035,61 @@
             "mtf",
             "villager"
           ]
+        }
+      },
+      "humanoid:change_weapons": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/chara.json"
+        }
+      },
+      "humanoid:give_mp5a3": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/mp5a3.json"
+        }
+      },
+      "humanoid:give_ak47": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/ak47.json"
+        }
+      },
+      "humanoid:give_dystopia_rifle": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/dystopia_rifle.json"
+        }
+      },
+      "humanoid:give_hk416": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/hk416.json"
+        }
+      },
+      "humanoid:give_m4a1": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/m4a1.json"
+        }
+      },
+      "humanoid:give_m16": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/m16.json"
+        }
+      },
+      "humanoid:give_mp7": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/mp7.json"
+        }
+      },
+      "humanoid:give_p90": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/p90.json"
+        }
+      },
+      "humanoid:give_scar": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/scar.json"
+        }
+      },
+      "humanoid:give_suscharger": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/Guns/suscharger.json"
         }
       }
     },
@@ -1019,6 +1275,9 @@
       "minecraft:behavior.float": {
         "priority": 0
       },
+      "minecraft:equipment": {
+        "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/alpha1.json"
+      },
       "minecraft:attack": {
         "damage": 16
       },
@@ -1109,8 +1368,6 @@
           {
             "add": {
               "component_groups": [
-                "minecraft:mode_switcher",
-                "minecraft:ranged_attack",
                 "start_move",
                 "calm",
                 "humanoid:stealth_off",
@@ -1120,22 +1377,226 @@
           }
         ]
       },
-      "minecraft:to_melee_attack": {
-        "remove": {
-          "component_groups": ["minecraft:ranged_attack"]
-        },
+      "humanoid:firearm_combat:equip_gun:hk416": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:hk416"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equip_gun:m4a1": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:m4a1"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equip_gun:suscharger": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:suscharger"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equip_gun:m16": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:m16"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equip_gun:scar": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:scar"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equip_gun:dtrifle": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:dtrifle"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equip_gun:ak47": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:ak47"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equip_gun:mp7": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:mp7"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equip_gun:mp5a3": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:mp5a3"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equip_gun:p90": {
+        "sequence": [
+          {
+            "trigger": "humanoid:firearm_combat:equipped_gun"
+          },
+          {
+            "add": {
+              "component_groups": ["firearm_combat:ranged_weapon:p90"]
+            }
+          }
+        ]
+      },
+      "humanoid:firearm_combat:equipped_gun": {
         "add": {
-          "component_groups": ["minecraft:melee_attack"]
+          "component_groups": ["firearm_combat:switcher"]
+        },
+        "remove": {
+          "component_groups": ["humanoid:melee_no_firearm"]
         }
       },
-      "minecraft:to_ranged_attack": {
-        "remove": {
-          "component_groups": ["minecraft:melee_attack"]
-        },
+      "humanoid:firearm_combat:switch_to_melee": {
         "add": {
-          "component_groups": ["minecraft:ranged_attack"]
+          "component_groups": ["firearm_combat:gun_melee"]
         }
       },
+      "humanoid:firearm_combat:switch_to_ranged": {
+        "remove": {
+          "component_groups": ["firearm_combat:gun_melee"]
+        }
+      },
+      "humanoid:firearm_combat:lost_weapon": {
+        "add": {
+          "component_groups": ["humanoid:melee_no_firearm"]
+        },
+        "remove": {
+          "component_groups": [
+            "firearm_combat:switcher",
+            "firearm_combat:ranged_weapon:hk416",
+            "firearm_combat:ranged_weapon:m4a1",
+            "firearm_combat:ranged_weapon:scar",
+            "firearm_combat:ranged_weapon:suscharger",
+            "firearm_combat:ranged_weapon:m16",
+            "firearm_combat:ranged_weapon:dtrifle",
+            "firearm_combat:ranged_weapon:ak47",
+            "firearm_combat:ranged_weapon:mp7",
+            "firearm_combat:ranged_weapon:mp5a3",
+            "firearm_combat:ranged_weapon:p90",
+            "firearm_combat:gun_melee"
+          ]
+        }
+      },
+      "humanoid:remove_weapon": {
+        "queue_command": {
+          "command": ["replaceitem entity @s slot.weapon.mainhand 0 air"]
+        }
+      },
+      "humanoid:change_weapons": {
+        "add": {
+          "component_groups": ["humanoid:change_weapons"]
+        }
+      },
+      "humanoid:give_mp5a3": {
+        "add": {
+          "component_groups": ["humanoid:give_mp5a3"]
+        }
+      },
+      "humanoid:give_ak47": {
+        "add": {
+          "component_groups": ["humanoid:give_ak47"]
+        }
+      },
+      "humanoid:give_dystopia_rifle": {
+        "add": {
+          "component_groups": ["humanoid:give_dystopia_rifle"]
+        }
+      },
+      "humanoid:give_hk416": {
+        "add": {
+          "component_groups": ["humanoid:give_hk416"]
+        }
+      },
+      "humanoid:give_m4a1": {
+        "add": {
+          "component_groups": ["humanoid:give_m4a1"]
+        }
+      },
+      "humanoid:give_m16": {
+        "add": {
+          "component_groups": ["humanoid:give_m16"]
+        }
+      },
+      "humanoid:give_mp7": {
+        "add": {
+          "component_groups": ["humanoid:give_mp7"]
+        }
+      },
+      "humanoid:give_p90": {
+        "add": {
+          "component_groups": ["humanoid:give_p90"]
+        }
+      },
+      "humanoid:give_scar": {
+        "add": {
+          "component_groups": ["humanoid:give_scar"]
+        }
+      },
+      "humanoid:give_suscharger": {
+        "add": {
+          "component_groups": ["humanoid:give_suscharger"]
+        }
+      },
+
       "start_variant0": {
         "add": {
           "component_groups": ["variant0"]

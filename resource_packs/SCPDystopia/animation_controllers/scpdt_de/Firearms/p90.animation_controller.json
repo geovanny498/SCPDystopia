@@ -1,0 +1,170 @@
+// CC-BY-SA 3.0
+{
+  "format_version": "1.10.0",
+  "animation_controllers": {
+    "controller.animation.scpdt_de.firearm.p90": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            {
+              "pick": "q.cooldown_time_remaining('scpdt_de_p90_reloading') == 0.0"
+            },
+            {
+              "hold_normal": "q.cooldown_time_remaining('scpdt_de_p90_reloading') != 0.0 || q.equipped_item_any_tag('slot.weapon.mainhand', 'lc:ak_empty')"
+            }
+          ]
+        },
+        "pick": {
+          "animations": ["picking"],
+          "transitions": [
+            {
+              "hold_normal": "q.all_animations_finished"
+            },
+            {
+              "shoot": "q.cooldown_time_remaining('scpdt_de_p90_shooting') != 0.0"
+            }
+          ]
+        },
+        "hold_normal": {
+          "animations": ["holding"],
+          "transitions": [
+            {
+              "transition_ads": "c.is_first_person && q.is_sneaking"
+            },
+            {
+              "shoot": "q.cooldown_time_remaining('scpdt_de_p90_shooting') != 0.0"
+            }
+          ]
+        },
+        "transition_ads": {
+          "animations": ["to_ads"],
+          "transitions": [
+            {
+              "hold_normal": "!q.is_sneaking"
+            },
+            {
+              "hold_ads": "q.all_animations_finished"
+            },
+            {
+              "shoot_ads": "q.cooldown_time_remaining('scpdt_de_p90_shooting') != 0.0"
+            }
+          ],
+          "blend_transition": 0.1
+        },
+        "hold_ads": {
+          "animations": ["holding_ads"],
+          "transitions": [
+            {
+              "quit_ads": "c.is_first_person && !q.is_sneaking"
+            },
+            {
+              "shoot_ads": "q.cooldown_time_remaining('scpdt_de_p90_shooting') != 0.0"
+            }
+          ]
+        },
+        "quit_ads": {
+          "animations": ["quitting_ads"],
+          "transitions": [
+            {
+              "hold_normal": "q.all_animations_finished"
+            },
+            {
+              "shoot": "q.cooldown_time_remaining('scpdt_de_p90_shooting') != 0.0"
+            }
+          ],
+          "blend_transition": 0.1
+        },
+        "shoot": {
+          "animations": ["shooting"],
+          "transitions": [
+            {
+              "hold_normal": "q.all_animations_finished"
+            }
+          ]
+        },
+        "shoot_ads": {
+          "animations": ["shooting_ads"],
+          "transitions": [
+            {
+              "hold_ads": "q.all_animations_finished"
+            }
+          ]
+        }
+      }
+    },
+    "controller.animation.scpdt_de.firearm.p90.empty": {
+      "initial_state": "default",
+      "states": {
+        "default": {
+          "transitions": [
+            {
+              "hold_normal": "!q.is_sneaking"
+            },
+            {
+              "hold_ads": "q.is_sneaking"
+            }
+          ]
+        },
+        "hold_normal": {
+          "animations": ["holding"],
+          "transitions": [
+            {
+              "transition_ads": "c.is_first_person && q.is_sneaking"
+            },
+            {
+              "reload": "q.cooldown_time_remaining('scpdt_de_p90_reloading') != 0.0"
+            }
+          ]
+        },
+        "transition_ads": {
+          "animations": ["to_ads"],
+          "transitions": [
+            {
+              "hold_normal": "!q.is_sneaking"
+            },
+            {
+              "hold_ads": "q.all_animations_finished"
+            },
+            {
+              "reload": "q.cooldown_time_remaining('scpdt_de_p90_reloading') != 0.0"
+            }
+          ],
+          "blend_transition": 0.1
+        },
+        "hold_ads": {
+          "animations": ["holding_ads"],
+          "transitions": [
+            {
+              "quit_ads": "c.is_first_person && !q.is_sneaking"
+            },
+            {
+              "reload": "q.cooldown_time_remaining('scpdt_de_p90_reloading') != 0.0"
+            }
+          ],
+          "blend_transition": 0.1
+        },
+        "quit_ads": {
+          "animations": ["quitting_ads"],
+          "transitions": [
+            {
+              "hold_normal": "q.all_animations_finished"
+            },
+            {
+              "reload": "q.cooldown_time_remaining('scpdt_de_p90_reloading') != 0.0"
+            }
+          ],
+          "blend_transition": 0.1
+        },
+        "reload": {
+          "animations": ["reloading"],
+          "transitions": [
+            {
+              "hold_normal": "q.cooldown_time_remaining('scpdt_de_p90_reloading') == 0.0 || q.all_animations_finished"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

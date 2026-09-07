@@ -587,3 +587,35 @@ dt.nameslot.ak.empty=AK Assault Rifle (Empty)
 item.lc:scpdy_killer_sword.name=Killer Sword
 item.lc:scpdy_pain_sword.name=Pain Sword
 item.lc:scpdy_void_sword.name=Void Sword
+
+
+## Firearm and Magazine nameslots
+
+dt.nameslot.rocket_launcher=SCP Foundation RPG
+dt.nameslot.rocket_launcher_empty=SCP Foundation RPG (Empty)
+dt.nameslot.glock=Glock Pistol
+dt.nameslot.glock.emptyempty=Glock Pistol (Empty)
+dt.nameslot.flamethrower=XL18 Flamethrower
+dt.nameslot.flamethrower.empty=XL18 Flamethrower (Empty)
+dt.nameslot.Flamethrower_fuel=XL18 Flamethrower Fuel
+dt.nameslot.ak=AK Assault Rifle
+dt.nameslot.ak.empty=AK Assault Rifle (Empty)
+dt.nameslot.hk416=HK416
+dt.nameslot.hk416.empty=§cHK416§f
+dt.nameslot.ak47=AK-47
+dt.nameslot.ak47.empty=§cAK-47§f
+dt.nameslot.p90=P90
+dt.nameslot.p90.empty=§cP90§f
+dt.nameslot.mp7=Suppressed MP7
+dt.nameslot.mp7.empty=§cSuppressed MP7§f
+dt.nameslot.glock17=Glock-17
+dt.nameslot.glock17.empty=§cGlock-17§f
+dt.nameslot.357_magnum=.357 Magnum
+dt.nameslot.357_magnum.empty=§c.357 Magnum§f
+
+dt.nameslot.gun_mag.ar15=5.56x45mm STANAG 30rnd Magazine
+dt.nameslot.gun_mag.ak47=AK 7.62x39 30rnd Magazine
+dt.nameslot.gun_mag.p90=P90 5.7x28mm 50rnd Magazine
+dt.nameslot.gun_mag.mp7=4.6x30mm 30rnd HK Magazine
+dt.nameslot.gun_mag.glock17_mag=9x19mm 17rnd Glock Magazine
+dt.nameslot.gun_mag.357_magnum_speedloader=.357 Magnum Speedloader

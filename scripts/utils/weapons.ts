@@ -38,7 +38,7 @@ const weaponData: Record<string, WeaponData> = {
   "gabrielaplok:ak47": {
     projectile: "lc:dt_ak47_player_bullet",
     speed: 25.0,
-    fireRate: 3,
+    fireRate: 2,
     isAutomatic: true,
     onEntryCommands: ["function aplokguns/fire_ak47"],
   },

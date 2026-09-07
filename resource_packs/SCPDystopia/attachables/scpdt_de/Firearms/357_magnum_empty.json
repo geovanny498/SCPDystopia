@@ -1,0 +1,56 @@
+// CC-BY-SA 3.0
+{
+    "format_version": "1.10",
+    "minecraft:attachable": {
+        "description": {
+            "identifier": "lc:dt_357_magnum_empty",
+            "materials": {
+                "first_person": "entity_emissive_alpha",
+                "third_person": "entity_emissive_alpha_one_sided"
+            },
+            "textures": {
+                "default": "textures/scpdt_de/Firearms/357_magnum"
+            },
+            "geometry": {
+                "first_person_default": "geometry.scpdt_de.firearm.357_magnum.first_person",
+                "third_person_default": "geometry.scpdt_de.firearm.357_magnum.third_person",
+                "third_person_lod_1": "geometry.scpdt_de.firearm.357_magnum.third_person.lod_1",
+                "third_person_lod_2": "geometry.scpdt_de.firearm.357_magnum.third_person.lod_2",
+                "third_person_lod_3": "geometry.scpdt_de.firearm.357_magnum.third_person.lod_3",
+                "third_person_culled": "geometry.scpdt_de.misc.none"
+            },
+            "animations": {
+                "controller": "controller.animation.scpdt_de.firearm.357_magnum.empty",
+
+                "picking": "animation.scpdt_de.firearm.357_magnum.picking",
+                "holding": "animation.scpdt_de.firearm.357_magnum.holding",
+                "to_ads": "animation.scpdt_de.firearm.357_magnum.to_ads",
+                "holding_ads": "animation.scpdt_de.firearm.357_magnum.holding_ads",
+                "quitting_ads": "animation.scpdt_de.firearm.357_magnum.quitting_ads",
+                "shooting": "animation.scpdt_de.firearm.357_magnum.shooting",
+                "shooting_ads": "animation.scpdt_de.firearm.357_magnum.shooting_ads",
+                "reloading": "animation.scpdt_de.firearm.357_magnum.reloading"
+            },
+            "scripts": {
+                "animate": [
+                    "controller"
+                ],
+                "pre_animation": [
+                    "variable.perspective = c.is_first_person;",
+                    "variable.lod_index = query.lod_index(10, 20, 30, 40);"
+                ]
+            },
+            "particle_effects": {
+              "fire": "lc:dt_muzzleflash_emitter"
+            },
+            "render_controllers": [
+                {
+                    "controller.render.scpdt_de.3d_item.first_person": "c.is_first_person"
+                },
+                {
+                    "controller.render.scpdt_de.3d_item.third_person.four_step_lod": "!c.is_first_person"
+                }
+            ]
+        }
+    }
+}

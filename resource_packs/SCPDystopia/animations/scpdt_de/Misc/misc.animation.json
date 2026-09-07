@@ -1,0 +1,39 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"animation.scpdt_de.misc.hide_head_item": {
+			"loop": true,
+			"bones": {
+				"head_itemGroup": {
+					"scale": 0
+				},
+				"HK416D_ra": {
+					"position": [0, 0, -0.75],
+					"scale": 0.8
+				},
+				"rightArm_itemGroup": {
+					"position": [0, 0, -0.75],
+					"scale": 0.8
+				}
+			}
+		},
+		"animation.scpdt_de.misc.hide_rightarm_item": {
+			"loop": true,
+			"bones": {
+				"rightArm_itemGroup": {
+					"scale": 0
+				}
+			}
+		},
+		"animation.scpdt_de.misc.muzzle_flash": {
+			"loop": "hold_on_last_frame",
+			"animation_length": 1.32,
+			"particle_effects": {
+				"0.08": {
+					"effect": "muzzle_flash",
+					"locator": "locator"
+				}
+			}
+		}
+	}
+}
