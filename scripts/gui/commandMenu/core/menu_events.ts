@@ -118,7 +118,7 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
       if (!state || !systemConfig) continue;
 
       // Verificar si el sistema debe aplicarse a entidades futuras
-      if (!shouldApplyToFutureEntities(systemId)) {
+      if (!shouldApplyToFutureEntities(systemId, forceApply)) {
         debugWarn(
           "menuEvents:spawn",
           `Sistema ${systemId} NO se aplica a entidad futura (applyMode: existing_only)`,

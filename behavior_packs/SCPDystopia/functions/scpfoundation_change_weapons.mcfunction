@@ -1,1 +1,0 @@
-event entity @e[family=foundation] humanoid:change_weapons

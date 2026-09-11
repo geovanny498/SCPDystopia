@@ -1109,9 +1109,24 @@
           "family": ["human", "hierarchy_leader", "player", "chaos_insurgency", "chaos", "chaos_delta", "mob"]
         }
       },
-      "humanoid:change_weapons": {
+      "humanoid:armament_low": {
         "minecraft:equipment": {
-          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/chara.json"
+          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/low/cd.json"
+        }
+      },
+      "humanoid:armament_standard": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/standard/cd.json"
+        }
+      },
+      "humanoid:armament_high": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/high/cd.json"
+        }
+      },
+      "humanoid:armament_extreme": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/extreme/cd.json"
         }
       },
       "humanoid:give_mp5a3": {
@@ -1317,7 +1332,7 @@
         "priority": 0
       },
       "minecraft:equipment": {
-        "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/cd.json"
+        "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/standard/cd.json"
       },
       "minecraft:attack": {
         "damage": 14
@@ -1576,9 +1591,24 @@
           "command": ["replaceitem entity @s slot.weapon.mainhand 0 air"]
         }
       },
-      "humanoid:change_weapons": {
+      "humanoid:armament_low": {
         "add": {
-          "component_groups": ["humanoid:change_weapons"]
+          "component_groups": ["humanoid:armament_low"]
+        }
+      },
+      "humanoid:armament_standard": {
+        "add": {
+          "component_groups": ["humanoid:armament_standard"]
+        }
+      },
+      "humanoid:armament_high": {
+        "add": {
+          "component_groups": ["humanoid:armament_high"]
+        }
+      },
+      "humanoid:armament_extreme": {
+        "add": {
+          "component_groups": ["humanoid:armament_extreme"]
         }
       },
       "humanoid:give_mp5a3": {

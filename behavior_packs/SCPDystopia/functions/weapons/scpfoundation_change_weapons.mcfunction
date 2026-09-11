@@ -1,0 +1,1 @@
+event entity @e[family=foundation] humanoid:armament_standard

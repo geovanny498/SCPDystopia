@@ -607,6 +607,25 @@ export interface InteractMenuSessionStore {
    * @param entry Entrada a registrar.
    */
   pushHistory(entityId: string, entry: ChangeEntry): void;
+  /**
+   * Marca a un jugador como "en proceso de apertura" (flag de corta duración).
+   * Se usa para prevenir la condición de carrera entre `playerInteractWithEntity`
+   * e `itemUse`, que pueden dispararse sincrónicamente antes de que `system.run`
+   * cree la sesión.
+   * @param playerId Identificador del jugador.
+   */
+  setOpening(playerId: string): void;
+  /**
+   * Comprueba si un jugador está marcado como "en proceso de apertura".
+   * @param playerId Identificador del jugador.
+   * @returns `true` si la apertura está en curso.
+   */
+  isOpening(playerId: string): boolean;
+  /**
+   * Limpia el flag de "en proceso de apertura" para un jugador.
+   * @param playerId Identificador del jugador.
+   */
+  clearOpening(playerId: string): void;
 }
 
 /**
@@ -628,6 +647,8 @@ export interface ChangeEntry {
 const interactDDUISessions = new Map<string, InteractDDUISession>();
 const lastFeedback = new Map<string, Map<string, Record<string, DDUIFeedbackEntry>>>();
 const history = new Map<string, ChangeEntry[]>();
+/** Flag per-jugador de "apertura en curso" para prevenir race conditions síncronas. */
+const openingPlayers = new Set<string>();
 
 /**
  * Store singleton de sesiones y datos auxiliares del interactMenu DDUI. Punto
@@ -649,18 +670,21 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
   },
   delete(playerId: string) {
     interactDDUISessions.delete(playerId);
+    openingPlayers.delete(playerId);
   },
   clear() {
     for (const [, session] of interactDDUISessions) {
       session.cleanup();
     }
     interactDDUISessions.clear();
+    openingPlayers.clear();
   },
   cleanup(playerId: string): void {
     const session = interactDDUISessions.get(playerId);
     if (!session) return;
     session.cleanup();
     interactDDUISessions.delete(playerId);
+    openingPlayers.delete(playerId);
     debugMessage("interactDDUI", `Sesión limpiada y eliminada: ${session.playerId}`, "gray");
   },
   cleanupByEntity(entityId: string): void {
@@ -668,6 +692,7 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
       if (session.entity.id === entityId) {
         session.cleanup();
         interactDDUISessions.delete(playerId);
+        openingPlayers.delete(playerId);
       }
     }
   },
@@ -699,6 +724,15 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
       session = this.create(playerId, player, entity, cfg, soldierName, displayName, typeId);
     }
     return session;
+  },
+  setOpening(playerId: string): void {
+    openingPlayers.add(playerId);
+  },
+  isOpening(playerId: string): boolean {
+    return openingPlayers.has(playerId);
+  },
+  clearOpening(playerId: string): void {
+    openingPlayers.delete(playerId);
   },
   getLastFeedback(playerId: string, entityId: string, viewId: string): DDUIFeedbackEntry | null {
     const entityMap = lastFeedback.get(playerId);

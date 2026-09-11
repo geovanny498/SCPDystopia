@@ -87,7 +87,7 @@
           "priority": 5,
           "target_in_sight_time": 0.3,
           "burst_shots": 40,
-          "burst_interval": 0.13,
+          "burst_interval": 0.12,
           "charge_charged_trigger": 0.0,
           "charge_shoot_trigger": 0.05,
           "attack_interval_min": 0.05,
@@ -1111,9 +1111,24 @@
           "family": ["human", "hierarchy_commander", "player", "chaos_insurgency", "chaos", "chaos_delta", "mob"]
         }
       },
-      "humanoid:change_weapons": {
+      "humanoid:armament_low": {
         "minecraft:equipment": {
-          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/chara.json"
+          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/low/chara.json"
+        }
+      },
+      "humanoid:armament_standard": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/standard/chara.json"
+        }
+      },
+      "humanoid:armament_high": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/high/chara.json"
+        }
+      },
+      "humanoid:armament_extreme": {
+        "minecraft:equipment": {
+          "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/extreme/chara.json"
         }
       },
       "humanoid:give_mp5a3": {
@@ -1319,7 +1334,7 @@
         "priority": 0
       },
       "minecraft:equipment": {
-        "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/chara.json"
+        "table": "loot_tables/scpdt_de/Equipment/Human/MTFs/standard/chara.json"
       },
       "minecraft:attack": {
         "damage": 21
@@ -1573,9 +1588,24 @@
           "command": ["replaceitem entity @s slot.weapon.mainhand 0 air"]
         }
       },
-      "humanoid:change_weapons": {
+      "humanoid:armament_low": {
         "add": {
-          "component_groups": ["humanoid:change_weapons"]
+          "component_groups": ["humanoid:armament_low"]
+        }
+      },
+      "humanoid:armament_standard": {
+        "add": {
+          "component_groups": ["humanoid:armament_standard"]
+        }
+      },
+      "humanoid:armament_high": {
+        "add": {
+          "component_groups": ["humanoid:armament_high"]
+        }
+      },
+      "humanoid:armament_extreme": {
+        "add": {
+          "component_groups": ["humanoid:armament_extreme"]
         }
       },
       "humanoid:give_mp5a3": {

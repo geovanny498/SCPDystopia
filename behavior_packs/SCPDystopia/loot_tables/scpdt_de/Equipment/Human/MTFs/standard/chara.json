@@ -25,13 +25,13 @@
         {
           "type": "item",
           "name": "lc:dt_m16",
-          "weight": 15,
+          "weight": 16,
           "functions": []
         },
         {
           "type": "item",
           "name": "lc:dt_ak47",
-          "weight": 15,
+          "weight": 14,
           "functions": []
         },
         {
@@ -49,18 +49,12 @@
         {
           "type": "item",
           "name": "lc:dt_hk416",
-          "weight": 5,
+          "weight": 10,
           "functions": []
         },
         {
           "type": "item",
           "name": "lc:dt_dystopia_rifle",
-          "weight": 5,
-          "functions": []
-        },
-        {
-          "type": "item",
-          "name": "lc:dt_suscharger",
           "weight": 5,
           "functions": []
         }

@@ -14,7 +14,7 @@ import "./commands/register_systems.js";
 import "./commands/register_test_commands.js";
 
 // Inicializa GUI
-import "./gui/interactMenu/gui.js";
+import "./gui/interactMenu/interactTrigger.js";
 import "./gui/commandMenu/builder/menu.js";
 
 // Inicializa lifecycle cleanups

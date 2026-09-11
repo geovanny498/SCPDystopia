@@ -1,10 +1,9 @@
 // scripts/gui/gui.ts
-import { world, system, EquipmentSlot, Player, Entity } from "@minecraft/server";
+import { system, Player, Entity } from "@minecraft/server";
 import { ActionFormData, ActionFormResponse, ModalFormData } from "@minecraft/server-ui";
 import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
 import { debugWarn, debugMessage } from "../../utils/debug.js";
 import {
-  ENTITY_GLOBAL_OVERWRITE_PROPERTY,
   isGlobalOverwriteAllowed,
   setGlobalOverwriteAllowed,
   getGlobalOverwriteLabel,
@@ -25,9 +24,6 @@ import {
 import { getEntityFactionInfo } from "../commandMenu/model/menu_faction.js";
 import { tryAutoTame } from "../commandMenu/core/menu_apply.js";
 import { setUnitGroup } from "../commandMenu/model/menu_groups.js";
-import { showInteractDDUI } from "./ddui/interact_ddui_form.js";
-import { PlayerPermissionManager } from "../shared/playerPermissionManager.js";
-import { EquipmentDetector } from "../shared/equipmentDetector.js";
 
 export interface EntityConfig {
   specific: MenuCategory[];
@@ -108,7 +104,7 @@ function getSpecificConfig(typeId: string): EntitySpecificConfig | undefined {
  * @param entity
  * @returns
  */
-function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null {
+export function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null {
   const globalCats = config.global && Array.isArray(config.global.categories) ? [...config.global.categories] : [];
 
   // Resolver si la entidad está permitida
@@ -206,7 +202,7 @@ function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null
   };
 }
 
-function itemMatches(mainId: string | null, opener: string): boolean {
+export function itemMatches(mainId: string | null, opener: string): boolean {
   if (!mainId || !opener) return false;
   if (opener.includes(":")) return mainId === opener;
 
@@ -550,99 +546,6 @@ function showEntitySystemStatus(
   });
 }
 
-world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
-  try {
-    const player = ev.player;
-    const entity = ev.target;
-
-    debugWarn(
-      "playerInteractWithEntity",
-      `handler fired player=${player?.name ?? "?"} target=${entity?.typeId ?? "?"}`
-    );
-
-    if (!player || !entity) return;
-
-    // Determinar facción
-    let entGroup: string | null = null;
-    if (config.entities) {
-      for (const gName of Object.keys(config.entities)) {
-        const group = config.entities[gName];
-        if (group && Object.prototype.hasOwnProperty.call(group, entity.typeId)) {
-          entGroup = gName;
-          break;
-        }
-      }
-    }
-
-    const openerItem = (entGroup && config.openItem?.[entGroup]) || config.openItem?.default || "lc:dt_commander";
-
-    try {
-      const mainhand = player.getComponent("equippable")?.getEquipment(EquipmentSlot.Mainhand);
-
-      const mainId = mainhand?.typeId ?? null;
-
-      debugWarn("playerInteractWithEntity", `player mainhand=${mainId}, opener=${openerItem}`);
-
-      const isDDUIOpener = itemMatches(mainId, openerItem);
-
-      if (!isDDUIOpener) {
-        debugWarn("playerInteractWithEntity", `menu blocked: wrong opener`, "blue");
-        return;
-      }
-
-      ev.cancel = true;
-    } catch (e) {
-      debugWarn("playerInteractWithEntity", `error reading mainhand: ${e}`, "red");
-      return;
-    }
-
-    const isAdmin = PlayerPermissionManager.isAdmin(player);
-
-    if (!isAdmin) {
-      const helmetFaction = EquipmentDetector.getActiveFaction(player);
-      const entityFactionInfo = getEntityFactionInfo(entity);
-
-      if (!helmetFaction) {
-        player.sendMessage("§c[SCPDystopia] Necesitas llevar el casco de tu facción.");
-        return;
-      }
-
-      if (!entityFactionInfo) {
-        return;
-      }
-
-      if (helmetFaction !== entityFactionInfo.faction) {
-        const entityFactionName = entityFactionInfo.faction === "foundation" ? "Foundation" : "Chaos";
-        const playerFactionName = helmetFaction === "foundation" ? "Foundation" : "Chaos";
-        player.sendMessage(
-          `§c[SCPDystopia] No puedes modificar unidades de ${entityFactionName} si eres del bando ${playerFactionName}.`
-        );
-        return;
-      }
-    }
-
-    const typeId = entity.typeId;
-
-    const cfg = getConfigForEntity(typeId, entity);
-    if (!cfg) {
-      debugWarn("playerInteractWithEntity", `no config for ${typeId}`, "blue");
-      return;
-    }
-
-    let displayName = typeId;
-    try {
-      if (entity.nameTag) displayName = entity.nameTag;
-    } catch {}
-
-    const soldierName = entity.nameTag ? `${entity.nameTag}§r` : `§b${displayName}§r`;
-
-    system.run(() => {
-      showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
-    });
-  } catch (err) {
-    debugWarn("playerInteractWithEntity", `GUI error: ${err}`, "red");
-  }
-});
 function showEntityGlobalOverwriteToggle(
   player: Player,
   entity: Entity,

@@ -223,6 +223,7 @@ export const systems: MenuSystems = {
   movement: mapSystemToLegacy(CATALOG_SYSTEMS.movement),
   fire: mapSystemToLegacy(CATALOG_SYSTEMS.fire),
   weapon: mapSystemToLegacy(CATALOG_SYSTEMS.weapon),
+  armament: mapSystemToLegacy(CATALOG_SYSTEMS.armament),
   teleport: mapSystemToLegacy(CATALOG_SYSTEMS.teleport),
   spawn: mapSystemToLegacy(CATALOG_SYSTEMS.spawn),
   health: mapSystemToLegacy(CATALOG_SYSTEMS.health),

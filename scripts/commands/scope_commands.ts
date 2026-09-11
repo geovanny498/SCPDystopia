@@ -9,7 +9,7 @@ import {
   Player,
 } from "@minecraft/server";
 import { loadScope, resetScope, getScopeSummary, isEntityInScope } from "../gui/commandMenu/model/menu_scope.js";
-import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
+import { COMMAND_SYSTEM_IDS } from "../gui/shared/systemCatalog.js";
 import { getEntityFactionInfo, isValidSoldier } from "../gui/commandMenu/model/menu_faction.js";
 import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
 import { getAllAddonEntitiesInDimensions } from "../utils/entityQuery.js";
@@ -114,7 +114,7 @@ system.beforeEvents.startup.subscribe((init) => {
         system.run(() => {
           try {
             const dimension = entity.dimension;
-            const systemIds = Object.keys(menuSystems);
+            const systemIds = COMMAND_SYSTEM_IDS;
             applySystemsToAll(systemIds, dimension, entity as any);
 
             console.log("[SCPDystopia] Sistemas reaplicados a entidades existentes con nuevo scope");

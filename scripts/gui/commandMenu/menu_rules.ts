@@ -25,15 +25,16 @@ export type AllSystemStates = Record<string, Record<string, SystemState>>;
  * - domain: Dominio al que pertenece el sistema (ej: "movement", "fire")
  * - requires: Objeto con dominios y valores requeridos para que este sistema se aplique
  * - locks: Array de dominios que este sistema bloquea (no se pueden aplicar simultáneamente)
- * - applyMode: "all" | "existing_only"
- *   - "all": Se aplica a entidades existentes Y futuras (spawn/load/existing_only)
- *   - "existing_only": Solo se aplica a entidades existentes al enviar el formulario
+ * - applyMode: "all" | "existing_only" | "spawn_only"
+ *   - "all": Se aplica a entidades existentes Y futuras (spawn + load)
+ *   - "existing_only": Solo al enviar el formulario; no aplica en spawn ni load
+ *   - "spawn_only": Aplica en spawn (futuras) y al enviar el formulario, pero NO en entityLoad (recarga de mundo)
  */
 export const systemRules: Record<
   string,
   {
     domain: string;
-    applyMode: "all" | "existing_only";
+    applyMode: "all" | "existing_only" | "spawn_only";
     requires?: Record<string, string[] | string>;
     locks?: string[];
   }
@@ -64,6 +65,13 @@ export const systemRules: Record<
   weapon: {
     domain: "weapon",
     applyMode: "existing_only", // Para evitar colisiones con las armas base de las unidades
+  },
+
+  armament: {
+    domain: "armament",
+    // spawn (futuras) + menú (existentes), pero NO re-aplica en entityLoad (evita re-roll al recargar el mundo).
+    // La aplicación manual desde el menú es independiente de applyMode (systemBuilder -> applySystemsToEntities).
+    applyMode: "spawn_only",
   },
 
   spawn: {
@@ -190,9 +198,12 @@ function findSystemByDomain(domain: string) {
 /**
  * Verifica si un sistema debe aplicarse a entidades futuras (spawn/load)
  * @param {string} systemId
+ * @param {boolean} isSpawn - true si el disparador es entitySpawn; false para entityLoad.
+ *   "spawn_only" aplica solo cuando isSpawn es true (evita re-aplicar al recargar el mundo).
+ *   La aplicación manual desde el menú no pasa por aquí: sigue aplicándose a entidades existentes.
  * @returns {boolean}
  */
-export function shouldApplyToFutureEntities(systemId: string) {
+export function shouldApplyToFutureEntities(systemId: string, isSpawn: boolean = false) {
   const rules = getSystemRules(systemId);
 
   if (!rules) {
@@ -200,7 +211,7 @@ export function shouldApplyToFutureEntities(systemId: string) {
     return true; // Por defecto, aplicar a futuras
   }
 
-  const shouldApply = rules.applyMode === "all";
+  const shouldApply = rules.applyMode === "all" || (rules.applyMode === "spawn_only" && isSpawn);
   debugWarn(
     "menuRules:apply",
     `Sistema ${systemId}: applyMode=${rules.applyMode}, aplicar a futuras=${shouldApply}`,

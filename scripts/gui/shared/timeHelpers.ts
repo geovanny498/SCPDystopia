@@ -1,7 +1,7 @@
 // scripts/gui/shared/timeHelpers.ts
 
-// UTC-4 hardcodeado porque no hay forma de obtener la hora local del cliente en este contexto.
-export const HISTORY_LOCAL_TIME_OFFSET_HOURS = -4;
+// UTC-3 hardcodeado porque no hay forma de obtener la hora local del cliente en este contexto.
+export const HISTORY_LOCAL_TIME_OFFSET_HOURS = -3;
 
 export function formatLocalTime(timestamp: number): string {
   const offsetMs = HISTORY_LOCAL_TIME_OFFSET_HOURS * 3600000;

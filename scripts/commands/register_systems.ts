@@ -16,6 +16,7 @@ import {
   SpecialGroupLabels,
   Factions,
 } from "../gui/commandMenu/menu_config.js";
+import { COMMAND_SYSTEM_IDS, CATALOG_SYSTEMS } from "../gui/shared/systemCatalog.js";
 import { resetAllSystems, resetAllSystemStates, resetOneSystemState } from "./worldSave";
 import { resetMenuSystemStates } from "../gui/commandMenu/core/menu_events.js";
 import { resetScope } from "../gui/commandMenu/model/menu_scope.js";
@@ -58,7 +59,7 @@ system.beforeEvents.startup.subscribe((init) => {
       const ids = world.getDynamicPropertyIds();
       console.log(`[SCPDystopia] Propiedades dinámicas encontradas: ${ids.length > 0 ? ids.join(", ") : "ninguna"}`);
 
-      const systemIds = Object.keys(menuSystems);
+      const systemIds = COMMAND_SYSTEM_IDS;
 
       function getDropdownValueColor(sysConfig: any, value: string) {
         if (value === "false" || value === "off") return "§c";
@@ -248,7 +249,7 @@ system.beforeEvents.startup.subscribe((init) => {
   // registerEnum() registra los valores que el motor muestra al presionar <Tab>.
   // "all" va primero para que sea la primera opción visible.
   const resetSystemEnumName = "scpd:reset_system_target";
-  const systemTargetOptions = ["all", ...Object.keys(menuSystems)];
+  const systemTargetOptions = ["all", ...COMMAND_SYSTEM_IDS];
 
   init.customCommandRegistry.registerEnum(resetSystemEnumName, systemTargetOptions);
 
@@ -267,7 +268,7 @@ system.beforeEvents.startup.subscribe((init) => {
         try {
           // ── Sin argumento: aviso amigable, NO resetea nada ─────────────────
           if (!target || target === "") {
-            const validIds = Object.keys(menuSystems);
+            const validIds = COMMAND_SYSTEM_IDS;
             return {
               status: CustomCommandStatus.Failure,
               message:
@@ -289,7 +290,7 @@ system.beforeEvents.startup.subscribe((init) => {
                     ? origin.sourceEntity.dimension
                     : null;
 
-                const systemIds = Object.keys(menuSystems);
+                const systemIds = COMMAND_SYSTEM_IDS;
                 applySystemsToAll(systemIds, dimension, origin.sourceEntity || null);
 
                 console.log("[SCPDystopia] Sistemas reiniciados y aplicados a entidades existentes");
@@ -307,9 +308,16 @@ system.beforeEvents.startup.subscribe((init) => {
           }
 
           // ── target === <systemId>: reinicia UN SOLO sistema ─────────────────
+          // `weapon` es exclusivo de interactMenu: no reseteable desde comandos (evita stripeo).
+          if (CATALOG_SYSTEMS[target as keyof typeof CATALOG_SYSTEMS]?.menu === "interact") {
+            return {
+              status: CustomCommandStatus.Failure,
+              message: `§c"${target}" es exclusivo de interactMenu; no es reseteable desde comandos.`,
+            };
+          }
           const systemConfig = (menuSystems as any)[target];
           if (!systemConfig) {
-            const validIds = Object.keys(menuSystems).join(", ");
+              const validIds = COMMAND_SYSTEM_IDS.join(", ");
             return {
               status: CustomCommandStatus.Failure,
               message: `§cSistema "${target}" no encontrado.\n§7IDs válidos: §f${validIds}`,
@@ -402,7 +410,7 @@ system.beforeEvents.startup.subscribe((init) => {
                   ? origin.sourceEntity.dimension
                   : null;
 
-              const systemIds = Object.keys(menuSystems);
+              const systemIds = COMMAND_SYSTEM_IDS;
               applySystemsToAll(systemIds, dimension, origin.sourceEntity || null);
 
               console.log("[SCPDystopia] Sistemas aplicados a entidades existentes");

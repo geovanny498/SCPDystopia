@@ -65,6 +65,8 @@ Siempre responde en español.
 
 Está disponible la herramienta ripgrep (o `rg` en bash) y se recomienda usarla según se estime conveniente.
 
+Estamos en windows 11, no hay otras herramientas instaladas para powershell aparte de las mencionadas en AGENTS.md y ripgrep.
+
 El proyecto es un addon de Minecraft Bedrock que usa los archivos de ruta "scripts" para compilar JavaScript y TypeScript en un único archivo JavaScript que usa el addon al ejecutarse en el juego.
 
 Se recomienda consultar `node_modules\@minecraft\server\index.d.ts` y `node_modules\@minecraft\server-ui\index.d.ts` dentro de `node_modules` para buscar qué funciones o métodos están vigentes en la API.

@@ -1,5 +1,11 @@
 // scripts/gui/config.ts
 
+/**
+ * Distancia máxima de raycast (en bloques) para detectar entidades a distancia
+ * mediante `getEntitiesFromViewDirection` en el gatillo `itemUse` del interactMenu.
+ */
+export const INTERACT_MAX_DISTANCE = 64;
+
 /** Configuración de GUI para entidades
  * - `global` contiene categorías/entradas que estarán disponibles por defecto
  * - `entities` lista las entidades que aceptan abrir el GUI (referenciando `global`)

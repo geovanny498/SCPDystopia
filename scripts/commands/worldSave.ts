@@ -1,6 +1,7 @@
 // scripts/commands/worldSave.ts
 import { world } from "@minecraft/server";
 import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
+import { COMMAND_SYSTEM_IDS } from "../gui/shared/systemCatalog.js";
 import { debugMessage, debugWarn } from "../utils/debug.js";
 
 type SystemState = Record<string, unknown> | string | boolean | number | undefined;
@@ -57,7 +58,10 @@ export function resetOneSystemState(systemName: string): boolean {
  */
 export function resetAllSystemStates(): void {
   try {
-    for (const systemConfig of Object.values(menuSystems)) {
+    // `weapon` (exclusivo de interactMenu) se omite: su estado persiste como DP
+    // entity-scoped, no como world DP; un world DP inexistente no afecta entidades.
+    for (const id of COMMAND_SYSTEM_IDS) {
+      const systemConfig = menuSystems[id];
       if (!systemConfig?.dynamicProperty) continue;
       world.setDynamicProperty(systemConfig.dynamicProperty, undefined);
     }

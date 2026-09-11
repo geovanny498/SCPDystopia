@@ -26,6 +26,7 @@ export const SystemIds = {
   MOVEMENT: "movement",
   FIRE: "fire",
   WEAPON: "weapon",
+  ARMAMENT: "armament",
   SPAWN: "spawn",
   HEALTH: "health",
   TELEPORT: "teleport",
@@ -36,6 +37,15 @@ export const SystemIds = {
  * Union type de IDs de sistema válidos (derivado de SystemIds).
  */
 export type SystemId = (typeof SystemIds)[keyof typeof SystemIds];
+
+/**
+ * Afiliación de menú de un sistema: a qué interfaz pertenece.
+ * - "command" → commandMenu DDUI (no aparece en interactMenu).
+ * - "interact" → interactMenu DDUI (excluido de la superficie de comandos `scpd:`;
+ *   no debe resetearse/reaplicarse desde comandos para evitar stripeo de armas).
+ * - "both" → visible/configurable en ambos menús.
+ */
+export type MenuAffiliation = "command" | "interact" | "both";
 
 /**
  * Identificadores canónicos de categoría de catálogo como objeto de constantes.
@@ -76,6 +86,8 @@ export interface SystemOption {
 
 export interface CatalogSystem {
   id: SystemId;
+  /** Afiliación de menú del sistema. Siempre definido; el default conceptual es `"both"`. */
+  menu: MenuAffiliation;
   displayName: string;
   controlType: "dropdown" | "toggle";
   options?: SystemOption[];
@@ -265,6 +277,33 @@ export const WEAPON_OPTIONS: SystemOption[] = [
   },
 ];
 
+export const ARMAMENT_OPTIONS: SystemOption[] = [
+  {
+    value: "low",
+    label: "§7Bajo",
+    description: "Armamento básico; prioriza subfusiles y armas de bajo daño.",
+    eventStart: "humanoid:armament_low",
+  },
+  {
+    value: "standard",
+    label: "§eEstándar",
+    description: "Armamento equilibrado por unidad (predeterminado).",
+    eventStart: "humanoid:armament_standard",
+  },
+  {
+    value: "high",
+    label: "§6Alto",
+    description: "Escalada táctica; mayor acceso a armas de asalto de alto rendimiento.",
+    eventStart: "humanoid:armament_high",
+  },
+  {
+    value: "extreme",
+    label: "§cExtremo",
+    description: "Combate intenso; mayor preferencia por armamento de élite.",
+    eventStart: "humanoid:armament_extreme",
+  },
+];
+
 // ── Catálogo de sistemas ────────────────────────────────────────────────────
 
 export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
@@ -275,6 +314,7 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     options: MOVEMENT_OPTIONS,
     description: "§8(Sólo entidades existentes)",
     category: CategoryIds.MOVEMENT,
+    menu: "both",
     dynamicProperty: "scpd_system_movement",
     tooltip:
       "§7Define cómo se desplazan las unidades en terreno.\n\nModos:\n- Seguir jugador (§aCerca/§eMedia/§6Lejos§7)\n- §9Caminar libremente\n§7- §cDetenerse",
@@ -312,6 +352,7 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     options: FIRE_OPTIONS,
     description: "",
     category: CategoryIds.FIRE,
+    menu: "both",
     dynamicProperty: "scpd_system_fire",
     tooltip:
       "§7Define el radio de conciencia y respuesta ante amenazas.\n\nModos:\n- §cMáxima\n§7- §9Avanzada\n§7- §aIntermedia\n§7- §bCercana\n§7- §eNeutral / Sigilo",
@@ -349,6 +390,7 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     options: WEAPON_OPTIONS,
     description: "",
     category: CategoryIds.ADVANCED,
+    menu: "interact",
     dynamicProperty: "scpd_system_weapon",
     tooltip:
       "§7Cambia el arma equipada de la unidad.\n\nArmas disponibles:\n- §7MP5A3\n§7- §fAK-47\n§7- §8Dystopia Rifle\n§7- §aHK416\n§7- §eM4A1\n§7- §bM16\n§7- §dMP7\n§7- §6P90\n§7- §cScar-H\n§7- §5Suscharger",
@@ -379,6 +421,44 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
       },
     },
   },
+  armament: {
+    id: SystemIds.ARMAMENT,
+    displayName: "§6Armamento",
+    controlType: "dropdown",
+    options: ARMAMENT_OPTIONS,
+    description: "",
+    category: CategoryIds.ADVANCED,
+    menu: "command",
+    dynamicProperty: "scpd_system_armament",
+    tooltip:
+      "§7Define el nivel de armamento base de la unidad según su loot table.\n\nNiveles:\n- §7Bajo\n§7- §eEstándar\n§7- §6Alto\n§7- §cExtremo",
+    supportsSpecials: true,
+    supportsHierarchy: true,
+    supportsGroups: true,
+    minRole: RoleIds.MEMBER,
+    defaults: {
+      [Factions.FOUNDATION]: {
+        [UnitHierarchy.BASIC]: "standard",
+        [UnitHierarchy.LEADER]: "standard",
+        [UnitHierarchy.COMMANDER]: "standard",
+        [SpecialGroups.GROUP_A]: "standard",
+        [SpecialGroups.GROUP_B]: "standard",
+        [SpecialGroups.GROUP_C]: "standard",
+        [SpecialGroups.GROUP_D]: "standard",
+        [SpecialGroups.NO_GROUP]: "standard",
+      },
+      [Factions.CHAOS]: {
+        [UnitHierarchy.BASIC]: "standard",
+        [UnitHierarchy.LEADER]: "standard",
+        [UnitHierarchy.COMMANDER]: "standard",
+        [SpecialGroups.GROUP_A]: "standard",
+        [SpecialGroups.GROUP_B]: "standard",
+        [SpecialGroups.GROUP_C]: "standard",
+        [SpecialGroups.GROUP_D]: "standard",
+        [SpecialGroups.NO_GROUP]: "standard",
+      },
+    },
+  },
   teleport: {
     id: SystemIds.TELEPORT,
     displayName: "§2Teletransporte",
@@ -386,6 +466,7 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     options: TELEPORT_OPTIONS,
     description: "",
     category: CategoryIds.ADVANCED,
+    menu: "both",
     dynamicProperty: "scpd_system_teleport",
     tooltip:
       "§7Define la agresividad del teletransporte hacia el enemigo cuando hay distancia.\n\nModos:\n- §aModerado\n§7- §6Cercano\n§7- §cDesactivado",
@@ -424,6 +505,7 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     eventFalse: "humanoid:stop_spawn_soldiers",
     description: "",
     category: CategoryIds.ADVANCED,
+    menu: "both",
     dynamicProperty: "scpd_system_spawn",
     tooltip:
       "§7Habilita la capacidad de generar refuerzos adicionales (Sólo líderes y algunos comandantes).\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
@@ -478,6 +560,7 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     eventFalse: "humanoid:dont_show_boss_bar",
     description: "",
     category: CategoryIds.ADVANCED,
+    menu: "both",
     dynamicProperty: "scpd_system_health",
     tooltip:
       "§7Visualización de la salud de las unidades cercanas en la interfaz.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
@@ -518,6 +601,7 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     eventFalse: "humanoid:stop_invincible",
     description: "",
     category: CategoryIds.ADVANCED,
+    menu: "both",
     dynamicProperty: "scpd_system_invincible",
     tooltip: "§7Hace invulnerable a la unidad. Usar con precaución.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
     labelTrue: "§aActivar",
@@ -551,6 +635,18 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
   },
 };
 
+// ── IDs de sistema expuestos a la superficie de comandos `scpd:` ──────────────
+// Fuente única de verdad: filtra el catálogo por `menu`, excluyendo los sistemas
+// exclusivos de interactMenu (ej. `weapon`). Los comandos de reset, aplicación y
+// scope consumen este arreglo en vez de `Object.keys(menuSystems)` para que un
+// reset/aplicación masiva no reaplique el default de `weapon` ("none") y stripee
+// armas de las entidades.
+export const COMMAND_SYSTEM_IDS: SystemId[] = (
+  Object.keys(CATALOG_SYSTEMS).filter(
+    (id) => CATALOG_SYSTEMS[id as SystemId]?.menu !== "interact"
+  ) as SystemId[]
+);
+
 // ── Categorías ──────────────────────────────────────────────────────────────
 
 export const CATALOG_CATEGORIES: Record<CategoryId, CatalogCategory> = {
@@ -570,7 +666,7 @@ export const CATALOG_CATEGORIES: Record<CategoryId, CatalogCategory> = {
     id: CategoryIds.ADVANCED,
     displayName: "§6Configuración avanzada",
     description: "",
-    systemIds: [SystemIds.SPAWN, SystemIds.HEALTH, SystemIds.TELEPORT, SystemIds.INVINCIBLE],
+    systemIds: [SystemIds.ARMAMENT, SystemIds.SPAWN, SystemIds.HEALTH, SystemIds.TELEPORT, SystemIds.INVINCIBLE],
   },
   all: {
     id: CategoryIds.ALL,
@@ -583,6 +679,7 @@ export const CATALOG_CATEGORIES: Record<CategoryId, CatalogCategory> = {
       SystemIds.HEALTH,
       SystemIds.TELEPORT,
       SystemIds.INVINCIBLE,
+      SystemIds.ARMAMENT,
     ],
   },
 };
@@ -600,6 +697,7 @@ export const SYSTEM_SHORT_NAMES: Record<string, string> = {
   movement: "§1Movimiento§r",
   fire: "§cIniciativa§r",
   weapon: "§6Arma§r",
+  armament: "§6Armamento§r",
   spawn: "§bRefuerzos§r",
   health: "§cBarra de vida§r",
   teleport: "§2Teletransporte§r",
@@ -614,6 +712,7 @@ export const SYSTEM_DISPLAY_NAMES: Record<SystemId, string> = {
   movement: "§1Movimiento / Patrulla",
   fire: "§cIniciativa de Combate",
   weapon: "§6Arma equipada",
+  armament: "§6Armamento",
   spawn: "§bTraer refuerzos",
   health: "§cBarra de vida",
   teleport: "§2Teletransporte",

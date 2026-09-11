@@ -1,6 +1,7 @@
 // commands/register_test_commands.ts
 import { system, world, CustomCommandStatus, CommandPermissionLevel, CustomCommandParamType } from "@minecraft/server";
 import { systems as menuSystems, UnitHierarchy, SpecialGroups, Factions } from "../gui/commandMenu/menu_config.js";
+import { COMMAND_SYSTEM_IDS } from "../gui/shared/systemCatalog.js";
 import { resetMenuSystemStates } from "../gui/commandMenu/core/menu_events.js";
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -65,7 +66,7 @@ system.beforeEvents.startup.subscribe((init) => {
                 : `§7[TESTEO] No habia propiedades guardadas.`;
           } else if (mode === "complete") {
             // ── COMPLETE: guardar defaults completos (todas las claves) ─────────
-            const systemIds = Object.keys(menuSystems as any);
+            const systemIds = COMMAND_SYSTEM_IDS;
             const allSystems = menuSystems as Record<string, any>;
             for (const sysId of systemIds) {
               const defaults = allSystems[sysId]?.defaults;
@@ -80,7 +81,7 @@ system.beforeEvents.startup.subscribe((init) => {
             // ── SIMULATE: DPs incompletos (sin grupos C, D, sinGrupo) ──────────
             // Simula exactamente el bug de la refactorización: el builder filtra
             // los dropdowns de esos grupos pero el estado guardado no los incluye.
-            const systemIds = Object.keys(menuSystems as any);
+            const systemIds = COMMAND_SYSTEM_IDS;
             const allSystems = menuSystems as Record<string, any>;
 
             for (const sysId of systemIds) {
