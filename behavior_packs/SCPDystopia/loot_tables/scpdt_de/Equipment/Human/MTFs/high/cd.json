@@ -7,19 +7,19 @@
         {
           "type": "item",
           "name": "lc:dt_mp7",
-          "weight": 22,
+          "weight": 20,
           "functions": []
         },
         {
           "type": "item",
           "name": "lc:dt_mp5a3",
-          "weight": 22,
+          "weight": 20,
           "functions": []
         },
         {
           "type": "item",
           "name": "lc:dt_p90",
-          "weight": 22,
+          "weight": 20,
           "functions": []
         },
         {
@@ -37,25 +37,25 @@
         {
           "type": "item",
           "name": "lc:dt_scar",
-          "weight": 15,
+          "weight": 21,
           "functions": []
         },
         {
           "type": "item",
           "name": "lc:dt_m4a1",
-          "weight": 13,
+          "weight": 14,
           "functions": []
         },
         {
           "type": "item",
           "name": "lc:dt_hk416",
-          "weight": 8,
+          "weight": 9,
           "functions": []
         },
         {
           "type": "item",
           "name": "lc:dt_dystopia_rifle",
-          "weight": 7,
+          "weight": 8,
           "functions": []
         }
       ]

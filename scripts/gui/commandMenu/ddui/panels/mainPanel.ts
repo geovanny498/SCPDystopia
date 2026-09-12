@@ -14,6 +14,8 @@ import {
   ROLE_LABELS,
   CATALOG_CATEGORIES,
   CATALOG_SYSTEMS,
+  MENU_CONFIG,
+  CategoryIds,
   TARGET_FACTION_OPTIONS,
   ERROR_MESSAGES,
   isSystemVisibleForRole,
@@ -136,11 +138,19 @@ export function showMainPanel(player: Player, rememberedTargetFaction?: TargetFa
 
     form.spacer();
 
-    const nonAdvancedCategory = CATALOG_CATEGORIES.movement;
-    const fireCategory = CATALOG_CATEGORIES.fire;
+    // Categorías "inline" del panel principal: deriva el orden y el conjunto
+    // de categorías de MENU_CONFIG.categoryOrder (fuente única de verdad).
+    // Excluye ADVANCED: en DDUI es un sub-panel (abre `advancedPanel`), no
+    // botones de sistema inline. Añadir/reordenar una categoría "inline-capable"
+    // en el catálogo se refleja aquí sin tocar este builder.
+    const inlineCategoryIds = MENU_CONFIG.categoryOrder.filter(
+      (id) => id !== CategoryIds.ADVANCED
+    );
 
-    if (nonAdvancedCategory) {
-      for (const systemId of nonAdvancedCategory.systemIds) {
+    for (const catId of inlineCategoryIds) {
+      const category = CATALOG_CATEGORIES[catId];
+      if (!category) continue;
+      for (const systemId of category.systemIds) {
         const systemConfig = CATALOG_SYSTEMS[systemId];
         if (!systemConfig) continue;
         if (!isSystemVisibleForRole(systemConfig, effectiveRole)) continue;
@@ -152,26 +162,16 @@ export function showMainPanel(player: Player, rememberedTargetFaction?: TargetFa
       }
     }
 
-    if (fireCategory) {
-      for (const systemId of fireCategory.systemIds) {
-        const systemConfig = CATALOG_SYSTEMS[systemId];
-        if (!systemConfig) continue;
-        if (!isSystemVisibleForRole(systemConfig, effectiveRole)) continue;
-        form.button(stripColorCodes(systemConfig.displayName), () => {
-          closeReason = "navigation";
-          nextPanel = () => buildSystemView({ systemId, player, targetFaction: selectedFaction })();
-          form.close();
-        });
-      }
-    }
+    // `divider` separa los sistemas inline (movement/fire/armamento) de los
+    // botones de navegacion a sub-panel (advanced/groups/history). Fijo: los
+    // sistemas inline siempre estan presentes (minRole: member).
+    form.divider();
 
     form.button(stripColorCodes(MAIN_PANEL_BUTTONS.advanced), () => {
       closeReason = "navigation";
       nextPanel = () => showAdvancedPanel(player, selectedFaction);
       form.close();
     });
-
-    form.divider();
 
     form.button(stripColorCodes(MAIN_PANEL_BUTTONS.groups), () => {
       closeReason = "navigation";

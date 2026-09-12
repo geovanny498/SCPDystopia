@@ -54,13 +54,13 @@ export type MenuAffiliation = "command" | "interact" | "both";
  *
  * Nota: Los IDs de categoría para sistemas individuales (movement, fire)
  * coinciden con los IDs de sistema para evitar duplicación semántica.
- * Las categorías avanzadas y "all" agrupan múltiples sistemas.
+ * La categoría `advanced` agrupa múltiples sistemas.
  */
 export const CategoryIds = {
   MOVEMENT: "movement",
   FIRE: "fire",
+  ARMAMENT: "armament",
   ADVANCED: "advanced",
-  ALL: "all",
 } as const;
 
 /**
@@ -423,11 +423,11 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
   },
   armament: {
     id: SystemIds.ARMAMENT,
-    displayName: "§6Armamento",
+    displayName: "§6Distribución de Armamento",
     controlType: "dropdown",
     options: ARMAMENT_OPTIONS,
     description: "",
-    category: CategoryIds.ADVANCED,
+    category: CategoryIds.ARMAMENT,
     menu: "command",
     dynamicProperty: "scpd_system_armament",
     tooltip:
@@ -647,40 +647,64 @@ export const COMMAND_SYSTEM_IDS: SystemId[] = (
   ) as SystemId[]
 );
 
+// ── Nombres de display de sistemas ─────────────────────────────────────────
+// Definidos ANTES de CATALOG_CATEGORIES para que CATALOG_CATEGORIES pueda
+// derivar sus `displayName` de una sola fuente sin TDZ de `const`.
+
+export const SYSTEM_DISPLAY_NAMES: Record<SystemId, string> = {
+  movement: "§1Movimiento / Patrulla",
+  fire: "§cIniciativa de Combate",
+  weapon: "§6Arma equipada",
+  armament: "§6Distribución de Armamento",
+  spawn: "§bTraer refuerzos",
+  health: "§cBarra de vida",
+  teleport: "§2Teletransporte",
+  invincible: "Invencibilidad",
+};
+
+// ── Labels de categorías ────────────────────────────────────────────────────
+
+/**
+ * Labels de categoría para navegación UI.
+ *
+ * `advanced_menu` es un label de navegación interna de interactMenu
+ * (no una categoría de catálogo). Se mantiene con JSDoc para diferenciarla
+ * de `advanced` (categoría de sistemas del catálogo).
+ */
+export const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
+  movement: "§1Movimiento / Patrulla",
+  fire: "§cIniciativa de Combate",
+  weapon: "§6Arma equipada",
+  advanced: "§6Configuración avanzada",
+  advanced_menu: "§6Más sistemas",
+};
+
 // ── Categorías ──────────────────────────────────────────────────────────────
 
 export const CATALOG_CATEGORIES: Record<CategoryId, CatalogCategory> = {
   movement: {
     id: SystemIds.MOVEMENT,
-    displayName: "§1Movimiento / Patrulla",
+    displayName: SYSTEM_DISPLAY_NAMES.movement,
     description: "",
     systemIds: [SystemIds.MOVEMENT],
   },
   fire: {
     id: SystemIds.FIRE,
-    displayName: "§cIniciativa de Combate",
+    displayName: SYSTEM_DISPLAY_NAMES.fire,
     description: "",
     systemIds: [SystemIds.FIRE],
   },
+  armament: {
+    id: SystemIds.ARMAMENT,
+    displayName: SYSTEM_DISPLAY_NAMES.armament,
+    description: "",
+    systemIds: [SystemIds.ARMAMENT],
+  },
   advanced: {
     id: CategoryIds.ADVANCED,
-    displayName: "§6Configuración avanzada",
+    displayName: CATEGORY_DISPLAY_NAMES.advanced,
     description: "",
-    systemIds: [SystemIds.ARMAMENT, SystemIds.SPAWN, SystemIds.HEALTH, SystemIds.TELEPORT, SystemIds.INVINCIBLE],
-  },
-  all: {
-    id: CategoryIds.ALL,
-    displayName: "§lTodos los Sistemas",
-    description: "",
-    systemIds: [
-      SystemIds.MOVEMENT,
-      SystemIds.FIRE,
-      SystemIds.SPAWN,
-      SystemIds.HEALTH,
-      SystemIds.TELEPORT,
-      SystemIds.INVINCIBLE,
-      SystemIds.ARMAMENT,
-    ],
+    systemIds: [SystemIds.SPAWN, SystemIds.HEALTH, SystemIds.TELEPORT, SystemIds.INVINCIBLE],
   },
 };
 
@@ -704,36 +728,6 @@ export const SYSTEM_SHORT_NAMES: Record<string, string> = {
   invincible: "Invencibilidad",
   group_assignment: "§9Grupos§r",
   scope: "§dScope§r",
-};
-
-// ── Nombres de display de sistemas ─────────────────────────────────────────
-
-export const SYSTEM_DISPLAY_NAMES: Record<SystemId, string> = {
-  movement: "§1Movimiento / Patrulla",
-  fire: "§cIniciativa de Combate",
-  weapon: "§6Arma equipada",
-  armament: "§6Armamento",
-  spawn: "§bTraer refuerzos",
-  health: "§cBarra de vida",
-  teleport: "§2Teletransporte",
-  invincible: "Invencibilidad",
-};
-
-// ── Labels de categorías ────────────────────────────────────────────────────
-
-/**
- * Labels de categoría para navegación UI.
- *
- * `advanced_menu` es un label de navegación interna de interactMenu
- * (no una categoría de catálogo). Se mantiene con JSDoc para diferenciarla
- * de `advanced` (categoría de sistemas del catálogo).
- */
-export const CATEGORY_DISPLAY_NAMES: Record<string, string> = {
-  movement: "§1Movimiento / Patrulla",
-  fire: "§cIniciativa de Combate",
-  weapon: "§6Arma equipada",
-  advanced: "§6Configuración avanzada",
-  advanced_menu: "§6Más sistemas",
 };
 
 // ── Labels de grupos especiales ─────────────────────────────────────────────
@@ -799,7 +793,7 @@ export const HELMET_DISPLAY_NAMES: Record<string, string> = {
 
 export const MENU_CONFIG = {
   title: "SCPDystopia | Panel de Comandos",
-  categoryOrder: [CategoryIds.MOVEMENT, CategoryIds.FIRE, CategoryIds.ADVANCED, CategoryIds.ALL] as CategoryId[],
+  categoryOrder: [CategoryIds.MOVEMENT, CategoryIds.FIRE, CategoryIds.ARMAMENT, CategoryIds.ADVANCED] as CategoryId[],
   useDividers: true,
   messages: {
     allSystems:
@@ -889,7 +883,7 @@ export const PANEL_DESCRIPTIONS: Record<string, string> = {
 
 export const MAIN_PANEL_BUTTONS = {
   systems: "§1Sistemas",
-  advanced: "§6Configuración Avanzada",
+  advanced: CATALOG_CATEGORIES.advanced.displayName,
   groups: "§9Grupos de Especiales",
   history: "§dHistorial",
 };
