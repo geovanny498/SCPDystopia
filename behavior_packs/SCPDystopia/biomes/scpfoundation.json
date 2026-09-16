@@ -7,10 +7,7 @@
     "components": {
       "minecraft:climate": {
         "downfall": 0.5,
-        "snow_accumulation": [
-          0.0,
-          0.0
-        ],
+        "snow_accumulation": [0.0, 0.0],
         "temperature": 0.6
       },
       "minecraft:overworld_height": {
@@ -29,14 +26,8 @@
       },
       "minecraft:overworld_generation_rules": {
         "generate_for_climates": [
-          [
-            "cold",
-            2
-          ],
-          [
-            "medium",
-            20
-          ]
+          ["cold", 2],
+          ["medium", 20]
         ]
       }
     }

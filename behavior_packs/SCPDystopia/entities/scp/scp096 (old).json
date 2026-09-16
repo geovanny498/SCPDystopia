@@ -3,156 +3,102 @@
     "events": {
       "scp096:normal_speed": {
         "remove": {
-          "component_groups": [
-            "speed_fast"
-          ]
+          "component_groups": ["speed_fast"]
         },
         "add": {
-          "component_groups": [
-            "speed_normal"
-          ]
+          "component_groups": ["speed_normal"]
         }
       },
       "scp096:fast_speed": {
         "remove": {
-          "component_groups": [
-            "speed_normal"
-          ]
+          "component_groups": ["speed_normal"]
         },
         "add": {
-          "component_groups": [
-            "speed_fast"
-          ]
+          "component_groups": ["speed_fast"]
         }
       },
       "normal": {
         "remove": {
-          "component_groups": [
-            "minecraft:chase"
-          ]
+          "component_groups": ["minecraft:chase"]
         },
         "add": {
-          "component_groups": [
-            "minecraft:normal"
-          ]
+          "component_groups": ["minecraft:normal"]
         }
       },
       "minecraft:on_calm": {
         "remove": {
-          "component_groups": [
-            "scp096:still_angry",
-            "minecraft:scp096_angry",
-            "minecraft:triggered"
-          ]
+          "component_groups": ["scp096:still_angry", "minecraft:scp096_angry", "minecraft:triggered"]
         },
         "add": {
-          "component_groups": [
-            "minecraft:scp096_calm",
-            "minecraft:scp096_closed"
-          ]
+          "component_groups": ["minecraft:scp096_calm", "minecraft:scp096_closed"]
         }
       },
       "minecraft:entity_spawned": {
         "add": {
-          "component_groups": [
-            "minecraft:scp096_calm",
-            "without_bag"
-          ]
+          "component_groups": ["minecraft:scp096_calm", "without_bag"]
         }
       },
       "minecraft:become_angry": {
         "remove": {
-          "component_groups": [
-            "minecraft:scp096_calm",
-            "minecraft:scp096_closed"
-          ]
+          "component_groups": ["minecraft:scp096_calm", "minecraft:scp096_closed"]
         },
         "add": {
-          "component_groups": [
-            "minecraft:scp096_angry",
-            "minecraft:triggered"
-          ]
+          "component_groups": ["minecraft:scp096_angry", "minecraft:triggered"]
         }
       },
       "angry": {
         "remove": {
-          "component_groups": [
-            "minecraft:normal"
-          ]
+          "component_groups": ["minecraft:normal"]
         },
         "add": {
-          "component_groups": [
-            "minecraft:chase"
-          ]
+          "component_groups": ["minecraft:chase"]
         }
       },
       "scp096:still_angry": {
         "remove": {
-          "component_groups": [
-            "minecraft:scp096_angry"
-          ]
+          "component_groups": ["minecraft:scp096_angry"]
         },
         "add": {
-          "component_groups": [
-            "scp096:still_angry"
-          ]
+          "component_groups": ["scp096:still_angry"]
         }
       },
       "scp096:to_angry_no_calm": {
         "remove": {
-          "component_groups": [
-            "scp096:still_angry"
-          ]
+          "component_groups": ["scp096:still_angry"]
         },
         "add": {
-          "component_groups": [
-            "minecraft:scp096_angry"
-          ]
+          "component_groups": ["minecraft:scp096_angry"]
         }
       },
       "scp096:to_serial_killer": {
         "add": {
-          "component_groups": [
-            "scp096:serialkiller"
-          ]
+          "component_groups": ["scp096:serialkiller"]
         }
       },
       "scp096:stop_serial_killer": {
         "remove": {
-          "component_groups": [
-            "scp096:serialkiller"
-          ]
+          "component_groups": ["scp096:serialkiller"]
         }
       },
       "scp096:drop_bag_end": {
         "remove": {
-          "component_groups": [
-            "drop_bag"
-          ]
+          "component_groups": ["drop_bag"]
         }
       },
       "scp096:remove_bag": {
         "add": {
-          "component_groups": [
-            "without_bag"
-          ]
+          "component_groups": ["without_bag"]
         },
         "remove": {
-          "component_groups": [
-            "with_bag"
-          ]
+          "component_groups": ["with_bag"]
         }
       },
       "scp096:wear_bag": {
         "add": {
-          "component_groups": [
-            "with_bag"
-          ]
+          "component_groups": ["with_bag"]
         },
         "remove": {
-          "component_groups": [
-            "without_bag"
-          ]
+          "component_groups": ["without_bag"]
         }
       }
     },
@@ -294,13 +240,7 @@
           "value": 0
         },
         "minecraft:type_family": {
-          "family": [
-            "scp096",
-            "scp",
-            "mob",
-            "monster",
-            "scp096_without_bag"
-          ]
+          "family": ["scp096", "scp", "mob", "monster", "scp096_without_bag"]
         },
         "minecraft:interact": {
           "interactions": {
@@ -312,8 +252,8 @@
                   { "test": "is_sneaking", "subject": "other", "operator": "==" }
                 ]
               },
-            "event": "scp096:wear_bag",
-            "target": "self"
+              "event": "scp096:wear_bag",
+              "target": "self"
             },
             "use_item": true,
             "swing": true,
@@ -330,7 +270,7 @@
               {
                 "all_of": [
                   {
-                    "other_with_families": [ "human", "mob", "scp" ]
+                    "other_with_families": ["human", "mob", "scp"]
                   },
                   {
                     "subject": "other",
@@ -365,10 +305,7 @@
           "value": 1
         },
         "minecraft:type_family": {
-          "family": [
-            "scp096_with_bag",
-            "mob"
-          ]
+          "family": ["scp096_with_bag", "mob"]
         },
         "minecraft:interact": {
           "interactions": {
@@ -379,8 +316,8 @@
                   { "test": "is_sneaking", "subject": "other", "operator": "==" }
                 ]
               },
-            "event": "scp096:remove_bag",
-            "target": "self"
+              "event": "scp096:remove_bag",
+              "target": "self"
             },
             "use_item": false,
             "swing": true,
@@ -400,7 +337,7 @@
         },
         "minecraft:timer": {
           "looping": false,
-          "time": [1,1],
+          "time": [1, 1],
           "randomInterval": true,
           "time_down_event": {
             "event": "scp096:drop_bag_end",
@@ -495,11 +432,7 @@
           "value": 0.6
         },
         "minecraft:break_blocks": {
-          "breakable_blocks": [
-            "iron_door",
-            "tnt",
-            "glass"
-          ]
+          "breakable_blocks": ["iron_door", "tnt", "glass"]
         },
         "minecraft:on_target_acquired": {},
         "minecraft:angry": {
@@ -519,10 +452,7 @@
         },
         "minecraft:timer": {
           "looping": false,
-          "time": [
-            90,
-            110
-          ],
+          "time": [90, 110],
           "randomInterval": true,
           "time_down_event": {
             "event": "minecraft:on_calm",

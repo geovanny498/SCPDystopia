@@ -14,7 +14,7 @@ import {
   getSystemDefaults,
 } from "../../commandMenu/menu_config.js";
 import { SpecialGroups, UnitHierarchy, Factions } from "../../../constants/domains.js";
-import { GROUP_LABELS, CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
+import { GROUP_LABELS, CATALOG_SYSTEMS, ERROR_MESSAGES, type SystemId } from "../../shared/systemCatalog.js";
 import { getEntityFactionInfo, type EntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
 import { setUnitGroup, getUnitGroup } from "../../commandMenu/model/menu_groups.js";
 import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../shared/entityScope.js";
@@ -848,4 +848,29 @@ export function refreshStatus(
     systemStateDetail,
     configLabel: configLine,
   };
+}
+
+/**
+ * Maneja el caso de entidad inválida (muerta o eliminada): opcionalmente cierra
+ * el formulario abierto, limpia la sesión del jugador del store y notifica al
+ * jugador. Centraliza el patrón de cleanup+notify para evitar sesiones fantasmas.
+ *
+ * @param player  Jugador cuya sesión se limpia y al que se notifica.
+ * @param form  Formulario `CustomForm` abierto (opcional). Se cierra si se provee.
+ */
+export function handleInvalidEntity(player: Player, form?: { close(): void }): void {
+  if (form) {
+    try {
+      form.close();
+    } catch {
+      // form ya cerrado o no visible
+    }
+  }
+  interactMenuSessionStore.cleanup(player.id);
+  try {
+    player.sendMessage(ERROR_MESSAGES.ENTITY_NOT_AVAILABLE);
+  } catch {
+    // jugador desconectado
+  }
+  debugMessage("interactDDUI", `Entidad inválida: sesión limpiada para ${player.id}`, "gray");
 }

@@ -25,4 +25,3 @@ export function openCommandMenuDDUI(player: Player): void {
     player.sendMessage(ERROR_MESSAGES.OPEN_MENU);
   }
 }
-

@@ -7,9 +7,7 @@
       "is_summonable": true,
       "is_experimental": false,
       "scripts": {
-        "animate": [
-          "cont"
-        ]
+        "animate": ["cont"]
       },
       "animations": {
         "cont": "controller.animation.scpdt.instantkill"
@@ -28,7 +26,7 @@
         "value": 10.0
       },
       "minecraft:type_family": {
-        "family": [ "scpfoundation", "player", "human", "mob", "mtf", "villager" ]
+        "family": ["scpfoundation", "player", "human", "mob", "mtf", "villager"]
       },
       "minecraft:damage_sensor": {
         "triggers": [
@@ -83,11 +81,7 @@
           {
             "on_damage": {
               "filters": {
-                "other_with_families": [
-                  "scpfoundation",
-                  "mtf",
-                  "m249_turret"
-                ]
+                "other_with_families": ["scpfoundation", "mtf", "m249_turret"]
               }
             },
             "deals_damage": false
@@ -215,9 +209,7 @@
     "events": {
       "minecraft:death": {
         "add": {
-          "component_groups": [
-            "death"
-          ]
+          "component_groups": ["death"]
         }
       }
     }

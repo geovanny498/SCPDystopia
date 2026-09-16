@@ -17,9 +17,7 @@
               "day": "!query.is_sheared"
             }
           ],
-          "on_entry": [
-            "/fill ~2 ~0 ~2 ~-2 ~-0 ~-2 fire 0 keep"
-          ]
+          "on_entry": ["/fill ~2 ~0 ~2 ~-2 ~-0 ~-2 fire 0 keep"]
         }
       }
     }

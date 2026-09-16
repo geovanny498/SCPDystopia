@@ -34,10 +34,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 40,
           "burst_interval": 0.16,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 1.35,
-          "attack_interval_min": 1.35,
-          "attack_interval_max": 1.35,
           "attack_radius": 45.0,
           "speed_multiplier": 1.0
         }
@@ -52,10 +50,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 40,
           "burst_interval": 0.2,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 1.35,
-          "attack_interval_min": 1.35,
-          "attack_interval_max": 1.35,
           "attack_radius": 45.0,
           "speed_multiplier": 1.0
         }
@@ -70,10 +66,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 30,
           "burst_interval": 0.2,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 1.35,
-          "attack_interval_min": 1.35,
-          "attack_interval_max": 1.35,
           "attack_radius": 45.0,
           "speed_multiplier": 1.0
         }
@@ -88,10 +82,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 30,
           "burst_interval": 0.2,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 1.35,
-          "attack_interval_min": 1.35,
-          "attack_interval_max": 1.35,
           "attack_radius": 45.0,
           "speed_multiplier": 1.0
         }
@@ -106,10 +98,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 30,
           "burst_interval": 0.21,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 1.35,
-          "attack_interval_min": 1.35,
-          "attack_interval_max": 1.35,
           "attack_radius": 35.0,
           "speed_multiplier": 1.0
         }
@@ -124,10 +114,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 50,
           "burst_interval": 0.2,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 1.35,
-          "attack_interval_min": 1.35,
-          "attack_interval_max": 1.35,
           "attack_radius": 35.0,
           "speed_multiplier": 1.0
         }
@@ -142,10 +130,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 30,
           "burst_interval": 0.21,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 1.35,
-          "attack_interval_min": 1.35,
-          "attack_interval_max": 1.35,
           "attack_radius": 25.0,
           "speed_multiplier": 1.0
         }
@@ -160,10 +146,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 30,
           "burst_interval": 0.21,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 1.35,
-          "attack_interval_min": 1.35,
-          "attack_interval_max": 1.35,
           "attack_radius": 25.0,
           "speed_multiplier": 1.0
         }
@@ -178,10 +162,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 30,
           "burst_interval": 4,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 3.0,
-          "attack_interval_min": 3.0,
-          "attack_interval_max": 3.0,
           "attack_radius": 128.0,
           "speed_multiplier": 1.0
         }
@@ -196,10 +178,8 @@
           "target_in_sight_time": 0.3,
           "burst_shots": 30,
           "burst_interval": 4,
-          "charge_charged_trigger": 0.0,
+          "charge_charged_trigger": 0.05,
           "charge_shoot_trigger": 3.0,
-          "attack_interval_min": 3.0,
-          "attack_interval_max": 3.0,
           "attack_radius": 45.0,
           "speed_multiplier": 1.0
         }

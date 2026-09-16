@@ -7,9 +7,7 @@
       "is_summonable": true,
       "is_experimental": false,
       "scripts": {
-        "animate": [
-          "anim_cont"
-        ]
+        "animate": ["anim_cont"]
       },
       "animations": {
         "anim_cont": "controller.animation.dt_env_controller.command"
@@ -28,7 +26,7 @@
             "all_of": [
               { "test": "is_family", "subject": "other", "value": "player" },
               { "test": "has_equipment", "subject": "other", "domain": "head", "value": "lc:dt_nvg" }
-            ] 
+            ]
           }
         }
       },
@@ -41,7 +39,7 @@
             "all_of": [
               { "test": "is_family", "subject": "other", "value": "player" },
               { "test": "has_equipment", "subject": "other", "domain": "head", "value": "lc:dt_scp268" }
-            ] 
+            ]
           }
         }
       }
@@ -58,7 +56,7 @@
         }
       },
       "minecraft:type_family": {
-        "family": [ "inanimate", "environment_controller" ]
+        "family": ["inanimate", "environment_controller"]
       },
       "minecraft:health": {
         "value": 10,
@@ -80,26 +78,19 @@
     "events": {
       "env_controller:delete": {
         "add": {
-          "component_groups": [
-            "delete"
-          ]
+          "component_groups": ["delete"]
         }
       },
       "env_controller:nvg_effect": {
         "add": {
-          "component_groups": [
-            "env_controller:nvg_effect"
-          ]
+          "component_groups": ["env_controller:nvg_effect"]
         }
       },
       "env_controller:scp268_effect": {
         "add": {
-          "component_groups": [
-            "env_controller:scp268_effect"
-          ]
+          "component_groups": ["env_controller:scp268_effect"]
         }
       }
     }
   }
 }
-  

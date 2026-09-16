@@ -3,11 +3,7 @@ import { system, Player, Entity } from "@minecraft/server";
 import { ActionFormData, ActionFormResponse, ModalFormData } from "@minecraft/server-ui";
 import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
 import { debugWarn, debugMessage } from "../../utils/debug.js";
-import {
-  isGlobalOverwriteAllowed,
-  setGlobalOverwriteAllowed,
-  getGlobalOverwriteLabel,
-} from "../shared/entityScope.js";
+import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, getGlobalOverwriteLabel } from "../shared/entityScope.js";
 
 // Utilizar la misma configuración que el menú de comandos para detectar
 // qué eventos son de taming y mapear cambios de sistema en la entidad

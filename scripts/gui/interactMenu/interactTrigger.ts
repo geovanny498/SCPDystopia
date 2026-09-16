@@ -102,6 +102,15 @@ export function openInteractMenuForEntity(player: Player, targetEntity: Entity):
       return;
     }
 
+    // Guard: entity target may have been killed/removed between the trigger
+    // and this call. If the entity is invalid, clean up any stale session
+    // and notify the player.
+    if (!targetEntity.isValid) {
+      interactMenuSessionStore.cleanup(player.id);
+      debugWarn("interactTrigger", `Entidad objetivo inválida para ${player.name}`, "yellow");
+      return;
+    }
+
     debugWarn(
       "interactTrigger",
       `openInteractMenuForEntity player=${player?.name ?? "?"} target=${targetEntity?.typeId ?? "?"}`

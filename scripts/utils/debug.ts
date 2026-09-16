@@ -24,9 +24,9 @@ export const DEBUG_MODULES: string[] = [
   // DEPURACIÓN DE DAÑO — Activos para verificar aplicación de daño
   // ═══════════════════════════════════════════════════════════════════════════
   // "projectileHitEntity",
-  "damage",
+  // "damage",
   "entityDie",
-  "projectileSound",
+  // "projectileSound",
   // "entityDamageConfig",
 
   // ═══════════════════════════════════════════════════════════════════════════

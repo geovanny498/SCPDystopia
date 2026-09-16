@@ -206,7 +206,12 @@ export function buildSystemForm(
  * @param {string|null} selectedFaction
  * @param {Array|null} activeGroups — IDs de grupos que se mostraron en el formulario (para sincronizar índices)
  */
-export function parseSystemFormValues(systems: any[], formValues: any[], selectedFaction: any = null, activeGroups: any = null) {
+export function parseSystemFormValues(
+  systems: any[],
+  formValues: any[],
+  selectedFaction: any = null,
+  activeGroups: any = null
+) {
   const filtered = formValues.filter((v: any) => v !== null && v !== undefined);
   const parsedStates: any = {};
   let valueIndex = 0;

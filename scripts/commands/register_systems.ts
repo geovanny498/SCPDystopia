@@ -317,7 +317,7 @@ system.beforeEvents.startup.subscribe((init) => {
           }
           const systemConfig = (menuSystems as any)[target];
           if (!systemConfig) {
-              const validIds = COMMAND_SYSTEM_IDS.join(", ");
+            const validIds = COMMAND_SYSTEM_IDS.join(", ");
             return {
               status: CustomCommandStatus.Failure,
               message: `§cSistema "${target}" no encontrado.\n§7IDs válidos: §f${validIds}`,

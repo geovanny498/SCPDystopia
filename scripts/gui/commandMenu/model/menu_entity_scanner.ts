@@ -386,7 +386,11 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
   const activeFamilyTags: { [tagId: string]: { label: string; unitCount: number } } = {};
 
   if (faction === "both") {
-    debugWarn("menuScanner:base", "scanActiveEntities no soporta 'both'; usar scanActiveUnitsMerged para fusión", "red");
+    debugWarn(
+      "menuScanner:base",
+      "scanActiveEntities no soporta 'both'; usar scanActiveUnitsMerged para fusión",
+      "red"
+    );
     return {
       entities: [],
       byHierarchy: {},

@@ -41,11 +41,7 @@ export class PlayerPermissionManager {
     const key = faction === "foundation" ? ROLE_DP_KEY_FOUNDATION : ROLE_DP_KEY_CHAOS;
     try {
       player.setDynamicProperty(key, role);
-      debugMessage(
-        "roleMenu",
-        `Rol actualizado para ${player.name}: ${faction} = ${role}`,
-        "green"
-      );
+      debugMessage("roleMenu", `Rol actualizado para ${player.name}: ${faction} = ${role}`, "green");
     } catch (e) {
       debugWarn("roleMenu", `Error guardando rol para ${player.name}: ${e}`, "red");
     }
@@ -72,10 +68,7 @@ export class PlayerPermissionManager {
     }
   }
 
-  static setRolesBatch(
-    player: Player,
-    values: Record<string, string | boolean | number | null>
-  ): void {
+  static setRolesBatch(player: Player, values: Record<string, string | boolean | number | null>): void {
     const payload: Record<string, string | boolean | number | null> = {};
     for (const key of Object.keys(values)) {
       payload[key] = values[key] === undefined ? null : values[key];

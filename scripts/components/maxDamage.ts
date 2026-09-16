@@ -12,4 +12,3 @@ function onHitEntity(arg: ItemComponentHitEntityEvent, _params: CustomComponentP
 system.beforeEvents.startup.subscribe((event) => {
   event.itemComponentRegistry.registerCustomComponent("scpdy:deal_max_damage_on_hit", { onHitEntity });
 });
-

@@ -17,9 +17,7 @@
               "default": "query.is_alive == 1.0"
             }
           ],
-          "on_entry": [
-            "/execute @p[y=~50] ~~~ tp @e[type=lc:dt_environment_controller,y~-50,c=1] ~~-50~"
-          ]
+          "on_entry": ["/execute @p[y=~50] ~~~ tp @e[type=lc:dt_environment_controller,y~-50,c=1] ~~-50~"]
         }
       }
     }

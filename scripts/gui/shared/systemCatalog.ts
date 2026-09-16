@@ -641,11 +641,9 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
 // scope consumen este arreglo en vez de `Object.keys(menuSystems)` para que un
 // reset/aplicación masiva no reaplique el default de `weapon` ("none") y stripee
 // armas de las entidades.
-export const COMMAND_SYSTEM_IDS: SystemId[] = (
-  Object.keys(CATALOG_SYSTEMS).filter(
-    (id) => CATALOG_SYSTEMS[id as SystemId]?.menu !== "interact"
-  ) as SystemId[]
-);
+export const COMMAND_SYSTEM_IDS: SystemId[] = Object.keys(CATALOG_SYSTEMS).filter(
+  (id) => CATALOG_SYSTEMS[id as SystemId]?.menu !== "interact"
+) as SystemId[];
 
 // ── Nombres de display de sistemas ─────────────────────────────────────────
 // Definidos ANTES de CATALOG_CATEGORIES para que CATALOG_CATEGORIES pueda
@@ -978,6 +976,7 @@ export const ERROR_MESSAGES = {
   DDUI_OPEN_SYSTEMS: "§c[DDUI] Error al abrir el menú de sistemas avanzados.",
   DDUI_OPEN_MANAGEMENT: "§c[DDUI] Error al abrir el menú de gestión y estado.",
   DDUI_OPEN_HISTORY: "§c[DDUI] Error al abrir el historial.",
+  ENTITY_NOT_AVAILABLE: "§c[SCPDystopia] La unidad objetivo ya no se encuentra disponible.",
 };
 
 export const SCOPE_RESPECT_LABEL = "Respetar bloqueos";

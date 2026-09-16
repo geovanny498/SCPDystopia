@@ -205,10 +205,7 @@ export function getEntityFamilies(ent: Entity): string[] {
  * @param families - Familias de la entidad (de getEntityFamilies)
  * @returns true si el sistema está bloqueado, false si está permitido
  */
-export function isSystemBlockedByFamilies(
-  system: CatalogSystem,
-  families: string[]
-): boolean {
+export function isSystemBlockedByFamilies(system: CatalogSystem, families: string[]): boolean {
   // Paso 1: Verificar familias bloqueadas (tienen prioridad)
   if (system.blockedFamilies && system.blockedFamilies.length > 0) {
     if (system.blockedFamilies.some((f) => families.includes(f))) {
@@ -236,10 +233,7 @@ export function isSystemBlockedByFamilies(
  * @param hierarchy - Jerarquía de la unidad ("basic" | "leader" | "commander")
  * @returns true si la jerarquía está bloqueada, false si está permitida
  */
-export function isSystemBlockedByHierarchy(
-  system: CatalogSystem,
-  hierarchy: UnitHierarchyId | null
-): boolean {
+export function isSystemBlockedByHierarchy(system: CatalogSystem, hierarchy: UnitHierarchyId | null): boolean {
   if (!hierarchy || !system.blockedByHierarchy) return false;
   return system.blockedByHierarchy[hierarchy] === true;
 }

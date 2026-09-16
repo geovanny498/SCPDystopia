@@ -143,9 +143,7 @@ export function showMainPanel(player: Player, rememberedTargetFaction?: TargetFa
     // Excluye ADVANCED: en DDUI es un sub-panel (abre `advancedPanel`), no
     // botones de sistema inline. Añadir/reordenar una categoría "inline-capable"
     // en el catálogo se refleja aquí sin tocar este builder.
-    const inlineCategoryIds = MENU_CONFIG.categoryOrder.filter(
-      (id) => id !== CategoryIds.ADVANCED
-    );
+    const inlineCategoryIds = MENU_CONFIG.categoryOrder.filter((id) => id !== CategoryIds.ADVANCED);
 
     for (const catId of inlineCategoryIds) {
       const category = CATALOG_CATEGORIES[catId];

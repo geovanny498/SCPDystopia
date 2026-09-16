@@ -132,16 +132,10 @@
               "icon": "lc:dt_facility_wall_curve",
               "name": "lc:dt_item_group_curve_blocks"
             },
-            "items": [
-              "lc:dt_facility_wall_curve",
-              "lc:dt_gray_concrete_curve",
-              "lc:dt_light_gray_concrete_curve"
-            ]
+            "items": ["lc:dt_facility_wall_curve", "lc:dt_gray_concrete_curve", "lc:dt_light_gray_concrete_curve"]
           },
           {
-            "items": [
-              "lc:dt_button"
-            ]
+            "items": ["lc:dt_button"]
           },
           {
             "group_identifier": {
@@ -302,13 +296,7 @@
               "icon": "lc:dt_poster",
               "name": "lc:dt_item_group_posters_and_wall_signs"
             },
-            "items": [
-              "lc:dt_poster",
-              "lc:dt_wall_image",
-              "lc:dt_wall_sign",
-              "lc:dt_scp_logo",
-              "lc:dt_medbay_sign"
-            ]
+            "items": ["lc:dt_poster", "lc:dt_wall_image", "lc:dt_wall_sign", "lc:dt_scp_logo", "lc:dt_medbay_sign"]
           },
           {
             "group_identifier": {
@@ -328,12 +316,7 @@
               "icon": "lc:dt_scp049_plush",
               "name": "lc:dt_item_group_plushes"
             },
-            "items": [
-              "lc:dt_scp049_plush",
-              "lc:dt_scp106_plush",
-              "lc:dt_scp173_plush",
-              "lc:dt_scp939_plush"
-            ]
+            "items": ["lc:dt_scp049_plush", "lc:dt_scp106_plush", "lc:dt_scp173_plush", "lc:dt_scp939_plush"]
           }
         ]
       },
@@ -344,20 +327,13 @@
             "group_identifier": {
               "name": "minecraft:itemGroup.name.miscFood"
             },
-            "items": [
-              "lc:dt_candy1",
-              "lc:dt_candy2",
-              "lc:dt_candy3",
-              "lc:dt_pizza_slice"
-            ]
+            "items": ["lc:dt_candy1", "lc:dt_candy2", "lc:dt_candy3", "lc:dt_pizza_slice"]
           },
           {
             "group_identifier": {
               "name": "minecraft:itemGroup.name.pickaxe"
             },
-            "items": [
-              "lc:dt_dystopia_pickaxe"
-            ]
+            "items": ["lc:dt_dystopia_pickaxe"]
           },
           {
             "group_identifier": {
@@ -403,9 +379,7 @@
             "group_identifier": {
               "name": "minecraft:itemGroup.name.boots"
             },
-            "items": [
-              "lc:dt_tro_boots"
-            ]
+            "items": ["lc:dt_tro_boots"]
           },
           {
             "group_identifier": {
@@ -526,12 +500,7 @@
               "icon": "lc:dt_scp049_doc",
               "name": "lc:dt_item_group_scp_docs"
             },
-            "items": [
-              "lc:dt_scp049_doc",
-              "lc:dt_scp096_doc",
-              "lc:dt_scp173_doc",
-              "lc:dt_scp939_doc"
-            ]
+            "items": ["lc:dt_scp049_doc", "lc:dt_scp096_doc", "lc:dt_scp173_doc", "lc:dt_scp939_doc"]
           },
           {
             "group_identifier": {
@@ -553,10 +522,7 @@
         "category_name": "nature",
         "groups": [
           {
-            "items": [
-              "lc:dt_scpdystopia_orb",
-              "lc:dt_enhanced_scpdystopia_orb"
-            ]
+            "items": ["lc:dt_scpdystopia_orb", "lc:dt_enhanced_scpdystopia_orb"]
           },
           {
             "group_identifier": {

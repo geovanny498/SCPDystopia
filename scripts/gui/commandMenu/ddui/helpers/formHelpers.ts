@@ -27,11 +27,7 @@ export function stripColorCodes(text: string): string {
   return text.replace(/§[a-zA-Z0-9]/g, "");
 }
 
-export function buildSystemDropdown(
-  entries: SystemOption[],
-  entityId: string,
-  systemId?: string
-): BuiltDropdown {
+export function buildSystemDropdown(entries: SystemOption[], entityId: string, systemId?: string): BuiltDropdown {
   const obs = new ObservableNumber(0, { clientWritable: true });
   const items: DropdownItem[] = entries.map((entry, idx) => ({
     label: stripColorCodes(entry.label),
@@ -55,10 +51,7 @@ export function buildSystemDropdown(
   return { obs, items, disabled: false };
 }
 
-export function buildSystemToggle(
-  systemId: string,
-  entityId: string
-): BuiltToggle {
+export function buildSystemToggle(systemId: string, entityId: string): BuiltToggle {
   const raw = getEntitySystemState({ id: entityId } as any, systemId);
   const initialValue = typeof raw === "boolean" ? raw : false;
   const obs = new ObservableBoolean(initialValue, { clientWritable: true });

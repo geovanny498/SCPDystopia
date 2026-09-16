@@ -1,5 +1,12 @@
 // scripts/gui/commandMenu/menu_events.ts
-import { world, system, Entity, EntitySpawnAfterEvent, EntityLoadAfterEvent, EntityRemoveAfterEvent } from "@minecraft/server";
+import {
+  world,
+  system,
+  Entity,
+  EntitySpawnAfterEvent,
+  EntityLoadAfterEvent,
+  EntityRemoveAfterEvent,
+} from "@minecraft/server";
 import { debugWarn } from "../../../utils/debug.js";
 import { systems, invalidateScanCache, invalidateEntityQueryCache, getEntitiesCached } from "../menu_config.js";
 import { loadSystemOrDefault } from "./menu_state.js";

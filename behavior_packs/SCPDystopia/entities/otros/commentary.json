@@ -7,9 +7,7 @@
       "is_summonable": true,
       "is_experimental": false,
       "scripts": {
-        "animate": [
-          "commentary"
-        ]
+        "animate": ["commentary"]
       },
       "animations": {
         "commentary": "controller.animation.commentary.lc"
@@ -64,7 +62,7 @@
         "value": 10.0
       },
       "minecraft:type_family": {
-        "family": [ "inanimate" ]
+        "family": ["inanimate"]
       },
       "minecraft:damage_sensor": {
         "triggers": {
@@ -92,60 +90,39 @@
     "events": {
       "minecraft:entity_spawned": {
         "add": {
-          "component_groups": [
-            "placed",
-            "you_tried_to_use_summon"
-          ]
+          "component_groups": ["placed", "you_tried_to_use_summon"]
         }
       },
       "minecraft:start_despawn": {
         "add": {
-          "component_groups": [
-            "despawn"
-          ]
+          "component_groups": ["despawn"]
         }
       },
       "commentary:amogus": {
         "add": {
-          "component_groups": [
-            "placed",
-            "amogus"
-          ]
+          "component_groups": ["placed", "amogus"]
         }
       },
       "commentary:thanks": {
         "add": {
-          "component_groups": [
-            "placed",
-            "thanks"
-          ]
+          "component_groups": ["placed", "thanks"]
         }
       },
       "commentary:main_features": {
         "add": {
-          "component_groups": [
-            "placed",
-            "main_features"
-          ]
+          "component_groups": ["placed", "main_features"]
         }
       },
       "commentary:compatibility": {
         "add": {
-          "component_groups": [
-            "placed",
-            "compatibility"
-          ]
+          "component_groups": ["placed", "compatibility"]
         }
       },
       "commentary:first_version": {
         "add": {
-          "component_groups": [
-            "placed",
-            "first_version"
-          ]
+          "component_groups": ["placed", "first_version"]
         }
       }
     }
   }
 }
-  

@@ -17,7 +17,7 @@ import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../share
 import { type EntityConfig } from "../gui.js";
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
 import type { MenuCategory } from "../config.js";
-import { interactMenuSessionStore, refreshStatus } from "./interact_ddui_shared.js";
+import { interactMenuSessionStore, refreshStatus, handleInvalidEntity } from "./interact_ddui_shared.js";
 import {
   getEntitySystemState,
   findSystemStateByEvent,
@@ -49,6 +49,10 @@ export function showInteractDDUISystems(
 
     system.run(() => {
       try {
+        if (!entity.isValid) {
+          handleInvalidEntity(player);
+          return;
+        }
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();
@@ -158,6 +162,10 @@ export function showInteractDDUISystems(
               if (closeReason === "navigation") {
                 debugMessage("interactDDUI", `Vista Sistemas Avanzados cerrada: navegación (${player.name})`, "gray");
                 session.unregisterInterval(intervalId);
+                if (!entity.isValid) {
+                  handleInvalidEntity(player);
+                  return;
+                }
                 import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
                   showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
                 });
@@ -178,11 +186,16 @@ export function showInteractDDUISystems(
           });
 
         intervalId = system.runInterval(() => {
+          if (!entity.isValid) {
+            handleInvalidEntity(player, form);
+            return;
+          }
           refreshAndUpdateStatus();
         }, 20);
         session.registerInterval(intervalId);
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando Vista Sistemas Avanzados: ${setupError}`, "red");
+        interactMenuSessionStore.cleanup(player.id);
         try {
           player.sendMessage(ERROR_MESSAGES.DDUI_OPEN_SYSTEMS);
         } catch {}
@@ -215,6 +228,10 @@ export function showInteractDDUIManagement(
 
     system.run(() => {
       try {
+        if (!entity.isValid) {
+          handleInvalidEntity(player);
+          return;
+        }
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();
@@ -374,6 +391,10 @@ export function showInteractDDUIManagement(
               if (closeReason === "navigation") {
                 debugMessage("interactDDUI", `Vista Gestión y Estado cerrada: navegación (${player.name})`, "gray");
                 session.unregisterInterval(intervalId);
+                if (!entity.isValid) {
+                  handleInvalidEntity(player);
+                  return;
+                }
                 import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
                   showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
                 });
@@ -394,11 +415,16 @@ export function showInteractDDUIManagement(
           });
 
         intervalId = system.runInterval(() => {
+          if (!entity.isValid) {
+            handleInvalidEntity(player, form);
+            return;
+          }
           refreshAndUpdateStatus();
         }, 20);
         session.registerInterval(intervalId);
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando Vista Gestión y Estado: ${setupError}`, "red");
+        interactMenuSessionStore.cleanup(player.id);
         try {
           player.sendMessage(ERROR_MESSAGES.DDUI_OPEN_MANAGEMENT);
         } catch {}
@@ -429,6 +455,10 @@ export function showInteractDDUHistory(
 
     system.run(() => {
       try {
+        if (!entity.isValid) {
+          handleInvalidEntity(player);
+          return;
+        }
         const historyObs = new ObservableString("");
         function updateHistoryText(): void {
           const entries = interactMenuSessionStore.getHistory(entity.id);
@@ -476,6 +506,10 @@ export function showInteractDDUHistory(
               if (closeReason === "navigation") {
                 debugMessage("interactDDUI", `Historial cerrado: navegación (${player.name})`, "gray");
                 session.unregisterInterval(intervalId);
+                if (!entity.isValid) {
+                  handleInvalidEntity(player);
+                  return;
+                }
                 import("./interact_ddui_form.js").then(({ showInteractDDUI }) => {
                   showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
                 });
@@ -492,11 +526,16 @@ export function showInteractDDUHistory(
           });
 
         intervalId = system.runInterval(() => {
+          if (!entity.isValid) {
+            handleInvalidEntity(player, form);
+            return;
+          }
           updateHistoryText();
         }, 20);
         session.registerInterval(intervalId);
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando Historial: ${setupError}`, "red");
+        interactMenuSessionStore.cleanup(player.id);
         try {
           player.sendMessage(ERROR_MESSAGES.DDUI_OPEN_HISTORY);
         } catch {}

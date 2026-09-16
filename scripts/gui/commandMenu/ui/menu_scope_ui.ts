@@ -31,30 +31,30 @@ export function showScopeMenu(player: Player) {
               });
             });
             return;
-        }
+          }
 
-        const allowRespect = res.formValues && res.formValues.length > 1 && res.formValues[1] === true;
-        currentScope.respectEntityBlocks = allowRespect ?? currentScope.respectEntityBlocks;
-        saveScope(currentScope);
+          const allowRespect = res.formValues && res.formValues.length > 1 && res.formValues[1] === true;
+          currentScope.respectEntityBlocks = allowRespect ?? currentScope.respectEntityBlocks;
+          saveScope(currentScope);
 
-        player.sendMessage(
-          `§a[SCOPE] Toggle guardado: ${allowRespect ? "§aPreferir configuración local" : "§cForzar configuración global en todas las unidades"}§r`
-        );
+          player.sendMessage(
+            `§a[SCOPE] Toggle guardado: ${allowRespect ? "§aPreferir configuración local" : "§cForzar configuración global en todas las unidades"}§r`
+          );
 
-        import("../builder/menu.js").then((module) => {
-          system.run(() => {
-            module.buildAndShowMenu(player);
+          import("../builder/menu.js").then((module) => {
+            system.run(() => {
+              module.buildAndShowMenu(player);
+            });
+          });
+        })
+        .catch((err: unknown) => {
+          debugWarn("menuScope", `Error en ModalForm: ${err}`, "red");
+          import("../builder/menu.js").then((module) => {
+            system.run(() => {
+              module.buildAndShowMenu(player);
+            });
           });
         });
-      })
-      .catch((err: unknown) => {
-        debugWarn("menuScope", `Error en ModalForm: ${err}`, "red");
-        import("../builder/menu.js").then((module) => {
-          system.run(() => {
-            module.buildAndShowMenu(player);
-          });
-        });
-      });
     });
   } catch (e) {
     debugWarn("menuScope", `Error en showScopeMenu: ${e}`, "red");

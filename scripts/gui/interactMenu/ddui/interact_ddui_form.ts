@@ -7,11 +7,9 @@ import { getEntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
 import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../shared/entityScope.js";
 import { type EntityConfig } from "../gui.js";
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
+import { ERROR_MESSAGES } from "../../shared/systemCatalog.js";
 import type { MenuCategory } from "../config.js";
-import {
-  interactMenuSessionStore,
-  refreshStatus,
-} from "./interact_ddui_shared.js";
+import { interactMenuSessionStore, refreshStatus, handleInvalidEntity } from "./interact_ddui_shared.js";
 import { getUnitGroup } from "../../commandMenu/model/menu_groups.js";
 import { PlayerPermissionManager, type RoleId, type FactionId } from "../../shared/playerPermissionManager.js";
 import { isSystemVisibleForRole, CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
@@ -40,6 +38,10 @@ export function showInteractDDUI(
 
     system.run(() => {
       try {
+        if (!entity.isValid) {
+          handleInvalidEntity(player);
+          return;
+        }
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();
@@ -155,6 +157,10 @@ export function showInteractDDUI(
                 if (intervalId !== null) {
                   session.unregisterInterval(intervalId);
                 }
+                if (!entity.isValid) {
+                  handleInvalidEntity(player);
+                  return;
+                }
                 nextPanel?.();
               } else {
                 debugWarn("interactDDUI", `DDUI cerrado: ServerClosed sin razón (${player.name})`, "yellow");
@@ -170,13 +176,18 @@ export function showInteractDDUI(
           });
 
         intervalId = system.runInterval(() => {
+          if (!entity.isValid) {
+            handleInvalidEntity(player, form);
+            return;
+          }
           refreshAndUpdateStatus();
         }, 20);
         session.registerInterval(intervalId);
       } catch (setupError) {
         debugWarn("interactDDUI", `Error configurando DDUI en system.run: ${setupError}`, "red");
+        interactMenuSessionStore.cleanup(player.id);
         try {
-          player.sendMessage("§c[DDUI] Error al abrir el menú.");
+          player.sendMessage(ERROR_MESSAGES.DDUI_OPEN);
         } catch {}
       }
     });

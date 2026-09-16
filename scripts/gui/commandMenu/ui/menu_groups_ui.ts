@@ -121,7 +121,10 @@ function showFactionGroupsMenu(player: Player, faction: string): void {
       "basic_any",
       "other_units",
     ];
-    var nonEmptyBuckets: { id: string; data: { label: string; nametags: Record<string, number>; unitCount: number } }[] = [];
+    var nonEmptyBuckets: {
+      id: string;
+      data: { label: string; nametags: Record<string, number>; unitCount: number };
+    }[] = [];
     for (var bi = 0; bi < bucketOrder.length; bi++) {
       var bkey = bucketOrder[bi];
       if (buckets[bkey] && buckets[bkey].unitCount > 0) {

@@ -290,6 +290,3 @@ export const commandMenuSessionStore: SessionStore & DDUIFeedbackStore = {
     lastFeedbackByPlayer.clear();
   },
 };
-
-
-

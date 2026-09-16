@@ -36,8 +36,12 @@ export function loadMonitorConfig(player: Player): MonitorConfig {
     const config: MonitorConfig = {
       faction: validFactions.includes(parsed.faction) ? parsed.faction : MonitorConfigDefaults.faction,
       unitType: validUnitTypes.includes(parsed.unitType) ? parsed.unitType : MonitorConfigDefaults.unitType,
-      normalListMode: validListModes.includes(parsed.normalListMode) ? parsed.normalListMode : MonitorConfigDefaults.normalListMode,
-      specialListMode: validListModes.includes(parsed.specialListMode) ? parsed.specialListMode : MonitorConfigDefaults.specialListMode,
+      normalListMode: validListModes.includes(parsed.normalListMode)
+        ? parsed.normalListMode
+        : MonitorConfigDefaults.normalListMode,
+      specialListMode: validListModes.includes(parsed.specialListMode)
+        ? parsed.specialListMode
+        : MonitorConfigDefaults.specialListMode,
       sortBy: validSortBys.includes(parsed.sortBy) ? parsed.sortBy : MonitorConfigDefaults.sortBy,
     };
 

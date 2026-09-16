@@ -57,7 +57,7 @@ system.beforeEvents.startup.subscribe((init) => {
 
         return {
           status: CustomCommandStatus.Success,
-            message: selectedMode === "legacy" ? "Abriendo menú legacy..." : "Abriendo menú DDUI...",
+          message: selectedMode === "legacy" ? "Abriendo menú legacy..." : "Abriendo menú DDUI...",
         };
       } catch (e) {
         debugWarn("configCommand", `scpd:config handler error: ${e}`, "red");
