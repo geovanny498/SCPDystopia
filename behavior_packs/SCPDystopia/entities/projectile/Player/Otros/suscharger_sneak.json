@@ -37,6 +37,7 @@
         "height": 0.4
       },
       "minecraft:projectile": {
+        "isolated_physics": false,
         "on_hit": {
           "definition_event": {
             "affect_projectile": true,
