@@ -44,8 +44,8 @@ export function showHistoryPanel(player: Player, targetFaction?: TargetFaction):
 
     const factionLabel =
       effectiveFaction === "both"
-        ? "§7Filtro: §fAmbas facciones"
-        : `§7Filtro: §f${FACTION_DISPLAY_NAMES[effectiveFaction as keyof typeof FACTION_DISPLAY_NAMES] ?? effectiveFaction}`;
+        ? `§7Filtro: ${FACTION_DISPLAY_NAMES.both} §8(${entries.length} entradas)§r`
+        : `§7Filtro: §f${FACTION_DISPLAY_NAMES[effectiveFaction as keyof typeof FACTION_DISPLAY_NAMES] ?? effectiveFaction} §8(${entries.length} entradas)§r`;
     form.label(factionLabel);
     form.spacer();
 
@@ -53,9 +53,9 @@ export function showHistoryPanel(player: Player, targetFaction?: TargetFaction):
       form.label(HISTORY_INITIAL_TEXT);
     } else {
       const lines = reversed
-        .map((e) => {
+        .map((e, i) => {
           const facName = FACTION_DISPLAY_NAMES[e.faction as keyof typeof FACTION_DISPLAY_NAMES] ?? e.faction;
-          return `§8[${e.timestamp}] §7${facName} \n${e.playerName}: ${e.systemShortName} \n${e.key} → ${e.value}`;
+          return `§8${i + 1}.§r §7[${e.timestamp}] §r${facName} \n§7${e.playerName}: ${e.systemShortName} \n${e.key} -> ${e.value}`;
         })
         .join("\n");
       form.label(lines);

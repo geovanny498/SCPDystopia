@@ -15,7 +15,7 @@ import { getEntityFactionInfo, isValidSoldier } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
 import { applySystemToEntity } from "./menu_apply.js";
 import { teamFamilies } from "../../../utils/teams.js";
-import { ENTITY_GROUP_DP } from "../model/menu_groups.js";
+import { ENTITY_GROUP_DP } from "../../shared/entityGroups.js";
 
 /**
  * Lista de soldados conocidos (independiente de toggle_system)

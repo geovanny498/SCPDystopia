@@ -70,9 +70,9 @@ import {
   CATALOG_SYSTEMS,
   GROUP_DESCRIPTIONS,
   GROUP_LABELS,
+  getGroupsOrderForAssignment,
   type SystemOption,
 } from "../shared/systemCatalog.js";
-import { SpecialGroups } from "../../constants/domains.js";
 
 export const SYSTEM_SHORT_NAMES: Record<string, string> = {
   ...CATALOG_SYSTEM_SHORT_NAMES,
@@ -286,38 +286,12 @@ const config: GuiConfig = {
           id: "group_assignment",
           category: SYSTEM_SHORT_NAMES.group_assignment,
           requiresSpecial: true,
-          entries: [
-            {
-              label: GROUP_LABELS.groupA,
-              action: "assign_group",
-              value: SpecialGroups.GROUP_A,
-              description: GROUP_DESCRIPTIONS[SpecialGroups.GROUP_A],
-            },
-            {
-              label: GROUP_LABELS.groupB,
-              action: "assign_group",
-              value: SpecialGroups.GROUP_B,
-              description: GROUP_DESCRIPTIONS[SpecialGroups.GROUP_B],
-            },
-            {
-              label: GROUP_LABELS.groupC,
-              action: "assign_group",
-              value: SpecialGroups.GROUP_C,
-              description: GROUP_DESCRIPTIONS[SpecialGroups.GROUP_C],
-            },
-            {
-              label: GROUP_LABELS.groupD,
-              action: "assign_group",
-              value: SpecialGroups.GROUP_D,
-              description: GROUP_DESCRIPTIONS[SpecialGroups.GROUP_D],
-            },
-            {
-              label: GROUP_LABELS.noGroup,
-              action: "assign_group",
-              value: SpecialGroups.NO_GROUP,
-              description: GROUP_DESCRIPTIONS[SpecialGroups.NO_GROUP],
-            },
-          ],
+          entries: getGroupsOrderForAssignment().map((groupId) => ({
+            label: GROUP_LABELS[groupId],
+            action: "assign_group" as const,
+            value: groupId,
+            description: GROUP_DESCRIPTIONS[groupId],
+          })),
         },
         {
           id: "entity_protection",

@@ -17,7 +17,8 @@ import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../share
 import { type EntityConfig } from "../gui.js";
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
 import type { MenuCategory } from "../config.js";
-import { interactMenuSessionStore, refreshStatus, handleInvalidEntity } from "./interact_ddui_shared.js";
+import { interactMenuSessionStore, refreshBasicStatus, handleInvalidEntity } from "./interact_ddui_shared.js";
+import { entityHistoryStore } from "../../shared/entityHistory.js";
 import {
   getEntitySystemState,
   findSystemStateByEvent,
@@ -29,7 +30,7 @@ import {
   HIERARCHY_LABELS as UnitHierarchyLabels,
   GROUP_LABELS as SpecialGroupLabels,
 } from "../../shared/systemCatalog.js";
-import { getUnitGroup, setUnitGroup } from "../../commandMenu/model/menu_groups.js";
+import { getUnitGroup, setUnitGroup } from "../../shared/entityGroups.js";
 import { ERROR_MESSAGES, BACK_BUTTON_LABEL, FACTION_DISPLAY_NAMES } from "../../shared/systemCatalog.js";
 
 export function showInteractDDUISystems(
@@ -57,16 +58,7 @@ export function showInteractDDUISystems(
         form.label(`§7Unidad: §f${soldierName}`);
         form.spacer();
 
-        function refreshAndUpdateStatus(): void {
-          try {
-            const status = refreshStatus(entity, session.factionInfo);
-            session.observables.healthText.setData(status.healthLabel);
-          } catch (e) {
-            debugWarn("interactDDUI", `Error actualizando status en sistemas avanzados: ${e}`, "red");
-          }
-        }
-
-        refreshAndUpdateStatus();
+        refreshBasicStatus(entity, session.factionInfo, session, "sistemas avanzados");
         form.label(session.observables.healthText);
         form.spacer();
         form.label(session.observables.actionResultText);
@@ -190,7 +182,7 @@ export function showInteractDDUISystems(
             handleInvalidEntity(player, form);
             return;
           }
-          refreshAndUpdateStatus();
+          refreshBasicStatus(entity, session.factionInfo, session, "sistemas avanzados");
         }, 20);
         session.registerInterval(intervalId);
       } catch (setupError) {
@@ -237,38 +229,35 @@ export function showInteractDDUIManagement(
         form.spacer();
 
         function refreshAndUpdateStatus(): void {
-          try {
-            const status = refreshStatus(entity, factionInfo);
-            session.observables.healthText.setData(status.healthLabel);
-            session.observables.systemStateDetailText.setData(status.systemStateDetail);
+          const status = refreshBasicStatus(entity, factionInfo, session, "gestión/estado");
+          if (!status) return;
 
-            if (factionInfo) {
-              const factionLabel =
-                factionInfo.faction === Factions.FOUNDATION
-                  ? FACTION_DISPLAY_NAMES.foundation
-                  : factionInfo.faction === Factions.CHAOS
-                    ? FACTION_DISPLAY_NAMES.chaos
-                    : factionInfo.faction;
+          session.observables.systemStateDetailText.setData(status.systemStateDetail);
 
-              if (factionInfo.isSpecial) {
-                const groupId = getUnitGroup(entity) ?? SpecialGroups.NO_GROUP;
-                const groupLabel = SpecialGroupLabels[groupId] || String(groupId);
-                session.observables.groupDetailText.setData(
-                  `§7Facción: §a${factionLabel}\n§7Grupo actual: §a${groupLabel}`
-                );
-              } else {
-                const hierarchyLabel =
-                  UnitHierarchyLabels[factionInfo.hierarchy ?? UnitHierarchy.BASIC] ||
-                  String(factionInfo.hierarchy ?? UnitHierarchy.BASIC);
-                session.observables.groupDetailText.setData(
-                  `§7Facción: §a${factionLabel}\n§7Jerarquia: §a${hierarchyLabel}`
-                );
-              }
+          if (factionInfo) {
+            const factionLabel =
+              factionInfo.faction === Factions.FOUNDATION
+                ? FACTION_DISPLAY_NAMES.foundation
+                : factionInfo.faction === Factions.CHAOS
+                  ? FACTION_DISPLAY_NAMES.chaos
+                  : factionInfo.faction;
+
+            if (factionInfo.isSpecial) {
+              const groupId = getUnitGroup(entity) ?? SpecialGroups.NO_GROUP;
+              const groupLabel = SpecialGroupLabels[groupId] || String(groupId);
+              session.observables.groupDetailText.setData(
+                `§7Facción: §a${factionLabel}\n§7Grupo actual: §a${groupLabel}`
+              );
             } else {
-              session.observables.groupDetailText.setData("");
+              const hierarchyLabel =
+                UnitHierarchyLabels[factionInfo.hierarchy ?? UnitHierarchy.BASIC] ||
+                String(factionInfo.hierarchy ?? UnitHierarchy.BASIC);
+              session.observables.groupDetailText.setData(
+                `§7Facción: §a${factionLabel}\n§7Jerarquia: §a${hierarchyLabel}`
+              );
             }
-          } catch (e) {
-            debugWarn("interactDDUI", `Error actualizando status en gestión/estado: ${e}`, "red");
+          } else {
+            session.observables.groupDetailText.setData("");
           }
         }
 
@@ -460,14 +449,23 @@ export function showInteractDDUHistory(
           return;
         }
         const historyObs = new ObservableString("");
+        const FILTER_OPTIONS: { label: string; value: string }[] = [
+          { label: "Todos", value: "all" },
+          { label: "Interacción", value: "interact" },
+          { label: "Comando", value: "command" },
+        ];
+        let currentFilter = "all";
         function updateHistoryText(): void {
-          const entries = interactMenuSessionStore.getHistory(entity.id);
-          let historyText = `§6Historial de cambios (10 más recientes):§r\n`;
+          const allEntries = entityHistoryStore.getHistory(entity.id);
+          const entries = currentFilter === "all" ? allEntries : allEntries.filter((e) => e.source === currentFilter);
+          let historyText = `§6Historial de cambios (${entries.length} mostrados):§r\n`;
           if (entries.length === 0) {
             historyText += `§7Sin cambios registrados.`;
           } else {
-            for (const entry of entries) {
-              historyText += `§7[${entry.localTime}] §r${entry.context} §7-> §f${entry.value}\n`;
+            for (let i = 0; i < entries.length; i++) {
+              const entry = entries[i];
+              const srcPrefix = entry.source === "command" ? "§c[CMD] " : "§b[INT] ";
+              historyText += `§8${i + 1}.§r ${srcPrefix}§7[${entry.localTime}] §r${entry.context} §7-> §f${entry.value}\n`;
             }
           }
           historyObs.setData(historyText.trim());
@@ -475,8 +473,23 @@ export function showInteractDDUHistory(
 
         updateHistoryText();
 
+        refreshBasicStatus(entity, session.factionInfo, session, "historial");
+
         form.spacer();
         form.label(`§7Unidad: §f${soldierName}`);
+        form.spacer();
+        form.label(session.observables.healthText);
+        form.spacer();
+        const filterObs = new ObservableNumber(0, { clientWritable: true });
+        form.dropdown(
+          "Origen:",
+          filterObs,
+          FILTER_OPTIONS.map((o, i) => ({ label: o.label, value: i }))
+        );
+        filterObs.subscribe((idx: number) => {
+          currentFilter = FILTER_OPTIONS[idx]?.value ?? "all";
+          updateHistoryText();
+        });
         form.spacer();
         form.label(historyObs);
         form.spacer();
@@ -530,6 +543,7 @@ export function showInteractDDUHistory(
             handleInvalidEntity(player, form);
             return;
           }
+          refreshBasicStatus(entity, session.factionInfo, session, "historial");
           updateHistoryText();
         }, 20);
         session.registerInterval(intervalId);

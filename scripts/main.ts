@@ -5,6 +5,7 @@ import { projectileConfig, type ProjectileConfigEntry } from "./utils/projectile
 import { applyDamageAndCfg } from "./utils/damage.js";
 import { debugMessage, debugWarn } from "./utils/debug.js";
 import { interactMenuSessionStore } from "./gui/interactMenu/ddui/interact_ddui_shared.js";
+import { entityHistoryStore } from "./gui/shared/entityHistory.js";
 
 const projectilePierceMap = new WeakMap<Entity, number>();
 
@@ -88,6 +89,11 @@ world.afterEvents.entityDie.subscribe((event) => {
     interactMenuSessionStore.clearEntityFeedbackForAll(deadEntityId);
   } catch (e) {
     debugWarn("entityDie", `Error limpiando interactMenu feedback: ${e}`, "red");
+  }
+  try {
+    entityHistoryStore.clearEntity(deadEntityId);
+  } catch (e) {
+    debugWarn("entityDie", `Error limpiando entityHistory: ${e}`, "red");
   }
   interactMenuSessionStore.cleanupByEntity(deadEntityId);
 });

@@ -26,6 +26,7 @@ export const DEBUG_MODULES: string[] = [
   // "projectileHitEntity",
   // "damage",
   "entityDie",
+  "menuGroups",
   // "projectileSound",
   // "entityDamageConfig",
 

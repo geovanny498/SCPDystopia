@@ -2,7 +2,6 @@
 
 import { ObservableNumber, ObservableString } from "@minecraft/server-ui";
 import { Entity, Player, EntityVariantComponent, system } from "@minecraft/server";
-import { formatLocalTimeShort } from "../../shared/timeHelpers.js";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
 import {
   getEntitySystemsStatus,
@@ -16,7 +15,7 @@ import {
 import { SpecialGroups, UnitHierarchy, Factions } from "../../../constants/domains.js";
 import { GROUP_LABELS, CATALOG_SYSTEMS, ERROR_MESSAGES, type SystemId } from "../../shared/systemCatalog.js";
 import { getEntityFactionInfo, type EntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
-import { setUnitGroup, getUnitGroup } from "../../commandMenu/model/menu_groups.js";
+import { setUnitGroup, getUnitGroup } from "../../shared/entityGroups.js";
 import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../shared/entityScope.js";
 import { makeSystemId, isAllowedByRule, type EntityConfig } from "../gui.js";
 import { stripColorCodes } from "../../monitorMenu/monitor_config.js";
@@ -25,6 +24,7 @@ import { getGlobalOverwriteLabel } from "../../shared/entityScope.js";
 import type { MenuEntry } from "../config.js";
 import { SYSTEM_SHORT_NAMES } from "../config.js";
 import { DDUIFeedbackEntry, INTERACT_PANEL_FEEDBACK_DEFAULT, formatFeedbackText } from "../../shared/dduiFeedback.js";
+import { entityHistoryStore } from "../../shared/entityHistory.js";
 
 /**
  * Presenter local del interactMenu DDUI para feedback visual por jugador +
@@ -242,12 +242,11 @@ export class InteractDDUISession {
    */
   recordFeedback(context: string, value: string, status: "ok" | "warn" | "error" = "ok"): void {
     this.feedbackPresenter.present({ context, value, status });
-    interactMenuSessionStore.pushHistory(this.entity.id, {
+    entityHistoryStore.pushHistory(this.entity.id, {
+      source: "interact",
       viewId: this.viewId,
       context,
       value,
-      timestamp: Date.now(),
-      localTime: formatLocalTimeShort(Date.now()),
     });
   }
 
@@ -596,18 +595,6 @@ export interface InteractMenuSessionStore {
    */
   setLastFeedbackText(playerId: string, entityId: string, viewId: string, text: string): void;
   /**
-   * Devuelve el historial reciente de cambios aplicados a la entidad.
-   * @param entityId Identificador de la entidad.
-   * @returns Lista de entradas (puede estar vacía).
-   */
-  getHistory(entityId: string): ChangeEntry[];
-  /**
-   * Inserta una entrada al inicio del historial de la entidad (limitado a 10).
-   * @param entityId Identificador de la entidad.
-   * @param entry Entrada a registrar.
-   */
-  pushHistory(entityId: string, entry: ChangeEntry): void;
-  /**
    * Marca a un jugador como "en proceso de apertura" (flag de corta duración).
    * Se usa para prevenir la condición de carrera entre `playerInteractWithEntity`
    * e `itemUse`, que pueden dispararse sincrónicamente antes de que `system.run`
@@ -628,32 +615,17 @@ export interface InteractMenuSessionStore {
   clearOpening(playerId: string): void;
 }
 
-/**
- * Entrada de historial para un cambio aplicado a una entidad desde el menú.
- */
-export interface ChangeEntry {
-  /** Vista del menú donde se aplicó el cambio. */
-  viewId: string;
-  /** Contexto del cambio (sistema o categoría). */
-  context: string;
-  /** Valor aplicado. */
-  value: string;
-  /** Timestamp en milisegundos. */
-  timestamp: number;
-  /** Hora local formateada corta. */
-  localTime: string;
-}
-
 const interactDDUISessions = new Map<string, InteractDDUISession>();
 const lastFeedback = new Map<string, Map<string, Record<string, DDUIFeedbackEntry>>>();
-const history = new Map<string, ChangeEntry[]>();
 /** Flag per-jugador de "apertura en curso" para prevenir race conditions síncronas. */
 const openingPlayers = new Set<string>();
 
 /**
  * Store singleton de sesiones y datos auxiliares del interactMenu DDUI. Punto
- * único de acceso para sesiones por jugador, feedback por jugador+entidad+vista
- * (gestionado por `InteractDDUIFeedbackPresenter`) e historial por entidad.
+ * único de acceso para sesiones por jugador y feedback por jugador+entidad+vista
+ * (gestionado por `InteractDDUIFeedbackPresenter`). El historial por entidad
+ * se gestiona en `entityHistoryStore` (shared), por lo que el store de sesión
+ * no incluye métodos de history.
  *
  * El feedback se limpia con `clearPlayerFeedback` en `playerLeave` y con
  * `clearEntityFeedbackForAll` en `entityDie`. No se usa `DDUIFeedbackStore`
@@ -782,20 +754,6 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
       viewId,
     });
   },
-  getHistory(entityId: string): ChangeEntry[] {
-    return history.get(entityId) || [];
-  },
-  pushHistory(entityId: string, entry: ChangeEntry): void {
-    let entries = history.get(entityId);
-    if (!entries) {
-      entries = [];
-      history.set(entityId, entries);
-    }
-    entries.unshift(entry);
-    if (entries.length > 10) {
-      entries.length = 10;
-    }
-  },
 };
 
 /**
@@ -848,6 +806,35 @@ export function refreshStatus(
     systemStateDetail,
     configLabel: configLine,
   };
+}
+
+/**
+ * Resultado de refreshStatus — actualiza healthText y devuelve el resultado
+ * completo para que el caller actualice observables adicionales.
+ *
+ * Centraliza el patrón de try/catch + healthText.setData que se duplicaba
+ * en showInteractDDUISystems y showInteractDDUIManagement.
+ *
+ * @param entity - Entidad objetivo
+ * @param factionInfo - Información de facción (puede ser null)
+ * @param session - Sesión interact DDUI que contiene los observables
+ * @param viewName - Nombre de la vista para mensajes de error
+ * @returns Resultado de refreshStatus, o null si falló
+ */
+export function refreshBasicStatus(
+  entity: Entity,
+  factionInfo: EntityFactionInfo | null,
+  session: InteractDDUISession,
+  viewName: string
+): { healthLabel: string; systemsLabel: string; systemStateDetail: string; configLabel: string } | null {
+  try {
+    const status = refreshStatus(entity, factionInfo);
+    session.observables.healthText.setData(status.healthLabel);
+    return status;
+  } catch (e) {
+    debugWarn("interactDDUI", `Error actualizando status en ${viewName}: ${e}`, "red");
+    return null;
+  }
 }
 
 /**

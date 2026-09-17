@@ -860,8 +860,8 @@ export const PANEL_TITLES: Record<string, string> = {
   main: "§9Menú de comandos",
   advanced: "§lConfiguración Avanzada",
   groups: "§lGrupos",
-  groupsByFaction: "§lGrupos por Facción",
-  history: "§lHistorial",
+  groupsByFaction: "§9Grupos por Facción",
+  history: "§9Historial",
   scope: "§lPrioridad de Aplicación",
   system: "§lSistemas",
   roleMenu: "§l§6GESTIÓN DE ROLES",
@@ -872,7 +872,7 @@ export const PANEL_DESCRIPTIONS: Record<string, string> = {
   advanced: "Accede a sistemas avanzados y scope.",
   groups: "Gestiona los grupos de unidades especiales.",
   groupsByFaction: "Selecciona una categoria para asignar grupos.",
-  history: "Últimos cambios aplicados.",
+  history: "§6Últimos cambios aplicados.",
   scope: "Prioridad de aplicación de cambios. Los cambios se registran en el historial.",
   system: "Configura los sistemas de tus unidades.",
 };
@@ -1073,17 +1073,26 @@ export function getSystemDefaultForKey(
 }
 
 /**
- * Obtiene el orden de grupos para asignación (NO_GROUP primero).
+ * IDs de todos los grupos especiales. Derivado de `SpecialGroups`
+ * para evitar literales hardcodeados y mantener un solo punto de verdad.
+ * El orden de `Object.values` sigue la definición del objeto (A→D→NO_GROUP).
+ */
+const ALL_SPECIAL_GROUPS = Object.values(SpecialGroups) as SpecialGroupId[];
+
+/**
+ * Obtiene el orden de grupos para asignación (NO_GROUP primero, luego A-D).
+ * Derivado de ALL_SPECIAL_GROUPS: NO_GROUP se eleva sin duplicación.
  */
 export function getGroupsOrderForAssignment(): SpecialGroupId[] {
-  return ["noGroup", "groupA", "groupB", "groupC", "groupD"];
+  return [SpecialGroups.NO_GROUP, ...ALL_SPECIAL_GROUPS.filter((g) => g !== SpecialGroups.NO_GROUP)];
 }
 
 /**
- * Obtiene el orden de grupos para sistemas.
+ * Obtiene el orden de grupos para sistemas (A-D → NO_GROUP).
+ * Equivale a ALL_SPECIAL_GROUPS tal cual.
  */
 export function getGroupsOrderForSystems(): SpecialGroupId[] {
-  return ["groupA", "groupB", "groupC", "groupD", "noGroup"];
+  return ALL_SPECIAL_GROUPS;
 }
 
 /**

@@ -8,7 +8,7 @@
 import { Entity, Dimension, EntityComponentTypes } from "@minecraft/server";
 import { Factions, UnitHierarchy, NAMETAG_FAMILY_MAP, SpecialGroups } from "../menu_config.js";
 import { debugWarn, debugMessage } from "../../../utils/debug.js";
-import { getUnitGroup, ENTITY_GROUP_DP } from "./menu_groups.js";
+import { getUnitGroup, ENTITY_GROUP_DP } from "../../shared/entityGroups.js";
 import { compareNametags } from "../../../utils/nametagSort.js";
 import { getEntitiesByFaction } from "../../../utils/entityQuery.js";
 import { teamFamilies } from "../../../utils/teams.js";

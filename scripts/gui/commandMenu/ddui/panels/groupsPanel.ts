@@ -14,6 +14,7 @@ import {
   ERROR_MESSAGES,
 } from "../../../shared/systemCatalog.js";
 import { SYSTEM_PANEL_FEEDBACK_INITIAL } from "../../../shared/dduiFeedback.js";
+import { entityHistoryStore } from "../../../shared/entityHistory.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { showMainPanel } from "./mainPanel.js";
 import {
@@ -22,7 +23,7 @@ import {
   invalidateScanCache,
   invalidateEntityQueryCache,
 } from "../../model/menu_entity_scanner.js";
-import { setUnitGroup } from "../../model/menu_groups.js";
+import { setUnitGroup } from "../../../shared/entityGroups.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { compareNametags } from "../../../../utils/nametagSort.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
@@ -161,12 +162,12 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
 
     let closeReason: "navigation" | undefined = undefined;
 
-    const form = new CustomForm(player, `${stripColorCodes(bucket.label)} §8- Asignar Grupos`);
+    const form = new CustomForm(player, `${bucket.label} §8- Asignar Grupos`);
 
     form.spacer();
     form.label(`§7Facción: §f${FACTION_DISPLAY_NAMES[faction]}`);
     form.spacer();
-    form.label(`§7Rol: §f${stripColorCodes(bucket.label)} §8(${bucket.unitCount} unidades)`);
+    form.label(`§7Rol: §f${bucket.label} §8(${bucket.unitCount} unidades)`);
     form.spacer();
 
     const feedbackPresenter = session.getOrCreateFeedbackPresenter("bucket_assignment", SYSTEM_PANEL_FEEDBACK_INITIAL);
@@ -284,14 +285,20 @@ function applyGroupToNametag(player: Player, faction: TargetFaction, nametag: st
     let foundationCount = 0;
     let chaosCount = 0;
     let appliedCount = 0;
+    const groupLabel = GROUP_LABELS[groupId as keyof typeof GROUP_LABELS] ?? groupId;
     for (const scanned of entities) {
       setUnitGroup(scanned.entity, groupId);
+      entityHistoryStore.pushHistory(scanned.entity.id, {
+        source: "command",
+        viewId: "group_assignment",
+        context: getSystemShortName("group_assignment"),
+        value: groupLabel,
+      });
       appliedCount++;
       if (scanned.faction === Factions.FOUNDATION) foundationCount++;
       if (scanned.faction === Factions.CHAOS) chaosCount++;
     }
 
-    const groupLabel = GROUP_LABELS[groupId as keyof typeof GROUP_LABELS] ?? groupId;
     if (appliedCount > 0) {
       if (faction === "both") {
         player.sendMessage(

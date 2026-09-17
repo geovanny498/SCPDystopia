@@ -144,8 +144,8 @@ Configuración de armas Aplok Guns:
 
 ```json
 {
-  "@minecraft/server": "^2.6.0",
-  "@minecraft/server-ui": "^2.0.0",
+  "@minecraft/server": "^2.10.0",
+  "@minecraft/server-ui": "^2.2.0",
   "@minecraft/math": "^2.2.11",
   "@minecraft/vanilla-data": "^1.21.90"
 }

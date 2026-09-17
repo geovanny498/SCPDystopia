@@ -2,6 +2,7 @@
 import {
   system,
   world,
+  Player,
   CustomCommandStatus,
   CommandPermissionLevel,
   CustomCommandSource,
@@ -20,7 +21,7 @@ import { COMMAND_SYSTEM_IDS, CATALOG_SYSTEMS } from "../gui/shared/systemCatalog
 import { resetAllSystems, resetAllSystemStates, resetOneSystemState } from "./worldSave";
 import { resetMenuSystemStates } from "../gui/commandMenu/core/menu_events.js";
 import { resetScope } from "../gui/commandMenu/model/menu_scope.js";
-import { setUnitGroup, ENTITY_GROUP_DP } from "../gui/commandMenu/model/menu_groups.js";
+import { clearUnitGroup } from "../gui/shared/entityGroups.js";
 import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
 import { getAllAddonEntities, getAllAddonEntitiesInDimensions } from "../utils/entityQuery.js";
 
@@ -205,12 +206,10 @@ system.beforeEvents.startup.subscribe((init) => {
           let cleared = 0;
           try {
             // Optimización: 2 llamadas a getEntities en lugar de 4
+            const player = origin.sourceEntity as Player;
             const allEnts = getAllAddonEntities(playerDimension);
             for (const ent of allEnts) {
-              if (ent.getDynamicProperty(ENTITY_GROUP_DP) !== undefined) {
-                ent.setDynamicProperty(ENTITY_GROUP_DP, undefined);
-                cleared++;
-              }
+              if (clearUnitGroup(ent, player)) cleared++;
             }
           } catch (e) {
             console.warn(`[SCPDystopia] Error iterando entidades en reset_groups: ${e}`);
@@ -389,14 +388,11 @@ system.beforeEvents.startup.subscribe((init) => {
 
           try {
             let cleared = 0;
+            const player = origin.sourceEntity as Player;
             const dims = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
-            // Optimización: 2 llamadas a getEntities por dimensión en lugar de 4
             const allEnts = getAllAddonEntitiesInDimensions(dims);
             for (const ent of allEnts) {
-              if (ent.getDynamicProperty(ENTITY_GROUP_DP) !== undefined) {
-                ent.setDynamicProperty(ENTITY_GROUP_DP, undefined);
-                cleared++;
-              }
+              if (clearUnitGroup(ent, player)) cleared++;
             }
             console.log(`[SCPDystopia] Grupos reseteados (${cleared} DPs eliminados)`);
           } catch (e) {

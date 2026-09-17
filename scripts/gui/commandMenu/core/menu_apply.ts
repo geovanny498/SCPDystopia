@@ -8,8 +8,10 @@ import {
   getEntitySystemState,
   SpecialGroups,
   UnitHierarchy,
+  formatEntitySystemStateLabel,
 } from "../menu_config.js";
-import { CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
+import { CATALOG_SYSTEMS, SYSTEM_SHORT_NAMES, type SystemId } from "../../shared/systemCatalog.js";
+import { entityHistoryStore } from "../../shared/entityHistory.js";
 import { canApplySystem } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
@@ -17,6 +19,34 @@ import { getAllAddonEntitiesInDimensions } from "../../../utils/entityQuery.js";
 
 // eventos que, al activarse, deberían intentar domesticar la entidad
 import { isAutoTameEvent } from "../menu_config.js";
+
+/**
+ * Registra en el historial por entidad un cambio de sistema aplicado por
+ * commandMenu. Solo se registra cuando el cambio fue iniciado por un jugador
+ * (`player != null`), excluyendo el auto-apply de spawn/load.
+ * @param ent Entidad a la que se le aplicó el cambio.
+ * @param systemId ID del sistema.
+ * @param systemConfig Config de sistema (para displayName fallback).
+ * @param configValue Valor aplicado.
+ * @param player Jugador que originó el cambio (null en spawn/load).
+ */
+function recordCommandHistory(
+  ent: Entity,
+  systemId: string,
+  systemConfig: any,
+  configValue: unknown,
+  player: Player | null
+): void {
+  if (player == null) return;
+  const shortName = SYSTEM_SHORT_NAMES[systemId] ?? systemConfig?.displayName ?? systemId;
+  const valueLabel = formatEntitySystemStateLabel(systemId, configValue);
+  entityHistoryStore.pushHistory(ent.id, {
+    source: "command",
+    viewId: `system:${systemId}`,
+    context: shortName,
+    value: valueLabel,
+  });
+}
 
 // Importar funciones de menu_events (se inyectarán para evitar ciclos)
 let _getMenuSystemStates: any = null;
@@ -199,6 +229,7 @@ export function applySystemToEntity(
             `${systemId} → ${entityLabel}: ${isEnabled ? "ON" : "OFF"}`,
             isEnabled ? "green" : "gray"
           );
+          recordCommandHistory(ent, systemId, systemConfig, configValue, player);
           return true; // Aplicado exitosamente
         } else {
           // Evento no existe para esta entidad - contar como error, no como aplicado
@@ -223,6 +254,7 @@ export function applySystemToEntity(
         if (triggered) {
           setEntitySystemState(ent, systemId, mode);
           debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: modo=${mode}`, "green");
+          recordCommandHistory(ent, systemId, systemConfig, configValue, player);
           return true; // Aplicado exitosamente
         } else {
           debugWarn(
@@ -237,6 +269,7 @@ export function applySystemToEntity(
           setEntitySystemState(ent, systemId, mode);
         }
         debugWarn("menuApply:entity", `${systemId} → ${entityLabel}: desactivado`, "gray");
+        recordCommandHistory(ent, systemId, systemConfig, configValue, player);
         return true; // Para el caso de "desactivado" sin evento start, se considera aplicado
       }
     }
