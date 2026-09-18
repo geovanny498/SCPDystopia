@@ -20,7 +20,8 @@ import {
 import { COMMAND_SYSTEM_IDS, CATALOG_SYSTEMS } from "../gui/shared/systemCatalog.js";
 import { resetAllSystems, resetAllSystemStates, resetOneSystemState } from "./worldSave";
 import { resetMenuSystemStates } from "../gui/commandMenu/core/menu_events.js";
-import { resetScope } from "../gui/commandMenu/model/menu_scope.js";
+import { resetScope, loadScope, isEntityInScope } from "../gui/commandMenu/model/menu_scope.js";
+import { getEntityFactionInfo } from "../gui/commandMenu/model/menu_faction.js";
 import { clearUnitGroup } from "../gui/shared/entityGroups.js";
 import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
 import { getAllAddonEntities, getAllAddonEntitiesInDimensions } from "../utils/entityQuery.js";
@@ -205,10 +206,13 @@ system.beforeEvents.startup.subscribe((init) => {
           const playerDimension = origin.sourceEntity.dimension;
           let cleared = 0;
           try {
-            // Optimización: 2 llamadas a getEntities en lugar de 4
             const player = origin.sourceEntity as Player;
+            const scope = loadScope();
             const allEnts = getAllAddonEntities(playerDimension);
             for (const ent of allEnts) {
+              const factionInfo = getEntityFactionInfo(ent);
+              if (!factionInfo) continue;
+              if (!isEntityInScope(ent, factionInfo.faction, factionInfo.isSpecial, ent.nameTag ?? "", scope, factionInfo.hierarchy)) continue;
               if (clearUnitGroup(ent, player)) cleared++;
             }
           } catch (e) {
@@ -384,7 +388,7 @@ system.beforeEvents.startup.subscribe((init) => {
         try {
           resetAllSystems();
           resetMenuSystemStates();
-          resetScope();
+          const scope = resetScope();
 
           try {
             let cleared = 0;
@@ -392,6 +396,9 @@ system.beforeEvents.startup.subscribe((init) => {
             const dims = ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
             const allEnts = getAllAddonEntitiesInDimensions(dims);
             for (const ent of allEnts) {
+              const factionInfo = getEntityFactionInfo(ent);
+              if (!factionInfo) continue;
+              if (!isEntityInScope(ent, factionInfo.faction, factionInfo.isSpecial, ent.nameTag ?? "", scope, factionInfo.hierarchy)) continue;
               if (clearUnitGroup(ent, player)) cleared++;
             }
             console.log(`[SCPDystopia] Grupos reseteados (${cleared} DPs eliminados)`);

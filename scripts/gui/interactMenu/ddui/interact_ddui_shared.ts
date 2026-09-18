@@ -2,7 +2,7 @@
 
 import { ObservableNumber, ObservableString } from "@minecraft/server-ui";
 import { Entity, Player, EntityVariantComponent, system } from "@minecraft/server";
-import { debugWarn, debugMessage } from "../../../utils/debug.js";
+import { debugWarn, debugMessage, debug } from "../../../utils/debug.js";
 import {
   getEntitySystemsStatus,
   isAutoTameEvent,
@@ -13,7 +13,7 @@ import {
   getSystemDefaults,
 } from "../../commandMenu/menu_config.js";
 import { SpecialGroups, UnitHierarchy, Factions } from "../../../constants/domains.js";
-import { GROUP_LABELS, CATALOG_SYSTEMS, ERROR_MESSAGES, type SystemId } from "../../shared/systemCatalog.js";
+import { GROUP_LABELS, CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
 import { getEntityFactionInfo, type EntityFactionInfo } from "../../commandMenu/model/menu_faction.js";
 import { setUnitGroup, getUnitGroup } from "../../shared/entityGroups.js";
 import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../shared/entityScope.js";
@@ -142,6 +142,11 @@ export class InteractDDUISession {
   private readonly intervalIds: number[] = [];
   /** Flag para evitar limpieza múltiple. */
   private cleaned = false;
+  /**
+   * Referencia al formulario activo. Lo cierra `cleanup()` para asegurar que
+   * `entityDie` → `cleanupByEntity` cierra el formulario visible al jugador.
+   */
+  private formRef: { close(): void } | undefined;
 
   /**
    * @param playerId Identificador del jugador.
@@ -151,6 +156,8 @@ export class InteractDDUISession {
    * @param soldierName Nombre del soldado (interno).
    * @param displayName Nombre a mostrar.
    * @param typeId `typeId` de la entidad.
+   * @param factionInfo Información de facción precalculada. Si es `undefined`,
+   *   se calcula vía `getEntityFactionInfo` dentro del constructor (fallback).
    */
   constructor(
     playerId: string,
@@ -159,7 +166,8 @@ export class InteractDDUISession {
     cfg: EntityConfig,
     soldierName: string,
     displayName: string,
-    typeId: string
+    typeId: string,
+    factionInfo?: EntityFactionInfo | null
   ) {
     this.playerId = playerId;
     this.player = player;
@@ -169,7 +177,7 @@ export class InteractDDUISession {
     this.displayName = displayName;
     this.typeId = typeId;
     this.viewId = "main";
-    this.factionInfo = getEntityFactionInfo(entity);
+    this.factionInfo = factionInfo !== undefined ? factionInfo : getEntityFactionInfo(entity);
     const initialEntry = interactMenuSessionStore.getLastFeedback(playerId, entity.id, "main");
     const initialText = initialEntry ? formatFeedbackText(initialEntry) : INTERACT_PANEL_FEEDBACK_DEFAULT;
     this.feedbackPresenter = new InteractDDUIFeedbackPresenter(
@@ -212,6 +220,15 @@ export class InteractDDUISession {
    */
   registerInterval(intervalId: number): void {
     this.intervalIds.push(intervalId);
+  }
+
+  /**
+   * Almacena una referencia al formulario activo para que `cleanup()` lo cierre
+   * al limpiar la sesión (por ejemplo, cuando `entityDie` destruye la entidad).
+   * @param form  Formulario activo (debe exponer `close()`).
+   */
+  setForm(form: { close(): void }): void {
+    this.formRef = form;
   }
 
   /**
@@ -318,10 +335,16 @@ export class InteractDDUISession {
         const sysDisplay = sysConfig?.displayName || mapped.systemId;
         const valueLabel = formatEntitySystemStateLabel(mapped.systemId, mapped.value);
         const context = SYSTEM_SHORT_NAMES[mapped.systemId] || categoryLabel || sysDisplay || mapped.systemId;
-        debugMessage("interactDDUI", `Evento mapeado: sistema=${mapped.systemId} valor=${valueLabel}`, "green");
+        debug("interactDDUI", `Evento mapeado: sistema=§a${mapped.systemId}§r valor=§e${valueLabel}§r`, {
+          level: "debug",
+          color: "aqua",
+        });
         this.recordFeedback(context, valueLabel);
       } else if (event && triggeredEvent && !mapped) {
-        debugMessage("interactDDUI", `Evento específico disparado: evento=${event} label=${entry.label}`, "cyan");
+        debug("interactDDUI", `Evento específico disparado: evento=§a${event}§r label=§e${entry.label}§r`, {
+          level: "debug",
+          color: "aqua",
+        });
         if (dynamicProperty) {
           try {
             entity.setDynamicProperty(dynamicProperty, event);
@@ -461,8 +484,19 @@ export class InteractDDUISession {
         // intervalo ya limpiado o inválido
       }
     }
+    if (this.formRef) {
+      try {
+        this.formRef.close();
+      } catch {
+        // form ya cerrado o no visible
+      }
+      this.formRef = undefined;
+    }
     this.feedbackPresenter.reset();
-    debugMessage("interactDDUI", `Sesión limpiada: ${this.playerId}`, "gray");
+    debug("interactDDUI", `Sesión limpiada: ${this.playerId} (entidad: ${this.soldierName})`, {
+      color: "gray",
+      level: "debug",
+    });
   }
 }
 
@@ -504,6 +538,14 @@ export interface InteractMenuSessionStore {
    */
   cleanupByEntity(entityId: string): void;
   /**
+   * Marca una entidad como inválida (muerta o eliminada): cierra el formulario
+   * activo, limpia la sesión del jugador y notifica al jugador incluyendo el
+   * nombre de la entidad en el mensaje.
+   * @param player  Jugador cuya sesión se limpia y al que se notifica.
+   * @param form  Formulario `CustomForm` abierto (opcional). Se cierra si se provee.
+   */
+  markPlayerEntityInvalid(player: Player, form?: { close(): void }): void;
+  /**
    * Crea y registra una nueva sesión para el jugador.
    * @param playerId Identificador del jugador.
    * @param player Referencia al `Player` de Bedrock.
@@ -512,6 +554,8 @@ export interface InteractMenuSessionStore {
    * @param soldierName Nombre del soldado.
    * @param displayName Nombre a mostrar.
    * @param typeId `typeId` de la entidad.
+   * @param factionInfo Información de facción precalculada (opcional). Si se
+   *   omite, el constructor la calcula vía `getEntityFactionInfo`.
    * @returns La sesión recién creada.
    */
   create(
@@ -521,7 +565,8 @@ export interface InteractMenuSessionStore {
     cfg: EntityConfig,
     soldierName: string,
     displayName: string,
-    typeId: string
+    typeId: string,
+    factionInfo?: EntityFactionInfo | null
   ): InteractDDUISession;
   /**
    * Devuelve la sesión del jugador si existe; si no, la crea y la registra.
@@ -531,6 +576,8 @@ export interface InteractMenuSessionStore {
    * @param soldierName Nombre del soldado.
    * @param displayName Nombre a mostrar.
    * @param typeId `typeId` de la entidad.
+   * @param factionInfo Información de facción precalculada (opcional). Si se
+   *   omite, el constructor la calcula vía `getEntityFactionInfo`.
    * @returns La sesión existente o recién creada.
    */
   getOrCreate(
@@ -539,7 +586,8 @@ export interface InteractMenuSessionStore {
     cfg: EntityConfig,
     soldierName: string,
     displayName: string,
-    typeId: string
+    typeId: string,
+    factionInfo?: EntityFactionInfo | null
   ): InteractDDUISession;
   /**
    * Devuelve la última entry de feedback para una vista de la entidad y el
@@ -645,28 +693,55 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
     openingPlayers.delete(playerId);
   },
   clear() {
-    for (const [, session] of interactDDUISessions) {
+    for (const session of interactDDUISessions.values()) {
       session.cleanup();
     }
     interactDDUISessions.clear();
     openingPlayers.clear();
   },
   cleanup(playerId: string): void {
-    const session = interactDDUISessions.get(playerId);
+    const session = this.get(playerId);
     if (!session) return;
     session.cleanup();
-    interactDDUISessions.delete(playerId);
-    openingPlayers.delete(playerId);
-    debugMessage("interactDDUI", `Sesión limpiada y eliminada: ${session.playerId}`, "gray");
+    this.delete(playerId);
+    debug("interactDDUI", `Sesión limpiada y eliminada: ${session.playerId} (entidad: ${session.soldierName})`, {
+      color: "gray",
+      level: "debug",
+    });
   },
   cleanupByEntity(entityId: string): void {
     for (const [playerId, session] of interactDDUISessions) {
       if (session.entity.id === entityId) {
         session.cleanup();
-        interactDDUISessions.delete(playerId);
-        openingPlayers.delete(playerId);
+        if (session.player.isValid) {
+          session.player.sendMessage(
+            `§c[SCPDystopia] La unidad ${session.soldierName}§c ya no se encuentra disponible.`
+          );
+        }
+        this.delete(playerId);
       }
     }
+  },
+  markPlayerEntityInvalid(player: Player, form?: { close(): void }): void {
+    const session = this.get(player.id);
+    const entityName = session?.soldierName ?? "objetivo";
+    if (form) {
+      try {
+        form.close();
+      } catch {
+        // form ya cerrado o no visible
+      }
+    }
+    this.cleanup(player.id);
+    try {
+      player.sendMessage(`§c[SCPDystopia] La unidad ${entityName}§c ya no se encuentra disponible.`);
+    } catch {
+      // jugador desconectado
+    }
+    debug("interactDDUI", `Entidad inválida: sesión limpiada para ${player.id} (entidad: ${entityName})`, {
+      color: "gray",
+      level: "debug",
+    });
   },
   create(
     playerId: string,
@@ -675,10 +750,20 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
     cfg: EntityConfig,
     soldierName: string,
     displayName: string,
-    typeId: string
+    typeId: string,
+    factionInfo?: EntityFactionInfo | null
   ): InteractDDUISession {
-    const session = new InteractDDUISession(playerId, player, entity, cfg, soldierName, displayName, typeId);
-    interactDDUISessions.set(playerId, session);
+    const session = new InteractDDUISession(
+      playerId,
+      player,
+      entity,
+      cfg,
+      soldierName,
+      displayName,
+      typeId,
+      factionInfo
+    );
+    this.set(playerId, session);
     debugMessage("interactDDUI", `Sesión creada: ${playerId}`, "green");
     return session;
   },
@@ -688,12 +773,13 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
     cfg: EntityConfig,
     soldierName: string,
     displayName: string,
-    typeId: string
+    typeId: string,
+    factionInfo?: EntityFactionInfo | null
   ): InteractDDUISession {
     const playerId = player.id;
-    let session = interactDDUISessions.get(playerId);
+    let session = this.get(playerId);
     if (!session) {
-      session = this.create(playerId, player, entity, cfg, soldierName, displayName, typeId);
+      session = this.create(playerId, player, entity, cfg, soldierName, displayName, typeId, factionInfo);
     }
     return session;
   },
@@ -846,18 +932,5 @@ export function refreshBasicStatus(
  * @param form  Formulario `CustomForm` abierto (opcional). Se cierra si se provee.
  */
 export function handleInvalidEntity(player: Player, form?: { close(): void }): void {
-  if (form) {
-    try {
-      form.close();
-    } catch {
-      // form ya cerrado o no visible
-    }
-  }
-  interactMenuSessionStore.cleanup(player.id);
-  try {
-    player.sendMessage(ERROR_MESSAGES.ENTITY_NOT_AVAILABLE);
-  } catch {
-    // jugador desconectado
-  }
-  debugMessage("interactDDUI", `Entidad inválida: sesión limpiada para ${player.id}`, "gray");
+  interactMenuSessionStore.markPlayerEntityInvalid(player, form);
 }

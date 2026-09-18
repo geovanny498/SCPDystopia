@@ -7,7 +7,7 @@ import {
   EntityLoadAfterEvent,
   EntityRemoveAfterEvent,
 } from "@minecraft/server";
-import { debugWarn } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import { systems, invalidateScanCache, invalidateEntityQueryCache, getEntitiesCached } from "../menu_config.js";
 import { loadSystemOrDefault } from "./menu_state.js";
 import { shouldApplyToFutureEntities, canApplySystem, SystemState } from "../menu_rules.js";
@@ -35,13 +35,16 @@ const menuSystemStates: Record<string, SystemState> = {};
  * Carga todos los estados de sistemas desde propiedades dinámicas
  */
 function loadAllSystemStates() {
-  debugWarn("menuEvents", "=== Cargando estados de sistemas ===", "cyan");
+  debug("menuEvents", "=== Cargando estados de sistemas ===", { color: "aqua", level: "debug" });
   for (const systemId in systems) {
     const loaded = loadSystemOrDefault(systemId);
     menuSystemStates[systemId] = loaded;
-    debugWarn("menuEvents", `Sistema ${systemId}: ${JSON.stringify(loaded)}`, "gray");
+    debug("menuEvents", `Sistema §a${systemId}§r: ${JSON.stringify(loaded)}`, { color: "gray", level: "debug" });
   }
-  debugWarn("menuEvents", `Estados cargados: ${Object.keys(menuSystemStates).length} sistemas`, "green");
+  debug("menuEvents", `Estados cargados: §a${Object.keys(menuSystemStates).length}§r sistemas`, {
+    color: "gray",
+    level: "debug",
+  });
 }
 
 /**
@@ -78,17 +81,16 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
     // entitySpawn dispara antes que minecraft:entity_spawned agregue
     // los component_groups con typeFamilies), diferir 2 ticks.
     const hasTypeFamilies = !!ent.getComponent("minecraft:type_family");
-    debugWarn(
+    debug(
       "menuEvents:spawn",
-      `[typeFamilyCheck] ${currentNametag || ent.typeId} faction=${faction} hasTypeFamilies=${hasTypeFamilies}`,
-      "dark_gray"
+        `[typeFamilyCheck] ${currentNametag || ent.typeId}§r faction=§9${faction}§r hasTypeFamilies=§a${hasTypeFamilies}§r`,
+      { color: "gray", level: "debug" }
     );
     if (!hasTypeFamilies) {
-      debugWarn(
-        "menuEvents:spawn",
-        `[DEFER] ${currentNametag || ent.typeId}: sin typeFamilies, difiriendo 2 ticks`,
-        "yellow"
-      );
+      debug("menuEvents:spawn", `[§cDEFER§r] ${currentNametag || ent.typeId}§r: sin typeFamilies, difiriendo 2 ticks`, {
+        color: "yellow",
+        level: "warn",
+      });
       system.runTimeout(() => {
         handleSoldierEntity(ent, { forceApply });
       }, 2);
@@ -97,24 +99,31 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
 
     const { isSpecial, hierarchy, group } = factionInfo;
     const nameTag = ent.nameTag ?? "";
+    const displayLabel = nameTag ? `§r§f${nameTag}§r` : `§b${ent.typeId}§r`;
 
     const entityLabel = isSpecial
-      ? `${nameTag} [${faction}-especial-${group}]`
-      : `${nameTag} [${faction}-${hierarchy}]`;
+      ? `${displayLabel} [${faction}-especial-${group}]`
+      : `${displayLabel} [${faction}-${hierarchy}]`;
 
-    debugWarn("menuEvents:spawn", `Entidad: ${entityLabel}`, "cyan");
+    debug("menuEvents:spawn", `Entidad: ${entityLabel}§r`, { color: "blue", level: "debug" });
 
     // VERIFICAR SCOPE (pasando jerarquía para no especiales)
     if (!forceApply) {
       const scope = loadScope();
       if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, hierarchy)) {
-        debugWarn("menuEvents:spawn", `${nameTag}: FUERA DE SCOPE, no se aplican reglas`, "yellow");
+        debug("menuEvents:spawn", `${displayLabel}: §cFUERA DE SCOPE§r, no se aplican reglas`, {
+          color: "yellow",
+          level: "warn",
+        });
         return;
       }
 
-      debugWarn("menuEvents:spawn", `${nameTag}: EN SCOPE, aplicando sistemas...`, "green");
+      debug("menuEvents:spawn", `${displayLabel}: §aEN SCOPE§r, aplicando sistemas...`, { color: "aqua", level: "debug" });
     } else {
-      debugWarn("menuEvents:spawn", `EntitySpawn${nameTag}: FORCE APPLY activado, omitiendo scope`, "cyan");
+      debug("menuEvents:spawn", `EntitySpawn ${displayLabel}: §6FORCE APPLY§r activado, omitiendo scope`, {
+        color: "light_purple",
+        level: "debug",
+      });
     }
 
     // Aplicar sistemas que correspondan
@@ -126,11 +135,10 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
 
       // Verificar si el sistema debe aplicarse a entidades futuras
       if (!shouldApplyToFutureEntities(systemId, forceApply)) {
-        debugWarn(
-          "menuEvents:spawn",
-          `Sistema ${systemId} NO se aplica a entidad futura (applyMode: existing_only)`,
-          "gray"
-        );
+        debug("menuEvents:spawn", `§a${systemId}§r NO se aplica a entidad futura (applyMode: existing_only)`, {
+          color: "gray",
+          level: "warn",
+        });
         continue;
       }
 
@@ -142,7 +150,10 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
         isSpecial
       );
       if (!compatResult.canApply) {
-        debugWarn("menuEvents:spawn", `${systemId} → ${nameTag}: NO aplicado (incompatible)`, "gray");
+        debug("menuEvents:spawn", `§a${systemId}§r → ${displayLabel}: §cNO aplicado§r (incompatible)`, {
+          color: "gray",
+          level: "warn",
+        });
         continue;
       }
 
@@ -150,7 +161,7 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
       applySystemToEntity(systemId, systemConfig, ent, state, true, factionInfo);
     }
   } catch (e) {
-    debugWarn("menuEvents:spawn", `Error manejando entidad: ${e}`, "red");
+    debug("menuEvents:spawn", `Error manejando entidad: ${e}`, { color: "red", level: "error" });
   }
 }
 
@@ -181,13 +192,16 @@ export function initializeMenuEvents() {
         invalidateScanCache();
         invalidateEntityQueryCache();
       } catch (e) {
-        debugWarn("menuEvents:remove", "Error invalidando cache al remover entidad: " + e, "yellow");
+        debug("menuEvents:remove", "Error invalidando cache al remover entidad: " + e, {
+          color: "red",
+          level: "error",
+        });
       }
     });
 
-    debugWarn("menuEvents", "Event listeners del menú inicializados", "green");
+    debug("menuEvents", "Event listeners del menú inicializados", { color: "green", level: "debug" });
   } catch (e) {
-    debugWarn("menuEvents", `Error inicializando event listeners: ${e}`, "red");
+    debug("menuEvents", `Error inicializando event listeners: ${e}`, { color: "red", level: "error" });
   }
 }
 
@@ -196,14 +210,14 @@ export function initializeMenuEvents() {
  */
 export function updateMenuSystemState(systemId: string, state: SystemState) {
   menuSystemStates[systemId] = state;
-  debugWarn("menuEvents", `Estado actualizado en memoria: ${systemId}`, "green");
+  debug("menuEvents", `Estado actualizado en memoria: §a${systemId}§r`, { color: "gray", level: "debug" });
 }
 
 /**
  * Reinicia todos los estados del menú a valores por defecto
  */
 export function resetMenuSystemStates() {
-  debugWarn("menuEvents", "=== Reiniciando estados del menú ===", "yellow");
+  debug("menuEvents", "=== Reiniciando estados del menú ===", { color: "aqua", level: "debug" });
 
   // Limpiar estados en memoria
   for (const key in menuSystemStates) {
@@ -213,5 +227,5 @@ export function resetMenuSystemStates() {
   // Recargar todos los estados
   loadAllSystemStates();
 
-  debugWarn("menuEvents", "Estados del menú reiniciados correctamente", "green");
+  debug("menuEvents", "Estados del menú reiniciados correctamente", { color: "green", level: "debug" });
 }

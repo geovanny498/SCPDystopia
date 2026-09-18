@@ -17,7 +17,7 @@ import {
   SpecialGroupLabels,
   UnitHierarchyLabels,
 } from "../commandMenu/menu_config.js";
-import { getEntityFactionInfo } from "../commandMenu/model/menu_faction.js";
+import { getEntityFactionInfo, type EntityFactionInfo } from "../commandMenu/model/menu_faction.js";
 import { tryAutoTame } from "../commandMenu/core/menu_apply.js";
 import { setUnitGroup } from "../commandMenu/model/menu_groups.js";
 
@@ -98,9 +98,15 @@ function getSpecificConfig(typeId: string): EntitySpecificConfig | undefined {
  * Devuelve la configuración de categorías para una entidad específica
  * @param typeId
  * @param entity
+ * @param factionInfo Información de facción precalculada (opcional). Si se
+ *   omite, se calcula vía `getEntityFactionInfo(entity)` internamente.
  * @returns
  */
-export function getConfigForEntity(typeId: string, entity: Entity): EntityConfig | null {
+export function getConfigForEntity(
+  typeId: string,
+  entity: Entity,
+  factionInfoParam?: EntityFactionInfo | null
+): EntityConfig | null {
   const globalCats = config.global && Array.isArray(config.global.categories) ? [...config.global.categories] : [];
 
   // Resolver si la entidad está permitida
@@ -146,7 +152,7 @@ export function getConfigForEntity(typeId: string, entity: Entity): EntityConfig
   // salvo que la categoría principal tenga su propia `id` denegada o
   // todas las categorías del submenu queden filtradas.
   const filteredGlobalCats: MenuCategory[] = [];
-  const factionInfo = getEntityFactionInfo(entity);
+  const factionInfo = factionInfoParam !== undefined ? factionInfoParam : getEntityFactionInfo(entity);
   const isSpecial = factionInfo?.isSpecial ?? false;
   for (const c of globalCats) {
     if (c && c.submenu) {

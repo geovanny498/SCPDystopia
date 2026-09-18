@@ -1,10 +1,10 @@
 // scripts/gui/interactMenu/interactTrigger.ts
 import { world, system, EquipmentSlot, Player, Entity } from "@minecraft/server";
 import config, { INTERACT_MAX_DISTANCE } from "./config.js";
-import { debugWarn, debugMessage } from "../../utils/debug.js";
+import { debug } from "../../utils/debug.js";
 import { showInteractDDUI } from "./ddui/interact_ddui_form.js";
 import { interactMenuSessionStore } from "./ddui/interact_ddui_shared.js";
-import { getEntityFactionInfo } from "../commandMenu/model/menu_faction.js";
+import { getEntityFactionInfo, type EntityFactionInfo } from "../commandMenu/model/menu_faction.js";
 import { PlayerPermissionManager } from "../shared/playerPermissionManager.js";
 import { EquipmentDetector } from "../shared/equipmentDetector.js";
 import { itemMatches, getConfigForEntity } from "./gui.js";
@@ -98,7 +98,10 @@ export function openInteractMenuForEntity(player: Player, targetEntity: Entity):
     // the session. The session.get guard alone is insufficient because the
     // session is created inside system.run (next tick).
     if (interactMenuSessionStore.isOpening(player.id)) {
-      debugMessage("interactTrigger", `Apertura en curso para ${player.name}, ignorando`, "blue");
+      debug("interactTrigger", `Apertura en curso para §b${player.name}§r, ignorando`, {
+        color: "blue",
+        level: "debug",
+      });
       return;
     }
 
@@ -107,13 +110,17 @@ export function openInteractMenuForEntity(player: Player, targetEntity: Entity):
     // and notify the player.
     if (!targetEntity.isValid) {
       interactMenuSessionStore.cleanup(player.id);
-      debugWarn("interactTrigger", `Entidad objetivo inválida para ${player.name}`, "yellow");
+      debug("interactTrigger", `§cEntidad objetivo inválida§r para §b${player.name}§r`, {
+        color: "yellow",
+        level: "warn",
+      });
       return;
     }
 
-    debugWarn(
+    debug(
       "interactTrigger",
-      `openInteractMenuForEntity player=${player?.name ?? "?"} target=${targetEntity?.typeId ?? "?"}`
+      `openInteractMenuForEntity player=§b${player?.name ?? "?"}§r target=§b${targetEntity?.typeId ?? "?"}§r`,
+      { color: "yellow", level: "debug" }
     );
 
     if (!player || !targetEntity) return;
@@ -127,36 +134,40 @@ export function openInteractMenuForEntity(player: Player, targetEntity: Entity):
       const mainhand = player.getComponent("equippable")?.getEquipment(EquipmentSlot.Mainhand);
       const mainId = mainhand?.typeId ?? null;
 
-      debugWarn("interactTrigger", `player mainhand=${mainId}, opener=${openerItem}`);
+      debug("interactTrigger", `player mainhand=§b${mainId}§r, opener=§a${openerItem}§r`, {
+        color: "light_purple",
+        level: "debug",
+      });
 
       const isDDUIOpener = itemMatches(mainId, openerItem);
 
       if (!isDDUIOpener) {
-        debugWarn("interactTrigger", `menu blocked: wrong opener`, "blue");
+        debug("interactTrigger", `menu blocked: §cwrong opener§r`, { color: "yellow", level: "warn" });
         return;
       }
     } catch (e) {
-      debugWarn("interactTrigger", `error reading mainhand: ${e}`, "red");
+      debug("interactTrigger", `error reading mainhand: ${e}`, { color: "red", level: "error" });
       return;
     }
 
     const isAdmin = PlayerPermissionManager.isAdmin(player);
 
+    const factionInfo: EntityFactionInfo | null = getEntityFactionInfo(entity);
+
     if (!isAdmin) {
       const helmetFaction = EquipmentDetector.getActiveFaction(player);
-      const entityFactionInfo = getEntityFactionInfo(entity);
 
       if (!helmetFaction) {
         player.sendMessage("§c[SCPDystopia] Necesitas llevar el casco de tu facción.");
         return;
       }
 
-      if (!entityFactionInfo) {
+      if (!factionInfo) {
         return;
       }
 
-      if (helmetFaction !== entityFactionInfo.faction) {
-        const entityFactionName = entityFactionInfo.faction === "foundation" ? "Foundation" : "Chaos";
+      if (helmetFaction !== factionInfo.faction) {
+        const entityFactionName = factionInfo.faction === "foundation" ? "Foundation" : "Chaos";
         const playerFactionName = helmetFaction === "foundation" ? "Foundation" : "Chaos";
         player.sendMessage(
           `§c[SCPDystopia] No puedes modificar unidades de ${entityFactionName} si eres del bando ${playerFactionName}.`
@@ -167,9 +178,9 @@ export function openInteractMenuForEntity(player: Player, targetEntity: Entity):
 
     const typeId = entity.typeId;
 
-    const cfg = getConfigForEntity(typeId, entity);
+    const cfg = getConfigForEntity(typeId, entity, factionInfo);
     if (!cfg) {
-      debugWarn("interactTrigger", `no config for ${typeId}`, "blue");
+      debug("interactTrigger", `§cno config§r for §b${typeId}§r`, { color: "yellow", level: "warn" });
       return;
     }
 
@@ -178,20 +189,29 @@ export function openInteractMenuForEntity(player: Player, targetEntity: Entity):
       if (entity.nameTag) displayName = entity.nameTag;
     } catch {}
 
-    const soldierName = entity.nameTag ? `${entity.nameTag}§r` : `§b${displayName}§r`;
+    const soldierName = entity.nameTag ? `§r§f${entity.nameTag}§r` : `§b${displayName}§r`;
 
     // Marcar apertura en curso para prevenir race condition con itemUse
     interactMenuSessionStore.setOpening(player.id);
 
     system.run(() => {
       try {
-        showInteractDDUI(player, entity, cfg, soldierName, displayName, typeId);
+        const session = interactMenuSessionStore.getOrCreate(
+          player,
+          entity,
+          cfg,
+          soldierName,
+          displayName,
+          typeId,
+          factionInfo
+        );
+        showInteractDDUI(session);
       } finally {
         interactMenuSessionStore.clearOpening(player.id);
       }
     });
   } catch (err) {
-    debugWarn("interactTrigger", `GUI error: ${err}`, "red");
+    debug("interactTrigger", `§cGUI error§r: ${err}`, { color: "red", level: "error" });
     interactMenuSessionStore.clearOpening(player.id);
   }
 }
@@ -217,7 +237,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
   const itemTypeId = ev.itemStack?.typeId ?? null;
   if (!isOpenerForEntity(itemTypeId, entity.typeId)) return;
 
-  debugMessage("interactTrigger", `Cancelando interacción vanilla para ${entity.typeId}`, "gray");
+  debug("interactTrigger", `Cancelando interacción vanilla para §b${entity.typeId}§r`, {
+    color: "blue",
+    level: "debug",
+  });
 
   // Prevenir inventario vanilla / otras interacciones nativas
   ev.cancel = true;
@@ -225,7 +248,10 @@ world.beforeEvents.playerInteractWithEntity.subscribe((ev) => {
   // Guard: si ya hay un menú abierto (puede haberse abierto desde itemUse),
   // no abrir otro
   if (interactMenuSessionStore.get(player.id)) {
-    debugMessage("interactTrigger", `Menú ya abierto para ${player.name}, ignorando playerInteractWithEntity`, "blue");
+    debug("interactTrigger", `§eMenú ya abierto§r para §b${player.name}§r, ignorando playerInteractWithEntity`, {
+      color: "blue",
+      level: "debug",
+    });
     return;
   }
 
@@ -253,14 +279,20 @@ world.beforeEvents.itemUse.subscribe((ev) => {
 
   // Guard: si ya hay un menú abierto para este jugador, no abrir otro
   if (interactMenuSessionStore.get(player.id)) {
-    debugMessage("interactTrigger", `Menú ya abierto para ${player.name}, ignorando itemUse`, "blue");
+    debug("interactTrigger", `§eMenú ya abierto§r para §b${player.name}§r, ignorando itemUse`, {
+      color: "blue",
+      level: "debug",
+    });
     return;
   }
 
   const itemTypeId = ev.itemStack?.typeId ?? null;
   if (!isOpenerItem(itemTypeId)) return;
 
-  debugWarn("interactTrigger", `itemUse opener detectado: ${itemTypeId} por ${player.name}`, "green");
+  debug("interactTrigger", `itemUse opener detectado: §a${itemTypeId} §rpor §b${player.name}§r`, {
+    color: "blue",
+    level: "debug",
+  });
 
   // Cancelar el uso vanilla del item abridor
   ev.cancel = true;
@@ -275,11 +307,14 @@ world.beforeEvents.itemUse.subscribe((ev) => {
 
   const target = hits[0]?.entity;
   if (!target) {
-    debugWarn("interactTrigger", `No se encontró entidad objetivo en el raycast`, "blue");
+    debug("interactTrigger", `§cNo se encontró entidad objetivo§r en el raycast`, { color: "yellow", level: "warn" });
     return;
   }
 
-  debugMessage("interactTrigger", `Raycast: target=${target.typeId} distancia=${hits[0].distance}`, "cyan");
+  debug("interactTrigger", `§bRaycast: §rtarget=§b${target.typeId}§r distancia=${hits[0].distance}`, {
+    color: "light_purple",
+    level: "debug",
+  });
 
   openInteractMenuForEntity(player, target);
 });

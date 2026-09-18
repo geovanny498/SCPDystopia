@@ -14,7 +14,7 @@ import { Entity, Player } from "@minecraft/server";
 import { SpecialGroups } from "../../constants/domains.js";
 import { GROUP_LABELS, SYSTEM_SHORT_NAMES } from "./systemCatalog.js";
 import { entityHistoryStore } from "./entityHistory.js";
-import { debugWarn } from "../../utils/debug.js";
+import { debug } from "../../utils/debug.js";
 
 export const ENTITY_GROUP_DP = "scpd:group";
 
@@ -39,7 +39,8 @@ export function getUnitGroup(entity: Entity): string {
 export function setUnitGroup(entity: Entity, groupId: string): void {
   if (!entity) return;
   entity.setDynamicProperty(ENTITY_GROUP_DP, groupId);
-  debugWarn("menuGroups", `Grupo ${groupId} asignado a entidad ${entity.typeId}`, "green");
+  const soldierName = entity.nameTag ? `${entity.nameTag}§r` : entity.typeId;
+  debug("menuGroups", `Grupo §a${groupId}§r asignado a entidad §e${soldierName}§r`, { color: "gray", level: "debug" });
 }
 
 /**
@@ -55,6 +56,7 @@ export function clearUnitGroup(entity: Entity, player: Player | null = null): bo
   if (entity.getDynamicProperty(ENTITY_GROUP_DP) === undefined) return false;
 
   entity.setDynamicProperty(ENTITY_GROUP_DP, undefined);
+  const soldierName = entity.nameTag ? `${entity.nameTag}§r` : entity.typeId;
 
   if (player != null) {
     entityHistoryStore.pushHistory(entity.id, {
@@ -65,6 +67,6 @@ export function clearUnitGroup(entity: Entity, player: Player | null = null): bo
     });
   }
 
-  debugWarn("menuGroups", `Grupo limpiado de ${entity.typeId}`, "green");
+  debug("menuGroups", `Grupo limpiado de §e${soldierName}§r`, { color: "gray", level: "debug" });
   return true;
 }

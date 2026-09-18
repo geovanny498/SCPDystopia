@@ -13,7 +13,7 @@ import { Entity, EntityComponentTypes } from "@minecraft/server";
 import { Factions, UnitHierarchy, SpecialGroups } from "../menu_config.js";
 import { getUnitGroup } from "./menu_groups.js";
 import { getTeam, teamFamilies } from "../../../utils/teams.js";
-import { debugWarn } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import type { CatalogSystem } from "../../shared/systemCatalog.js";
 import type { UnitHierarchyId } from "../../../constants/domains.js";
 
@@ -87,7 +87,10 @@ export function getEntityFactionInfo(ent: Entity): EntityFactionInfo | null {
     if (team !== "foundation" && team !== "chaos") return null;
     // Entidad sin familias de facción pero sí team → intentar jerarquía por type_family
     const hierarchy = detectHierarchyByEntity(ent) || detectHierarchyFallback(typeId);
-    debugWarn("menuFaction", `${typeId}: Fallback team=${team}, jerarquía=${hierarchy}`, "yellow");
+    debug("menuFaction", `§b${typeId}§r: Fallback team=§a${team}§r, jerarquía=§6${hierarchy}§r`, {
+      color: "yellow",
+      level: "warn",
+    });
     return { faction: team, isSpecial: false, nametag: "", hierarchy, group: null };
   }
 
@@ -97,7 +100,10 @@ export function getEntityFactionInfo(ent: Entity): EntityFactionInfo | null {
   if (isSpecial) {
     // Especial: nametag no vacío + familias de facción
     const group = getUnitGroup(ent);
-    debugWarn("menuFaction", `${nametag}: Especial ${faction}, grupo=${group}`, "cyan");
+    debug("menuFaction", `§r§f${nametag}§r: Especial §a${faction}§r, grupo=§6${group}§r`, {
+      color: "aqua",
+      level: "debug",
+    });
     return {
       faction,
       isSpecial: true,
@@ -109,7 +115,10 @@ export function getEntityFactionInfo(ent: Entity): EntityFactionInfo | null {
 
   // No especial: nametag vacío + familias de facción → detectar jerarquía
   const hierarchy = detectHierarchyByEntity(ent) || detectHierarchyFallback(typeId);
-  debugWarn("menuFaction", `${typeId}: No especial ${faction}, jerarquía=${hierarchy}`, "green");
+  debug("menuFaction", `§b${typeId}§r: No especial §b${faction}§r, jerarquía=§6${hierarchy}§r`, {
+    color: "green",
+    level: "debug",
+  });
   return {
     faction,
     isSpecial: false,
