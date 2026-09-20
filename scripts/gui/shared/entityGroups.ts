@@ -39,7 +39,7 @@ export function getUnitGroup(entity: Entity): string {
 export function setUnitGroup(entity: Entity, groupId: string): void {
   if (!entity) return;
   entity.setDynamicProperty(ENTITY_GROUP_DP, groupId);
-  const soldierName = entity.nameTag ? `${entity.nameTag}§r` : entity.typeId;
+  const soldierName = entity.nameTag ? `${entity.nameTag}§r` : `§b${entity.typeId}§r`;
   debug("menuGroups", `Grupo §a${groupId}§r asignado a entidad §e${soldierName}§r`, { color: "gray", level: "debug" });
 }
 
@@ -56,7 +56,7 @@ export function clearUnitGroup(entity: Entity, player: Player | null = null): bo
   if (entity.getDynamicProperty(ENTITY_GROUP_DP) === undefined) return false;
 
   entity.setDynamicProperty(ENTITY_GROUP_DP, undefined);
-  const soldierName = entity.nameTag ? `${entity.nameTag}§r` : entity.typeId;
+  const soldierName = entity.nameTag ? `${entity.nameTag}§r` : `§b${entity.typeId}§r`;
 
   if (player != null) {
     entityHistoryStore.pushHistory(entity.id, {

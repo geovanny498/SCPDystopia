@@ -81,16 +81,20 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
     // entitySpawn dispara antes que minecraft:entity_spawned agregue
     // los component_groups con typeFamilies), diferir 2 ticks.
     const hasTypeFamilies = !!ent.getComponent("minecraft:type_family");
-    debug(
+debug(
       "menuEvents:spawn",
-        `[typeFamilyCheck] ${currentNametag || ent.typeId}§r faction=§9${faction}§r hasTypeFamilies=§a${hasTypeFamilies}§r`,
+        `[typeFamilyCheck] ${currentNametag ? `§r§f${currentNametag}§r` : `§b${ent.typeId}§r`} faction=§9${faction}§r hasTypeFamilies=§a${hasTypeFamilies}§r`,
       { color: "gray", level: "debug" }
     );
     if (!hasTypeFamilies) {
-      debug("menuEvents:spawn", `[§cDEFER§r] ${currentNametag || ent.typeId}§r: sin typeFamilies, difiriendo 2 ticks`, {
-        color: "yellow",
-        level: "warn",
-      });
+      debug(
+        "menuEvents:spawn",
+        `[§cDEFER§r] ${currentNametag ? `§r§f${currentNametag}§r` : `§b${ent.typeId}§r`}: sin typeFamilies, difiriendo 2 ticks`,
+        {
+          color: "yellow",
+          level: "warn",
+        }
+      );
       system.runTimeout(() => {
         handleSoldierEntity(ent, { forceApply });
       }, 2);
@@ -118,7 +122,10 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
         return;
       }
 
-      debug("menuEvents:spawn", `${displayLabel}: §aEN SCOPE§r, aplicando sistemas...`, { color: "aqua", level: "debug" });
+      debug("menuEvents:spawn", `${displayLabel}: §aEN SCOPE§r, aplicando sistemas...`, {
+        color: "aqua",
+        level: "debug",
+      });
     } else {
       debug("menuEvents:spawn", `EntitySpawn ${displayLabel}: §6FORCE APPLY§r activado, omitiendo scope`, {
         color: "light_purple",
@@ -167,6 +174,7 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
 
 /**
  * Inicializa los event listeners para el sistema de menú
+ * No requieren limpieza
  */
 export function initializeMenuEvents() {
   try {

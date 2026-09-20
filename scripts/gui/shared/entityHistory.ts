@@ -12,7 +12,7 @@
  * el historial es per-entidad, no per-jugador.
  */
 
-import { debugMessage } from "../../utils/debug.js";
+import { debug } from "../../utils/debug.js";
 import { formatLocalTimeShort } from "./timeHelpers.js";
 
 /** Origen del cambio registrado en el historial. */
@@ -87,7 +87,7 @@ export const entityHistoryStore: EntityHistoryStore = {
     if (entries.length > MAX_ENTRIES) {
       entries.length = MAX_ENTRIES;
     }
-    debugMessage("entityHistory", `Entry [${entry.source}] ${entityId}: ${entry.context} → ${entry.value}`, "gray");
+    debug("entityHistory", `Entry [§6${entry.source}§r] §b${entityId}§r: §6${entry.context}§r → §f${entry.value}§r`, { level: "debug", color: "gray" });
   },
   clearEntity(entityId) {
     history.delete(entityId);

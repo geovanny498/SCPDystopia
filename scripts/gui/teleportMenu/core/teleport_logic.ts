@@ -6,7 +6,7 @@
  */
 
 import { Entity, Player, Dimension, Vector3 } from "@minecraft/server";
-import { debugWarn } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import type { TeleportResult } from "./teleport_types.js";
 
 /**
@@ -23,7 +23,7 @@ export function teleportEntitiesToLocation(
   let count = 0;
   const errors: string[] = [];
 
-  debugWarn("teleportLogic", `=== Iniciando teletransporte de ${entities.length} entidades ===`, "cyan");
+  debug("teleportLogic", `=== Iniciando teletransporte de ${entities.length} entidades ===`, { color: "aqua", level: "debug" });
 
   for (const entity of entities) {
     try {
@@ -37,16 +37,17 @@ export function teleportEntitiesToLocation(
       });
 
       count++;
-      debugWarn(
+      const soldierName = entity.nameTag ? `${entity.nameTag}§r` : `§b${entity.typeId}§r`;
+      debug(
         "teleportLogic:success",
-        `${entity.nameTag || entity.typeId} teletransportado a [${destination.x}, ${destination.y}, ${destination.z}]`,
-        "green"
+        `${soldierName} teletransportado a [${destination.x}, ${destination.y}, ${destination.z}]`,
+        { color: "green", level: "debug" }
       );
     } catch (e) {
-      const entityLabel = entity?.nameTag || entity?.typeId || "unknown";
+      const entityLabel = entity?.nameTag ? `${entity?.nameTag}§r` : entity?.typeId ? `§b${entity?.typeId}§r` : "unknown";
       const errorMsg = `Error en ${entityLabel}: ${e}`;
       errors.push(errorMsg);
-      debugWarn("teleportLogic:error", errorMsg, "red");
+      debug("teleportLogic:error", errorMsg, { color: "red", level: "error" });
     }
   }
 
@@ -56,14 +57,14 @@ export function teleportEntitiesToLocation(
     errors: errors.length > 0 ? errors : undefined,
   };
 
-  debugWarn(
+  debug(
     "teleportLogic",
     `=== Teletransporte completado: ${count}/${entities.length} exitosos ===`,
-    count > 0 ? "green" : "yellow"
+    { color: count > 0 ? "green" : "yellow", level: "debug" }
   );
 
   if (result.hasErrors) {
-    debugWarn("teleportLogic", `Errores encontrados: ${errors.length}`, "red");
+    debug("teleportLogic", `Errores encontrados: ${errors.length}`, { color: "red", level: "warn" });
   }
 
   return result;

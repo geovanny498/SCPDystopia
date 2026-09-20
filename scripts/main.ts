@@ -3,7 +3,7 @@ import { world, system, Entity } from "@minecraft/server";
 import { getTeam } from "./utils/teams.js";
 import { projectileConfig, type ProjectileConfigEntry } from "./utils/projectileConfig.js";
 import { applyDamageAndCfg } from "./utils/damage.js";
-import { debugMessage, debugWarn } from "./utils/debug.js";
+import { debug } from "./utils/debug.js";
 import { interactMenuSessionStore } from "./gui/interactMenu/ddui/interact_ddui_shared.js";
 import { entityHistoryStore } from "./gui/shared/entityHistory.js";
 
@@ -14,7 +14,7 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
   const target = event.getEntityHit()?.entity as Entity | undefined;
   const shooter = event.source as Entity;
   if (!projectile || !target) {
-    debugWarn("projectileHitEntity", "Falta objeto necesario o es fuego amigo.", "yellow");
+    debug("projectileHitEntity", "Falta objeto necesario o es fuego amigo.", { level: "warn", color: "yellow" });
     return;
   }
 
@@ -22,31 +22,31 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
   const teamTarget = getTeam(target);
 
   if (shooter && target.id === shooter.id) {
-    debugWarn("projectileHitEntity", `El proyectil intentó dañar a su propio tirador. Cancelando daño.`, "yellow");
+    debug("projectileHitEntity", `El proyectil intentó dañar a su propio tirador. Cancelando daño.`, { level: "warn", color: "yellow" });
     return;
   }
 
   if (teamShooter && teamTarget && teamShooter === teamTarget) {
-    debugWarn(
+    debug(
       "projectileHitEntity",
       `Fuego amigo detectado. Disparador: ${teamShooter}, Objetivo: ${teamTarget}`,
-      "cyan"
+      { level: "warn", color: "yellow" }
     );
     return;
   }
 
   const cfg = (projectileConfig as Record<string, ProjectileConfigEntry>)[projectile.typeId];
   if (!cfg) {
-    debugWarn("projectileHitEntity", `No se encontró configuración para el proyectil.`, "red");
+    debug("projectileHitEntity", `No se encontró configuración para el proyectil.`, { level: "warn", color: "yellow" });
     return;
   }
 
   try {
     if (cfg.pierce === Infinity) {
-      debugWarn(
+      debug(
         "projectileHitEntity",
-        `Projectile: ${projectile.typeId}. Pierce es Infinity. Solo aplicamos daño y knockback.`,
-        "green"
+        `Projectile: §b${projectile.typeId}§r. Pierce es Infinity. Solo aplicamos daño y knockback.`,
+        { level: "debug", color: "green" }
       );
       applyDamageAndCfg(projectile, target, cfg, shooter);
       return;
@@ -55,25 +55,25 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
     let pierced = projectilePierceMap.get(projectile) ?? 0;
     const pierceLimit = cfg.pierce ?? 1;
     if (pierced >= pierceLimit) {
-      debugWarn(
+      debug(
         "projectileHitEntity",
-        `Projectile: ${projectile.typeId}. Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`,
-        "cyan"
+        `Projectile: §b${projectile.typeId}§r. Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`,
+        { level: "debug", color: "blue" }
       );
-      debugWarn("projectileHitEntity", "Límite de pierce alcanzado. Eliminando proyectil.", "cyan");
+      debug("projectileHitEntity", "Límite de pierce alcanzado. Eliminando proyectil.", { level: "debug", color: "blue" });
       return;
     }
 
-    debugWarn(
+    debug(
       "projectileHitEntity",
-      `Projectile: ${projectile.typeId}. Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`,
-      "green"
+      `Projectile: §b${projectile.typeId}§r. Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`,
+      { level: "debug", color: "green" }
     );
     applyDamageAndCfg(projectile, target, cfg, shooter);
 
     projectilePierceMap.set(projectile, pierced + 1);
   } catch (e) {
-    debugWarn("projectileHitEntity", `Error general al aplicar daño: ${e}`, "red");
+    debug("projectileHitEntity", `Error general al aplicar daño: ${e}`, { level: "error", color: "red" });
   }
 });
 
@@ -84,16 +84,16 @@ world.afterEvents.entityDie.subscribe((event) => {
   const cause = event.damageSource.cause;
   const deadEntityId = deadEntity.id;
   const entityType = deadEntity.typeId;
-  debugWarn("entityDie", `Entidad eliminada: ${entityType} por: ${cause}`, "magenta");
+  debug("entityDie", `Entidad eliminada: §b${entityType}§r por: ${cause}`, { level: "debug", color: "light_purple" });
   try {
     interactMenuSessionStore.clearEntityFeedbackForAll(deadEntityId);
   } catch (e) {
-    debugWarn("entityDie", `Error limpiando interactMenu feedback: ${e}`, "red");
+    debug("entityDie", `Error limpiando interactMenu feedback: ${e}`, { level: "error", color: "red" });
   }
   try {
     entityHistoryStore.clearEntity(deadEntityId);
   } catch (e) {
-    debugWarn("entityDie", `Error limpiando entityHistory: ${e}`, "red");
+    debug("entityDie", `Error limpiando entityHistory: ${e}`, { level: "error", color: "red" });
   }
   interactMenuSessionStore.cleanupByEntity(deadEntityId);
 });
@@ -105,5 +105,5 @@ world.afterEvents.entitySpawn.subscribe((event) => {
     return;
   }
   entity.dimension.playSound(cfg.sound, entity.location);
-  debugWarn("projectileSound", `Projectile: ${entity.typeId}. Sound: ${cfg.sound}`, "blue");
+  debug("projectileSound", `Projectile: §b${entity.typeId}§r. Sound: ${cfg.sound}`, { level: "debug", color: "blue" });
 });

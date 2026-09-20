@@ -2,7 +2,7 @@
 
 import { Player, system } from "@minecraft/server";
 import { CustomForm, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
-import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { debug } from "../../../../utils/debug.js";
 import { TargetFaction, FACTION_IDS } from "../../../../constants/domains.js";
 import {
   PANEL_TITLES,
@@ -86,7 +86,7 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
           });
         }
       } catch (e) {
-        debugWarn("commandMenuDDUI", `Error guardando scope: ${e}`, "red");
+        debug("commandMenuDDUI", `Error guardando scope: ${e}`, { level: "error", color: "red" });
         player.sendMessage(ERROR_MESSAGES.SCOPE_SAVE);
       }
     });
@@ -102,27 +102,27 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debugMessage("commandMenuDDUI", `Scope cerrado: X del cliente (${player.name})`, "gray");
+          debug("commandMenuDDUI", `Scope cerrado: X del cliente (§b${player.name}§r)`, { level: "debug", color: "gray" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debugWarn("commandMenuDDUI", `Scope cerrado: UserBusy (${player.name})`, "yellow");
+          debug("commandMenuDDUI", `Scope cerrado: §6UserBusy§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debugMessage("commandMenuDDUI", `Scope cerrado: navegación (${player.name})`, "gray");
+            debug("commandMenuDDUI", `Scope cerrado: §6navegación§r (§b${player.name}§r)`, { level: "debug", color: "gray" });
             import("./advancedPanel.js").then(({ showAdvancedPanel }) => showAdvancedPanel(player, effectiveTarget));
           } else {
-            debugWarn("commandMenuDDUI", `Scope cerrado: ServerClosed sin razón (${player.name})`, "yellow");
+            debug("commandMenuDDUI", `Scope cerrado: §cServerClosed sin razón§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
             commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
       })
       .catch((err) => {
-        debugWarn("commandMenuDDUI", `Error en form.show() scope: ${err}`, "red");
+        debug("commandMenuDDUI", `Error en form.show() scope: ${err}`, { level: "error", color: "red" });
         commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
-    debugWarn("commandMenuDDUI", `Error en showScopePanel: ${e}`, "red");
+    debug("commandMenuDDUI", `Error en showScopePanel: ${e}`, { level: "error", color: "red" });
   }
 }

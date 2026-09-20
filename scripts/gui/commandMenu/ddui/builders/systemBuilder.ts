@@ -2,7 +2,7 @@
 
 import { Player, Dimension, Entity, system } from "@minecraft/server";
 import { CustomForm, ObservableNumber, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
-import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { debug } from "../../../../utils/debug.js";
 import {
   CATALOG_SYSTEMS,
   BACK_BUTTON_LABEL,
@@ -346,7 +346,7 @@ function applySystemToEntitiesForSystem(
     try {
       saveSystemAndUpdateMemory(systemId, partialState);
     } catch (e) {
-      debugWarn("commandMenuDDUI", `Error guardando estado de sistema ${systemId}: ${e}`, "red");
+      debug("commandMenuDDUI", `Error guardando estado de sistema §b${systemId}§r: ${e}`, { level: "error", color: "red" });
     }
 
     if (targetFaction === "both") {
@@ -377,7 +377,7 @@ function applySystemToEntitiesForSystem(
       viewId: `system:${systemId}`,
     };
   } catch (e) {
-    debugWarn("commandMenuDDUI", `Error aplicando control ${systemId} [${key}]: ${e}`, "red");
+    debug("commandMenuDDUI", `§cError§r aplicando control §b${systemId}§r [§b${key}§r]: ${e}`, { level: "error", color: "red" });
     return null;
   }
 }
@@ -550,7 +550,7 @@ export function buildSystemView({
             const { counts, nametagsByKey } = buildCountsAndNametags(dimension, factions);
             updateControlLabels(hierarchyControls, groupControls, counts, nametagsByKey);
           } catch (e) {
-            debugWarn("commandMenuDDUI", `Error en intervalo de contadores: ${e}`, "red");
+            debug("commandMenuDDUI", `Error en intervalo de contadores: ${e}`, { level: "warn", color: "yellow" });
           }
         }, 20);
 
@@ -682,14 +682,14 @@ export function buildSystemView({
           .show()
           .then((reason) => {
             if (reason === "ClientClosed") {
-              debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: X del cliente (${player.name})`, "gray");
+              debug("commandMenuDDUI", `Sistema §b${systemId}§r cerrado: X del cliente (§b${player.name}§r)`, { level: "debug", color: "gray" });
               commandMenuSessionStore.cleanup(player.id);
             } else if (reason === "UserBusy") {
-              debugWarn("commandMenuDDUI", `Sistema ${systemId} cerrado: UserBusy (${player.name})`, "yellow");
+              debug("commandMenuDDUI", `Sistema §b${systemId}§r cerrado: §6UserBusy§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
               commandMenuSessionStore.cleanup(player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debugMessage("commandMenuDDUI", `Sistema ${systemId} cerrado: navegación (${player.name})`, "gray");
+                debug("commandMenuDDUI", `Sistema §b${systemId}§r cerrado: §6navegación§r (§b${player.name}§r)`, { level: "debug", color: "gray" });
                 if (session && intervalId !== null) {
                   session.unregisterInterval(intervalId);
                 }
@@ -703,10 +703,10 @@ export function buildSystemView({
                   );
                 }
               } else {
-                debugWarn(
+                debug(
                   "commandMenuDDUI",
-                  `Sistema ${systemId} cerrado: ServerClosed sin razón (${player.name})`,
-                  "yellow"
+                  `Sistema §b${systemId}§r cerrado: §cServerClosed sin razón§r (§b${player.name}§r)`,
+                  { level: "warn", color: "gray" }
                 );
                 commandMenuSessionStore.cleanup(player.id);
               }
@@ -714,12 +714,12 @@ export function buildSystemView({
             closeReason = undefined;
           })
           .catch((err) => {
-            debugWarn("commandMenuDDUI", `Error en form.show() sistema ${systemId}: ${err}`, "red");
+            debug("commandMenuDDUI", `Error en form.show() sistema §b${systemId}§r: ${err}`, { level: "error", color: "red" });
             commandMenuSessionStore.cleanup(player.id);
           });
       }
     } catch (e) {
-      debugWarn("commandMenuDDUI", `Error en buildSystemView ${systemId}: ${e}`, "red");
+      debug("commandMenuDDUI", `§cError§r en buildSystemView §b${systemId}§r: ${e}`, { level: "error", color: "red" });
     }
   };
 }

@@ -17,7 +17,7 @@ import {
 } from "../../shared/systemCatalog.js";
 import { DDUIFeedbackPresenter } from "../../shared/dduiFeedback.js";
 import { stripColorCodes } from "../../commandMenu/ddui/helpers/formHelpers.js";
-import { debugWarn, debugMessage } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import {
   PlayerPermissionManager,
   ROLE_DP_KEY_FOUNDATION,
@@ -131,7 +131,7 @@ export function showRolePanel(admin: Player): void {
       form.button("Guardar", () => {
         const selectedPlayerIndex = playerObs.getData();
         if (selectedPlayerIndex < 0 || selectedPlayerIndex >= players.length) {
-          debugWarn("roleMenu", "Índice de jugador inválido", "red");
+          debug("roleMenu", "Índice de jugador inválido", { level: "error", color: "red" });
           feedbackPresenter.present({
             context: "Guardar",
             value: "§c[SCPDystopia] Error: índice de jugador inválido.",
@@ -158,10 +158,10 @@ export function showRolePanel(admin: Player): void {
         });
 
         admin.sendMessage(`§a[SCPDystopia] Roles actualizados para §f${selectedPlayer.name}§a.`);
-        debugMessage(
+        debug(
           "roleMenu",
-          `Roles aplicados a ${selectedPlayer.name}: Foundation=${newFoundationRole}, Chaos=${newChaosRole}, admin=${newAdmin}`,
-          "green"
+          `Roles aplicados a §b${selectedPlayer.name}§r: Foundation=§6${newFoundationRole}§r, Chaos=§6${newChaosRole}§r, admin=${newAdmin}`,
+          { level: "debug", color: "light_purple" }
         );
       });
 
@@ -179,20 +179,20 @@ export function showRolePanel(admin: Player): void {
       .show()
       .then((reason: DataDrivenScreenClosedReason) => {
         if (reason === "UserBusy") {
-          debugWarn("roleMenu", `Panel de roles: UserBusy (${admin.name})`, "yellow");
+          debug("roleMenu", `Panel de roles: §6UserBusy§r (§b${admin.name}§r)`, { level: "warn", color: "gray" });
         } else if (reason === "ClientClosed") {
-          debugMessage("roleMenu", `Panel de roles cerrado por el cliente (${admin.name})`, "gray");
+          debug("roleMenu", `Panel de roles cerrado por el cliente (§b${admin.name}§r)`, { level: "debug", color: "gray" });
         } else if (reason === "ServerClosed") {
-          debugMessage("roleMenu", `Panel de roles cerrado por el servidor (${admin.name})`, "gray");
+          debug("roleMenu", `Panel de roles cerrado por el servidor (§b${admin.name}§r)`, { level: "debug", color: "gray" });
         }
         feedbackPresenter.reset();
       })
       .catch((err) => {
-        debugWarn("roleMenu", `Error mostrando panel de roles: ${err}`, "red");
+        debug("roleMenu", `Error mostrando panel de roles: ${err}`, { level: "error", color: "red" });
         feedbackPresenter.reset();
       });
   } catch (e) {
-    debugWarn("roleMenu", `Error mostrando panel de roles: ${e}`, "red");
+    debug("roleMenu", `Error mostrando panel de roles: ${e}`, { level: "error", color: "red" });
     admin.sendMessage("§c[SCPDystopia] Error abriendo el panel de roles.");
   }
 }

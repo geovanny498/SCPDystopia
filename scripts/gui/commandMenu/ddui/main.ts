@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/ddui/main.ts
 
 import { Player, system, world } from "@minecraft/server";
-import { debugWarn, debugMessage } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import { ERROR_MESSAGES } from "../../shared/systemCatalog.js";
 import { PlayerPermissionManager } from "../../shared/playerPermissionManager.js";
 import { EquipmentDetector } from "../../shared/equipmentDetector.js";
@@ -18,10 +18,10 @@ export function openCommandMenuDDUI(player: Player): void {
       return;
     }
 
-    debugMessage("commandMenuDDUI", `Abriendo menú DDUI para ${player.name}`, "cyan");
+    debug("commandMenuDDUI", `Abriendo menú DDUI para §b${player.name}§r`, { level: "debug", color: "blue" });
     showMainPanel(player);
   } catch (e) {
-    debugWarn("commandMenuDDUI", `Error abriendo menú DDUI: ${e}`, "red");
+      debug("commandMenuDDUI", `Error abriendo menú DDUI: ${e}`, { level: "error", color: "red" });
     player.sendMessage(ERROR_MESSAGES.OPEN_MENU);
   }
 }

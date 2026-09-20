@@ -1,7 +1,6 @@
 // scripts/gui/shared/equipmentDetector.ts
 
 import { Player, EquipmentSlot } from "@minecraft/server";
-import { debugWarn } from "../../utils/debug.js";
 import { helmetTeams } from "../../utils/teams.js";
 import { HELMET_DISPLAY_NAMES } from "./systemCatalog.js";
 

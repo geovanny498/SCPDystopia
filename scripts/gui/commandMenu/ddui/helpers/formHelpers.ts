@@ -1,7 +1,6 @@
 // scripts/gui/commandMenu/ddui/helpers/formHelpers.ts
 
 import { ObservableNumber, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
-import { debugWarn, debugMessage } from "../../../../utils/debug.js";
 import { type SystemOption } from "../../../shared/systemCatalog.js";
 import { getEntitySystemState } from "../../menu_config.js";
 import type { CommandMenuSession } from "../sessionStore.js";

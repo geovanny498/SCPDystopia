@@ -1,7 +1,7 @@
 // scripts/gui/shared/dduiFeedback.ts
 
 import { ObservableString } from "@minecraft/server-ui";
-import { debugMessage } from "../../utils/debug.js";
+import { debug } from "../../utils/debug.js";
 
 /**
  * Estado semántico de una entrada de feedback DDUI. Determina el prefijo
@@ -118,7 +118,7 @@ export class DDUIFeedbackPresenter {
     };
     this.observable.setData(formatFeedbackText(full));
     this.store?.setLast(this.key, this.viewId, full);
-    debugMessage("dduiFeedback", `Feedback [${this.viewId}] ${full.context}: ${full.value}`, "gray");
+    debug("dduiFeedback", `Feedback [§b${this.viewId}§r] §6${full.context}§r: §f${full.value}§r`, { level: "debug", color: "gray" });
   }
 
   /**

@@ -9,7 +9,7 @@ import { Entity, Dimension, Player } from "@minecraft/server";
 import { getEntityFactionInfo, isValidSoldier } from "../../commandMenu/model/menu_faction.js";
 import { Factions, UnitHierarchy } from "../../commandMenu/menu_config.js";
 import { teamFamilies } from "../../../utils/teams.js";
-import { debugWarn } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 
 /**
  * Obtiene entidades normales por jerarquía en una dimensión
@@ -25,10 +25,10 @@ export function getNormalEntitiesByHierarchy(faction: string, hierarchies: strin
   // Determinar familias válidas según facción
   const validFamilies = faction === Factions.FOUNDATION ? teamFamilies.foundation : teamFamilies.chaos;
 
-  debugWarn(
+  debug(
     "teleportUtils",
-    `Buscando entidades normales de ${faction}, jerarquías: ${hierarchies.join(", ")}`,
-    "cyan"
+    `Buscando entidades normales de §a${faction}§r, jerarquías: ${hierarchies.join(", ")}`,
+    { level: "debug", color: "aqua" }
   );
 
   for (const family of validFamilies) {
@@ -53,14 +53,14 @@ export function getNormalEntitiesByHierarchy(faction: string, hierarchies: strin
 
         seen.add(ent.id);
         entities.push(ent);
-        debugWarn("teleportUtils:normal", `Encontrada: ${ent.typeId} [${faction}-${factionInfo.hierarchy}]`, "green");
+        debug("teleportUtils:normal", `Encontrada: §b${ent.typeId}§r [§a${faction}§r-§a${factionInfo.hierarchy}§r]`, { level: "debug", color: "green" });
       }
     } catch (e) {
-      debugWarn("teleportUtils:normal", `Error escaneando familia ${family}: ${e}`, "red");
+      debug("teleportUtils:normal", `§cError§r escaneando familia ${family}: ${e}`, { level: "error", color: "red" });
     }
   }
 
-  debugWarn("teleportUtils", `Encontradas ${entities.length} entidades normales`, "green");
+  debug("teleportUtils", `Encontradas ${entities.length} entidades normales`, { level: "debug", color: "green" });
   return entities;
 }
 
@@ -81,10 +81,10 @@ export function getSpecialEntitiesByNametags(
 
   const validFamilies = faction === Factions.FOUNDATION ? teamFamilies.foundation : teamFamilies.chaos;
 
-  debugWarn(
+  debug(
     "teleportUtils",
-    `Buscando entidades especiales de ${faction}, nametags: ${selectedNametags.join(", ")}`,
-    "cyan"
+    `Buscando entidades especiales de §a${faction}§r, nametags: ${selectedNametags.join(", ")}`,
+    { level: "debug", color: "aqua" }
   );
 
   for (const family of validFamilies) {
@@ -110,14 +110,14 @@ export function getSpecialEntitiesByNametags(
 
         seen.add(ent.id);
         entities.push(ent);
-        debugWarn("teleportUtils:special", `Encontrada: ${nameTag} [${faction}]`, "green");
+        debug("teleportUtils:special", `Encontrada: ${nameTag ? `§r§f${nameTag}§r` : `§b${ent.typeId}§r`} [§a${faction}§r]`, { level: "debug", color: "green" });
       }
     } catch (e) {
-      debugWarn("teleportUtils:special", `Error escaneando familia ${family}: ${e}`, "red");
+      debug("teleportUtils:special", `§cError§r escaneando familia ${family}: ${e}`, { level: "error", color: "red" });
     }
   }
 
-  debugWarn("teleportUtils", `Encontradas ${entities.length} entidades especiales seleccionadas`, "green");
+  debug("teleportUtils", `Encontradas ${entities.length} entidades especiales seleccionadas`, { level: "debug", color: "green" });
   return entities;
 }
 
@@ -133,7 +133,11 @@ export function getAllFactionEntities(faction: string, dimension: Dimension): En
 
   const validFamilies = faction === Factions.FOUNDATION ? teamFamilies.foundation : teamFamilies.chaos;
 
-  debugWarn("teleportUtils", `Buscando TODAS las entidades de ${faction}`, "cyan");
+  debug(
+    "teleportUtils",
+    `Buscando TODAS las entidades de §a${faction}§r`,
+    { level: "debug", color: "aqua" }
+  );
 
   for (const family of validFamilies) {
     try {
@@ -155,11 +159,11 @@ export function getAllFactionEntities(faction: string, dimension: Dimension): En
         entities.push(ent);
       }
     } catch (e) {
-      debugWarn("teleportUtils:all", `Error escaneando familia ${family}: ${e}`, "red");
+      debug("teleportUtils:all", `§cError§r escaneando familia ${family}: ${e}`, { level: "error", color: "red" });
     }
   }
 
-  debugWarn("teleportUtils", `Encontradas ${entities.length} entidades totales`, "green");
+  debug("teleportUtils", `Encontradas ${entities.length} entidades totales`, { level: "debug", color: "green" });
   return entities;
 }
 

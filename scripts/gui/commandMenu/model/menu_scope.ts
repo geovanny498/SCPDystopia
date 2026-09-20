@@ -1,6 +1,6 @@
 // scripts/gui/commandMenu/menu_scope.ts
 import { world, Entity } from "@minecraft/server";
-import { debugWarn } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import { ENTITY_GLOBAL_OVERWRITE_PROPERTY } from "../../shared/entityScope.js";
 
 export interface ScopeData {
@@ -37,7 +37,7 @@ function generateDefaultScope(): ScopeData {
  * Migra un scope antiguo al nuevo formato simplificado
  */
 function migrateOldScope(oldScope: unknown): ScopeData {
-  debugWarn("menuScope", "Migrando scope antiguo al nuevo formato simplificado", "yellow");
+  debug("menuScope", "Migrando scope antiguo al nuevo formato simplificado", { color: "yellow", level: "warn" });
   return generateDefaultScope();
 }
 
@@ -47,24 +47,24 @@ function migrateOldScope(oldScope: unknown): ScopeData {
 export function loadScope(forceReload = false): ScopeData {
   try {
     if (scopeCache && !forceReload) {
-      debugWarn("menuScope", "Scope cargado desde cache en memoria", "gray");
+      debug("menuScope", "Scope cargado desde cache en memoria", { color: "gray", level: "debug" });
       return scopeCache;
     }
 
     const raw = world.getDynamicProperty(SCOPE_PROPERTY);
 
     if (!raw) {
-      debugWarn("menuScope", "No hay scope guardado, generando defaults", "yellow");
+      debug("menuScope", "No hay scope guardado, generando defaults", { color: "yellow", level: "debug" });
       const defaultScope = generateDefaultScope();
       scopeCache = defaultScope;
       return defaultScope;
     }
 
-    debugWarn("menuScope", "Scope cargado desde propiedades dinámicas", "cyan");
+    debug("menuScope", "Scope cargado desde propiedades dinámicas", { color: "aqua", level: "debug" });
     const parsed = JSON.parse(raw as string);
 
     if (typeof parsed.respectEntityBlocks !== "boolean") {
-      debugWarn("menuScope", "Scope antiguo o inválido, migrando a formato simplificado", "yellow");
+      debug("menuScope", "Scope antiguo o inválido, migrando a formato simplificado", { color: "yellow", level: "warn" });
       const migratedScope = migrateOldScope(parsed);
       saveScope(migratedScope);
       scopeCache = migratedScope;
@@ -74,7 +74,7 @@ export function loadScope(forceReload = false): ScopeData {
     scopeCache = parsed;
     return parsed;
   } catch (e) {
-    debugWarn("menuScope", `Error cargando scope: ${e}`, "red");
+    debug("menuScope", `Error cargando scope: ${e}`, { color: "red", level: "error" });
     const defaultScope = generateDefaultScope();
     scopeCache = defaultScope;
     return defaultScope;
@@ -89,9 +89,9 @@ export function saveScope(scope: ScopeData): void {
     const serialized = JSON.stringify(scope);
     world.setDynamicProperty(SCOPE_PROPERTY, serialized);
     scopeCache = scope;
-    debugWarn("menuScope", "Scope guardado correctamente", "green");
+    debug("menuScope", "Scope guardado correctamente", { color: "green", level: "debug" });
   } catch (e) {
-    debugWarn("menuScope", `Error guardando scope: ${e}`, "red");
+    debug("menuScope", `Error guardando scope: ${e}`, { color: "red", level: "error" });
   }
 }
 
@@ -118,19 +118,19 @@ export function isEntityInScope(
   }
 
   if (!scope || typeof scope.respectEntityBlocks !== "boolean") {
-    debugWarn("menuScope", "Scope no válido, usando valores por defecto", "yellow");
+    debug("menuScope", "Scope no válido, usando valores por defecto", { color: "yellow", level: "warn" });
     scope = generateDefaultScope();
   }
 
-  const entityLabel = nameTag || (ent && ent.typeId) || "<unknown>";
+  const entityLabel = nameTag ? `§r§f${nameTag}§r` : ent && ent.typeId ? `§b${ent.typeId}§r` : "<unknown>";
 
   if (scope.respectEntityBlocks === false) {
-    debugWarn("menuScope:check", `${entityLabel}: scope fuerza configuración global => EN SCOPE`, "green");
+    debug("menuScope:check", `${entityLabel}: scope fuerza configuración global => EN SCOPE`, { color: "green", level: "debug" });
     return true;
   }
 
   if (!ent || typeof ent.getDynamicProperty !== "function") {
-    debugWarn("menuScope:check", `${entityLabel}: entidad inválida, no se puede aplicar bloqueo`, "yellow");
+    debug("menuScope:check", `${entityLabel}: entidad inválida, no se puede aplicar bloqueo`, { color: "yellow", level: "warn" });
     return true;
   }
 
@@ -138,14 +138,14 @@ export function isEntityInScope(
     const raw = ent.getDynamicProperty(ENTITY_GLOBAL_OVERWRITE_PROPERTY);
     const allowGlobalOverwrite = normalizeBooleanDynamicProperty(raw);
     const blocked = allowGlobalOverwrite === false;
-    debugWarn(
+    debug(
       "menuScope:check",
       `${entityLabel}: respetar bloqueos=true, allowGlobalOverwrite=${allowGlobalOverwrite} (raw=${raw}) => ${blocked ? "FUERA DE SCOPE" : "EN SCOPE"}`,
-      blocked ? "gray" : "green"
+      { color: blocked ? "gray" : "green", level: "debug" }
     );
     return !blocked;
   } catch (e) {
-    debugWarn("menuScope:check", `Error leyendo propiedad de entidad: ${e}`, "red");
+    debug("menuScope:check", `Error leyendo propiedad de entidad: ${e}`, { color: "red", level: "error" });
     return true;
   }
 }
@@ -173,13 +173,13 @@ export function getScopeSummary(scope: ScopeData | null): string {
  */
 export function resetScope(): ScopeData {
   try {
-    debugWarn("menuScope", "=== INICIANDO RESET DE SCOPE ===", "cyan");
+    debug("menuScope", "=== INICIANDO RESET DE SCOPE ===", { color: "aqua", level: "debug" });
     const newScope = generateDefaultScope();
     saveScope(newScope);
-    debugWarn("menuScope", "Scope reiniciado a valores por defecto", "green");
+    debug("menuScope", "Scope reiniciado a valores por defecto", { color: "green", level: "debug" });
     return newScope;
   } catch (e) {
-    debugWarn("menuScope", `Error reseteando scope: ${e}`, "red");
+    debug("menuScope", `Error reseteando scope: ${e}`, { color: "red", level: "error" });
     const defaultScope = generateDefaultScope();
     scopeCache = defaultScope;
     return defaultScope;

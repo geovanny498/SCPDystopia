@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/ddui/helpers/historyStore.ts
 
 import { world } from "@minecraft/server";
-import { debugWarn } from "../../../../utils/debug.js";
+import { debug } from "../../../../utils/debug.js";
 import { SYSTEM_SHORT_NAMES } from "../../../shared/systemCatalog.js";
 import { formatLocalTimeShort } from "../../../shared/timeHelpers.js";
 
@@ -28,7 +28,7 @@ export function addHistoryEntry(entry: Omit<HistoryEntry, "timestamp">): void {
     while (entries.length > MAX_ENTRIES) entries.shift();
     world.setDynamicProperty(HISTORY_KEY, JSON.stringify(entries));
   } catch (e) {
-    debugWarn("historyStore", `Error guardando entrada de historial: ${e}`, "red");
+    debug("historyStore", `Error guardando entrada de historial: ${e}§r`, { level: "error", color: "red" });
   }
 }
 

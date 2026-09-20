@@ -2,7 +2,7 @@
 
 import { Player, system } from "@minecraft/server";
 import { CustomForm } from "@minecraft/server-ui";
-import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { debug } from "../../../../utils/debug.js";
 import { Factions, TargetFaction } from "../../../../constants/domains.js";
 import {
   PANEL_TITLES,
@@ -70,20 +70,20 @@ export function showAdvancedPanel(player: Player, targetFaction: TargetFaction =
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debugMessage("commandMenuDDUI", `Configuración Avanzada cerrada: X del cliente (${player.name})`, "gray");
+          debug("commandMenuDDUI", `Configuración Avanzada cerrada: X del cliente (§b${player.name}§r)`, { level: "debug", color: "gray" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debugWarn("commandMenuDDUI", `Configuración Avanzada cerrada: UserBusy (${player.name})`, "yellow");
+          debug("commandMenuDDUI", `Configuración Avanzada cerrada: §6UserBusy§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debugMessage("commandMenuDDUI", `Configuración Avanzada cerrada: navegación (${player.name})`, "gray");
+            debug("commandMenuDDUI", `Configuración Avanzada cerrada: §6navegación§r (§b${player.name}§r)`, { level: "debug", color: "gray" });
             nextPanel?.();
           } else {
-            debugWarn(
+            debug(
               "commandMenuDDUI",
-              `Configuración Avanzada cerrada: ServerClosed sin razón (${player.name})`,
-              "yellow"
+              `Configuración Avanzada cerrada: §cServerClosed sin razón§r (§b${player.name}§r)`,
+              { level: "warn", color: "yellow" }
             );
             commandMenuSessionStore.cleanup(player.id);
           }
@@ -92,10 +92,10 @@ export function showAdvancedPanel(player: Player, targetFaction: TargetFaction =
         nextPanel = undefined;
       })
       .catch((err) => {
-        debugWarn("commandMenuDDUI", `Error en form.show() avanzada: ${err}`, "red");
+        debug("commandMenuDDUI", `Error en form.show() avanzada: ${err}`, { level: "error", color: "red" });
         commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
-    debugWarn("commandMenuDDUI", `Error en showAdvancedPanel: ${e}`, "red");
+    debug("commandMenuDDUI", `Error en showAdvancedPanel: ${e}`, { level: "error", color: "red" });
   }
 }

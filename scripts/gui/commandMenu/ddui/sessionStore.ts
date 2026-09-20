@@ -1,7 +1,7 @@
 // scripts/gui/commandMenu/ddui/sessionStore.ts
 
 import { Player, system, EquipmentSlot } from "@minecraft/server";
-import { debugMessage, debugWarn } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import { EquipmentDetector, FactionId } from "../../shared/equipmentDetector.js";
 import { TargetFaction } from "../../../constants/domains.js";
 import { DDUIFeedbackEntry, DDUIFeedbackPresenter, DDUIFeedbackStore } from "../../shared/dduiFeedback.js";
@@ -125,7 +125,7 @@ export class CommandMenuSession {
       } catch {
         // intervalo ya limpiado o inválido
       }
-      debugMessage("commandMenuDDUI", `Intervalo desregistrado: ${intervalId}`, "gray");
+        debug("commandMenuDDUI", `Intervalo desregistrado: §b${intervalId}§r`, { level: "debug", color: "gray" });
     }
   }
 
@@ -210,7 +210,7 @@ export class CommandMenuSession {
       presenter.reset();
     }
     this.feedbackPresenters.clear();
-    debugMessage("commandMenuDDUI", `Sesión limpiada: ${this.playerName}`, "gray");
+    debug("commandMenuDDUI", `Sesión limpiada: §b${this.playerName}§r`, { level: "debug", color: "gray" });
   }
 
   /**
@@ -261,12 +261,12 @@ export const commandMenuSessionStore: SessionStore & DDUIFeedbackStore = {
     if (!session) return;
     session.cleanup();
     sessions.delete(playerId);
-    debugMessage("commandMenuDDUI", `Sesión limpiada y eliminada: ${session.playerName}`, "gray");
+    debug("commandMenuDDUI", `Sesión limpiada y eliminada: §b${session.playerName}§r`, { level: "debug", color: "gray" });
   },
   create(playerId: string, playerName: string, player: Player, faction: string, role: string): CommandMenuSession {
     const session = new CommandMenuSession(playerId, playerName, player, faction, role);
     sessions.set(playerId, session);
-    debugMessage("commandMenuDDUI", `Sesión creada: ${playerName} (${faction}/${role})`, "green");
+    debug("commandMenuDDUI", `Sesión creada: §b${playerName}§r (§a${faction}§r/§6${role}§r)`, { level: "debug", color: "light_purple" });
     return session;
   },
   getLast(playerId: string, viewId: string): DDUIFeedbackEntry | null {
@@ -284,7 +284,7 @@ export const commandMenuSessionStore: SessionStore & DDUIFeedbackStore = {
   },
   clearKey(playerId: string): void {
     lastFeedbackByPlayer.delete(playerId);
-    debugMessage("commandMenuDDUI", `Feedback del jugador limpiado: ${playerId}`, "gray");
+    debug("commandMenuDDUI", `Feedback del jugador limpiado: §b${playerId}§r`, { level: "debug", color: "gray" });
   },
   clearAll(): void {
     lastFeedbackByPlayer.clear();

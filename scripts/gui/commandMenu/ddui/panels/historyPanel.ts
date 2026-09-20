@@ -2,7 +2,7 @@
 
 import { Player, system } from "@minecraft/server";
 import { CustomForm } from "@minecraft/server-ui";
-import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { debug } from "../../../../utils/debug.js";
 import { TargetFaction, Factions } from "../../../../constants/domains.js";
 import {
   PANEL_TITLES,
@@ -72,27 +72,27 @@ export function showHistoryPanel(player: Player, targetFaction?: TargetFaction):
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debugMessage("commandMenuDDUI", `Historial cerrado: X del cliente (${player.name})`, "gray");
+          debug("commandMenuDDUI", `Historial cerrado: X del cliente (§b${player.name}§r)`, { level: "debug", color: "gray" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debugWarn("commandMenuDDUI", `Historial cerrado: UserBusy (${player.name})`, "yellow");
+          debug("commandMenuDDUI", `Historial cerrado: §6UserBusy§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debugMessage("commandMenuDDUI", `Historial cerrado: navegación (${player.name})`, "gray");
+            debug("commandMenuDDUI", `Historial cerrado: §6navegación§r (§b${player.name}§r)`, { level: "debug", color: "gray" });
             import("./mainPanel.js").then(({ showMainPanel }) => showMainPanel(player, effectiveFaction));
           } else {
-            debugWarn("commandMenuDDUI", `Historial cerrado: ServerClosed sin razón (${player.name})`, "yellow");
+            debug("commandMenuDDUI", `Historial cerrado: §cServerClosed sin razón§r (§b${player.name}§r)`, { level: "warn", color: "yellow" });
             commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
       })
       .catch((err) => {
-        debugWarn("commandMenuDDUI", `Error en form.show() historial: ${err}`, "red");
+        debug("commandMenuDDUI", `Error en form.show() historial: ${err}`, { level: "error", color: "red" });
         commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
-    debugWarn("commandMenuDDUI", `Error en showHistoryPanel: ${e}`, "red");
+    debug("commandMenuDDUI", `Error en showHistoryPanel: ${e}`, { level: "error", color: "red" });
   }
 }

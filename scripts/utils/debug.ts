@@ -21,34 +21,65 @@ export const DEBUG_CONSOLE = true; // Mensajes en consola
  */
 export const DEBUG_MODULES: string[] = [
   // ═══════════════════════════════════════════════════════════════════════════
-  // DEPURACIÓN DE DAÑO — Activos para verificar aplicación de daño
+  // MIGRACIÓN DEBUG — Tanda 2b (19/09/2026)
+  // ═══════════════════════════════════════════════════════════════════════════
+  "lifecycle",
+  "menuState",
+  "commandMenuDDUI",
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MIGRACIÓN DEBUG — Tanda 2a, comentada hasta siguiente tanda
+  // ═══════════════════════════════════════════════════════════════════════════
+  // "commandMenuDDUI",
+  // "roleMenu",
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MIGRACIÓN DEBUG — Tanda 1, comentada hasta siguiente tanda
+  // ═══════════════════════════════════════════════════════════════════════════
+  // "dduiFeedback",
+  // "entityHistory",
+  // "scope",
+  // "menuRules",
+  // "menuRules:compat",
+  // "menuRules:apply",
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DEPURACIÓN DE DAÑO — Comentados hasta siguiente tanda
   // ═══════════════════════════════════════════════════════════════════════════
   // "projectileHitEntity",
   // "damage",
-  "entityDie",
-  "menuGroups",
-  "menuFaction",
+  // "entityDie",
+  // "menuGroups",
+  // "menuFaction",
   // "menuEvents",
-  "menuEvents:spawn",
+  // "menuEvents:spawn",
   // "projectileSound",
   // "entityDamageConfig",
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // MONITOR REACTIVO — Activo para depurar transición a DDUI 2.1.0
+  // MONITOR REACTIVO — Comentados hasta siguiente tanda
   // ═══════════════════════════════════════════════════════════════════════════
-  "monitorCommand",
-  "interactDDUI",
-  "interactTrigger",
-  "commandMenuDDUI",
-  "roleMenu",
-  "lifecycle",
-  "scope",
+  // "monitorCommand",
+  // "interactDDUI",
+  // "interactTrigger",
+  // "lifecycle",
+  // "menuState",
   // "player",
   // "menuScanner",
   // "menuScanner:buckets",
   // "menuScanner:base",
   // "menuScanner:base:ent",
   // "zoom",
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MIGRACIÓN DEBUG — Tanda anterior (main.ts), comentada hasta siguiente tanda
+  // ═══════════════════════════════════════════════════════════════════════════
+  // "menuApply",
+  // "menuApply:entity",
+  // "teleportUtils",
+  // "teleportUtils:normal",
+  // "teleportUtils:special",
+  // "teleportUtils:all",
 ];
 
 /**

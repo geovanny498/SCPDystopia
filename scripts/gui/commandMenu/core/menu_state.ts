@@ -11,7 +11,7 @@ import {
   getMenuSystemStates,
 } from "./menu_apply.js";
 import { updateMenuSystemState } from "./menu_events.js";
-import { debugWarn } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import { loadScope } from "../model/menu_scope.js";
 
 /**
@@ -99,9 +99,9 @@ export function saveSystemAndUpdateMemory(systemId: string, state: SystemState):
     // Actualizar estado en memoria del menú (estado COMPLETO)
     updateMenuSystemState(systemId, completeState);
 
-    debugWarn("menuState", `Sistema ${systemId} guardado y actualizado en memoria`, "green");
+    debug("menuState", `Sistema §b${systemId}§r guardado y actualizado en memoria`, { level: "debug", color: "light_purple" });
   } catch (e) {
-    debugWarn("menuState", `Error guardando sistema ${systemId}: ${e}`, "red");
+    debug("menuState", `§cError§r guardando sistema §b${systemId}§r: ${e}`, { level: "error", color: "red" });
   }
 }
 
@@ -125,14 +125,14 @@ export function applySystemToAll(
   try {
     const systemConfig = CATALOG_SYSTEMS[systemId as SystemId];
     if (!systemConfig) {
-      debugWarn("menuState", `Sistema ${systemId} no encontrado en configuración`, "red");
+      debug("menuState", `Sistema §b${systemId}§r no encontrado en configuración`, { level: "warn", color: "yellow" });
       return;
     }
 
     applySystemWithEvents(systemId, systemConfig, dimension, player);
-    debugWarn("menuState", `Sistema ${systemId} aplicado`, "green");
+    debug("menuState", `Sistema §b${systemId}§r aplicado`, { level: "debug", color: "light_purple" });
   } catch (e) {
-    debugWarn("menuState", `Error aplicando sistema ${systemId}: ${e}`, "red");
+    debug("menuState", `§cError§r aplicando sistema §b${systemId}§r: ${e}`, { level: "error", color: "red" });
   }
 }
 
@@ -155,11 +155,11 @@ export function applySystemsToAll(
 
     // Log para diagnosticar estados
     const cachedStates = getMenuSystemStates ? getMenuSystemStates() : {};
-    debugWarn("menuState", `[applySystemsToAll] systemIds=${JSON.stringify(systemIds)}`, "yellow");
-    debugWarn(
+    debug("menuState", `[applySystemsToAll] systemIds=§b${JSON.stringify(systemIds)}§r`, { level: "debug", color: "gray" });
+    debug(
       "menuState",
       `[applySystemsToAll] cachedStates keys=${JSON.stringify(Object.keys(cachedStates))}`,
-      "dark_gray"
+      { level: "debug", color: "dark_gray" }
     );
 
     // PRECOMPUTAR ESTADOS PARA OPTIMIZACIÓN MASIVA
@@ -169,13 +169,13 @@ export function applySystemsToAll(
 
     // 1. Obtener soldados elegibles (una sola vez)
     const eligible = getEligibleSoldiers(dims as any, scope);
-    debugWarn("menuState", `[applySystemsToAll] eligible=${eligible.length} entidades`, "cyan");
+    debug("menuState", `[applySystemsToAll] eligible=§b${eligible.length}§r entidades`, { level: "debug", color: "gray" });
 
     // 2. Aplicar todos los sistemas elegidos (en un solo pase) con caché precomputado
     applySystemsToEntities(eligible, systemIds, { player, cached });
 
-    debugWarn("menuState", `Sistemas ${systemIds.join(", ")} aplicados a ${eligible.length} entidades`, "green");
+    debug("menuState", `Sistemas §b${systemIds.join(", ")}§r aplicados a §b${eligible.length}§r entidades`, { level: "debug", color: "light_purple" });
   } catch (e) {
-    debugWarn("menuState", `Error en applySystemsToAll: ${e}`, "red");
+    debug("menuState", `§cError§r en applySystemsToAll: ${e}`, { level: "error", color: "red" });
   }
 }

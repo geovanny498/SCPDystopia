@@ -12,7 +12,6 @@
 // Ahora el campo de knockback está en deshuso, pero se mantiene para compatibilidad con scripts antiguos
 import type { Entity } from "@minecraft/server";
 import { EntityComponentTypes } from "@minecraft/server";
-import { debugWarn } from "./debug";
 
 export type EntityDamageDecision = boolean | ((entity: Entity) => boolean);
 export type EntityDamageRule = {
