@@ -2,7 +2,7 @@
 
 import { Player, system, world } from "@minecraft/server";
 import { CustomForm, ObservableNumber } from "@minecraft/server-ui";
-import { debugWarn, debugMessage } from "../../../../utils/debug.js";
+import { debug } from "../../../../utils/debug.js";
 import { Factions, FACTION_IDS, TargetFaction } from "../../../../constants/domains.js";
 import {
   PANEL_TITLES,
@@ -109,20 +109,20 @@ function showGroupsByFaction(player: Player, faction: TargetFaction): void {
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debugMessage("commandMenuDDUI", `Grupos por Facción cerrado: X del cliente (${player.name})`, "gray");
+          debug("commandMenuDDUI", `Grupos por Facción cerrado: X del cliente (§b${player.name}§r)`, { level: "debug", color: "blue" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debugWarn("commandMenuDDUI", `Grupos por Facción cerrado: UserBusy (${player.name})`, "yellow");
+          debug("commandMenuDDUI", `Grupos por Facción cerrado: §cUserBusy§r (§b${player.name}§r)`, { level: "warn", color: "yellow" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debugMessage("commandMenuDDUI", `Grupos por Facción cerrado: navegación (${player.name})`, "gray");
+            debug("commandMenuDDUI", `Grupos por Facción cerrado: navegación (§b${player.name}§r)`, { level: "debug", color: "gray" });
             nextPanel?.();
           } else {
-            debugWarn(
+            debug(
               "commandMenuDDUI",
-              `Grupos por Facción cerrado: ServerClosed sin razón (${player.name})`,
-              "yellow"
+              `Grupos por Facción cerrado: §cServerClosed§r sin razón (§b${player.name}§r)`,
+              { level: "warn", color: "yellow" }
             );
             commandMenuSessionStore.cleanup(player.id);
           }
@@ -131,11 +131,11 @@ function showGroupsByFaction(player: Player, faction: TargetFaction): void {
         nextPanel = undefined;
       })
       .catch((err) => {
-        debugWarn("commandMenuDDUI", `Error en form.show() grupos por facción: ${err}`, "red");
+        debug("commandMenuDDUI", `Error en form.show() grupos por facción: ${err}`, { level: "error", color: "red" });
         commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
-    debugWarn("commandMenuDDUI", `Error en showGroupsByFaction: ${e}`, "red");
+    debug("commandMenuDDUI", `Error en showGroupsByFaction: ${e}`, { level: "error", color: "red" });
   }
 }
 
@@ -242,20 +242,20 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debugMessage("commandMenuDDUI", `Asignación por bucket cerrada: X del cliente (${player.name})`, "gray");
+          debug("commandMenuDDUI", `Asignación por bucket cerrada: X del cliente (§b${player.name}§r)`, { level: "debug", color: "blue" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debugWarn("commandMenuDDUI", `Asignación por bucket cerrada: UserBusy (${player.name})`, "yellow");
+          debug("commandMenuDDUI", `Asignación por bucket cerrada: §cUserBusy§r (§b${player.name}§r)`, { level: "warn", color: "yellow" });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debugMessage("commandMenuDDUI", `Asignación por bucket cerrada: navegación (${player.name})`, "gray");
+            debug("commandMenuDDUI", `Asignación por bucket cerrada: navegación (§b${player.name}§r)`, { level: "debug", color: "gray" });
             showGroupsByFaction(player, faction);
           } else {
-            debugWarn(
+            debug(
               "commandMenuDDUI",
-              `Asignación por bucket cerrada: ServerClosed sin razón (${player.name})`,
-              "yellow"
+              `Asignación por bucket cerrada: §cServerClosed§r sin razón (§b${player.name}§r)`,
+              { level: "warn", color: "yellow" }
             );
             commandMenuSessionStore.cleanup(player.id);
           }
@@ -263,11 +263,11 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
         closeReason = undefined;
       })
       .catch((err) => {
-        debugWarn("commandMenuDDUI", `Error en form.show() asignación por bucket: ${err}`, "red");
+        debug("commandMenuDDUI", `Error en form.show() asignación por bucket: ${err}`, { level: "error", color: "red" });
         commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
-    debugWarn("commandMenuDDUI", `Error en showBucketAssignment: ${e}`, "red");
+    debug("commandMenuDDUI", `Error en showBucketAssignment: ${e}`, { level: "error", color: "red" });
   }
 }
 
@@ -349,7 +349,7 @@ function applyGroupToNametag(player: Player, faction: TargetFaction, nametag: st
       });
     }
   } catch (e) {
-    debugWarn("commandMenuDDUI", `Error asignando grupo: ${e}`, "red");
+      debug("commandMenuDDUI", `Error asignando grupo: ${e}`, { level: "error", color: "red" });
     player.sendMessage(ERROR_MESSAGES.ASSIGN_GROUP);
   }
 }

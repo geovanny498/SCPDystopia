@@ -35,7 +35,7 @@ import {
   buildFactionSummary,
 } from "./monitor_config.js";
 import { MonitorMenuSession, monitorMenuSessionStore } from "./monitor_session.js";
-import { debugWarn, debugMessage } from "../../utils/debug.js";
+import { debug } from "../../utils/debug.js";
 
 function refresh(session: MonitorMenuSession): void {
   try {
@@ -69,12 +69,18 @@ function refresh(session: MonitorMenuSession): void {
     session.getFoundationText().setData(foundationBlock);
     session.getChaosText().setData(chaosBlock);
   } catch (e) {
-    debugWarn("monitorCommand", `Error en refresco: ${e}`, "red");
+    debug("monitorCommand", `Error en refresco: ${e}`, {
+      level: "error",
+      color: "red",
+    });
   }
 }
 
 export function showMonitorMenu(player: Player): void {
-  debugMessage("monitorCommand", `Mostrando monitor para ${player.name}`, "cyan");
+  debug("monitorCommand", `Mostrando monitor para §b${player.name}§r`, {
+    level: "debug",
+    color: "blue",
+  });
 
   try {
     system.run(() => {
@@ -83,7 +89,10 @@ export function showMonitorMenu(player: Player): void {
         if (!session) {
           session = new MonitorMenuSession(player);
           monitorMenuSessionStore.set(player.id, session);
-          debugMessage("monitorCommand", `Sesión de monitor creada para ${player.name}`, "green");
+          debug("monitorCommand", `Sesión de monitor creada para §b${player.name}§r`, {
+            level: "debug",
+            color: "blue",
+          });
         }
 
         const foundationText = session.getFoundationText();
@@ -108,7 +117,10 @@ export function showMonitorMenu(player: Player): void {
             nextPanel = () => showConfigMenu(player);
             form.close();
           } catch (e) {
-            debugWarn("monitorCommand", `Error abriendo config desde monitor: ${e}`, "red");
+            debug("monitorCommand", `Error abriendo config desde monitor: ${e}`, {
+              level: "error",
+              color: "red",
+            });
           }
         });
 
@@ -126,20 +138,32 @@ export function showMonitorMenu(player: Player): void {
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
             if (reason === "ClientClosed") {
-              debugMessage("monitorCommand", `Monitor cerrado: X del cliente (${player.name})`, "gray");
+              debug("monitorCommand", `Monitor cerrado: X del cliente (§b${player.name}§r)`, {
+                level: "debug",
+                color: "gray",
+              });
               monitorMenuSessionStore.cleanup(player.id);
             } else if (reason === "UserBusy") {
-              debugWarn("monitorCommand", `Monitor cerrado: UserBusy (${player.name})`, "yellow");
+              debug("monitorCommand", `Monitor cerrado: §cUserBusy§r (§b${player.name}§r)`, {
+                level: "warn",
+                color: "yellow",
+              });
               monitorMenuSessionStore.cleanup(player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debugMessage("monitorCommand", `Monitor cerrado: navegación a Config (${player.name})`, "gray");
+                debug("monitorCommand", `Monitor cerrado: navegación a Config (§b${player.name}§r)`, {
+                  level: "debug",
+                  color: "gray",
+                });
                 if (intervalId !== null) {
                   session.unregisterInterval(intervalId);
                 }
                 nextPanel?.();
               } else {
-                debugWarn("monitorCommand", `Monitor cerrado: ServerClosed sin razón (${player.name})`, "yellow");
+                debug("monitorCommand", `Monitor cerrado: ServerClosed sin razón (§b${player.name}§r)`, {
+                  level: "warn",
+                  color: "yellow",
+                });
                 monitorMenuSessionStore.cleanup(player.id);
               }
             }
@@ -147,15 +171,24 @@ export function showMonitorMenu(player: Player): void {
             nextPanel = undefined;
           })
           .catch((showError) => {
-            debugWarn("monitorCommand", `Error en form.show(): ${showError}`, "red");
+            debug("monitorCommand", `Error en form.show(): ${showError}`, {
+              level: "error",
+              color: "red",
+            });
             monitorMenuSessionStore.cleanup(player.id);
           });
       } catch (setupError) {
-        debugWarn("monitorCommand", `Error configurando DDUI en system.run: ${setupError}`, "red");
+        debug("monitorCommand", `Error configurando DDUI en system.run: ${setupError}`, {
+          level: "error",
+          color: "red",
+        });
       }
     });
   } catch (e) {
-    debugWarn("monitorCommand", `Error mostrando menú de monitoreo: ${e}`, "red");
+    debug("monitorCommand", `Error mostrando menú de monitoreo: ${e}`, {
+      level: "error",
+      color: "red",
+    });
     try {
       player.sendMessage("§c[Monitor] Error al abrir el menú de monitoreo.");
     } catch {}
@@ -166,7 +199,10 @@ export function showConfigMenu(player: Player): void {
   try {
     const session = monitorMenuSessionStore.get(player.id);
     if (!session) {
-      debugWarn("monitorCommand", "No hay sesión de monitor activa para este jugador", "yellow");
+      debug("monitorCommand", "No hay sesión de monitor activa para este jugador", {
+        level: "warn",
+        color: "yellow",
+      });
       return;
     }
 
@@ -278,23 +314,32 @@ export function showConfigMenu(player: Player): void {
           () => {
             closeReason = "navigation";
             nextPanel = () => {
-              debugMessage("monitorCommand", "Navegando a MessageBox de confirmación de restablecimiento", "gray");
+              debug("monitorCommand", "Navegando a MessageBox de confirmación de restablecimiento", {
+                level: "debug",
+                color: "gray",
+              });
               new MessageBox(player, "Restablecer ajustes")
                 .body("¿Seguro que querés volver a los ajustes predeterminados del monitor?")
                 .button1("Sí, restablecer")
                 .button2("Cancelar", "No, volver a la configuración")
                 .show()
                 .then((response) => {
-                  debugMessage(
+                  debug(
                     "monitorCommand",
-                    `MessageBox cerrado, volviendo a configuración: ${response.closeReason}`,
-                    "gray"
+                    `MessageBox cerrado, volviendo a configuración: §6${response.closeReason}§r`,
+                    {
+                      level: "debug",
+                      color: "gray",
+                    }
                   );
                   if (response.selection === 1) {
                     try {
                       session.resetToDefaults();
                     } catch (e) {
-                      debugWarn("monitorCommand", `Error reseteando config: ${e}`, "red");
+                      debug("monitorCommand", `Error reseteando config: ${e}`, {
+                        level: "error",
+                        color: "red",
+                      });
                     }
                   }
                   showConfigMenu(player);
@@ -318,17 +363,29 @@ export function showConfigMenu(player: Player): void {
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
             if (reason === "ClientClosed") {
-              debugMessage("monitorCommand", `Config cerrada: X del cliente (${player.name})`, "gray");
+              debug("monitorCommand", `Config cerrada: X del cliente (§b${player.name}§r)`, {
+                level: "debug",
+                color: "gray",
+              });
               monitorMenuSessionStore.cleanup(player.id);
             } else if (reason === "UserBusy") {
-              debugWarn("monitorCommand", `Config cerrada: UserBusy (${player.name})`, "yellow");
+              debug("monitorCommand", `Config cerrada: §cUserBusy§r (§b${player.name}§r)`, {
+                level: "warn",
+                color: "yellow",
+              });
               monitorMenuSessionStore.cleanup(player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debugMessage("monitorCommand", `Config cerrada: navegación (${player.name})`, "gray");
+                debug("monitorCommand", `Config cerrada: navegación (§b${player.name}§r)`, {
+                  level: "debug",
+                  color: "gray",
+                });
                 nextPanel?.();
               } else {
-                debugWarn("monitorCommand", `Config cerrada: ServerClosed sin razón (${player.name})`, "yellow");
+                debug("monitorCommand", `Config cerrada: ServerClosed sin razón (§b${player.name}§r)`, {
+                  level: "warn",
+                  color: "yellow",
+                });
                 monitorMenuSessionStore.cleanup(player.id);
               }
             }
@@ -336,17 +393,26 @@ export function showConfigMenu(player: Player): void {
             nextPanel = undefined;
           })
           .catch((showError) => {
-            debugWarn("monitorCommand", `Error en form.show() de config: ${showError}`, "red");
+            debug("monitorCommand", `Error en form.show() de config: ${showError}`, {
+              level: "error",
+              color: "red",
+            });
             monitorMenuSessionStore.cleanup(player.id);
             showMonitorMenu(player);
           });
       } catch (setupError) {
-        debugWarn("monitorCommand", `Error configurando DDUI de config en system.run: ${setupError}`, "red");
+        debug("monitorCommand", `Error configurando DDUI de config en system.run: ${setupError}`, {
+          level: "error",
+          color: "red",
+        });
         showMonitorMenu(player);
       }
     });
   } catch (e) {
-    debugWarn("monitorCommand", `Error mostrando configuración del monitor: ${e}`, "red");
+    debug("monitorCommand", `Error mostrando configuración del monitor: ${e}`, {
+      level: "error",
+      color: "red",
+    });
     showMonitorMenu(player);
   }
 }

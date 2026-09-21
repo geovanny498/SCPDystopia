@@ -1,7 +1,7 @@
 // scripts/gui/shared/playerPermissionManager.ts
 
 import { Player } from "@minecraft/server";
-import { debugWarn, debugMessage } from "../../utils/debug.js";
+import { debug } from "../../utils/debug.js";
 
 export type FactionId = "foundation" | "chaos";
 export type RoleId = "member" | "commander" | "admin";
@@ -41,9 +41,9 @@ export class PlayerPermissionManager {
     const key = faction === "foundation" ? ROLE_DP_KEY_FOUNDATION : ROLE_DP_KEY_CHAOS;
     try {
       player.setDynamicProperty(key, role);
-      debugMessage("roleMenu", `Rol actualizado para ${player.name}: ${faction} = ${role}`, "green");
+      debug("roleMenu", `Rol actualizado para §b${player.name}§r: §a${faction}§r = §6${role}§r`, { level: "debug", color: "light_purple" });
     } catch (e) {
-      debugWarn("roleMenu", `Error guardando rol para ${player.name}: ${e}`, "red");
+      debug("roleMenu", `Error guardando rol para §b${player.name}§r: ${e}§r`, { level: "error", color: "red" });
     }
   }
 
@@ -64,7 +64,7 @@ export class PlayerPermissionManager {
         player.setDynamicProperty("scpd_role_admin", null as any);
       }
     } catch (e) {
-      debugWarn("roleMenu", `Error actualizando admin global para ${player.name}: ${e}`, "red");
+      debug("roleMenu", `Error actualizando admin global para §b${player.name}§r: ${e}§r`, { level: "error", color: "red" });
     }
   }
 
@@ -77,12 +77,12 @@ export class PlayerPermissionManager {
     try {
       (player as any).setDynamicProperties(payload);
     } catch (e) {
-      debugWarn("roleMenu", `setDynamicProperties falló, aplicando fallback individual: ${e}`, "yellow");
+        debug("roleMenu", `setDynamicProperties falló, aplicando fallback individual: ${e}§r`, { level: "warn", color: "yellow" });
       for (const key of Object.keys(payload)) {
         try {
           player.setDynamicProperty(key, payload[key] as any);
         } catch (inner) {
-          debugWarn("roleMenu", `Error aplicando ${key}: ${inner}`, "red");
+            debug("roleMenu", `Error aplicando §a${key}§r: ${inner}§r`, { level: "error", color: "red" });
         }
       }
     }

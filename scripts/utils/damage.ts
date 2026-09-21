@@ -1,7 +1,7 @@
 // scripts\utils\damage.js
 import * as mc from "@minecraft/server";
 import { EntityDamageCause, type Entity } from "@minecraft/server";
-import { debugMessage, debugWarn } from "./debug.js";
+import { debug } from "./debug.js";
 import { entityDamageConfig } from "./entityConfig.js";
 
 /**
@@ -17,10 +17,10 @@ export function applyDamageAndCfg(
   cfg: { damage?: number; knockback?: number },
   shooter?: Entity
 ) {
-  debugWarn(
-    `damage`,
-    `Proyectil disparado por: ${shooter?.typeId ?? "desconocido/sin tirador"}, impacta objetivo: ${target.typeId}, proyectil: ${projectile.typeId}`,
-    "blue"
+  debug(
+    "damage",
+    `Proyectil disparado por: §b${shooter?.typeId ?? "desconocido/sin tirador"}§r, impacta objetivo: §b${target.typeId}§r, proyectil: §b${projectile.typeId}§r`,
+    { level: "debug", color: "blue" }
   );
 
   const entityCfg = entityDamageConfig[target.typeId];
@@ -42,28 +42,33 @@ export function applyDamageAndCfg(
 
   // DEBUG: mostrar información útil para verificar por qué una entidad recibe knockback
   try {
-    debugWarn(
-      `damage`,
-      `entityCfg existe: ${hasEntityCfg}; tiene damage: ${hasEntityCfg && Object.prototype.hasOwnProperty.call(entityCfg, "damage")}; tipo(damage): ${hasEntityCfg && typeof entityCfg.damage}; valor calculado canDamage: ${canDamage}`
+    debug(
+      "damage",
+      `entityCfg existe: §6${hasEntityCfg}§r; tiene damage: §6${hasEntityCfg && Object.prototype.hasOwnProperty.call(entityCfg, "damage")}§r; tipo(damage): §6${hasEntityCfg && typeof entityCfg.damage}§r; valor calculado canDamage: §6${canDamage}§r`,
+      { level: "debug", color: "gray" }
     );
-    debugWarn(
-      `applyKnockback`,
-      `tiene knockback: ${hasEntityCfg && Object.prototype.hasOwnProperty.call(entityCfg, "knockback")}; tipo(knockback): ${hasEntityCfg && typeof entityCfg.knockback}; valor calculado canKnockback: ${canKnockback}`
+    debug(
+      "applyKnockback",
+      `tiene knockback: §6${hasEntityCfg && Object.prototype.hasOwnProperty.call(entityCfg, "knockback")}§r; tipo(knockback): §6${hasEntityCfg && typeof entityCfg.knockback}§r; valor calculado canKnockback: §6${canKnockback}§r`,
+      { level: "debug", color: "gray" }
     );
   } catch (e) {
     // no bloquear ejecución si falla el stringify o algo raro
     const err = e as Error;
-    debugWarn(`damage`, `Error al loggear entityCfg: ${err?.message ?? String(e)}`, "red");
+    debug("damage", `Error al loggear entityCfg: ${err?.message ?? String(e)}§r`, {
+      level: "error",
+      color: "red",
+    });
   }
 
   if (!canDamage) {
-    debugWarn(`damage`, `Daño bloqueado para ${target.typeId}`, "purple");
+    debug("damage", `Daño bloqueado para §b${target.typeId}§r`, { level: "warn", color: "yellow" });
   } else {
     const dmg = getModifiedDamage(cfg.damage ?? 0, target);
-    debugMessage(
-      `damage`,
-      `Aplicando ${dmg} de daño a ${target.typeId} (proyectil: ${projectile.typeId}, tirador: ${shooter?.typeId ?? "desconocido/sin tirador"})`,
-      "green"
+    debug(
+      "damage",
+      `Aplicando §6${dmg}§r de daño a §b${target.typeId}§r (proyectil: §b${projectile.typeId}§r, tirador: §b${shooter?.typeId ?? "desconocido/sin tirador"}§r)`,
+      { level: "debug", color: "blue" }
     );
     if (dmg > 0) {
       // Se evita damagingEntity para evitar knockback no configurable y caotico provocado por applyDamage junto con override, el soporte de bandos se hizo en scripts\utils\teams.ts y el de entidades en scripts\utils\entityConfig.ts
@@ -72,9 +77,15 @@ export function applyDamageAndCfg(
         // damagingEntity: shooter,
         // damagingProjectile: projectile,
       });
-      debugMessage(`damage`, `Daño aplicado correctamente a ${target.typeId}: ${dmg}`, "green");
+      debug("damage", `Daño aplicado correctamente a §b${target.typeId}§r: §6${dmg}§r`, {
+        level: "debug",
+        color: "green",
+      });
     } else {
-      debugWarn(`damage`, `Daño calculado es 0 o menor para ${target.typeId}. No se aplica daño.`, "yellow");
+      debug("damage", `Daño calculado es §c0 o menor§r para §b${target.typeId}§r. No se aplica daño.§r`, {
+        level: "warn",
+        color: "yellow",
+      });
     }
   }
 }
@@ -86,7 +97,10 @@ export function applyDamageAndCfg(
  */
 export function getModifiedDamage(damage: number, entity: Entity) {
   if (damage <= 0) {
-    debugMessage("modifiedDamageNumber", "Daño negativo o nulo, no se aplicará.");
+    debug("modifiedDamageNumber", "Daño §cnegativo o nulo§r, no se aplicará.§r", {
+      level: "warn",
+      color: "yellow",
+    });
     return 0;
   }
 
@@ -98,21 +112,28 @@ export function getModifiedDamage(damage: number, entity: Entity) {
     if (res) {
       const reduction = (res.amplifier + 1) * 0.2;
       damage = Math.floor(damage * (1 - reduction));
-      debugMessage(
+      debug(
         "modifiedDamageNumber",
-        `Daño original: ${originalDamage} | Resistencia nivel ${res.amplifier + 1} (-${Math.round(reduction * 100)}%) => ${damage}`
+        `Daño original: §6${originalDamage}§r | Resistencia nivel §6${res.amplifier + 1}§r (-§6${Math.round(reduction * 100)}%§r) => §6${damage}§r`,
+        { level: "debug", color: "gray" }
       );
     }
 
     if (damage <= 0) {
-      debugWarn("modifiedDamageNumber", "Daño final: 0 (anulado por resistencia)", "green");
+      debug("modifiedDamageNumber", `Daño final: §60§r (anulado por §aresistencia§r)§r`, {
+        level: "debug",
+        color: "blue",
+      });
       return 0;
     }
 
     // 2) Reducción por Armadura y Encantamientos
     const equippable = entity.getComponent("equippable");
     if (!equippable) {
-      debugWarn("modifiedDamageNumber", `Daño final sin armadura: ${damage}`, "green");
+      debug("modifiedDamageNumber", `Daño final sin armadura: §6${damage}§r`, {
+        level: "debug",
+        color: "blue",
+      });
       return damage;
     }
 
@@ -138,15 +159,24 @@ export function getModifiedDamage(damage: number, entity: Entity) {
     damage = Math.floor(damage * (1 - armorReduction) - Math.min(20, epf) / 25);
 
     if (damage <= 0) {
-      debugMessage("modifiedDamageNumber", "Daño final: 0 (anulado por armadura/encantamientos)");
+      debug("modifiedDamageNumber", `Daño final: §60§r (anulado por §aarmadura/encantamientos§r)§r`, {
+        level: "debug",
+        color: "blue",
+      });
       return 0;
     }
 
-    debugMessage("modifiedDamageNumber", `Daño final tras armadura/encantamientos: ${damage}`);
+    debug("modifiedDamageNumber", `Daño final tras armadura/encantamientos: §6${damage}§r`, {
+      level: "debug",
+      color: "blue",
+    });
     return damage;
   } catch (error) {
     const err = error as Error;
-    debugWarn("modifiedDamageNumber", `Error al calcular el daño: ${err?.message ?? String(error)}`, "red");
+    debug("modifiedDamageNumber", `Error al calcular el daño: ${err?.message ?? String(error)}§r`, {
+      level: "error",
+      color: "red",
+    });
     return damage; // Devolver el daño sin cambios en caso de error
   }
 }

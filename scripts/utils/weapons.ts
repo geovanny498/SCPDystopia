@@ -1,6 +1,6 @@
 // scripts\utils\weapons.js
 import { world, system, Player, EntityProjectileComponent } from "@minecraft/server";
-import { debugMessage, debugWarn } from "./debug.js";
+import { debug } from "./debug.js";
 import * as mc from "@minecraft/server";
 
 export type WeaponData = {
@@ -66,26 +66,32 @@ const playerZoomStates = new Map<string, PlayerZoomState>();
 
 function startPlayerZoom(player: Player, itemTypeId: string, zoomFov: number) {
   if (playerZoomStates.has(player.id)) {
-    debugWarn("zoom", `[start] Jugador ${player.id} ya tiene intervalo de zoom activo`, "yellow");
+    debug("zoom", `[start] Jugador §b${player.id}§r ya tiene intervalo de zoom activo§r`, {
+      level: "warn",
+      color: "yellow",
+    });
     return;
   }
 
-  debugWarn("zoom", `[start] Creando zoom para jugador ${player.id} con ${itemTypeId} FOV=${zoomFov}`, "green");
+  debug("zoom", `[start] Creando zoom para jugador §b${player.id}§r con §a${itemTypeId}§r FOV=§6${zoomFov}§r`, {
+    level: "debug",
+    color: "blue",
+  });
 
   const intervalId = system.runInterval(() => {
     const currentItem = player.getComponent("minecraft:inventory")?.container?.getItem(player.selectedSlotIndex);
     const currentTypeId = currentItem?.typeId;
     const state = playerZoomStates.get(player.id);
-    debugWarn(
+    debug(
       "zoom",
-      `[interval] Jugador ${player.id} tiene item actual=${currentTypeId}, esperado=${state?.itemTypeId}`,
-      "blue"
+      `[interval] Jugador §b${player.id}§r tiene item actual=§a${currentTypeId}§r, esperado=§a${state?.itemTypeId}§r`,
+      { level: "debug", color: "blue" }
     );
     if (!state || currentTypeId !== state.itemTypeId) {
-      debugWarn(
+      debug(
         "zoom",
-        `[interval] Jugador ${player.id} ya no tiene el arma con zoom (actual=${currentTypeId}, esperado=${state?.itemTypeId}), deteniendo zoom`,
-        "red"
+        `[interval] Jugador §b${player.id}§r ya no tiene el arma con zoom (actual=§a${currentTypeId}§r, esperado=§a${state?.itemTypeId}§r), deteniendo zoom§r`,
+        { level: "warn", color: "yellow" }
       );
       clearZoomIfActive(player);
       return;
@@ -113,7 +119,10 @@ function clearZoomIfActive(player: Player) {
     system.clearRun(state.intervalId);
     playerZoomStates.delete(player.id);
     player.camera.clear();
-    debugWarn("zoom", `[clear] Cámara limpiada y zoom detenido para jugador ${player.id}`, "cyan");
+    debug("zoom", `[clear] Cámara limpiada y zoom detenido para jugador §b${player.id}§r`, {
+      level: "debug",
+      color: "blue",
+    });
   }
 }
 
@@ -123,7 +132,11 @@ world.afterEvents.playerHotbarSelectedSlotChange.subscribe((event) => {
   const itemTypeId = event.itemStack?.typeId;
   const data = itemTypeId ? weaponData[itemTypeId] : undefined;
 
-  debugWarn("zoom", `[hotbar] Jugador ${player.id} cambió a slot ${event.newSlotSelected} item=${itemTypeId}`, "blue");
+  debug(
+    "zoom",
+    `[hotbar] Jugador §b${player.id}§r cambió a slot §6${event.newSlotSelected}§r item=§a${itemTypeId}§r`,
+    { level: "debug", color: "blue" }
+  );
 
   if (data?.zoomEnabled && data.zoomFov !== undefined) {
     const zoomFov = data.zoomFov;
@@ -143,10 +156,10 @@ world.afterEvents.playerInventoryItemChange.subscribe((event) => {
   const itemTypeId = event.itemStack?.typeId;
   const data = itemTypeId ? weaponData[itemTypeId] : undefined;
 
-  debugWarn(
+  debug(
     "zoom",
-    `[inventory] Jugador ${player.id} cambió item en hotbar slot=${event.slot} item=${itemTypeId}`,
-    "blue"
+    `[inventory] Jugador §b${player.id}§r cambió item en hotbar slot=§6${event.slot}§r item=§a${itemTypeId}§r`,
+    { level: "debug", color: "blue" }
   );
 
   if (data?.zoomEnabled && data.zoomFov !== undefined) {
@@ -173,7 +186,10 @@ function getProjectileSpawnPosition(player: Player) {
 function shoot(player: Player, itemId: string) {
   const data = weaponData[itemId];
   if (!data) {
-    debugWarn("player", `No se encontró la configuración del arma: ${itemId}`, "yellow");
+    debug("player", `No se encontró la configuración del arma: §a${itemId}§r`, {
+      level: "warn",
+      color: "yellow",
+    });
     return;
   }
 
@@ -184,7 +200,10 @@ function shoot(player: Player, itemId: string) {
   try {
     const projectile = player.dimension.spawnEntity(data.projectile, spawnPos);
     if (!projectile) {
-      debugWarn("player", `No se pudo crear el proyectil: ${data.projectile}`, "red");
+      debug("player", `No se pudo crear el proyectil: §c${data.projectile}§r`, {
+        level: "error",
+        color: "red",
+      });
       return;
     }
 
@@ -209,10 +228,10 @@ function shoot(player: Player, itemId: string) {
     // }
 
     // Depuración del player
-    debugWarn(
+    debug(
       "player",
-      `[DEBUG] Player id=${player.id}, typeId=${player.typeId}, location=(${player.location.x.toFixed(2)}, ${player.location.y.toFixed(2)}, ${player.location.z.toFixed(2)}), properties=${Object.getOwnPropertyNames(player).join(", ")}`,
-      "blue"
+      `[DEBUG] Player id=§b${player.id}§r, typeId=§b${player.typeId}§r, location=(§6${player.location.x.toFixed(2)}§r, §6${player.location.y.toFixed(2)}§r, §6${player.location.z.toFixed(2)}§r), properties=${Object.getOwnPropertyNames(player).join(", ")}`,
+      { level: "debug", color: "gray" }
     );
 
     // Depuración de armadura usando el componente equippable
@@ -224,30 +243,45 @@ function shoot(player: Player, itemId: string) {
         const legs = equippable.getEquipment(mc.EquipmentSlot.Legs);
         const boots = equippable.getEquipment(mc.EquipmentSlot.Feet);
 
-        debugWarn(
+        debug(
           "player",
-          `[DEBUG] Player armadura: Head=${helmet?.typeId || "Ninguno"}, Chest=${chest?.typeId || "Ninguno"}, Legs=${legs?.typeId || "Ninguno"}, Feet=${boots?.typeId || "Ninguno"}`,
-          "cyan"
+          `[DEBUG] Player armadura: Head=§a${helmet?.typeId || "Ninguno"}§r, Chest=§a${chest?.typeId || "Ninguno"}§r, Legs=§a${legs?.typeId || "Ninguno"}§r, Feet=§a${boots?.typeId || "Ninguno"}§r`,
+          { level: "debug", color: "gray" }
         );
       } else {
-        debugWarn("player", `[DEBUG] Player armadura: Ninguna (equippable no disponible)`, "cyan");
+        debug("player", `[DEBUG] Player armadura: Ninguna (equippable no disponible)`, {
+          level: "debug",
+          color: "gray",
+        });
       }
     }
 
-    debugWarn("player", `Disparando ${itemId} → ${data.projectile}`, "green");
+    debug("player", `Disparando §a${itemId}§r → §b${data.projectile}§r`, {
+      level: "debug",
+      color: "blue",
+    });
 
     if (data.onEntryCommands) {
       for (const cmd of data.onEntryCommands) {
         try {
           const result = player.runCommand(cmd);
-          debugWarn("player", `Ejecutando "${cmd}" → éxito=${result.successCount}`, "cyan");
+          debug("player", `Ejecutando "§a${cmd}§r" → éxito=§6${result.successCount}§r`, {
+            level: "debug",
+            color: "blue",
+          });
         } catch (err) {
-          debugWarn("player", `Error ejecutando comando "${cmd}": ${err}`, "red");
+          debug("player", `Error ejecutando comando "${cmd}": ${err}§r`, {
+            level: "error",
+            color: "red",
+          });
         }
       }
     }
   } catch (e) {
-    debugWarn("player", `[Disparo] Error al crear proyectil: ${e}`, "red");
+    debug("player", `[Disparo] Error al crear proyectil: ${e}§r`, {
+      level: "error",
+      color: "red",
+    });
   }
 }
 
@@ -267,7 +301,10 @@ world.afterEvents.itemUse.subscribe((event) => {
   if (spawnPos.y > 321) {
     const message = `[Disparo] Posición demasiado alta para generar proyectil: Y=${spawnPos.y}`;
     player.sendMessage(`§c${message}`);
-    debugWarn("player", message, "red");
+    debug("player", `[Disparo] Posición demasiado alta para generar proyectil: Y=§6${spawnPos.y}§r`, {
+      level: "error",
+      color: "red",
+    });
     return;
   }
 
@@ -290,7 +327,10 @@ world.afterEvents.itemUse.subscribe((event) => {
     const nextAllowedTick = cooldownMap.get(player.id) ?? 0;
 
     if (currentTick < nextAllowedTick) {
-      debugWarn(`Jugador ${player.id} está en cooldown.`, "cyan");
+      debug("player", `Jugador §b${player.id}§r está en §6cooldown§r.§r`, {
+        level: "debug",
+        color: "blue",
+      });
       return;
     }
 
@@ -311,7 +351,10 @@ function stopShooting(playerId: string) {
   if (intervalId !== undefined) {
     system.clearRun(intervalId);
     firingPlayers.delete(playerId);
-    debugWarn(`Jugador ${playerId} dejó de disparar.`, "cyan");
+    debug("player", `Jugador §b${playerId}§r dejó de disparar.§r`, {
+      level: "debug",
+      color: "blue",
+    });
   }
 }
 
@@ -320,7 +363,10 @@ world.beforeEvents.playerLeave.subscribe((event) => {
 
   // Borrar cooldownMap
   cooldownMap.delete(playerId);
-  debugWarn(`Borrando a Jugador ${playerId} del cooldownMap`, "cyan");
+  debug("player", `Borrando a Jugador §b${playerId}§r del cooldownMap§r`, {
+    level: "debug",
+    color: "blue",
+  });
 
   // Borrar firingPlayers y limpiar interval si existía
   stopShooting(playerId);

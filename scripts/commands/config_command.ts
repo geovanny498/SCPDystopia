@@ -6,7 +6,7 @@ import {
   Player,
   CustomCommandParamType,
 } from "@minecraft/server";
-import { debugWarn, debugMessage } from "../utils/debug.js";
+import { debug } from "../utils/debug.js";
 import { buildAndShowMenu } from "../gui/commandMenu/builder/menu.js";
 import { openCommandMenuDDUI } from "../gui/commandMenu/ddui/main.js";
 
@@ -35,20 +35,20 @@ system.beforeEvents.startup.subscribe((init) => {
         try {
           if (selectedMode === "legacy") {
             buildAndShowMenu(player);
-            debugMessage("configCommand", `Menú legacy abierto para ${player.name}`, "cyan");
+            debug("configCommand", `Menú legacy abierto para §b${player.name}§r`, { level: "debug", color: "blue" });
           } else {
             system.run(() => {
               try {
                 openCommandMenuDDUI(player);
-                debugMessage("configCommand", `Menú DDUI abierto para ${player.name}`, "cyan");
+                debug("configCommand", `Menú DDUI abierto para §b${player.name}§r`, { level: "debug", color: "blue" });
               } catch (e) {
-                debugWarn("configCommand", `Error mostrando menú DDUI desde scpd:config: ${e}`, "red");
+                  debug("configCommand", `Error mostrando menú DDUI desde scpd:config: ${e}§r`, { level: "error", color: "red" });
                 player.sendMessage("§c[SCPDystopia] Error abriendo el menú DDUI. Revisa la consola.");
               }
             });
           }
         } catch (e) {
-          debugWarn("configCommand", `Error mostrando menú desde scpd:config: ${e}`, "red");
+          debug("configCommand", `Error mostrando menú desde scpd:config: ${e}§r`, { level: "error", color: "red" });
           return {
             status: CustomCommandStatus.Failure,
             message: "Error abriendo el menú de configuración. Revisa la consola.",
@@ -60,11 +60,11 @@ system.beforeEvents.startup.subscribe((init) => {
           message: selectedMode === "legacy" ? "Abriendo menú legacy..." : "Abriendo menú DDUI...",
         };
       } catch (e) {
-        debugWarn("configCommand", `scpd:config handler error: ${e}`, "red");
+        debug("configCommand", `scpd:config handler error: ${e}§r`, { level: "error", color: "red" });
         return { status: CustomCommandStatus.Failure, message: "Error interno al ejecutar el comando." };
       }
     });
   } catch (e) {
-    debugWarn("configCommand", `Error registrando scpd:config: ${e}`, "red");
+      debug("configCommand", `Error registrando scpd:config: ${e}§r`, { level: "error", color: "red" });
   }
 });

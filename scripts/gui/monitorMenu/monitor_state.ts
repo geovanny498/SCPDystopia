@@ -8,7 +8,7 @@
 
 import { Player } from "@minecraft/server";
 import { MonitorConfig, MonitorConfigDefaults } from "./monitor_config.js";
-import { debugMessage, debugWarn } from "../../utils/debug.js";
+import { debug } from "../../utils/debug.js";
 
 export const MONITOR_CONFIG_PROPERTY = "scpd_monitor_config";
 
@@ -16,15 +16,24 @@ export function loadMonitorConfig(player: Player): MonitorConfig {
   try {
     const saved = player.getDynamicProperty(MONITOR_CONFIG_PROPERTY);
     if (!saved) {
-      debugMessage("monitorCommand", "No hay config del monitor guardada, usando defaults", "yellow");
+      debug("monitorCommand", "No hay config del monitor guardada, usando defaults", {
+        level: "warn",
+        color: "yellow",
+      });
       return { ...MonitorConfigDefaults };
     }
 
-    debugMessage("monitorCommand", "Config del monitor cargada desde propiedades dinámicas", "cyan");
+    debug("monitorCommand", "Config del monitor cargada desde propiedades dinámicas", {
+      level: "debug",
+      color: "blue",
+    });
     const parsed = JSON.parse(String(saved));
 
     if (!parsed || typeof parsed !== "object") {
-      debugWarn("monitorCommand", "Config del monitor inválida, usando defaults", "yellow");
+      debug("monitorCommand", "Config del monitor inválida, usando defaults", {
+        level: "warn",
+        color: "yellow",
+      });
       return { ...MonitorConfigDefaults };
     }
 
@@ -45,10 +54,16 @@ export function loadMonitorConfig(player: Player): MonitorConfig {
       sortBy: validSortBys.includes(parsed.sortBy) ? parsed.sortBy : MonitorConfigDefaults.sortBy,
     };
 
-    debugMessage("monitorCommand", `Config cargada: ${JSON.stringify(config)}`, "green");
+    debug("monitorCommand", `Config cargada: §6${JSON.stringify(config)}§r`, {
+      level: "debug",
+      color: "blue",
+    });
     return config;
   } catch (e) {
-    debugWarn("monitorCommand", `Error cargando config del monitor: ${e}`, "red");
+    debug("monitorCommand", `Error cargando config del monitor: ${e}`, {
+      level: "error",
+      color: "red",
+    });
     return { ...MonitorConfigDefaults };
   }
 }
@@ -56,17 +71,29 @@ export function loadMonitorConfig(player: Player): MonitorConfig {
 export function saveMonitorConfig(player: Player, config: MonitorConfig): void {
   try {
     player.setDynamicProperty(MONITOR_CONFIG_PROPERTY, JSON.stringify(config));
-    debugMessage("monitorCommand", `Config del monitor guardada: ${JSON.stringify(config)}`, "green");
+    debug("monitorCommand", `Config del monitor guardada: §6${JSON.stringify(config)}§r`, {
+      level: "debug",
+      color: "blue",
+    });
   } catch (e) {
-    debugWarn("monitorCommand", `Error guardando config del monitor: ${e}`, "red");
+    debug("monitorCommand", `Error guardando config del monitor: ${e}`, {
+      level: "error",
+      color: "red",
+    });
   }
 }
 
 export function clearMonitorConfig(player: Player): void {
   try {
     player.setDynamicProperty(MONITOR_CONFIG_PROPERTY, null as any);
-    debugMessage("monitorCommand", "Config del monitor borrada", "yellow");
+    debug("monitorCommand", "Config del monitor borrada", {
+      level: "warn",
+      color: "yellow",
+    });
   } catch (e) {
-    debugWarn("monitorCommand", `Error borrando config del monitor: ${e}`, "red");
+    debug("monitorCommand", `Error borrando config del monitor: ${e}`, {
+      level: "error",
+      color: "red",
+    });
   }
 }

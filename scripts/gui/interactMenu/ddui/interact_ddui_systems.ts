@@ -8,7 +8,7 @@ import {
   DataDrivenScreenClosedReason,
 } from "@minecraft/server-ui";
 import { system } from "@minecraft/server";
-import { debugWarn, debugMessage, debug } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import { isSystemVisibleForRole, CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
 import { PlayerPermissionManager, type FactionId, type RoleId } from "../../shared/playerPermissionManager.js";
 import { getEntityFamilies, isSystemBlockedByFamilies } from "../../commandMenu/model/menu_faction.js";
@@ -142,7 +142,10 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
             closeReason = "navigation";
             form.close();
           } catch (e) {
-            debugWarn("interactDDUI", `Error volviendo a Vista Principal: ${e}`, "red");
+            debug("interactDDUI", `Error volviendo a Vista Principal: ${e}`, {
+              level: "error",
+              color: "red",
+            });
           }
         });
 
@@ -152,25 +155,34 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
             if (reason === "ClientClosed") {
-              debugMessage(
+              debug(
                 "interactDDUI",
-                `Vista "${session.viewId}" cerrada: X del cliente (${session.player.name})`,
-                "gray"
+                `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`,
+                {
+                  level: "debug",
+                  color: "gray",
+                }
               );
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "UserBusy") {
-              debugWarn(
+              debug(
                 "interactDDUI",
-                `Vista "${session.viewId}" cerrada: UserBusy (${session.player.name})`,
-                "yellow"
+                `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`,
+                {
+                  level: "warn",
+                  color: "yellow",
+                }
               );
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debugMessage(
+                debug(
                   "interactDDUI",
-                  `Vista "${session.viewId}" cerrada: navegación (${session.player.name})`,
-                  "gray"
+                  `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`,
+                  {
+                    level: "debug",
+                    color: "gray",
+                  }
                 );
                 session.unregisterInterval(intervalId);
                 if (!session.entity.isValid) {
@@ -178,10 +190,13 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
                   return;
                 }
                 if (!interactMenuSessionStore.get(session.playerId)) {
-                  debugMessage(
+                  debug(
                     "interactDDUI",
-                    `Sesión ya limpiada (entidad muerta), navegación cancelada (${session.player.name})`,
-                    "gray"
+                    `Sesión ya limpiada (entidad muerta), navegación cancelada (§b${session.player.name}§r)`,
+                    {
+                      level: "debug",
+                      color: "gray",
+                    }
                   );
                   return;
                 }
@@ -190,16 +205,22 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
                 });
               } else {
                 if (!interactMenuSessionStore.get(session.playerId)) {
-                  debugMessage(
+                  debug(
                     "interactDDUI",
-                    `Vista "${session.viewId}" cerrada: sesión limpiada (${session.player.name})`,
-                    "gray"
+                    `Vista "${session.viewId}" cerrada: sesión limpiada (§b${session.player.name}§r)`,
+                    {
+                      level: "debug",
+                      color: "gray",
+                    }
                   );
                 } else {
-                  debugWarn(
+                  debug(
                     "interactDDUI",
-                    `Vista "${session.viewId}" cerrada: ServerClosed sin razón (${session.player.name})`,
-                    "yellow"
+                    `Vista "${session.viewId}" cerrada: ServerClosed sin razón (§b${session.player.name}§r)`,
+                    {
+                      level: "warn",
+                      color: "yellow",
+                    }
                   );
                   interactMenuSessionStore.cleanup(session.playerId);
                 }
@@ -208,7 +229,10 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
             closeReason = undefined;
           })
           .catch((showError) => {
-            debugWarn("interactDDUI", `Error en form.show() (${session.viewId}): ${showError}`, "red");
+            debug("interactDDUI", `Error en form.show() (${session.viewId}): ${showError}`, {
+              level: "error",
+              color: "red",
+            });
             interactMenuSessionStore.cleanup(session.player.id);
           });
 
@@ -221,7 +245,10 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
         }, 20);
         session.registerInterval(intervalId);
       } catch (setupError) {
-        debugWarn("interactDDUI", `Error configurando Vista "${session.viewId}": ${setupError}`, "red");
+        debug("interactDDUI", `Error configurando Vista "${session.viewId}": ${setupError}`, {
+          level: "error",
+          color: "red",
+        });
         interactMenuSessionStore.cleanup(session.player.id);
         try {
           session.player.sendMessage(ERROR_MESSAGES.DDUI_OPEN_SYSTEMS);
@@ -229,7 +256,10 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
       }
     });
   } catch (e) {
-    debugWarn("interactDDUI", `Error mostrando Vista "${session.viewId}": ${e}`, "red");
+    debug("interactDDUI", `Error mostrando Vista "${session.viewId}": ${e}`, {
+      level: "error",
+      color: "red",
+    });
     try {
       session.player.sendMessage("§c[DDUI] Error al abrir el menú de sistemas avanzados.");
     } catch {}
@@ -358,7 +388,10 @@ export function showInteractDDUIManagement(session: InteractDDUISession): void {
                     lastGroupIndex = newIndex;
                   }
                 } catch (e) {
-                  debugWarn("interactDDUI", `Error asignando grupo: ${e}`, "red");
+                  debug("interactDDUI", `Error asignando grupo: ${e}`, {
+                    level: "error",
+                    color: "red",
+                  });
                   session.recordFeedback("Asignar grupo", "Error", "error");
                   lastGroupIndex = newIndex;
                 }
@@ -400,7 +433,10 @@ export function showInteractDDUIManagement(session: InteractDDUISession): void {
             closeReason = "navigation";
             form.close();
           } catch (e) {
-            debugWarn("interactDDUI", `Error volviendo a Vista Principal: ${e}`, "red");
+            debug("interactDDUI", `Error volviendo a Vista Principal: ${e}`, {
+              level: "error",
+              color: "red",
+            });
           }
         });
 
@@ -410,25 +446,34 @@ export function showInteractDDUIManagement(session: InteractDDUISession): void {
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
             if (reason === "ClientClosed") {
-              debugMessage(
+              debug(
                 "interactDDUI",
-                `Vista "${session.viewId}" cerrada: X del cliente (${session.player.name})`,
-                "gray"
+                `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`,
+                {
+                  level: "debug",
+                  color: "gray",
+                }
               );
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "UserBusy") {
-              debugWarn(
+              debug(
                 "interactDDUI",
-                `Vista "${session.viewId}" cerrada: UserBusy (${session.player.name})`,
-                "yellow"
+                `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`,
+                {
+                  level: "warn",
+                  color: "yellow",
+                }
               );
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debugMessage(
+                debug(
                   "interactDDUI",
-                  `Vista "${session.viewId}" cerrada: navegación (${session.player.name})`,
-                  "gray"
+                  `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`,
+                  {
+                    level: "debug",
+                    color: "gray",
+                  }
                 );
                 session.unregisterInterval(intervalId);
                 if (!session.entity.isValid) {
@@ -436,10 +481,13 @@ export function showInteractDDUIManagement(session: InteractDDUISession): void {
                   return;
                 }
                 if (!interactMenuSessionStore.get(session.playerId)) {
-                  debugMessage(
+                  debug(
                     "interactDDUI",
-                    `Sesión ya limpiada (entidad muerta), navegación cancelada (${session.player.name})`,
-                    "gray"
+                    `Sesión ya limpiada (entidad muerta), navegación cancelada (§b${session.player.name}§r)`,
+                    {
+                      level: "debug",
+                      color: "gray",
+                    }
                   );
                   return;
                 }
@@ -448,16 +496,22 @@ export function showInteractDDUIManagement(session: InteractDDUISession): void {
                 });
               } else {
                 if (!interactMenuSessionStore.get(session.playerId)) {
-                  debugMessage(
+                  debug(
                     "interactDDUI",
-                    `Vista "${session.viewId}" cerrada: sesión limpiada (${session.player.name})`,
-                    "gray"
+                    `Vista "${session.viewId}" cerrada: sesión limpiada (§b${session.player.name}§r)`,
+                    {
+                      level: "debug",
+                      color: "gray",
+                    }
                   );
                 } else {
-                  debugWarn(
+                  debug(
                     "interactDDUI",
-                    `Vista "${session.viewId}" cerrada: ServerClosed sin razón (${session.player.name})`,
-                    "yellow"
+                    `Vista "${session.viewId}" cerrada: ServerClosed sin razón (§b${session.player.name}§r)`,
+                    {
+                      level: "warn",
+                      color: "yellow",
+                    }
                   );
                   interactMenuSessionStore.cleanup(session.playerId);
                 }
@@ -466,7 +520,10 @@ export function showInteractDDUIManagement(session: InteractDDUISession): void {
             closeReason = undefined;
           })
           .catch((showError) => {
-            debugWarn("interactDDUI", `Error en form.show() (${session.viewId}): ${showError}`, "red");
+            debug("interactDDUI", `Error en form.show() (${session.viewId}): ${showError}`, {
+              level: "error",
+              color: "red",
+            });
             interactMenuSessionStore.cleanup(session.player.id);
           });
 
@@ -479,7 +536,10 @@ export function showInteractDDUIManagement(session: InteractDDUISession): void {
         }, 20);
         session.registerInterval(intervalId);
       } catch (setupError) {
-        debugWarn("interactDDUI", `Error configurando Vista "${session.viewId}": ${setupError}`, "red");
+        debug("interactDDUI", `Error configurando Vista "${session.viewId}": ${setupError}`, {
+          level: "error",
+          color: "red",
+        });
         interactMenuSessionStore.cleanup(session.player.id);
         try {
           session.player.sendMessage(ERROR_MESSAGES.DDUI_OPEN_MANAGEMENT);
@@ -487,7 +547,10 @@ export function showInteractDDUIManagement(session: InteractDDUISession): void {
       }
     });
   } catch (e) {
-    debugWarn("interactDDUI", `Error mostrando Vista "${session.viewId}": ${e}`, "red");
+    debug("interactDDUI", `Error mostrando Vista "${session.viewId}": ${e}`, {
+      level: "error",
+      color: "red",
+    });
     try {
       session.player.sendMessage("§c[DDUI] Error al abrir el menú de gestión y estado.");
     } catch {}
@@ -571,7 +634,10 @@ export function showInteractDDUHistory(session: InteractDDUISession): void {
             closeReason = "navigation";
             form.close();
           } catch (e) {
-            debugWarn("interactDDUI", `Error volviendo a Vista Principal: ${e}`, "red");
+            debug("interactDDUI", `Error volviendo a Vista Principal: ${e}`, {
+              level: "error",
+              color: "red",
+            });
           }
         });
 
@@ -581,25 +647,34 @@ export function showInteractDDUHistory(session: InteractDDUISession): void {
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
             if (reason === "ClientClosed") {
-              debugMessage(
+              debug(
                 "interactDDUI",
-                `Vista "${session.viewId}" cerrada: X del cliente (${session.player.name})`,
-                "gray"
+                `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`,
+                {
+                  level: "debug",
+                  color: "gray",
+                }
               );
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "UserBusy") {
-              debugWarn(
+              debug(
                 "interactDDUI",
-                `Vista "${session.viewId}" cerrada: UserBusy (${session.player.name})`,
-                "yellow"
+                `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`,
+                {
+                  level: "warn",
+                  color: "yellow",
+                }
               );
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debugMessage(
+                debug(
                   "interactDDUI",
-                  `Vista "${session.viewId}" cerrada: navegación (${session.player.name})`,
-                  "gray"
+                  `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`,
+                  {
+                    level: "debug",
+                    color: "gray",
+                  }
                 );
                 session.unregisterInterval(intervalId);
                 if (!session.entity.isValid) {
@@ -607,10 +682,13 @@ export function showInteractDDUHistory(session: InteractDDUISession): void {
                   return;
                 }
                 if (!interactMenuSessionStore.get(session.playerId)) {
-                  debugMessage(
+                  debug(
                     "interactDDUI",
-                    `Sesión ya limpiada (entidad muerta), navegación cancelada (${session.player.name})`,
-                    "gray"
+                    `Sesión ya limpiada (entidad muerta), navegación cancelada (§b${session.player.name}§r)`,
+                    {
+                      level: "debug",
+                      color: "gray",
+                    }
                   );
                   return;
                 }
@@ -619,16 +697,22 @@ export function showInteractDDUHistory(session: InteractDDUISession): void {
                 });
               } else {
                 if (!interactMenuSessionStore.get(session.playerId)) {
-                  debugMessage(
+                  debug(
                     "interactDDUI",
-                    `Vista "${session.viewId}" cerrada: sesión limpiada (${session.player.name})`,
-                    "gray"
+                    `Vista "${session.viewId}" cerrada: sesión limpiada (§b${session.player.name}§r)`,
+                    {
+                      level: "debug",
+                      color: "gray",
+                    }
                   );
                 } else {
-                  debugWarn(
+                  debug(
                     "interactDDUI",
-                    `Vista "${session.viewId}" cerrada: ServerClosed sin razón (${session.player.name})`,
-                    "yellow"
+                    `Vista "${session.viewId}" cerrada: ServerClosed sin razón (§b${session.player.name}§r)`,
+                    {
+                      level: "warn",
+                      color: "yellow",
+                    }
                   );
                   interactMenuSessionStore.cleanup(session.playerId);
                 }
@@ -637,7 +721,10 @@ export function showInteractDDUHistory(session: InteractDDUISession): void {
             closeReason = undefined;
           })
           .catch((showError) => {
-            debugWarn("interactDDUI", `Error en form.show() (${session.viewId}): ${showError}`, "red");
+            debug("interactDDUI", `Error en form.show() (${session.viewId}): ${showError}`, {
+              level: "error",
+              color: "red",
+            });
             interactMenuSessionStore.cleanup(session.player.id);
           });
 
@@ -651,7 +738,10 @@ export function showInteractDDUHistory(session: InteractDDUISession): void {
         }, 20);
         session.registerInterval(intervalId);
       } catch (setupError) {
-        debugWarn("interactDDUI", `Error configurando Vista "${session.viewId}": ${setupError}`, "red");
+        debug("interactDDUI", `Error configurando Vista "${session.viewId}": ${setupError}`, {
+          level: "error",
+          color: "red",
+        });
         interactMenuSessionStore.cleanup(session.player.id);
         try {
           session.player.sendMessage(ERROR_MESSAGES.DDUI_OPEN_HISTORY);
@@ -659,7 +749,10 @@ export function showInteractDDUHistory(session: InteractDDUISession): void {
       }
     });
   } catch (e) {
-    debugWarn("interactDDUI", `Error mostrando Vista "${session.viewId}": ${e}`, "red");
+    debug("interactDDUI", `Error mostrando Vista "${session.viewId}": ${e}`, {
+      level: "error",
+      color: "red",
+    });
     try {
       session.player.sendMessage("§c[DDUI] Error al abrir el historial.");
     } catch {}

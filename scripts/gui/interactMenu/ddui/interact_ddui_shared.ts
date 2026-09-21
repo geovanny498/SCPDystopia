@@ -2,7 +2,7 @@
 
 import { ObservableNumber, ObservableString } from "@minecraft/server-ui";
 import { Entity, Player, EntityVariantComponent, system } from "@minecraft/server";
-import { debugWarn, debugMessage, debug } from "../../../utils/debug.js";
+import { debug } from "../../../utils/debug.js";
 import {
   getEntitySystemsStatus,
   isAutoTameEvent,
@@ -86,7 +86,10 @@ class InteractDDUIFeedbackPresenter {
     };
     this.observable.setData(formatFeedbackText(full));
     this.store.setLastFeedback(this.playerId, this.entityId, this.viewId, full);
-    debugMessage("dduiFeedback", `Feedback [${this.viewId}] ${full.context}: ${full.value}`, "gray");
+    debug("dduiFeedback", `Feedback [${this.viewId}] ${full.context}: ${full.value}`, {
+      level: "debug",
+      color: "gray",
+    });
   }
 
   /** Devuelve el `ObservableString` que el form debe usar como `form.label`. */
@@ -244,7 +247,10 @@ export class InteractDDUISession {
       } catch {
         // intervalo ya limpiado o inválido
       }
-      debugMessage("interactDDUI", `Intervalo desregistrado: ${intervalId}`, "gray");
+      debug("interactDDUI", `Intervalo desregistrado: §6${intervalId}§r`, {
+        level: "debug",
+        color: "gray",
+      });
     }
   }
 
@@ -287,7 +293,10 @@ export class InteractDDUISession {
         const groupLabel = GROUP_LABELS[groupId] || groupId;
         this.recordFeedback("Asignar grupo", groupLabel);
       } catch (e) {
-        debugWarn("interactDDUI", `Error asignando grupo: ${e}`, "red");
+        debug("interactDDUI", `Error asignando grupo: ${e}`, {
+          level: "error",
+          color: "red",
+        });
         this.recordFeedback("Asignar grupo", "Error", "error");
       }
       return;
@@ -298,7 +307,10 @@ export class InteractDDUISession {
         setGlobalOverwriteAllowed(entity, entry.value);
         this.recordFeedback("Configuración", entry.value ? "Global" : "Local");
       } catch (e) {
-        debugWarn("interactDDUI", `Error cambiando config global: ${e}`, "red");
+        debug("interactDDUI", `Error cambiando config global: ${e}`, {
+          level: "error",
+          color: "red",
+        });
         this.recordFeedback("Configuración", "Error", "error");
       }
       return;
@@ -310,7 +322,10 @@ export class InteractDDUISession {
         setGlobalOverwriteAllowed(entity, !current);
         this.recordFeedback("Configuración", !current ? "Activada" : "Desactivada");
       } catch (e) {
-        debugWarn("interactDDUI", `Error cambiando config global: ${e}`, "red");
+        debug("interactDDUI", `Error cambiando config global: ${e}`, {
+          level: "error",
+          color: "red",
+        });
         this.recordFeedback("Configuración", "Error", "error");
       }
       return;
@@ -325,7 +340,10 @@ export class InteractDDUISession {
         entity.triggerEvent(event);
         triggeredEvent = true;
       } catch (e) {
-        debugWarn("interactDDUI", `Error aplicando evento ${event}: ${e}`, "red");
+        debug("interactDDUI", `Error aplicando evento ${event}: ${e}`, {
+          level: "error",
+          color: "red",
+        });
       }
 
       const mapped = findSystemStateByEvent(event);
@@ -764,7 +782,10 @@ export const interactMenuSessionStore: InteractMenuSessionStore = {
       factionInfo
     );
     this.set(playerId, session);
-    debugMessage("interactDDUI", `Sesión creada: ${playerId}`, "green");
+    debug("interactDDUI", `Sesión creada: §b${playerId}§r`, {
+      level: "debug",
+      color: "blue",
+    });
     return session;
   },
   getOrCreate(
@@ -918,7 +939,10 @@ export function refreshBasicStatus(
     session.observables.healthText.setData(status.healthLabel);
     return status;
   } catch (e) {
-    debugWarn("interactDDUI", `Error actualizando status en ${viewName}: ${e}`, "red");
+    debug("interactDDUI", `Error actualizando status en ${viewName}: ${e}`, {
+      level: "error",
+      color: "red",
+    });
     return null;
   }
 }

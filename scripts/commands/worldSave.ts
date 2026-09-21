@@ -2,7 +2,7 @@
 import { world } from "@minecraft/server";
 import { systems as menuSystems } from "../gui/commandMenu/menu_config.js";
 import { COMMAND_SYSTEM_IDS } from "../gui/shared/systemCatalog.js";
-import { debugMessage, debugWarn } from "../utils/debug.js";
+import { debug } from "../utils/debug.js";
 
 type SystemState = Record<string, unknown> | string | boolean | number | undefined;
 
@@ -15,9 +15,9 @@ export function saveSystemState(systemName: string, state: SystemState): void {
   try {
     const propName = `scpd_system_${systemName}`;
     world.setDynamicProperty(propName, JSON.stringify(state));
-    debugMessage("dynamicProperties", `[SCPDystopia] Propiedad guardada: ${propName}`, "blue");
+    debug("dynamicProperties", `[SCPDystopia] Propiedad guardada: §b${propName}§r`, { level: "debug", color: "blue" });
   } catch (err) {
-    debugWarn("dynamicProperties", `[SCPDystopia] Error al guardar sistema ${systemName}: ${err}`, "red");
+    debug("dynamicProperties", `[SCPDystopia] Error al guardar sistema §a${systemName}§r: ${err}§r`, { level: "error", color: "red" });
   }
 }
 
@@ -32,7 +32,7 @@ export function loadSystemState(systemName: string): SystemState | undefined {
     if (!prop) return undefined;
     return JSON.parse(String(prop));
   } catch (err) {
-    debugWarn("dynamicProperties", `[SCPDystopia] Error al cargar sistema ${systemName}: ${err}`, "red");
+    debug("dynamicProperties", `[SCPDystopia] Error al cargar sistema §a${systemName}§r: ${err}§r`, { level: "error", color: "red" });
     return undefined;
   }
 }

@@ -9,7 +9,7 @@
 
 import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel, Player } from "@minecraft/server";
 import { showMonitorMenu } from "../gui/monitorMenu/monitor_form.js";
-import { debugMessage } from "../utils/debug.js";
+import { debug } from "../utils/debug.js";
 
 system.beforeEvents.startup.subscribe((init) => {
   const cmd = {
@@ -22,10 +22,10 @@ system.beforeEvents.startup.subscribe((init) => {
   try {
     init.customCommandRegistry.registerCommand(cmd, (origin) => {
       try {
-        debugMessage("monitorCommand", "Comando /scpd:monitor_units ejecutado", "cyan");
+        debug("monitorCommand", "Comando /scpd:monitor_units ejecutado", { level: "debug", color: "blue" });
 
         if (origin.sourceType !== CustomCommandSource.Entity || !origin.sourceEntity) {
-          debugMessage("monitorCommand", "Comando rechazado: no ejecutado por jugador", "yellow");
+          debug("monitorCommand", "Comando rechazado: no ejecutado por jugador", { level: "warn", color: "yellow" });
           return {
             status: CustomCommandStatus.Failure,
             message: "Este comando solo puede ser ejecutado por un jugador.",
@@ -37,7 +37,7 @@ system.beforeEvents.startup.subscribe((init) => {
         try {
           showMonitorMenu(player);
         } catch (e) {
-          debugMessage("monitorCommand", `Error mostrando monitor: ${e}`, "red");
+            debug("monitorCommand", `Error mostrando monitor: ${e}§r`, { level: "error", color: "red" });
           return {
             status: CustomCommandStatus.Failure,
             message: "Error abriendo el monitor de unidades. Revisa la consola.",
@@ -49,11 +49,11 @@ system.beforeEvents.startup.subscribe((init) => {
           message: "Abriendo monitor de unidades...",
         };
       } catch (e) {
-        debugMessage("monitorCommand", `Error interno al ejecutar el comando: ${e}`, "red");
+        debug("monitorCommand", `Error interno al ejecutar el comando: ${e}§r`, { level: "error", color: "red" });
         return { status: CustomCommandStatus.Failure, message: "Error interno al ejecutar el comando." };
       }
     });
   } catch (e) {
-    debugMessage("monitorCommand", `Error registrando scpd:monitor_units: ${e}`, "red");
+      debug("monitorCommand", `Error registrando scpd:monitor_units: ${e}§r`, { level: "error", color: "red" });
   }
 });

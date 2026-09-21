@@ -21,11 +21,39 @@ export const DEBUG_CONSOLE = true; // Mensajes en consola
  */
 export const DEBUG_MODULES: string[] = [
   // ═══════════════════════════════════════════════════════════════════════════
-  // MIGRACIÓN DEBUG — Tanda 2b (19/09/2026)
+  // MIGRACIÓN DEBUG — Tanda 11 (20/09/2026)
   // ═══════════════════════════════════════════════════════════════════════════
-  "lifecycle",
-  "menuState",
-  "commandMenuDDUI",
+  "monitorCommand",
+  "interactDDUI",
+  "dduiFeedback",
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MIGRACIÓN DEBUG — Tanda 8, comentada tras pruebas
+  // ═══════════════════════════════════════════════════════════════════════════
+  // "zoom",
+  // "player",
+  // "damage",
+  // "modifiedDamageNumber",
+  // "applyKnockback",
+  // "menuScanner",
+  // "menuScanner:base",
+  // "menuScanner:base:ent", // subcanal opcional por volumen alto
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MIGRACIÓN DEBUG — Tanda 10, comentada hasta siguiente tanda
+  // ═══════════════════════════════════════════════════════════════════════════
+  // "configCommand",
+  // "roleMenu",
+  // "teleportCommand",
+  // "monitorCommand",
+  // "dynamicProperties",
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MIGRACIÓN DEBUG — Tanda 2b, comentada hasta siguiente tanda
+  // ═══════════════════════════════════════════════════════════════════════════
+  // "lifecycle",
+  // "menuState",
+  // "commandMenuDDUI",
 
   // ═══════════════════════════════════════════════════════════════════════════
   // MIGRACIÓN DEBUG — Tanda 2a, comentada hasta siguiente tanda
@@ -277,7 +305,7 @@ export function debugWarn(module: string, message: string, color: string = "yell
 function convertMCtoANSI(text: string): string {
   return text.replace(/§[0-9a-w]/gi, (code) => {
     const name = MC_CODE_TO_NAME[code];
-    return name ? MC_NAMED_COLORS[name] ?? "" : "";
+    return name ? (MC_NAMED_COLORS[name] ?? "") : "";
   });
 }
 

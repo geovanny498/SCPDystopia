@@ -1,7 +1,7 @@
 // scripts/commands/role_commands.ts
 
 import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel, Player } from "@minecraft/server";
-import { debugWarn, debugMessage } from "../utils/debug.js";
+import { debug } from "../utils/debug.js";
 import { showRolePanel } from "../gui/roleMenu/panels/rolePanel.js";
 
 system.beforeEvents.startup.subscribe((init) => {
@@ -27,9 +27,9 @@ system.beforeEvents.startup.subscribe((init) => {
         system.run(() => {
           try {
             showRolePanel(admin);
-            debugMessage("roleMenu", `Panel de roles abierto para ${admin.name}`, "cyan");
+            debug("roleMenu", `Panel de roles abierto para §b${admin.name}§r`, { level: "debug", color: "blue" });
           } catch (e) {
-            debugWarn("roleMenu", `Error mostrando panel de roles: ${e}`, "red");
+            debug("roleMenu", `Error mostrando panel de roles: ${e}§r`, { level: "error", color: "red" });
             admin.sendMessage("§c[SCPDystopia] Error abriendo el panel de roles.");
           }
         });
@@ -39,11 +39,11 @@ system.beforeEvents.startup.subscribe((init) => {
           message: "Abriendo panel de gestión de roles...",
         };
       } catch (e) {
-        debugWarn("roleMenu", `Error en handler de scpd:roles: ${e}`, "red");
+        debug("roleMenu", `Error en handler de scpd:roles: ${e}§r`, { level: "error", color: "red" });
         return { status: CustomCommandStatus.Failure, message: "Error interno al ejecutar el comando." };
       }
     });
   } catch (e) {
-    debugWarn("roleMenu", `Error registrando scpd:roles: ${e}`, "red");
+      debug("roleMenu", `Error registrando scpd:roles: ${e}§r`, { level: "error", color: "red" });
   }
 });

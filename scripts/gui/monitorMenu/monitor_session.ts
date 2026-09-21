@@ -4,7 +4,7 @@ import { Player, system } from "@minecraft/server";
 import { ObservableString } from "@minecraft/server-ui";
 import { MonitorConfig, MonitorConfigDefaults, MonitorConfigLabels } from "./monitor_config.js";
 import { loadMonitorConfig, saveMonitorConfig, clearMonitorConfig } from "./monitor_state.js";
-import { debugMessage, debugWarn } from "../../utils/debug.js";
+import { debug } from "../../utils/debug.js";
 
 /**
  * Interfaz que encapsula el acceso al Map de sesiones del monitor. Toda
@@ -92,7 +92,10 @@ export class MonitorMenuSession {
       } catch {
         // intervalo ya limpiado o inválido
       }
-      debugMessage("monitorCommand", `Intervalo desregistrado: ${intervalId}`, "gray");
+      debug("monitorCommand", `Intervalo desregistrado: §6${intervalId}§r`, {
+        level: "debug",
+        color: "gray",
+      });
     }
   }
 
@@ -178,7 +181,10 @@ export class MonitorMenuSession {
         // intervalo ya limpiado o inválido
       }
     }
-    debugMessage("monitorCommand", `Sesión limpiada: ${this.playerId}`, "gray");
+    debug("monitorCommand", `Sesión limpiada: §b${this.playerId}§r`, {
+      level: "debug",
+      color: "gray",
+    });
   }
 }
 
@@ -209,6 +215,9 @@ export const monitorMenuSessionStore: MonitorMenuSessionStore = {
     if (!session) return;
     session.cleanup();
     monitorSessions.delete(playerId);
-    debugMessage("monitorCommand", `Sesión limpiada y eliminada: ${session.playerId}`, "gray");
+    debug("monitorCommand", `Sesión limpiada y eliminada: §b${session.playerId}§r`, {
+      level: "debug",
+      color: "gray",
+    });
   },
 };
