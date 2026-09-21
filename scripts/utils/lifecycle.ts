@@ -5,6 +5,7 @@ import { debug } from "./debug.js";
 import { commandMenuSessionStore } from "../gui/commandMenu/ddui/sessionStore.js";
 import { interactMenuSessionStore } from "../gui/interactMenu/ddui/interact_ddui_shared.js";
 import { monitorMenuSessionStore } from "../gui/monitorMenu/monitor_session.js";
+import { teleportMenuSessionStore } from "../gui/teleportMenu/ddui/sessionStore.js";
 
 export function registerLifecycleCleanups(): void {
   world.afterEvents.playerLeave.subscribe((event) => {
@@ -32,6 +33,11 @@ export function registerLifecycleCleanups(): void {
       monitorMenuSessionStore.cleanup(event.playerId);
     } catch (e) {
       debug("lifecycle", `Error limpiando monitorMenu session: ${e}`, { level: "error", color: "red" });
+    }
+    try {
+      teleportMenuSessionStore.cleanup(event.playerId);
+    } catch (e) {
+      debug("lifecycle", `Error limpiando teleportMenu session: ${e}`, { level: "error", color: "red" });
     }
     debug("lifecycle", `§b${event.playerName}§r se desconectó`, { level: "debug", color: "green" });
   });

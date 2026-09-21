@@ -26,6 +26,7 @@ export const DEBUG_MODULES: string[] = [
   "monitorCommand",
   "interactDDUI",
   "dduiFeedback",
+  "teleportMenuDDUI",
 
   // ═══════════════════════════════════════════════════════════════════════════
   // MIGRACIÓN DEBUG — Tanda 8, comentada tras pruebas

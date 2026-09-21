@@ -1,12 +1,20 @@
 // scripts/commands/teleport_command.ts
 
 /**
- * Comando /scpd:teleport
- * Abre el menú de teletransporte de entidades (sistema independiente)
+ * Comando /scpd:teleport_units
+ * Abre el menú de teletransporte de entidades (soporta modos DDUI y legacy)
  */
 
-import { system, CustomCommandStatus, CustomCommandSource, CommandPermissionLevel, Player } from "@minecraft/server";
+import {
+  system,
+  CustomCommandStatus,
+  CustomCommandSource,
+  CommandPermissionLevel,
+  Player,
+  CustomCommandParamType,
+} from "@minecraft/server";
 import { showTeleportMainMenu } from "../gui/teleportMenu/menus/teleport_menu.js";
+import { openTeleportMenuDDUI } from "../gui/teleportMenu/ddui/main.js";
 import { debug } from "../utils/debug.js";
 
 system.beforeEvents.startup.subscribe((init) => {
@@ -15,12 +23,13 @@ system.beforeEvents.startup.subscribe((init) => {
     description: "Abre el menú de teletransporte de entidades",
     permissionLevel: CommandPermissionLevel.Admin,
     cheatsRequired: false,
+    optionalParameters: [{ name: "mode", type: CustomCommandParamType.String }],
   };
 
   try {
-    init.customCommandRegistry.registerCommand(cmd, (origin) => {
+    init.customCommandRegistry.registerCommand(cmd, (origin, mode) => {
       try {
-        debug("teleportCommand", "Comando /scpd:teleport ejecutado", { level: "debug", color: "blue" });
+        debug("teleportCommand", "Comando /scpd:teleport_units ejecutado", { level: "debug", color: "blue" });
 
         // Solo permitir ejecución por entidad (jugador)
         if (origin.sourceType !== CustomCommandSource.Entity || !origin.sourceEntity) {
@@ -32,11 +41,27 @@ system.beforeEvents.startup.subscribe((init) => {
         }
 
         const player = origin.sourceEntity as Player;
-        debug("teleportCommand", `Abriendo menú para jugador: §b${player.name}§r`, { level: "debug", color: "green" });
+        const selectedMode = typeof mode === "string" ? mode.toLowerCase() : "";
 
-        // Mostrar el menú al jugador que ejecutó el comando
+        debug("teleportCommand", `Abriendo menú para jugador: §b${player.name}§r en modo §a${selectedMode || "ddui (default)"}§r`, {
+          level: "debug",
+          color: "green",
+        });
+
+        // Mostrar el menú según el modo seleccionado (legacy vs DDUI)
         try {
-          showTeleportMainMenu(origin.sourceEntity as Player);
+          if (selectedMode === "legacy") {
+            showTeleportMainMenu(player);
+          } else {
+            system.run(() => {
+              try {
+                openTeleportMenuDDUI(player);
+              } catch (err) {
+                debug("teleportCommand", `Error mostrando menú DDUI: ${err}§r`, { level: "error", color: "red" });
+                player.sendMessage("§c[SCPDystopia] Error abriendo el menú DDUI de teletransporte.");
+              }
+            });
+          }
         } catch (e) {
           debug("teleportCommand", `Error mostrando menú: ${e}§r`, { level: "error", color: "red" });
           console.warn("Error mostrando menú de teletransporte:", e);
@@ -48,7 +73,7 @@ system.beforeEvents.startup.subscribe((init) => {
 
         return {
           status: CustomCommandStatus.Success,
-          message: "Abriendo menú de teletransporte...",
+          message: selectedMode === "legacy" ? "Abriendo menú legacy..." : "Abriendo menú DDUI...",
         };
       } catch (e) {
         console.warn("scpd:teleport handler error:", e);
@@ -56,6 +81,7 @@ system.beforeEvents.startup.subscribe((init) => {
       }
     });
   } catch (e) {
-    console.warn("Error registrando scpd:teleport:", e);
+    console.warn("Error registrando scpd:teleport_units:", e);
   }
 });
+
