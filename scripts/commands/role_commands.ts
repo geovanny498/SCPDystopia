@@ -44,6 +44,6 @@ system.beforeEvents.startup.subscribe((init) => {
       }
     });
   } catch (e) {
-      debug("roleMenu", `Error registrando scpd:roles: ${e}§r`, { level: "error", color: "red" });
+    debug("roleMenu", `Error registrando scpd:roles: ${e}§r`, { level: "error", color: "red" });
   }
 });

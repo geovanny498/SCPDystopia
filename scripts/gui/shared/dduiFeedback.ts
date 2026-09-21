@@ -118,7 +118,10 @@ export class DDUIFeedbackPresenter {
     };
     this.observable.setData(formatFeedbackText(full));
     this.store?.setLast(this.key, this.viewId, full);
-    debug("dduiFeedback", `Feedback [§b${this.viewId}§r] §6${full.context}§r: §f${full.value}§r`, { level: "debug", color: "gray" });
+    debug("dduiFeedback", `Feedback [§b${this.viewId}§r] §6${full.context}§r: §f${full.value}§r`, {
+      level: "debug",
+      color: "gray",
+    });
   }
 
   /**

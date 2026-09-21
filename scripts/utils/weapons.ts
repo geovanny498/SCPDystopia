@@ -132,11 +132,10 @@ world.afterEvents.playerHotbarSelectedSlotChange.subscribe((event) => {
   const itemTypeId = event.itemStack?.typeId;
   const data = itemTypeId ? weaponData[itemTypeId] : undefined;
 
-  debug(
-    "zoom",
-    `[hotbar] Jugador §b${player.id}§r cambió a slot §6${event.newSlotSelected}§r item=§a${itemTypeId}§r`,
-    { level: "debug", color: "blue" }
-  );
+  debug("zoom", `[hotbar] Jugador §b${player.id}§r cambió a slot §6${event.newSlotSelected}§r item=§a${itemTypeId}§r`, {
+    level: "debug",
+    color: "blue",
+  });
 
   if (data?.zoomEnabled && data.zoomFov !== undefined) {
     const zoomFov = data.zoomFov;

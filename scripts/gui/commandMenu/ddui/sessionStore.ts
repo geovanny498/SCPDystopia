@@ -125,7 +125,7 @@ export class CommandMenuSession {
       } catch {
         // intervalo ya limpiado o inválido
       }
-        debug("commandMenuDDUI", `Intervalo desregistrado: §b${intervalId}§r`, { level: "debug", color: "gray" });
+      debug("commandMenuDDUI", `Intervalo desregistrado: §b${intervalId}§r`, { level: "debug", color: "gray" });
     }
   }
 
@@ -261,12 +261,18 @@ export const commandMenuSessionStore: SessionStore & DDUIFeedbackStore = {
     if (!session) return;
     session.cleanup();
     sessions.delete(playerId);
-    debug("commandMenuDDUI", `Sesión limpiada y eliminada: §b${session.playerName}§r`, { level: "debug", color: "gray" });
+    debug("commandMenuDDUI", `Sesión limpiada y eliminada: §b${session.playerName}§r`, {
+      level: "debug",
+      color: "gray",
+    });
   },
   create(playerId: string, playerName: string, player: Player, faction: string, role: string): CommandMenuSession {
     const session = new CommandMenuSession(playerId, playerName, player, faction, role);
     sessions.set(playerId, session);
-    debug("commandMenuDDUI", `Sesión creada: §b${playerName}§r (§a${faction}§r/§6${role}§r)`, { level: "debug", color: "light_purple" });
+    debug("commandMenuDDUI", `Sesión creada: §b${playerName}§r (§a${faction}§r/§6${role}§r)`, {
+      level: "debug",
+      color: "light_purple",
+    });
     return session;
   },
   getLast(playerId: string, viewId: string): DDUIFeedbackEntry | null {

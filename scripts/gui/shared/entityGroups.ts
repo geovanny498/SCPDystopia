@@ -56,7 +56,7 @@ export function clearUnitGroup(entity: Entity, player: Player | null = null): bo
   if (entity.getDynamicProperty(ENTITY_GROUP_DP) === undefined) return false;
 
   entity.setDynamicProperty(ENTITY_GROUP_DP, undefined);
-  const soldierName = entity.nameTag ? `${entity.nameTag}§r` : `§b${entity.typeId}§r`;
+  const soldierName = entity.nameTag ? `§r§f${entity.nameTag}§r` : `§b${entity.typeId}§r`;
 
   if (player != null) {
     entityHistoryStore.pushHistory(entity.id, {
@@ -64,6 +64,7 @@ export function clearUnitGroup(entity: Entity, player: Player | null = null): bo
       viewId: "group_assignment",
       context: SYSTEM_SHORT_NAMES.group_assignment,
       value: GROUP_LABELS[SpecialGroups.NO_GROUP],
+      targetName: soldierName,
     });
   }
 

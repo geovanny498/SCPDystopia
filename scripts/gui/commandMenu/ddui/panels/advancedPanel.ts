@@ -70,14 +70,23 @@ export function showAdvancedPanel(player: Player, targetFaction: TargetFaction =
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debug("commandMenuDDUI", `Configuración Avanzada cerrada: X del cliente (§b${player.name}§r)`, { level: "debug", color: "gray" });
+          debug("commandMenuDDUI", `Configuración Avanzada cerrada: X del cliente (§b${player.name}§r)`, {
+            level: "debug",
+            color: "gray",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debug("commandMenuDDUI", `Configuración Avanzada cerrada: §6UserBusy§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
+          debug("commandMenuDDUI", `Configuración Avanzada cerrada: §6UserBusy§r (§b${player.name}§r)`, {
+            level: "warn",
+            color: "gray",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debug("commandMenuDDUI", `Configuración Avanzada cerrada: §6navegación§r (§b${player.name}§r)`, { level: "debug", color: "gray" });
+            debug("commandMenuDDUI", `Configuración Avanzada cerrada: §6navegación§r (§b${player.name}§r)`, {
+              level: "debug",
+              color: "gray",
+            });
             nextPanel?.();
           } else {
             debug(

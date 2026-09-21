@@ -45,7 +45,9 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
       canChaos = isMenuFeatureVisible("scope", chaosRole, false, "chaos");
 
       if (effectiveTarget === "foundation" && !canFoundation) {
-        player.sendMessage("§c[SCPDystopia] No tienes permiso para acceder a la prioridad de aplicación de Foundation.");
+        player.sendMessage(
+          "§c[SCPDystopia] No tienes permiso para acceder a la prioridad de aplicación de Foundation."
+        );
         return;
       }
       if (effectiveTarget === "chaos" && !canChaos) {
@@ -75,7 +77,7 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
     const showChaosToggle = (effectiveTarget === "both" || effectiveTarget === "chaos") && canChaos;
 
     if (showFoundationToggle) {
-      const foundationLabel = effectiveTarget === "both" ? `§9Foundation: §r${SCOPE_RESPECT_LABEL}` : SCOPE_RESPECT_LABEL;
+      const foundationLabel = effectiveTarget === "both" ? `Foundation: ${SCOPE_RESPECT_LABEL}` : SCOPE_RESPECT_LABEL;
       const foundationObs = new ObservableBoolean(scope.foundation.respectEntityBlocks, { clientWritable: true });
       form.toggle(foundationLabel, foundationObs);
 
@@ -103,7 +105,7 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
     }
 
     if (showChaosToggle) {
-      const chaosLabel = effectiveTarget === "both" ? `§cChaos: §r${SCOPE_RESPECT_LABEL}` : SCOPE_RESPECT_LABEL;
+      const chaosLabel = effectiveTarget === "both" ? `Chaos: ${SCOPE_RESPECT_LABEL}` : SCOPE_RESPECT_LABEL;
       const chaosObs = new ObservableBoolean(scope.chaos.respectEntityBlocks, { clientWritable: true });
       form.toggle(chaosLabel, chaosObs);
 
@@ -141,17 +143,29 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debug("commandMenuDDUI", `Scope cerrado: X del cliente (§b${player.name}§r)`, { level: "debug", color: "gray" });
+          debug("commandMenuDDUI", `Scope cerrado: X del cliente (§b${player.name}§r)`, {
+            level: "debug",
+            color: "gray",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debug("commandMenuDDUI", `Scope cerrado: §6UserBusy§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
+          debug("commandMenuDDUI", `Scope cerrado: §6UserBusy§r (§b${player.name}§r)`, {
+            level: "warn",
+            color: "gray",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debug("commandMenuDDUI", `Scope cerrado: §6navegación§r (§b${player.name}§r)`, { level: "debug", color: "gray" });
+            debug("commandMenuDDUI", `Scope cerrado: §6navegación§r (§b${player.name}§r)`, {
+              level: "debug",
+              color: "gray",
+            });
             import("./advancedPanel.js").then(({ showAdvancedPanel }) => showAdvancedPanel(player, effectiveTarget));
           } else {
-            debug("commandMenuDDUI", `Scope cerrado: §cServerClosed sin razón§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
+            debug("commandMenuDDUI", `Scope cerrado: §cServerClosed sin razón§r (§b${player.name}§r)`, {
+              level: "warn",
+              color: "gray",
+            });
             commandMenuSessionStore.cleanup(player.id);
           }
         }

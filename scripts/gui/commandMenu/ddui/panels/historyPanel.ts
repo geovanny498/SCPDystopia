@@ -15,7 +15,7 @@ import {
 import { PlayerPermissionManager, type FactionId, type RoleId } from "../../../shared/playerPermissionManager.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
-import { getHistoryEntries } from "../helpers/historyStore.js";
+import { getHistoryEntries, MAX_ENTRIES } from "../helpers/historyStore.js";
 
 export function showHistoryPanel(player: Player, targetFaction?: TargetFaction): void {
   try {
@@ -32,7 +32,7 @@ export function showHistoryPanel(player: Player, targetFaction?: TargetFaction):
     const session = commandMenuSessionStore.get(player.id);
     const effectiveFaction = targetFaction ?? session?.getTargetFaction() ?? "both";
     const entries = getHistoryEntries(effectiveFaction);
-    const reversed = entries.slice(-20).reverse();
+    const reversed = entries.slice(-MAX_ENTRIES).reverse();
 
     let closeReason: "navigation" | undefined = undefined;
 
@@ -72,17 +72,29 @@ export function showHistoryPanel(player: Player, targetFaction?: TargetFaction):
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debug("commandMenuDDUI", `Historial cerrado: X del cliente (§b${player.name}§r)`, { level: "debug", color: "gray" });
+          debug("commandMenuDDUI", `Historial cerrado: X del cliente (§b${player.name}§r)`, {
+            level: "debug",
+            color: "gray",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debug("commandMenuDDUI", `Historial cerrado: §6UserBusy§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
+          debug("commandMenuDDUI", `Historial cerrado: §6UserBusy§r (§b${player.name}§r)`, {
+            level: "warn",
+            color: "gray",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debug("commandMenuDDUI", `Historial cerrado: §6navegación§r (§b${player.name}§r)`, { level: "debug", color: "gray" });
+            debug("commandMenuDDUI", `Historial cerrado: §6navegación§r (§b${player.name}§r)`, {
+              level: "debug",
+              color: "gray",
+            });
             import("./mainPanel.js").then(({ showMainPanel }) => showMainPanel(player, effectiveFaction));
           } else {
-            debug("commandMenuDDUI", `Historial cerrado: §cServerClosed sin razón§r (§b${player.name}§r)`, { level: "warn", color: "yellow" });
+            debug("commandMenuDDUI", `Historial cerrado: §cServerClosed sin razón§r (§b${player.name}§r)`, {
+              level: "warn",
+              color: "yellow",
+            });
             commandMenuSessionStore.cleanup(player.id);
           }
         }

@@ -67,11 +67,11 @@ export function getEntitiesCached(dimension: Dimension, faction: string): any[] 
 
   const cached = _entityQueryCache.get(key);
   if (cached && now - cached.tick < ENTITY_QUERY_CACHE_TTL * 50) {
-      debug(
-        "menuScanner",
-        `[entityQueryCache HIT] §b${key}§r age=${now - cached.tick}ms count=§6${cached.entities.length}§r`,
-        { level: "debug", color: "blue" }
-      );
+    debug(
+      "menuScanner",
+      `[entityQueryCache HIT] §b${key}§r age=${now - cached.tick}ms count=§6${cached.entities.length}§r`,
+      { level: "debug", color: "blue" }
+    );
     return cached.entities;
   }
 
@@ -84,7 +84,10 @@ export function getEntitiesCached(dimension: Dimension, faction: string): any[] 
   }
 
   _entityQueryCache.set(key, { entities: result, tick: now });
-    debug("menuScanner", `[entityQueryCache MISS] §b${key}§r count=§f${result.length}§r`, { level: "debug", color: "yellow" });
+  debug("menuScanner", `[entityQueryCache MISS] §b${key}§r count=§f${result.length}§r`, {
+    level: "debug",
+    color: "yellow",
+  });
 
   return result;
 }
@@ -275,10 +278,13 @@ export function groupNametagsByBucket(
 
   // Diagnostic logging
   if (mixedEntries.length > 0) {
-      bucketDiagnostic(`[dedupCrossBucket] §f${mixedEntries.length}§r nametags cruzaron buckets → other_units`, "light_purple");
-      for (const [name, count] of mixedEntries) {
-        bucketDiagnostic(`  "§b${name}§r" (§6${count}§r unidades)`, "light_purple");
-      }
+    bucketDiagnostic(
+      `[dedupCrossBucket] §f${mixedEntries.length}§r nametags cruzaron buckets → other_units`,
+      "light_purple"
+    );
+    for (const [name, count] of mixedEntries) {
+      bucketDiagnostic(`  "§b${name}§r" (§6${count}§r unidades)`, "light_purple");
+    }
   }
 
   // ── BUCLE 3: Pasada 2 optimizada con lookups O(1) ────────────────────────────
@@ -369,11 +375,11 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
     }
   }
 
-    debug(
-      "menuScanner:base",
-      `[CACHE MISS] key=§b${cacheKey}§r faction=§a${faction}§r age=${cached ? now - cached.tick : "n/a"}ms TTL=${CACHE_TTL_TICKS * 50}ms dim=§b${dimension.id}§r`,
-      { level: "debug", color: "yellow" }
-    );
+  debug(
+    "menuScanner:base",
+    `[CACHE MISS] key=§b${cacheKey}§r faction=§a${faction}§r age=${cached ? now - cached.tick : "n/a"}ms TTL=${CACHE_TTL_TICKS * 50}ms dim=§b${dimension.id}§r`,
+    { level: "debug", color: "yellow" }
+  );
 
   const entities: ScannedEntity[] = [];
   const byHierarchy: Record<string, ScannedEntity[]> = {};
@@ -382,11 +388,10 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
   const activeFamilyTags: { [tagId: string]: { label: string; unitCount: number } } = {};
 
   if (faction === "both") {
-      debug(
-        "menuScanner:base",
-        "scanActiveEntities no soporta '§cboth§r'; usar scanActiveUnitsMerged para fusión",
-        { level: "warn", color: "yellow" }
-      );
+    debug("menuScanner:base", "scanActiveEntities no soporta '§cboth§r'; usar scanActiveUnitsMerged para fusión", {
+      level: "warn",
+      color: "yellow",
+    });
     return {
       entities: [],
       byHierarchy: {},
@@ -401,11 +406,10 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
 
   const rawEntities = getEntitiesByFaction(dimension, faction as "foundation" | "chaos");
 
-      debug(
-        "menuScanner:base",
-        `Scan START: faction=§a${faction}§r rawEntities=§6${rawEntities.length}§r`,
-        { level: "debug", color: "blue" }
-      );
+  debug("menuScanner:base", `Scan START: faction=§a${faction}§r rawEntities=§6${rawEntities.length}§r`, {
+    level: "debug",
+    color: "blue",
+  });
 
   for (const ent of rawEntities) {
     try {
@@ -457,7 +461,10 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
         { level: "debug", color: "gray" }
       );
     } catch (e) {
-      debug("menuScanner:base", `Error escaneando entidad §b${ent?.typeId}§r: ${e}`, { level: "warn", color: "yellow" });
+      debug("menuScanner:base", `Error escaneando entidad §b${ent?.typeId}§r: ${e}`, {
+        level: "warn",
+        color: "yellow",
+      });
     }
   }
 
@@ -476,18 +483,21 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
 
   _scanCache.set(cacheKey, { result, tick: now });
 
-      debug(
-        "menuScanner:base",
-        `Scan: §6${entities.length}§r entidades, §a${activeHierarchies.length}§r jerarquías, §6${Object.keys(activeFamilyTags).length}§r familias`,
-        { level: "debug", color: "blue" }
-      );
+  debug(
+    "menuScanner:base",
+    `Scan: §6${entities.length}§r entidades, §a${activeHierarchies.length}§r jerarquías, §6${Object.keys(activeFamilyTags).length}§r familias`,
+    { level: "debug", color: "blue" }
+  );
 
   return result;
 }
 
 export function scanActiveUnits(dimension: Dimension, faction: string): ScanResult {
   if (faction === "both") {
-    debug("menuScanner:base", "scanActiveUnits no soporta '§cboth§r'; usar scanActiveUnitsMerged para fusión", { level: "warn", color: "yellow" });
+    debug("menuScanner:base", "scanActiveUnits no soporta '§cboth§r'; usar scanActiveUnitsMerged para fusión", {
+      level: "warn",
+      color: "yellow",
+    });
     const emptyBuckets: Record<string, any> = {};
     return {
       entities: [],
@@ -518,11 +528,11 @@ export function scanActiveUnits(dimension: Dimension, faction: string): ScanResu
     }
   }
 
-    debug(
-      "menuScanner:buckets",
-      `[CACHE MISS] key=§b${cacheKey}§r faction=§a${faction}§r age=${cached ? now - cached.tick : "n/a"}ms TTL=${CACHE_TTL_TICKS * 50}ms dim=§b${dimension.id}§r`,
-      { level: "debug", color: "yellow" }
-    );
+  debug(
+    "menuScanner:buckets",
+    `[CACHE MISS] key=§b${cacheKey}§r faction=§a${faction}§r age=${cached ? now - cached.tick : "n/a"}ms TTL=${CACHE_TTL_TICKS * 50}ms dim=§b${dimension.id}§r`,
+    { level: "debug", color: "yellow" }
+  );
 
   const baseResult = scanActiveEntities(dimension, faction);
   const bucketResult = groupNametagsByBucket(baseResult.entities, baseResult.nametagGroups);
@@ -542,11 +552,11 @@ export function scanActiveUnits(dimension: Dimension, faction: string): ScanResu
 
   _scanCache.set(cacheKey, { result, tick: now });
 
-    debug(
-      "menuScanner:buckets",
-      `Buckets: §6${Object.keys(bucketResult.buckets).length}§r buckets, §a${Object.keys(bucketResult.bucketEntityMap).length}§r mapped`,
-      { level: "debug", color: "light_purple" }
-    );
+  debug(
+    "menuScanner:buckets",
+    `Buckets: §6${Object.keys(bucketResult.buckets).length}§r buckets, §a${Object.keys(bucketResult.bucketEntityMap).length}§r mapped`,
+    { level: "debug", color: "light_purple" }
+  );
 
   return result;
 }

@@ -20,71 +20,40 @@ export const DEBUG_CONSOLE = true; // Mensajes en consola
  *   específica y volver a comentar después.
  */
 export const DEBUG_MODULES: string[] = [
-  // ═══════════════════════════════════════════════════════════════════════════
-  // DEPURACIÓN SCOPE POR FACCIÓN (21/09/2026) — Activos para testeo
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ── Menús DDUI y Ciclo de Vida de UI ──
+  "commandMenuDDUI",
+  "interactDDUI",
+  "teleportMenuDDUI",
+  "monitorCommand",
+  "roleMenu",
+
+  // ── Interacción y Triggers ──
+  "interactTrigger",
+
+  // ── Lógica de Negocio y Mutaciones ──
   "menuScope",
-  "menuScope:check",
-  "scope",
-  "scope_commands",
+  "entityHistory",
+  "dduiFeedback",
+  "teleportLogic",
+  "dynamicProperties",
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MIGRACIÓN DEBUG — Tanda 11, comentada tras pruebas
-  // ═══════════════════════════════════════════════════════════════════════════
-  // "monitorCommand",
-  // "interactDDUI",
-  // "dduiFeedback",
-  // "teleportMenuDDUI",
+  // ── Comandos de Consola ──
+  "configCommand",
+  "teleportCommand",
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MIGRACIÓN DEBUG — Tanda 8, comentada tras pruebas
-  // ═══════════════════════════════════════════════════════════════════════════
+  // ── Canales comentados por volumen alto / depuración específica ──
+  // "menuScope:check",
+  // "menuScanner",
+  // "menuScanner:base",
+  // "menuScanner:base:ent",
+  // "menuScanner:buckets",
+  // "scope",
   // "zoom",
   // "player",
   // "damage",
   // "modifiedDamageNumber",
   // "applyKnockback",
-  // "menuScanner",
-  // "menuScanner:base",
-  // "menuScanner:base:ent", // subcanal opcional por volumen alto
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MIGRACIÓN DEBUG — Tanda 10, comentada hasta siguiente tanda
-  // ═══════════════════════════════════════════════════════════════════════════
-  // "configCommand",
-  // "roleMenu",
-  // "teleportCommand",
-  // "monitorCommand",
-  // "dynamicProperties",
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MIGRACIÓN DEBUG — Tanda 2b, comentada hasta siguiente tanda
-  // ═══════════════════════════════════════════════════════════════════════════
-  // "lifecycle",
-  // "menuState",
-  // "commandMenuDDUI",
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MIGRACIÓN DEBUG — Tanda 2a, comentada hasta siguiente tanda
-  // ═══════════════════════════════════════════════════════════════════════════
-  // "commandMenuDDUI",
-  // "roleMenu",
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MIGRACIÓN DEBUG — Tanda 1, comentada hasta siguiente tanda
-  // ═══════════════════════════════════════════════════════════════════════════
-  // "dduiFeedback",
-  // "entityHistory",
-  // "scope",
-  // "menuRules",
-  // "menuRules:compat",
-  // "menuRules:apply",
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // DEPURACIÓN DE DAÑO — Comentados hasta siguiente tanda
-  // ═══════════════════════════════════════════════════════════════════════════
   // "projectileHitEntity",
-  // "damage",
   // "entityDie",
   // "menuGroups",
   // "menuFaction",
@@ -92,25 +61,11 @@ export const DEBUG_MODULES: string[] = [
   // "menuEvents:spawn",
   // "projectileSound",
   // "entityDamageConfig",
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MONITOR REACTIVO — Comentados hasta siguiente tanda
-  // ═══════════════════════════════════════════════════════════════════════════
-  // "monitorCommand",
-  // "interactDDUI",
-  // "interactTrigger",
   // "lifecycle",
   // "menuState",
-  // "player",
-  // "menuScanner",
-  // "menuScanner:buckets",
-  // "menuScanner:base",
-  // "menuScanner:base:ent",
-  // "zoom",
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MIGRACIÓN DEBUG — Tanda anterior (main.ts), comentada hasta siguiente tanda
-  // ═══════════════════════════════════════════════════════════════════════════
+  // "menuRules",
+  // "menuRules:compat",
+  // "menuRules:apply",
   // "menuApply",
   // "menuApply:entity",
   // "teleportUtils",

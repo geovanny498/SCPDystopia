@@ -189,18 +189,30 @@ export function showMainPanel(player: Player, rememberedTargetFaction?: TargetFa
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debug("commandMenuDDUI", `Panel Principal cerrado: X del cliente (§b${player.name}§r)`, { level: "debug", color: "gray" });
+          debug("commandMenuDDUI", `Panel Principal cerrado: X del cliente (§b${player.name}§r)`, {
+            level: "debug",
+            color: "gray",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debug("commandMenuDDUI", `Panel Principal cerrado: §6UserBusy§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
+          debug("commandMenuDDUI", `Panel Principal cerrado: §6UserBusy§r (§b${player.name}§r)`, {
+            level: "warn",
+            color: "gray",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debug("commandMenuDDUI", `Panel Principal cerrado: §6navegación§r (§b${player.name}§r)`, { level: "debug", color: "gray" });
+            debug("commandMenuDDUI", `Panel Principal cerrado: §6navegación§r (§b${player.name}§r)`, {
+              level: "debug",
+              color: "gray",
+            });
             session.stopHelmetWatch();
             nextPanel?.();
           } else {
-            debug("commandMenuDDUI", `Panel Principal cerrado: §cServerClosed sin razón§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
+            debug("commandMenuDDUI", `Panel Principal cerrado: §cServerClosed sin razón§r (§b${player.name}§r)`, {
+              level: "warn",
+              color: "gray",
+            });
             commandMenuSessionStore.cleanup(player.id);
           }
         }

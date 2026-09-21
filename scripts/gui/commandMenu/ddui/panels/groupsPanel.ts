@@ -36,6 +36,21 @@ import {
 } from "../../menu_config.js";
 import { SpecialGroupId } from "../../../../constants/domains.js";
 
+/**
+ * Mapa estático inmutable de prioridades para grupos especiales.
+ * Resuelve la preselección en nametags con unidades en diferentes grupos (mayor valor = mayor prioridad).
+ */
+const GROUP_PRIORITY_MAP: Readonly<Record<string, number>> = Object.freeze(
+  (() => {
+    const order = getGroupsOrderForSystems();
+    const map: Record<string, number> = {};
+    for (let i = 0; i < order.length; i++) {
+      map[order[i]] = order.length - i;
+    }
+    return map;
+  })()
+);
+
 export function showGroupsPanel(player: Player, targetFaction: TargetFaction = Factions.FOUNDATION): void {
   showGroupsByFaction(player, targetFaction);
 }
@@ -232,36 +247,24 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
         : undefined,
     }));
 
-    const prioritySystemOrder = getGroupsOrderForSystems();
-    const priorityMap: Record<string, number> = {};
-    for (let p = 0; p < prioritySystemOrder.length; p++) {
-      priorityMap[prioritySystemOrder[p]] = prioritySystemOrder.length - p;
-    }
-
-    const nametagPreferredGroup: Record<string, string> = {};
-    const nametagMaxPriority: Record<string, number> = {};
-
-    // Determinar grupo preferido considerando exclusivamente entidades en scope
-    for (const nt of nametags) {
-      const entitiesForTag = eligibleEntitiesByNametag[nt] || [];
-      nametagPreferredGroup[nt] = SpecialGroups.NO_GROUP;
-      nametagMaxPriority[nt] = 0;
-
-      for (const scanned of entitiesForTag) {
-        const entityGroup = scanned.group ?? SpecialGroups.NO_GROUP;
-        const currentPriority = priorityMap[entityGroup] || 1;
-        if (currentPriority > nametagMaxPriority[nt]) {
-          nametagMaxPriority[nt] = currentPriority;
-          nametagPreferredGroup[nt] = entityGroup;
-        }
-      }
-    }
-
     // Renderizado de dropdowns: solo nametags con unidades en scope generan control
     const controls: { nametag: string; obs: ObservableNumber; lastAppliedIndex: number }[] = [];
     for (const nt of nametags) {
-      const ntCount = eligibleEntitiesByNametag[nt]?.length || 0;
-      const preferredGroup = nametagPreferredGroup[nt] ?? SpecialGroups.NO_GROUP;
+      const entitiesForTag = eligibleEntitiesByNametag[nt] || [];
+      const ntCount = entitiesForTag.length;
+
+      let preferredGroup: string = SpecialGroups.NO_GROUP;
+      let maxPriority = 0;
+
+      for (const scanned of entitiesForTag) {
+        const entityGroup = scanned.group ?? SpecialGroups.NO_GROUP;
+        const currentPriority = GROUP_PRIORITY_MAP[entityGroup] || 1;
+        if (currentPriority > maxPriority) {
+          maxPriority = currentPriority;
+          preferredGroup = entityGroup;
+        }
+      }
+
       const currentIndex = groupOptions.findIndex((opt) => opt.value === preferredGroup);
       const initialIndex =
         currentIndex >= 0 ? currentIndex : groupOptions.findIndex((opt) => opt.value === SpecialGroups.NO_GROUP);
@@ -338,8 +341,8 @@ function applyGroupToNametag(player: Player, faction: TargetFaction, nametag: st
 
     const scanResult = scanActiveUnitsMerged(dimension, faction);
     const scope = loadScope();
-    const entities = scanResult.entities.filter(
-      (e) => e.nametag === nametag && isEntityInScope(e.entity, e.faction, scope, e.nametag)
+    const entities = (scanResult.nametagGroups[nametag] || []).filter((e) =>
+      isEntityInScope(e.entity, e.faction, scope, e.nametag)
     );
 
     let foundationCount = 0;
@@ -348,11 +351,17 @@ function applyGroupToNametag(player: Player, faction: TargetFaction, nametag: st
     const groupLabel = GROUP_LABELS[groupId as keyof typeof GROUP_LABELS] ?? groupId;
     for (const scanned of entities) {
       setUnitGroup(scanned.entity, groupId);
+      const targetName = scanned.nametag
+        ? `§r§f${scanned.nametag}§r`
+        : scanned.entity.nameTag
+          ? `§r§f${scanned.entity.nameTag}§r`
+          : `§b${scanned.entity.typeId}§r`;
       entityHistoryStore.pushHistory(scanned.entity.id, {
         source: "command",
         viewId: "group_assignment",
         context: getSystemShortName("group_assignment"),
         value: groupLabel,
+        targetName,
       });
       appliedCount++;
       if (scanned.faction === Factions.FOUNDATION) foundationCount++;

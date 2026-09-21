@@ -37,7 +37,7 @@ system.beforeEvents.startup.subscribe((init) => {
         try {
           showMonitorMenu(player);
         } catch (e) {
-            debug("monitorCommand", `Error mostrando monitor: ${e}§r`, { level: "error", color: "red" });
+          debug("monitorCommand", `Error mostrando monitor: ${e}§r`, { level: "error", color: "red" });
           return {
             status: CustomCommandStatus.Failure,
             message: "Error abriendo el monitor de unidades. Revisa la consola.",
@@ -54,6 +54,6 @@ system.beforeEvents.startup.subscribe((init) => {
       }
     });
   } catch (e) {
-      debug("monitorCommand", `Error registrando scpd:monitor_units: ${e}§r`, { level: "error", color: "red" });
+    debug("monitorCommand", `Error registrando scpd:monitor_units: ${e}§r`, { level: "error", color: "red" });
   }
 });

@@ -6,7 +6,7 @@ import { SYSTEM_SHORT_NAMES } from "../../../shared/systemCatalog.js";
 import { formatLocalTimeShort } from "../../../shared/timeHelpers.js";
 
 const HISTORY_KEY = "scpdystopia_command_menu_history";
-const MAX_ENTRIES = 20;
+export const MAX_ENTRIES = 40;
 
 interface HistoryEntry {
   timestamp: string;

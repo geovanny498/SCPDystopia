@@ -309,7 +309,10 @@ export function setEntitySystemState(entity: Entity, systemId: string, value: un
     if (normalized === undefined) return;
     entity.setDynamicProperty(propertyId, normalized);
   } catch (err) {
-    debug("menu_config", `Error al guardar propiedad dinámica en entidad (§b${propertyId}§r): ${err}§r`, { level: "error", color: "red" });
+    debug("menu_config", `Error al guardar propiedad dinámica en entidad (§b${propertyId}§r): ${err}§r`, {
+      level: "error",
+      color: "red",
+    });
   }
 }
 
@@ -327,7 +330,10 @@ export function getEntitySystemState(entity: Entity, systemId: string) {
     }
     return raw;
   } catch (err) {
-    debug("menu_config", `Error al leer propiedad dinámica de entidad (§b${propertyId}§r): ${err}§r`, { level: "error", color: "red" });
+    debug("menu_config", `Error al leer propiedad dinámica de entidad (§b${propertyId}§r): ${err}§r`, {
+      level: "error",
+      color: "red",
+    });
     return undefined;
   }
 }

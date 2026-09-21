@@ -43,10 +43,14 @@ system.beforeEvents.startup.subscribe((init) => {
         const player = origin.sourceEntity as Player;
         const selectedMode = typeof mode === "string" ? mode.toLowerCase() : "";
 
-        debug("teleportCommand", `Abriendo menú para jugador: §b${player.name}§r en modo §a${selectedMode || "ddui (default)"}§r`, {
-          level: "debug",
-          color: "green",
-        });
+        debug(
+          "teleportCommand",
+          `Abriendo menú para jugador: §b${player.name}§r en modo §a${selectedMode || "ddui (default)"}§r`,
+          {
+            level: "debug",
+            color: "green",
+          }
+        );
 
         // Mostrar el menú según el modo seleccionado (legacy vs DDUI)
         try {
@@ -84,4 +88,3 @@ system.beforeEvents.startup.subscribe((init) => {
     console.warn("Error registrando scpd:teleport_units:", e);
   }
 });
-

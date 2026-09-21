@@ -22,16 +22,18 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
   const teamTarget = getTeam(target);
 
   if (shooter && target.id === shooter.id) {
-    debug("projectileHitEntity", `El proyectil intentó dañar a su propio tirador. Cancelando daño.`, { level: "warn", color: "yellow" });
+    debug("projectileHitEntity", `El proyectil intentó dañar a su propio tirador. Cancelando daño.`, {
+      level: "warn",
+      color: "yellow",
+    });
     return;
   }
 
   if (teamShooter && teamTarget && teamShooter === teamTarget) {
-    debug(
-      "projectileHitEntity",
-      `Fuego amigo detectado. Disparador: ${teamShooter}, Objetivo: ${teamTarget}`,
-      { level: "warn", color: "yellow" }
-    );
+    debug("projectileHitEntity", `Fuego amigo detectado. Disparador: ${teamShooter}, Objetivo: ${teamTarget}`, {
+      level: "warn",
+      color: "yellow",
+    });
     return;
   }
 
@@ -60,7 +62,10 @@ world.afterEvents.projectileHitEntity.subscribe((event) => {
         `Projectile: §b${projectile.typeId}§r. Pierce actual: ${pierced}. Límite de pierce: ${pierceLimit}`,
         { level: "debug", color: "blue" }
       );
-      debug("projectileHitEntity", "Límite de pierce alcanzado. Eliminando proyectil.", { level: "debug", color: "blue" });
+      debug("projectileHitEntity", "Límite de pierce alcanzado. Eliminando proyectil.", {
+        level: "debug",
+        color: "blue",
+      });
       return;
     }
 

@@ -178,11 +178,7 @@ export class TeleportDDUISession {
    * @param hierarchies - Tupla de jerarquías
    * @param specialUnits - Array de nametags seleccionados
    */
-  saveAllMenuSelection(
-    faction: string,
-    hierarchies: [boolean, boolean, boolean],
-    specialUnits: string[]
-  ): void {
+  saveAllMenuSelection(faction: string, hierarchies: [boolean, boolean, boolean], specialUnits: string[]): void {
     this.allMenuSelection.set(faction, {
       hierarchies: [...hierarchies],
       specialUnits: [...specialUnits],

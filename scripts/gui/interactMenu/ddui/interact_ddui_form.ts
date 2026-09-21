@@ -167,35 +167,23 @@ export function showInteractDDUI(session: InteractDDUISession): void {
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
             if (reason === "ClientClosed") {
-              debug(
-                "interactDDUI",
-                `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`,
-                {
-                  level: "debug",
-                  color: "gray",
-                }
-              );
+              debug("interactDDUI", `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`, {
+                level: "debug",
+                color: "gray",
+              });
               interactMenuSessionStore.cleanup(session.playerId);
             } else if (reason === "UserBusy") {
-              debug(
-                "interactDDUI",
-                `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`,
-                {
-                  level: "warn",
-                  color: "yellow",
-                }
-              );
+              debug("interactDDUI", `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`, {
+                level: "warn",
+                color: "yellow",
+              });
               interactMenuSessionStore.cleanup(session.playerId);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debug(
-                  "interactDDUI",
-                  `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`,
-                  {
-                    level: "debug",
-                    color: "gray",
-                  }
-                );
+                debug("interactDDUI", `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`, {
+                  level: "debug",
+                  color: "gray",
+                });
                 if (intervalId !== null) {
                   session.unregisterInterval(intervalId);
                 }

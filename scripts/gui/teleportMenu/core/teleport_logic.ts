@@ -23,7 +23,10 @@ export function teleportEntitiesToLocation(
   let count = 0;
   const errors: string[] = [];
 
-  debug("teleportLogic", `=== Iniciando teletransporte de ${entities.length} entidades ===`, { color: "aqua", level: "debug" });
+  debug("teleportLogic", `=== Iniciando teletransporte de ${entities.length} entidades ===`, {
+    color: "aqua",
+    level: "debug",
+  });
 
   for (const entity of entities) {
     try {
@@ -44,7 +47,11 @@ export function teleportEntitiesToLocation(
         { color: "green", level: "debug" }
       );
     } catch (e) {
-      const entityLabel = entity?.nameTag ? `${entity?.nameTag}§r` : entity?.typeId ? `§b${entity?.typeId}§r` : "unknown";
+      const entityLabel = entity?.nameTag
+        ? `${entity?.nameTag}§r`
+        : entity?.typeId
+          ? `§b${entity?.typeId}§r`
+          : "unknown";
       const errorMsg = `Error en ${entityLabel}: ${e}`;
       errors.push(errorMsg);
       debug("teleportLogic:error", errorMsg, { color: "red", level: "error" });
@@ -57,11 +64,10 @@ export function teleportEntitiesToLocation(
     errors: errors.length > 0 ? errors : undefined,
   };
 
-  debug(
-    "teleportLogic",
-    `=== Teletransporte completado: ${count}/${entities.length} exitosos ===`,
-    { color: count > 0 ? "green" : "yellow", level: "debug" }
-  );
+  debug("teleportLogic", `=== Teletransporte completado: ${count}/${entities.length} exitosos ===`, {
+    color: count > 0 ? "green" : "yellow",
+    level: "debug",
+  });
 
   if (result.hasErrors) {
     debug("teleportLogic", `Errores encontrados: ${errors.length}`, { color: "red", level: "warn" });

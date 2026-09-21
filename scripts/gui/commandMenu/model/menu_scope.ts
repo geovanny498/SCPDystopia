@@ -65,7 +65,6 @@ function migrateOldScope(oldScope: unknown): ScopeData {
 export function loadScope(forceReload = false): ScopeData {
   try {
     if (scopeCache && !forceReload) {
-      debug("menuScope", "Scope cargado desde cache en memoria", { color: "gray", level: "debug" });
       return scopeCache;
     }
 
@@ -82,10 +81,7 @@ export function loadScope(forceReload = false): ScopeData {
     const parsed = JSON.parse(raw as string);
 
     // Formato legacy: { respectEntityBlocks: boolean }
-    if (
-      typeof parsed?.respectEntityBlocks === "boolean" &&
-      (!parsed.foundation || !parsed.chaos)
-    ) {
+    if (typeof parsed?.respectEntityBlocks === "boolean" && (!parsed.foundation || !parsed.chaos)) {
       debug("menuScope", "Scope legacy detectado, migrando a formato por facción", { color: "yellow", level: "warn" });
       const migratedScope = migrateOldScope(parsed);
       saveScope(migratedScope);
@@ -175,19 +171,28 @@ export function isEntityInScope(
   }
 
   if (!factionScope || typeof factionScope.respectEntityBlocks !== "boolean") {
-    debug("menuScope:check", `Scope de facción "${faction}" no válido, usando defaults`, { color: "yellow", level: "warn" });
+    debug("menuScope:check", `Scope de facción "${faction}" no válido, usando defaults`, {
+      color: "yellow",
+      level: "warn",
+    });
     factionScope = { respectEntityBlocks: DEFAULT_RESPECT_ENTITY_BLOCKS };
   }
 
   const entityLabel = nameTag ? `§r§f${nameTag}§r` : ent && ent.typeId ? `§b${ent.typeId}§r` : "<unknown>";
 
   if (factionScope.respectEntityBlocks === false) {
-    debug("menuScope:check", `${entityLabel} [${faction}]: scope fuerza configuración global => EN SCOPE`, { color: "green", level: "debug" });
+    debug("menuScope:check", `${entityLabel} [${faction}]: scope fuerza configuración global => EN SCOPE`, {
+      color: "green",
+      level: "debug",
+    });
     return true;
   }
 
   if (!ent || typeof ent.getDynamicProperty !== "function") {
-    debug("menuScope:check", `${entityLabel}: entidad inválida, no se puede aplicar bloqueo`, { color: "yellow", level: "warn" });
+    debug("menuScope:check", `${entityLabel}: entidad inválida, no se puede aplicar bloqueo`, {
+      color: "yellow",
+      level: "warn",
+    });
     return true;
   }
 

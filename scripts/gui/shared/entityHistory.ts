@@ -30,6 +30,8 @@ export interface EntityHistoryEntry {
   context: string;
   /** Valor aplicado. */
   value: string;
+  /** Nombre/tipo formateado de la entidad (opcional, para visualización y depuración clara). */
+  targetName?: string;
   /** Timestamp en milisegundos. */
   timestamp: number;
   /** Hora local formateada corta. */
@@ -87,7 +89,11 @@ export const entityHistoryStore: EntityHistoryStore = {
     if (entries.length > MAX_ENTRIES) {
       entries.length = MAX_ENTRIES;
     }
-    debug("entityHistory", `Entry [§6${entry.source}§r] §b${entityId}§r: §6${entry.context}§r → §f${entry.value}§r`, { level: "debug", color: "gray" });
+    const entityDisplay = entry.targetName ? `${entry.targetName} (§8${entityId}§r)` : `§b${entityId}§r`;
+    debug("entityHistory", `Entry [§6${entry.source}§r] ${entityDisplay}: §6${entry.context}§r → §f${entry.value}§r`, {
+      level: "debug",
+      color: "gray",
+    });
   },
   clearEntity(entityId) {
     history.delete(entityId);

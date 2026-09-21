@@ -181,9 +181,15 @@ export function showRolePanel(admin: Player): void {
         if (reason === "UserBusy") {
           debug("roleMenu", `Panel de roles: §6UserBusy§r (§b${admin.name}§r)`, { level: "warn", color: "gray" });
         } else if (reason === "ClientClosed") {
-          debug("roleMenu", `Panel de roles cerrado por el cliente (§b${admin.name}§r)`, { level: "debug", color: "gray" });
+          debug("roleMenu", `Panel de roles cerrado por el cliente (§b${admin.name}§r)`, {
+            level: "debug",
+            color: "gray",
+          });
         } else if (reason === "ServerClosed") {
-          debug("roleMenu", `Panel de roles cerrado por el servidor (§b${admin.name}§r)`, { level: "debug", color: "gray" });
+          debug("roleMenu", `Panel de roles cerrado por el servidor (§b${admin.name}§r)`, {
+            level: "debug",
+            color: "gray",
+          });
         }
         feedbackPresenter.reset();
       })

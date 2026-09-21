@@ -45,7 +45,10 @@ system.beforeEvents.startup.subscribe((init) => {
               openCommandMenuDDUI(player);
               debug("configCommand", `Menú DDUI abierto para §b${player.name}§r`, { level: "debug", color: "blue" });
             } catch (e) {
-              debug("configCommand", `Error mostrando menú DDUI desde scpd:config: ${e}§r`, { level: "error", color: "red" });
+              debug("configCommand", `Error mostrando menú DDUI desde scpd:config: ${e}§r`, {
+                level: "error",
+                color: "red",
+              });
               player.sendMessage("§c[SCPDystopia] Error abriendo el menú DDUI. Revisa la consola.");
             }
           });
@@ -67,6 +70,6 @@ system.beforeEvents.startup.subscribe((init) => {
       }
     });
   } catch (e) {
-      debug("configCommand", `Error registrando scpd:config: ${e}§r`, { level: "error", color: "red" });
+    debug("configCommand", `Error registrando scpd:config: ${e}§r`, { level: "error", color: "red" });
   }
 });

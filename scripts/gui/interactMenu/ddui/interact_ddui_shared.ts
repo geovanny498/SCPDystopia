@@ -270,6 +270,7 @@ export class InteractDDUISession {
       viewId: this.viewId,
       context,
       value,
+      targetName: this.soldierName,
     });
   }
 

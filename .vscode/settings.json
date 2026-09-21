@@ -32,7 +32,7 @@
   "editor.tabSize": 2,
   "eslint.experimental.useFlatConfig": true,
   "editor.guides.bracketPairs": "active",
-  "files.autoSave": "onFocusChange",
+  "files.autoSave": "afterDelay",
   "editor.formatOnSave": true,
   "BC-MC.Diagnostics.Lang": false,
   "files.encoding": "utf8",

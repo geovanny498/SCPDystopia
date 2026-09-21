@@ -363,7 +363,10 @@ function applySystemToEntitiesForSystem(
     try {
       saveSystemAndUpdateMemory(systemId, partialState);
     } catch (e) {
-      debug("commandMenuDDUI", `Error guardando estado de sistema §b${systemId}§r: ${e}`, { level: "error", color: "red" });
+      debug("commandMenuDDUI", `Error guardando estado de sistema §b${systemId}§r: ${e}`, {
+        level: "error",
+        color: "red",
+      });
     }
 
     if (targetFaction === "both") {
@@ -394,7 +397,10 @@ function applySystemToEntitiesForSystem(
       viewId: `system:${systemId}`,
     };
   } catch (e) {
-    debug("commandMenuDDUI", `§cError§r aplicando control §b${systemId}§r [§b${key}§r]: ${e}`, { level: "error", color: "red" });
+    debug("commandMenuDDUI", `§cError§r aplicando control §b${systemId}§r [§b${key}§r]: ${e}`, {
+      level: "error",
+      color: "red",
+    });
     return null;
   }
 }
@@ -699,14 +705,23 @@ export function buildSystemView({
           .show()
           .then((reason) => {
             if (reason === "ClientClosed") {
-              debug("commandMenuDDUI", `Sistema §b${systemId}§r cerrado: X del cliente (§b${player.name}§r)`, { level: "debug", color: "gray" });
+              debug("commandMenuDDUI", `Sistema §b${systemId}§r cerrado: X del cliente (§b${player.name}§r)`, {
+                level: "debug",
+                color: "gray",
+              });
               commandMenuSessionStore.cleanup(player.id);
             } else if (reason === "UserBusy") {
-              debug("commandMenuDDUI", `Sistema §b${systemId}§r cerrado: §6UserBusy§r (§b${player.name}§r)`, { level: "warn", color: "gray" });
+              debug("commandMenuDDUI", `Sistema §b${systemId}§r cerrado: §6UserBusy§r (§b${player.name}§r)`, {
+                level: "warn",
+                color: "gray",
+              });
               commandMenuSessionStore.cleanup(player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debug("commandMenuDDUI", `Sistema §b${systemId}§r cerrado: §6navegación§r (§b${player.name}§r)`, { level: "debug", color: "gray" });
+                debug("commandMenuDDUI", `Sistema §b${systemId}§r cerrado: §6navegación§r (§b${player.name}§r)`, {
+                  level: "debug",
+                  color: "gray",
+                });
                 if (session && intervalId !== null) {
                   session.unregisterInterval(intervalId);
                 }
@@ -731,7 +746,10 @@ export function buildSystemView({
             closeReason = undefined;
           })
           .catch((err) => {
-            debug("commandMenuDDUI", `Error en form.show() sistema §b${systemId}§r: ${err}`, { level: "error", color: "red" });
+            debug("commandMenuDDUI", `Error en form.show() sistema §b${systemId}§r: ${err}`, {
+              level: "error",
+              color: "red",
+            });
             commandMenuSessionStore.cleanup(player.id);
           });
       }

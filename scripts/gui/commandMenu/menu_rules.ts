@@ -135,7 +135,10 @@ export function canApplySystem(
     const requiredSystemId = findSystemByDomain(requiredDomain);
 
     if (!requiredSystemId) {
-      debug("menuRules:compat", `No se encontró sistema para dominio: §b${requiredDomain}§r`, { level: "warn", color: "yellow" });
+      debug("menuRules:compat", `No se encontró sistema para dominio: §b${requiredDomain}§r`, {
+        level: "warn",
+        color: "yellow",
+      });
       return {
         canApply: false,
         reason: `Sistema requerido no encontrado para dominio: ${requiredDomain}`,
@@ -144,7 +147,10 @@ export function canApplySystem(
 
     const requiredState = allSystemStates[requiredSystemId];
     if (!requiredState || !requiredState[faction]) {
-      debug("menuRules:compat", `No hay estado para §b${requiredSystemId}§r en faction §a${faction}§r`, { level: "warn", color: "yellow" });
+      debug("menuRules:compat", `No hay estado para §b${requiredSystemId}§r en faction §a${faction}§r`, {
+        level: "warn",
+        color: "yellow",
+      });
       return {
         canApply: false,
         reason: `No hay estado para ${requiredSystemId}`,
@@ -207,16 +213,19 @@ export function shouldApplyToFutureEntities(systemId: string, isSpawn: boolean =
   const rules = getSystemRules(systemId);
 
   if (!rules) {
-      debug("menuRules:apply", `Sistema §b${systemId}§r: §6Sin reglas§r, aplicar a futuras (default)`, { level: "debug", color: "gray" });
+    debug("menuRules:apply", `Sistema §b${systemId}§r: §6Sin reglas§r, aplicar a futuras (default)`, {
+      level: "debug",
+      color: "gray",
+    });
     return true; // Por defecto, aplicar a futuras
   }
 
   const shouldApply = rules.applyMode === "all" || (rules.applyMode === "spawn_only" && isSpawn);
-    debug(
-      "menuRules:apply",
-      `Sistema §b${systemId}§r: applyMode=§6${rules.applyMode}§r, aplicar a futuras=${shouldApply}`,
-      { level: "debug", color: shouldApply ? "green" : "gray" }
-    );
+  debug(
+    "menuRules:apply",
+    `Sistema §b${systemId}§r: applyMode=§6${rules.applyMode}§r, aplicar a futuras=${shouldApply}`,
+    { level: "debug", color: shouldApply ? "green" : "gray" }
+  );
 
   return shouldApply;
 }

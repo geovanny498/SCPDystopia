@@ -21,7 +21,7 @@ export function isGlobalOverwriteAllowed(entity: Entity): boolean {
     if (raw === false || raw === "false" || raw === 0 || raw === "0") return false;
     return true;
   } catch (e) {
-      debug("scope", `Error leyendo propiedad de overwrite global: ${e}`, { level: "warn", color: "yellow" });
+    debug("scope", `Error leyendo propiedad de overwrite global: ${e}`, { level: "warn", color: "yellow" });
     return true;
   }
 }
@@ -30,7 +30,7 @@ export function setGlobalOverwriteAllowed(entity: Entity, value: boolean): void 
   try {
     entity.setDynamicProperty(ENTITY_GLOBAL_OVERWRITE_PROPERTY, value);
   } catch (e) {
-      debug("scope", `Error guardando configuración global: ${e}`, { level: "error", color: "red" });
+    debug("scope", `Error guardando configuración global: ${e}`, { level: "error", color: "red" });
   }
 }
 

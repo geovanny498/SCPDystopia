@@ -155,35 +155,23 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
             if (reason === "ClientClosed") {
-              debug(
-                "interactDDUI",
-                `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`,
-                {
-                  level: "debug",
-                  color: "gray",
-                }
-              );
+              debug("interactDDUI", `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`, {
+                level: "debug",
+                color: "gray",
+              });
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "UserBusy") {
-              debug(
-                "interactDDUI",
-                `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`,
-                {
-                  level: "warn",
-                  color: "yellow",
-                }
-              );
+              debug("interactDDUI", `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`, {
+                level: "warn",
+                color: "yellow",
+              });
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debug(
-                  "interactDDUI",
-                  `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`,
-                  {
-                    level: "debug",
-                    color: "gray",
-                  }
-                );
+                debug("interactDDUI", `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`, {
+                  level: "debug",
+                  color: "gray",
+                });
                 session.unregisterInterval(intervalId);
                 if (!session.entity.isValid) {
                   handleInvalidEntity(session.player);
@@ -446,35 +434,23 @@ export function showInteractDDUIManagement(session: InteractDDUISession): void {
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
             if (reason === "ClientClosed") {
-              debug(
-                "interactDDUI",
-                `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`,
-                {
-                  level: "debug",
-                  color: "gray",
-                }
-              );
+              debug("interactDDUI", `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`, {
+                level: "debug",
+                color: "gray",
+              });
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "UserBusy") {
-              debug(
-                "interactDDUI",
-                `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`,
-                {
-                  level: "warn",
-                  color: "yellow",
-                }
-              );
+              debug("interactDDUI", `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`, {
+                level: "warn",
+                color: "yellow",
+              });
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debug(
-                  "interactDDUI",
-                  `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`,
-                  {
-                    level: "debug",
-                    color: "gray",
-                  }
-                );
+                debug("interactDDUI", `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`, {
+                  level: "debug",
+                  color: "gray",
+                });
                 session.unregisterInterval(intervalId);
                 if (!session.entity.isValid) {
                   handleInvalidEntity(session.player);
@@ -647,35 +623,23 @@ export function showInteractDDUHistory(session: InteractDDUISession): void {
           .show()
           .then((reason: DataDrivenScreenClosedReason) => {
             if (reason === "ClientClosed") {
-              debug(
-                "interactDDUI",
-                `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`,
-                {
-                  level: "debug",
-                  color: "gray",
-                }
-              );
+              debug("interactDDUI", `Vista "${session.viewId}" cerrada: X del cliente (§b${session.player.name}§r)`, {
+                level: "debug",
+                color: "gray",
+              });
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "UserBusy") {
-              debug(
-                "interactDDUI",
-                `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`,
-                {
-                  level: "warn",
-                  color: "yellow",
-                }
-              );
+              debug("interactDDUI", `Vista "${session.viewId}" cerrada: §cUserBusy§r (§b${session.player.name}§r)`, {
+                level: "warn",
+                color: "yellow",
+              });
               interactMenuSessionStore.cleanup(session.player.id);
             } else if (reason === "ServerClosed") {
               if (closeReason === "navigation") {
-                debug(
-                  "interactDDUI",
-                  `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`,
-                  {
-                    level: "debug",
-                    color: "gray",
-                  }
-                );
+                debug("interactDDUI", `Vista "${session.viewId}" cerrada: navegación (§b${session.player.name}§r)`, {
+                  level: "debug",
+                  color: "gray",
+                });
                 session.unregisterInterval(intervalId);
                 if (!session.entity.isValid) {
                   handleInvalidEntity(session.player);

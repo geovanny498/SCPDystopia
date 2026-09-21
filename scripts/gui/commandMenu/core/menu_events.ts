@@ -81,9 +81,9 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
     // entitySpawn dispara antes que minecraft:entity_spawned agregue
     // los component_groups con typeFamilies), diferir 2 ticks.
     const hasTypeFamilies = !!ent.getComponent("minecraft:type_family");
-debug(
+    debug(
       "menuEvents:spawn",
-        `[typeFamilyCheck] ${currentNametag ? `§r§f${currentNametag}§r` : `§b${ent.typeId}§r`} faction=§9${faction}§r hasTypeFamilies=§a${hasTypeFamilies}§r`,
+      `[typeFamilyCheck] ${currentNametag ? `§r§f${currentNametag}§r` : `§b${ent.typeId}§r`} faction=§9${faction}§r hasTypeFamilies=§a${hasTypeFamilies}§r`,
       { color: "gray", level: "debug" }
     );
     if (!hasTypeFamilies) {

@@ -21,7 +21,7 @@ export function openCommandMenuDDUI(player: Player): void {
     debug("commandMenuDDUI", `Abriendo menú DDUI para §b${player.name}§r`, { level: "debug", color: "blue" });
     showMainPanel(player);
   } catch (e) {
-      debug("commandMenuDDUI", `Error abriendo menú DDUI: ${e}`, { level: "error", color: "red" });
+    debug("commandMenuDDUI", `Error abriendo menú DDUI: ${e}`, { level: "error", color: "red" });
     player.sendMessage(ERROR_MESSAGES.OPEN_MENU);
   }
 }
