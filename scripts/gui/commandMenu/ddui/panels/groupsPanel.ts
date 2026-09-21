@@ -18,11 +18,12 @@ import { entityHistoryStore } from "../../../shared/entityHistory.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { showMainPanel } from "./mainPanel.js";
 import {
-  scanActiveUnits,
   scanActiveUnitsMerged,
   invalidateScanCache,
   invalidateEntityQueryCache,
+  type ScannedEntity,
 } from "../../model/menu_entity_scanner.js";
+import { loadScope, isEntityInScope } from "../../model/menu_scope.js";
 import { setUnitGroup } from "../../../shared/entityGroups.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { compareNametags } from "../../../../utils/nametagSort.js";
@@ -57,10 +58,19 @@ function showGroupsByFaction(player: Player, faction: TargetFaction): void {
     }
 
     const scanResult = scanActiveUnitsMerged(dimension, faction);
+    const scope = loadScope();
 
     const groupCounts: Record<string, { total: number; foundation: number; chaos: number }> = {};
+    const eligibleNametags = new Set<string>();
+
     for (const entity of scanResult.entities) {
       if (!entity.isSpecial) continue;
+      if (!isEntityInScope(entity.entity, entity.faction, scope, entity.nametag)) continue;
+
+      if (entity.nametag) {
+        eligibleNametags.add(entity.nametag);
+      }
+
       const group = entity.group ?? SpecialGroups.NO_GROUP;
       if (!groupCounts[group]) groupCounts[group] = { total: 0, foundation: 0, chaos: 0 };
       groupCounts[group].total++;
@@ -88,8 +98,14 @@ function showGroupsByFaction(player: Player, faction: TargetFaction): void {
     for (const [bucketId, bucket] of bucketEntries) {
       if (bucket.unitCount === 0) continue;
 
-      const ntCount = Object.keys(bucket.nametags).length;
-      const counterLabel = ntCount > 1 ? ` (${ntCount} nametags)` : "";
+      let eligibleNtCount = 0;
+      for (const nt of Object.keys(bucket.nametags)) {
+        if (eligibleNametags.has(nt)) eligibleNtCount++;
+      }
+
+      if (eligibleNtCount === 0) continue;
+
+      const counterLabel = eligibleNtCount > 1 ? ` (${eligibleNtCount} nametags)` : "";
       form.button(`${stripColorCodes(bucket.label)}${counterLabel}`, () => {
         closeReason = "navigation";
         nextPanel = () => showBucketAssignment(player, faction, bucketId);
@@ -109,21 +125,29 @@ function showGroupsByFaction(player: Player, faction: TargetFaction): void {
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debug("commandMenuDDUI", `Grupos por Facción cerrado: X del cliente (§b${player.name}§r)`, { level: "debug", color: "blue" });
+          debug("commandMenuDDUI", `Grupos por Facción cerrado: X del cliente (§b${player.name}§r)`, {
+            level: "debug",
+            color: "blue",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debug("commandMenuDDUI", `Grupos por Facción cerrado: §cUserBusy§r (§b${player.name}§r)`, { level: "warn", color: "yellow" });
+          debug("commandMenuDDUI", `Grupos por Facción cerrado: §cUserBusy§r (§b${player.name}§r)`, {
+            level: "warn",
+            color: "yellow",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debug("commandMenuDDUI", `Grupos por Facción cerrado: navegación (§b${player.name}§r)`, { level: "debug", color: "gray" });
+            debug("commandMenuDDUI", `Grupos por Facción cerrado: navegación (§b${player.name}§r)`, {
+              level: "debug",
+              color: "gray",
+            });
             nextPanel?.();
           } else {
-            debug(
-              "commandMenuDDUI",
-              `Grupos por Facción cerrado: §cServerClosed§r sin razón (§b${player.name}§r)`,
-              { level: "warn", color: "yellow" }
-            );
+            debug("commandMenuDDUI", `Grupos por Facción cerrado: §cServerClosed§r sin razón (§b${player.name}§r)`, {
+              level: "warn",
+              color: "yellow",
+            });
             commandMenuSessionStore.cleanup(player.id);
           }
         }
@@ -167,14 +191,34 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
     form.spacer();
     form.label(`§7Facción: §f${FACTION_DISPLAY_NAMES[faction]}`);
     form.spacer();
-    form.label(`§7Rol: §f${bucket.label} §8(${bucket.unitCount} unidades)`);
+
+    const scope = loadScope();
+
+    // Filtrar nametags de este bucket que contengan al menos una entidad en scope
+    const eligibleEntitiesByNametag: Record<string, ScannedEntity[]> = {};
+    for (const nt of Object.keys(bucket.nametags)) {
+      const entitiesInScope = (scanResult.nametagGroups[nt] || []).filter((e) =>
+        isEntityInScope(e.entity, e.faction, scope, e.nametag)
+      );
+      if (entitiesInScope.length > 0) {
+        eligibleEntitiesByNametag[nt] = entitiesInScope;
+      }
+    }
+
+    const nametags = Object.keys(eligibleEntitiesByNametag).sort(compareNametags);
+    const totalEligibleUnits = nametags.reduce((sum, nt) => sum + (eligibleEntitiesByNametag[nt]?.length ?? 0), 0);
+
+    form.label(`§7Rol: §f${bucket.label} §8(${totalEligibleUnits} unidades)`);
     form.spacer();
 
     const feedbackPresenter = session.getOrCreateFeedbackPresenter("bucket_assignment", SYSTEM_PANEL_FEEDBACK_INITIAL);
     form.label(feedbackPresenter.getObservable());
     form.spacer();
 
-    const nametags = Object.keys(bucket.nametags).sort(compareNametags);
+    if (nametags.length === 0) {
+      form.label("§cNo hay unidades elegibles en scope para este rol.");
+    }
+
     const groupOptions = getGroupsOrderForAssignment().map((groupId) => ({
       value: groupId,
       label: SpecialGroupLabels[groupId] ?? groupId,
@@ -197,8 +241,9 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
     const nametagPreferredGroup: Record<string, string> = {};
     const nametagMaxPriority: Record<string, number> = {};
 
+    // Determinar grupo preferido considerando exclusivamente entidades en scope
     for (const nt of nametags) {
-      const entitiesForTag = scanResult.nametagGroups[nt] || [];
+      const entitiesForTag = eligibleEntitiesByNametag[nt] || [];
       nametagPreferredGroup[nt] = SpecialGroups.NO_GROUP;
       nametagMaxPriority[nt] = 0;
 
@@ -212,9 +257,10 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
       }
     }
 
+    // Renderizado de dropdowns: solo nametags con unidades en scope generan control
     const controls: { nametag: string; obs: ObservableNumber; lastAppliedIndex: number }[] = [];
     for (const nt of nametags) {
-      const ntCount = bucket.nametags[nt] || 0;
+      const ntCount = eligibleEntitiesByNametag[nt]?.length || 0;
       const preferredGroup = nametagPreferredGroup[nt] ?? SpecialGroups.NO_GROUP;
       const currentIndex = groupOptions.findIndex((opt) => opt.value === preferredGroup);
       const initialIndex =
@@ -242,28 +288,39 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
       .show()
       .then((reason) => {
         if (reason === "ClientClosed") {
-          debug("commandMenuDDUI", `Asignación por bucket cerrada: X del cliente (§b${player.name}§r)`, { level: "debug", color: "blue" });
+          debug("commandMenuDDUI", `Asignación por bucket cerrada: X del cliente (§b${player.name}§r)`, {
+            level: "debug",
+            color: "blue",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "UserBusy") {
-          debug("commandMenuDDUI", `Asignación por bucket cerrada: §cUserBusy§r (§b${player.name}§r)`, { level: "warn", color: "yellow" });
+          debug("commandMenuDDUI", `Asignación por bucket cerrada: §cUserBusy§r (§b${player.name}§r)`, {
+            level: "warn",
+            color: "yellow",
+          });
           commandMenuSessionStore.cleanup(player.id);
         } else if (reason === "ServerClosed") {
           if (closeReason === "navigation") {
-            debug("commandMenuDDUI", `Asignación por bucket cerrada: navegación (§b${player.name}§r)`, { level: "debug", color: "gray" });
+            debug("commandMenuDDUI", `Asignación por bucket cerrada: navegación (§b${player.name}§r)`, {
+              level: "debug",
+              color: "gray",
+            });
             showGroupsByFaction(player, faction);
           } else {
-            debug(
-              "commandMenuDDUI",
-              `Asignación por bucket cerrada: §cServerClosed§r sin razón (§b${player.name}§r)`,
-              { level: "warn", color: "yellow" }
-            );
+            debug("commandMenuDDUI", `Asignación por bucket cerrada: §cServerClosed§r sin razón (§b${player.name}§r)`, {
+              level: "warn",
+              color: "yellow",
+            });
             commandMenuSessionStore.cleanup(player.id);
           }
         }
         closeReason = undefined;
       })
       .catch((err) => {
-        debug("commandMenuDDUI", `Error en form.show() asignación por bucket: ${err}`, { level: "error", color: "red" });
+        debug("commandMenuDDUI", `Error en form.show() asignación por bucket: ${err}`, {
+          level: "error",
+          color: "red",
+        });
         commandMenuSessionStore.cleanup(player.id);
       });
   } catch (e) {
@@ -280,7 +337,10 @@ function applyGroupToNametag(player: Player, faction: TargetFaction, nametag: st
     }
 
     const scanResult = scanActiveUnitsMerged(dimension, faction);
-    const entities = scanResult.entities.filter((e: any) => e.nametag === nametag);
+    const scope = loadScope();
+    const entities = scanResult.entities.filter(
+      (e) => e.nametag === nametag && isEntityInScope(e.entity, e.faction, scope, e.nametag)
+    );
 
     let foundationCount = 0;
     let chaosCount = 0;
@@ -349,7 +409,7 @@ function applyGroupToNametag(player: Player, faction: TargetFaction, nametag: st
       });
     }
   } catch (e) {
-      debug("commandMenuDDUI", `Error asignando grupo: ${e}`, { level: "error", color: "red" });
+    debug("commandMenuDDUI", `Error asignando grupo: ${e}`, { level: "error", color: "red" });
     player.sendMessage(ERROR_MESSAGES.ASSIGN_GROUP);
   }
 }

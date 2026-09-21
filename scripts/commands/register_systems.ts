@@ -212,7 +212,7 @@ system.beforeEvents.startup.subscribe((init) => {
             for (const ent of allEnts) {
               const factionInfo = getEntityFactionInfo(ent);
               if (!factionInfo) continue;
-              if (!isEntityInScope(ent, factionInfo.faction, factionInfo.isSpecial, ent.nameTag ?? "", scope, factionInfo.hierarchy)) continue;
+              if (!isEntityInScope(ent, factionInfo.faction, scope, ent.nameTag ?? "")) continue;
               if (clearUnitGroup(ent, player)) cleared++;
             }
           } catch (e) {
@@ -398,7 +398,7 @@ system.beforeEvents.startup.subscribe((init) => {
             for (const ent of allEnts) {
               const factionInfo = getEntityFactionInfo(ent);
               if (!factionInfo) continue;
-              if (!isEntityInScope(ent, factionInfo.faction, factionInfo.isSpecial, ent.nameTag ?? "", scope, factionInfo.hierarchy)) continue;
+              if (!isEntityInScope(ent, factionInfo.faction, scope, ent.nameTag ?? "")) continue;
               if (clearUnitGroup(ent, player)) cleared++;
             }
             console.log(`[SCPDystopia] Grupos reseteados (${cleared} DPs eliminados)`);

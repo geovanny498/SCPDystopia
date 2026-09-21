@@ -313,7 +313,7 @@ export function getEligibleSoldiers(dimensions: any[], scope: any = null): any[]
     const nameTag = ent.nameTag ?? "";
     if (
       scope &&
-      !isEntityInScope(ent, factionInfo.faction, factionInfo.isSpecial, nameTag, scope, factionInfo.hierarchy)
+      !isEntityInScope(ent, factionInfo.faction, scope, nameTag)
     )
       continue;
 

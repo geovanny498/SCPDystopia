@@ -111,10 +111,10 @@ debug(
 
     debug("menuEvents:spawn", `Entidad: ${entityLabel}§r`, { color: "blue", level: "debug" });
 
-    // VERIFICAR SCOPE (pasando jerarquía para no especiales)
+    // VERIFICAR SCOPE
     if (!forceApply) {
       const scope = loadScope();
-      if (!isEntityInScope(ent, faction, isSpecial, nameTag, scope, hierarchy)) {
+      if (!isEntityInScope(ent, faction, scope, nameTag)) {
         debug("menuEvents:spawn", `${displayLabel}: §cFUERA DE SCOPE§r, no se aplican reglas`, {
           color: "yellow",
           level: "warn",

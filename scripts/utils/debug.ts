@@ -21,12 +21,20 @@ export const DEBUG_CONSOLE = true; // Mensajes en consola
  */
 export const DEBUG_MODULES: string[] = [
   // ═══════════════════════════════════════════════════════════════════════════
-  // MIGRACIÓN DEBUG — Tanda 11 (20/09/2026)
+  // DEPURACIÓN SCOPE POR FACCIÓN (21/09/2026) — Activos para testeo
   // ═══════════════════════════════════════════════════════════════════════════
-  "monitorCommand",
-  "interactDDUI",
-  "dduiFeedback",
-  "teleportMenuDDUI",
+  "menuScope",
+  "menuScope:check",
+  "scope",
+  "scope_commands",
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MIGRACIÓN DEBUG — Tanda 11, comentada tras pruebas
+  // ═══════════════════════════════════════════════════════════════════════════
+  // "monitorCommand",
+  // "interactDDUI",
+  // "dduiFeedback",
+  // "teleportMenuDDUI",
 
   // ═══════════════════════════════════════════════════════════════════════════
   // MIGRACIÓN DEBUG — Tanda 8, comentada tras pruebas

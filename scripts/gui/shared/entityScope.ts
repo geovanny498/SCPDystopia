@@ -5,8 +5,13 @@ import { debug } from "../../utils/debug.js";
 
 export const ENTITY_GLOBAL_OVERWRITE_PROPERTY = "scpd_menu_config_allow_global_overwrite";
 
-export interface ScopeData {
+export interface FactionScopeData {
   respectEntityBlocks: boolean;
+}
+
+export interface ScopeData {
+  foundation: FactionScopeData;
+  chaos: FactionScopeData;
 }
 
 export function isGlobalOverwriteAllowed(entity: Entity): boolean {

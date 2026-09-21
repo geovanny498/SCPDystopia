@@ -10,7 +10,7 @@ import { loadScope, saveScope } from "../model/menu_scope.js";
 export function showScopeMenu(player: Player) {
   try {
     const currentScope = loadScope();
-    const respectBlocks = currentScope?.respectEntityBlocks ?? true;
+    const respectBlocks = currentScope?.foundation?.respectEntityBlocks ?? true;
 
     const form = new ModalFormData()
       .title("§dPrioridad de Aplicación")
@@ -34,7 +34,9 @@ export function showScopeMenu(player: Player) {
           }
 
           const allowRespect = res.formValues && res.formValues.length > 1 && res.formValues[1] === true;
-          currentScope.respectEntityBlocks = allowRespect ?? currentScope.respectEntityBlocks;
+          if (currentScope?.foundation) {
+            currentScope.foundation.respectEntityBlocks = allowRespect ?? currentScope.foundation.respectEntityBlocks;
+          }
           saveScope(currentScope);
 
           player.sendMessage(

@@ -1,48 +1,66 @@
-// scripts/gui/commandMenu/menu_scope.ts
+// scripts/gui/commandMenu/model/menu_scope.ts
 import { world, Entity } from "@minecraft/server";
 import { debug } from "../../../utils/debug.js";
 import { ENTITY_GLOBAL_OVERWRITE_PROPERTY } from "../../shared/entityScope.js";
+import type { ScopeData, FactionScopeData } from "../../shared/entityScope.js";
+import type { TargetFaction } from "../../../constants/domains.js";
 
-export interface ScopeData {
-  respectEntityBlocks: boolean;
-}
+export type { ScopeData, FactionScopeData };
 
 /**
- * Sistema de Prioridad de Aplicación (Scope)
+ * Sistema de Prioridad de Aplicación (Scope) por Facción.
  *
- * Define A QUIÉN se aplican los cambios del menú de comandos.
- * Es independiente del formulario de sistemas (que define QUÉ se hace).
+ * Define A QUIÉN se aplican los cambios del menú de comandos según su facción.
+ * Foundation y Chaos poseen configuraciones de scope independientes.
  *
- * El scope se guarda en dynamic properties y persiste hasta que el jugador lo cambie.
+ * El scope se guarda en dynamic properties del mundo y persiste hasta que el jugador lo cambie.
  */
 
 const SCOPE_PROPERTY = "scpd_menu_scope";
 const DEFAULT_RESPECT_ENTITY_BLOCKS = true;
 
 /**
- * Cache del scope en memoria para evitar cargas duplicadas
+ * Cache del scope en memoria para evitar lecturas duplicadas de dynamic properties
  */
 let scopeCache: ScopeData | null = null;
 
 /**
- * Genera el scope por defecto
+ * Genera el scope por defecto para ambas facciones
+ * @returns {ScopeData} ScopeData con configuración inicial por defecto
  */
 function generateDefaultScope(): ScopeData {
   return {
-    respectEntityBlocks: DEFAULT_RESPECT_ENTITY_BLOCKS,
+    foundation: { respectEntityBlocks: DEFAULT_RESPECT_ENTITY_BLOCKS },
+    chaos: { respectEntityBlocks: DEFAULT_RESPECT_ENTITY_BLOCKS },
   };
 }
 
 /**
- * Migra un scope antiguo al nuevo formato simplificado
+ * Migra un scope antiguo al formato por facción duplicando el valor a ambas facciones
+ * @param {unknown} oldScope - Objeto parseado previo a la migración
+ * @returns {ScopeData} ScopeData migrado
  */
 function migrateOldScope(oldScope: unknown): ScopeData {
-  debug("menuScope", "Migrando scope antiguo al nuevo formato simplificado", { color: "yellow", level: "warn" });
+  debug("menuScope", "Migrando scope antiguo al formato independiente por facción", { color: "yellow", level: "warn" });
+  if (
+    oldScope &&
+    typeof oldScope === "object" &&
+    "respectEntityBlocks" in oldScope &&
+    typeof (oldScope as { respectEntityBlocks: unknown }).respectEntityBlocks === "boolean"
+  ) {
+    const val = (oldScope as { respectEntityBlocks: boolean }).respectEntityBlocks;
+    return {
+      foundation: { respectEntityBlocks: val },
+      chaos: { respectEntityBlocks: val },
+    };
+  }
   return generateDefaultScope();
 }
 
 /**
- * Carga el scope desde dynamic properties
+ * Carga el scope desde dynamic properties o cache en memoria
+ * @param {boolean} [forceReload=false] - Forzar recarga desde dynamic properties ignorando cache
+ * @returns {ScopeData} ScopeData actual cargado
  */
 export function loadScope(forceReload = false): ScopeData {
   try {
@@ -63,12 +81,28 @@ export function loadScope(forceReload = false): ScopeData {
     debug("menuScope", "Scope cargado desde propiedades dinámicas", { color: "aqua", level: "debug" });
     const parsed = JSON.parse(raw as string);
 
-    if (typeof parsed.respectEntityBlocks !== "boolean") {
-      debug("menuScope", "Scope antiguo o inválido, migrando a formato simplificado", { color: "yellow", level: "warn" });
+    // Formato legacy: { respectEntityBlocks: boolean }
+    if (
+      typeof parsed?.respectEntityBlocks === "boolean" &&
+      (!parsed.foundation || !parsed.chaos)
+    ) {
+      debug("menuScope", "Scope legacy detectado, migrando a formato por facción", { color: "yellow", level: "warn" });
       const migratedScope = migrateOldScope(parsed);
       saveScope(migratedScope);
       scopeCache = migratedScope;
       return migratedScope;
+    }
+
+    // Validación de formato nuevo
+    if (
+      typeof parsed?.foundation?.respectEntityBlocks !== "boolean" ||
+      typeof parsed?.chaos?.respectEntityBlocks !== "boolean"
+    ) {
+      debug("menuScope", "Scope inválido o corrupto, restaurando defaults", { color: "yellow", level: "warn" });
+      const defaultScope = generateDefaultScope();
+      saveScope(defaultScope);
+      scopeCache = defaultScope;
+      return defaultScope;
     }
 
     scopeCache = parsed;
@@ -82,7 +116,8 @@ export function loadScope(forceReload = false): ScopeData {
 }
 
 /**
- * Guarda el scope en dynamic properties
+ * Guarda el scope en dynamic properties del mundo y sincroniza el cache en memoria
+ * @param {ScopeData} scope - ScopeData a persistir
  */
 export function saveScope(scope: ScopeData): void {
   try {
@@ -96,36 +131,58 @@ export function saveScope(scope: ScopeData): void {
 }
 
 /**
- * Verifica si una entidad está dentro del scope actual
- * ACTUALIZADO: Ahora verifica por jerarquía específica para no especiales
- * @param {Entity} ent
- * @param {string} faction - "foundation" | "chaos"
- * @param {boolean} isSpecial
- * @param {string} nameTag - nameTag de la entidad
- * @param {Object} scope - Scope actual (opcional)
- * @param {string} hierarchy - Jerarquía de la entidad (basic/leader/commander) para no especiales
+ * Normaliza valores de propiedades dinámicas a boolean o undefined
+ * @param {unknown} raw - Valor crudo de dynamic property
+ * @returns {boolean | undefined} Booleano normalizado o undefined si no está configurado
+ */
+function normalizeBooleanDynamicProperty(raw: unknown): boolean | undefined {
+  if (raw === undefined || raw === null) return undefined;
+  if (raw === true || raw === "true" || raw === 1 || raw === "1") return true;
+  if (raw === false || raw === "false" || raw === 0 || raw === "0") return false;
+  return undefined;
+}
+
+/**
+ * Verifica si una entidad individual está dentro del scope de su facción correspondiente.
+ * No realiza fallback silencioso a Foundation si la facción es desconocida o inválida.
+ * @param {Entity} ent - Entidad a evaluar
+ * @param {string} faction - Facción concreta de la entidad ("foundation" o "chaos")
+ * @param {ScopeData | null} [scope=null] - Scope actual (opcional, se carga si es null)
+ * @param {string} [nameTag] - Nametag de la entidad (opcional para logs/etiqueta)
+ * @returns {boolean} true si la entidad está dentro del scope de aplicación
  */
 export function isEntityInScope(
   ent: Entity,
   faction: string,
-  isSpecial: boolean,
-  nameTag: string,
   scope: ScopeData | null = null,
-  hierarchy: string | null = null
+  nameTag?: string
 ): boolean {
   if (!scope) {
     scope = loadScope();
   }
 
-  if (!scope || typeof scope.respectEntityBlocks !== "boolean") {
-    debug("menuScope", "Scope no válido, usando valores por defecto", { color: "yellow", level: "warn" });
-    scope = generateDefaultScope();
+  let factionScope: FactionScopeData | null = null;
+  if (faction === "foundation") {
+    factionScope = scope.foundation;
+  } else if (faction === "chaos") {
+    factionScope = scope.chaos;
+  } else {
+    debug("menuScope:check", `Facción inválida para entidad individual: "${faction}". No se asume Foundation.`, {
+      color: "red",
+      level: "warn",
+    });
+    return false;
+  }
+
+  if (!factionScope || typeof factionScope.respectEntityBlocks !== "boolean") {
+    debug("menuScope:check", `Scope de facción "${faction}" no válido, usando defaults`, { color: "yellow", level: "warn" });
+    factionScope = { respectEntityBlocks: DEFAULT_RESPECT_ENTITY_BLOCKS };
   }
 
   const entityLabel = nameTag ? `§r§f${nameTag}§r` : ent && ent.typeId ? `§b${ent.typeId}§r` : "<unknown>";
 
-  if (scope.respectEntityBlocks === false) {
-    debug("menuScope:check", `${entityLabel}: scope fuerza configuración global => EN SCOPE`, { color: "green", level: "debug" });
+  if (factionScope.respectEntityBlocks === false) {
+    debug("menuScope:check", `${entityLabel} [${faction}]: scope fuerza configuración global => EN SCOPE`, { color: "green", level: "debug" });
     return true;
   }
 
@@ -140,7 +197,7 @@ export function isEntityInScope(
     const blocked = allowGlobalOverwrite === false;
     debug(
       "menuScope:check",
-      `${entityLabel}: respetar bloqueos=true, allowGlobalOverwrite=${allowGlobalOverwrite} (raw=${raw}) => ${blocked ? "FUERA DE SCOPE" : "EN SCOPE"}`,
+      `${entityLabel} [${faction}]: respetar bloqueos=true, allowGlobalOverwrite=${allowGlobalOverwrite} (raw=${raw}) => ${blocked ? "FUERA DE SCOPE" : "EN SCOPE"}`,
       { color: blocked ? "gray" : "green", level: "debug" }
     );
     return !blocked;
@@ -151,25 +208,38 @@ export function isEntityInScope(
 }
 
 /**
- * Obtiene un resumen legible del scope actual
+ * Obtiene un resumen legible del scope actual por facción o consolidado
+ * @param {ScopeData | null} scope - ScopeData actual
+ * @param {TargetFaction} [targetFaction] - Facción opcional para filtrar el resumen
+ * @returns {string} Resumen formateado para mostrar en UI o consola
  */
-function normalizeBooleanDynamicProperty(raw: unknown): boolean | undefined {
-  if (raw === undefined || raw === null) return undefined;
-  if (raw === true || raw === "true" || raw === 1 || raw === "1") return true;
-  if (raw === false || raw === "false" || raw === 0 || raw === "0") return false;
-  return undefined;
-}
-
-export function getScopeSummary(scope: ScopeData | null): string {
-  if (!scope || typeof scope.respectEntityBlocks !== "boolean") {
+export function getScopeSummary(scope: ScopeData | null, targetFaction?: TargetFaction): string {
+  if (
+    !scope ||
+    typeof scope.foundation?.respectEntityBlocks !== "boolean" ||
+    typeof scope.chaos?.respectEntityBlocks !== "boolean"
+  ) {
     scope = generateDefaultScope();
   }
 
-  return `§7Prefiere configuración local: §r${scope.respectEntityBlocks ? "§aON§r" : "§cOFF§r"}\n§7Cuando está OFF, el menú global aplica a todas las unidades.`;
+  if (targetFaction === "foundation") {
+    const status = scope.foundation.respectEntityBlocks ? "§aON§r" : "§cOFF§r";
+    return `§9Foundation: §7Prefiere configuración local: ${status}`;
+  }
+
+  if (targetFaction === "chaos") {
+    const status = scope.chaos.respectEntityBlocks ? "§aON§r" : "§cOFF§r";
+    return `§cChaos: §7Prefiere configuración local: ${status}`;
+  }
+
+  const foundationStatus = scope.foundation.respectEntityBlocks ? "§aON§r" : "§cOFF§r";
+  const chaosStatus = scope.chaos.respectEntityBlocks ? "§aON§r" : "§cOFF§r";
+  return `§9Foundation: §7Prefiere config local: ${foundationStatus}\n§cChaos: §7Prefiere config local: ${chaosStatus}\n§7Cuando está OFF, el menú global aplica a todas las unidades.`;
 }
 
 /**
- * Reinicia el scope a valores por defecto
+ * Reinicia el scope de ambas facciones a valores por defecto y lo persiste
+ * @returns {ScopeData} ScopeData reiniciado
  */
 export function resetScope(): ScopeData {
   try {

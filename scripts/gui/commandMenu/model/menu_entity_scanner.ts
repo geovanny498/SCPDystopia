@@ -12,7 +12,6 @@ import { getUnitGroup, ENTITY_GROUP_DP } from "../../shared/entityGroups.js";
 import { compareNametags } from "../../../utils/nametagSort.js";
 import { getEntitiesByFaction } from "../../../utils/entityQuery.js";
 import { teamFamilies } from "../../../utils/teams.js";
-import { loadScope, isEntityInScope } from "./menu_scope.js";
 import type { UnitHierarchyId } from "../../../constants/domains.js";
 
 // ── Cache TTL ────────────────────────────────────────────────────────────────
@@ -408,8 +407,6 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
         { level: "debug", color: "blue" }
       );
 
-  const scope = loadScope();
-
   for (const ent of rawEntities) {
     try {
       if (!ent || !ent.id) continue;
@@ -425,10 +422,6 @@ export function scanActiveEntities(dimension: Dimension, faction: string): BaseS
       const isSpecial = nametag !== "";
       const hierarchy = detectHierarchyFromFamilies(families);
       const nametagFamilyId = isSpecial ? extractMtfFamily(families) : "";
-
-      if (!isEntityInScope(ent, detectedFaction, isSpecial, nametag, scope, hierarchy)) {
-        continue;
-      }
 
       const scanned: ScannedEntity = {
         entity: ent,

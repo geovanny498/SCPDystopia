@@ -8,16 +8,19 @@ import {
   Entity,
   Player,
 } from "@minecraft/server";
-import { loadScope, resetScope, getScopeSummary, isEntityInScope } from "../gui/commandMenu/model/menu_scope.js";
+import {
+  loadScope,
+  resetScope,
+  getScopeSummary,
+  isEntityInScope,
+  type ScopeData,
+} from "../gui/commandMenu/model/menu_scope.js";
 import { COMMAND_SYSTEM_IDS } from "../gui/shared/systemCatalog.js";
 import { getEntityFactionInfo, isValidSoldier } from "../gui/commandMenu/model/menu_faction.js";
 import { applySystemsToAll } from "../gui/commandMenu/core/menu_state.js";
 import { getAllAddonEntitiesInDimensions } from "../utils/entityQuery.js";
 import { compareNametags } from "../utils/nametagSort.js";
-
-type ScopeData = {
-  respectEntityBlocks: boolean;
-};
+import { debug } from "../utils/debug.js";
 
 system.beforeEvents.startup.subscribe((init) => {
   const checkCmd = {
@@ -26,6 +29,9 @@ system.beforeEvents.startup.subscribe((init) => {
     permissionLevel: CommandPermissionLevel.Any,
     cheatsRequired: false,
   };
+
+  let lastCheckTick = -1;
+  let lastCheckPlayer = "";
 
   try {
     init.customCommandRegistry.registerCommand(checkCmd, (origin) => {
@@ -39,6 +45,26 @@ system.beforeEvents.startup.subscribe((init) => {
 
         const entity = origin.sourceEntity as Player;
 
+        // Debounce para prevenir doble ejecución en el mismo tick por duplicación de eventos de comando en BDS
+        const currentTick = system.currentTick;
+        debug(
+          "scope_commands",
+          `comando scpd:check_scope ejecutado por ${entity.name} (${entity.id}) en tick ${currentTick}`
+        );
+
+        if (currentTick === lastCheckTick && lastCheckPlayer === entity.id) {
+          debug(
+            "scope_commands",
+            `Comando scpd:check_scope ignorado por duplicación en el mismo tick (${currentTick}) para ${entity.name} (${entity.id})`
+          );
+          return {
+            status: CustomCommandStatus.Success,
+            message: "Scope mostrado correctamente.",
+          };
+        }
+        lastCheckTick = currentTick;
+        lastCheckPlayer = entity.id;
+
         const rawScope = world.getDynamicProperty("scpd_menu_scope");
         const isSaved = rawScope !== undefined;
 
@@ -46,28 +72,37 @@ system.beforeEvents.startup.subscribe((init) => {
         const summary = getScopeSummary(scope);
 
         const statusLabel = isSaved ? "§a[Guardado]§r" : "§8[Por defecto]§r";
+        const anyRespect = scope.foundation.respectEntityBlocks || scope.chaos.respectEntityBlocks;
+        const blockedReport = anyRespect ? getBlockedEntitiesReport(scope) : [];
+
+        // 1. Salida en el juego (chat para el jugador)
         entity.sendMessage(`§d=== Prioridad de Aplicación ===§r ${statusLabel}`);
         entity.sendMessage(summary);
 
-        if (scope.respectEntityBlocks) {
-          const blockedReport = getBlockedEntitiesReport(scope);
+        if (anyRespect) {
           blockedReport.forEach((line) => entity.sendMessage(line));
         } else {
           entity.sendMessage(
-            "§7No hay unidades con configuración local porque el scope está forzando la configuración global."
+            "§7No hay unidades con configuración local porque el scope está forzando la configuración global en ambas facciones."
           );
         }
 
         entity.sendMessage("§8Usa el menú para modificar la configuración");
 
-        console.warn("§d=== Prioridad de Aplicación ===");
-        console.warn(summary);
-        if (scope.respectEntityBlocks) {
-          const blockedReport = getBlockedEntitiesReport(scope);
-          blockedReport.forEach((line) => console.warn(line));
+        // 2. Salida única consolidada en consola (stdout directo con console.log en un solo bloque,
+        // evitando streams duplicados de stderr/console.warn de BDS para fácil copia en portapapeles)
+        const consoleLines: string[] = [`§d=== Prioridad de Aplicación ===§r ${statusLabel}`, summary];
+        if (anyRespect) {
+          consoleLines.push(...blockedReport);
+        } else {
+          consoleLines.push(
+            "§7No hay unidades con configuración local porque el scope está forzando la configuración global en ambas facciones."
+          );
         }
-        console.warn(`Datos técnicos: ${JSON.stringify(scope)}`);
-        console.warn(`Consultado por: ${entity.name}`);
+        consoleLines.push(`Datos técnicos: ${JSON.stringify(scope)}`);
+        consoleLines.push(`Consultado por: ${entity.name}`);
+
+        console.log(consoleLines.join("\n"));
 
         return {
           status: CustomCommandStatus.Success,
@@ -159,14 +194,7 @@ function getBlockedEntitiesReport(scope: ScopeData): string[] {
     const factionInfo = getEntityFactionInfo(ent);
     if (!factionInfo) continue;
 
-    const inScope = isEntityInScope(
-      ent,
-      factionInfo.faction,
-      factionInfo.isSpecial,
-      ent.nameTag ?? "",
-      scope,
-      factionInfo.hierarchy ?? ""
-    );
+    const inScope = isEntityInScope(ent, factionInfo.faction, scope, ent.nameTag ?? "");
     if (inScope) continue;
 
     blockedTotal += 1;

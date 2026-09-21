@@ -33,6 +33,7 @@ import { getSystemDefaults } from "../../menu_config.js";
 import { loadSystemStates, saveSystemAndUpdateMemory } from "../../core/menu_state.js";
 import { applySystemsToEntities } from "../../../commandMenu/core/menu_apply.js";
 import { scanActiveEntities } from "../../../commandMenu/model/menu_entity_scanner.js";
+import { loadScope, isEntityInScope } from "../../../commandMenu/model/menu_scope.js";
 
 export interface SystemViewParams {
   systemId: SystemId;
@@ -106,6 +107,13 @@ function buildDropdownItemsPlain(options: { label: string; value: unknown }[]): 
   return options.map((o, idx) => ({ label: stripColorCodes(o.label), value: idx }));
 }
 
+/**
+ * Construye los conteos por jerarquía/grupo y el conjunto de nametags de entidades especiales,
+ * filtrando únicamente aquellas entidades actualmente elegibles según isEntityInScope.
+ * @param {Dimension} dimension - Dimensión a evaluar
+ * @param {string[]} factions - Lista de facciones a escanear
+ * @returns {{ counts: Record<string, number>; nametagsByKey: Record<string, Set<string>> }} Conteos y nametags elegibles
+ */
 function buildCountsAndNametags(
   dimension: Dimension,
   factions: string[]
@@ -115,10 +123,14 @@ function buildCountsAndNametags(
 } {
   const counts: Record<string, number> = {};
   const nametagsByKey: Record<string, Set<string>> = {};
+  const scope = loadScope();
 
   for (const fac of factions) {
     const result = scanActiveEntities(dimension, fac);
     for (const se of result.entities) {
+      if (!isEntityInScope(se.entity, se.faction, scope, se.nametag)) {
+        continue;
+      }
       const entityKey = se.isSpecial ? se.group : se.hierarchy;
       if (!entityKey) continue;
       counts[entityKey] = (counts[entityKey] || 0) + 1;
@@ -288,6 +300,7 @@ function applySystemToEntitiesForSystem(
   try {
     const appliedEntries: string[] = [];
     const allEligible: { entity: Entity; factionInfo: any }[] = [];
+    const scope = loadScope();
 
     for (const fac of factions) {
       const scanResult = scanActiveEntities(dimension, fac);
@@ -299,6 +312,10 @@ function applySystemToEntitiesForSystem(
           if (se.group !== key) continue;
         } else {
           if (se.hierarchy !== key) continue;
+        }
+
+        if (!isEntityInScope(se.entity, se.faction, scope, se.nametag)) {
+          continue;
         }
 
         allEligible.push({
