@@ -94,27 +94,22 @@ Registra siempre fecha y hora de la última modificación de los planes con el f
 
 Nunca implementes los planes sin aprobación explícita del usuario, y cuando lo hagas actualiza el plan indicando que se implementó.
 
-## Clasificación de menús: legacy vs DDUI vs compartido
+## Arquitectura de interfaz: Data-Driven UI (DDUI)
 
-**Regla de detección:**
+Todos los menús del addon (`commandMenu`, `interactMenu`, `roleMenu`, `monitorMenu` y `teleportMenu`) operan bajo la arquitectura moderna **Data-Driven UI (DDUI)**.
 
-* Importa `ActionFormData`/`ModalFormData` → **legacy** (NO modificar sin aprobación)
-* Importa `CustomForm`/`MessageBox` → **DDUI** (refactorizable)
-* NO importa API de UI → **compartido/core** (refactorizable si no rompe firmas)
+* **DDUI (`ddui/`)**: Formularios basados en `CustomForm` de `@minecraft/server-ui`. Es el estándar activo y prioritario del proyecto.
+* **Lógica de Dominio (`model/`, `core/`, `gui.ts`, etc.)**: Módulos puros de cálculo, configuración y estado, desacoplados de la capa visual.
+* **Sin código legacy**: Prohibido crear nuevos formularios basados en `ActionFormData` o `ModalFormData`.
 
-**Importante:** un archivo puede ser híbrido. La regla aplica por archivo, pero para funciones específicas dentro de un archivo híbrido (ej: `interactMenu/gui.ts` mezcla DDUI handler + legacy forms), clasifica cada función individualmente.
+## Auditoría de planes
 
-**commandMenu:**
+Al auditar un plan, distingue entre hechos verificados, inferencias y afirmaciones no verificadas.
 
-* `ui/`, `builder/` → legacy (protegido)
-* `core/` (`menu_apply.ts`, `menu_state.ts`, `menu_events.ts`) → compartido (SÍ refactorizable)
-* `model/` → compartido (SÍ refactorizable, NO es legacy). Contiene lógica de dominio pura: detección de facción, jerarquía, familias, grupos, scope, scanner de entidades. Consumido por legacy (vía `ui/`, `builder/`) y por DDUI. **Se puede extender, exportar funciones nuevas y agregar helpers de visibilidad/familias sin tocar legacy.**
-* `ddui/` → DDUI (refactorizable)
-* `menu_config.ts` → shim legacy (mantener hasta descontinuación)
+No trates una afirmación del plan como verdadera solo porque el plan diga que fue confirmada, pero tampoco conviertas la falta de evidencia disponible en un error.
 
-**interactMenu:**
+Las verificaciones, decisiones o correcciones ya demostradas durante la conversación deben tratarse como evidencia disponible y no volver a cuestionarse sin una razón concreta.
 
-* `gui.ts` → híbrido: funciones `show*Menu` son legacy (protegidas), helpers puros son compartidos
-* `ddui/` → DDUI (refactorizable)
+Busca problemas reales que puedan causar una regresión, contradicción u omisión; no critiques por obligación.
 
-**Verificación de clasificación:** `rg "@minecraft/server-ui|ActionFormData|ModalFormData|CustomForm|MessageBox" scripts/gui/<ruta>/` para confirmar antes de modificar.
+Si la evidencia disponible respalda el plan y no existe un problema concreto, apruébalo.

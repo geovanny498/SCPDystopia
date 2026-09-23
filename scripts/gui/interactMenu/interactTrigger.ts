@@ -123,8 +123,6 @@ export function openInteractMenuForEntity(player: Player, targetEntity: Entity):
       { color: "yellow", level: "debug" }
     );
 
-    if (!player || !targetEntity) return;
-
     const entity = targetEntity;
 
     const entGroup = getEntityFactionGroup(entity.typeId);

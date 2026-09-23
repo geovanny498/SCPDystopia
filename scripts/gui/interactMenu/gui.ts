@@ -1,26 +1,12 @@
-// scripts/gui/gui.ts
-import { system, Player, Entity } from "@minecraft/server";
-import { ActionFormData, ActionFormResponse, ModalFormData } from "@minecraft/server-ui";
+// scripts/gui/interactMenu/gui.ts
+import { Entity } from "@minecraft/server";
 import config, { MenuCategory, EntitySpecificConfig } from "./config.js";
-import { debugWarn, debugMessage } from "../../utils/debug.js";
-import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed, getGlobalOverwriteLabel } from "../shared/entityScope.js";
-
-// Utilizar la misma configuración que el menú de comandos para detectar
-// qué eventos son de taming y mapear cambios de sistema en la entidad
-import {
-  isAutoTameEvent,
-  findSystemStateByEvent,
-  getEntitySystemsStatus,
-  setEntitySystemState,
-  getSystemConfig,
-  formatEntitySystemStateLabel,
-  SpecialGroupLabels,
-  UnitHierarchyLabels,
-} from "../commandMenu/menu_config.js";
+import { debug } from "../../utils/debug.js";
 import { getEntityFactionInfo, type EntityFactionInfo } from "../commandMenu/model/menu_faction.js";
-import { tryAutoTame } from "../commandMenu/core/menu_apply.js";
-import { setUnitGroup } from "../commandMenu/model/menu_groups.js";
 
+/**
+ * Estructura de categorías de menú resueltas para una entidad específica.
+ */
 export interface EntityConfig {
   specific: MenuCategory[];
   global: MenuCategory[];
@@ -32,7 +18,13 @@ export interface EntityConfig {
   };
 }
 
-// Helpers de sistema/ids para filtrado por `config.global_rules`.
+/**
+ * Genera un identificador canónico de sistema a partir de una categoría.
+ * Utilizado para verificar reglas de inclusión y listas de permisos en `config.global_rules`.
+ *
+ * @param cat Categoría de menú a evaluar.
+ * @returns Identificador canónico del sistema o `null` si la categoría no es válida.
+ */
 export function makeSystemId(cat: MenuCategory | null | undefined): string | null {
   if (!cat) return null;
   if (cat.id) return String(cat.id);
@@ -40,6 +32,14 @@ export function makeSystemId(cat: MenuCategory | null | undefined): string | nul
   return `auto:${name.replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "")}`;
 }
 
+/**
+ * Evalúa si un sistema está permitido para un `typeId` según las reglas
+ * globales (`whitelist` / `blacklist`) definidas en `config.global_rules`.
+ *
+ * @param sysId Identificador del sistema.
+ * @param typeId Identificador de tipo de la entidad.
+ * @returns `true` si el sistema está permitido para la entidad; de lo contrario `false`.
+ */
 export function isAllowedByRule(sysId: string | null, typeId: string): boolean {
   if (!sysId) return true;
   if (!config.global_rules || !config.global_rules[sysId]) return true;
@@ -55,17 +55,23 @@ export function isAllowedByRule(sysId: string | null, typeId: string): boolean {
   return true;
 }
 
+/**
+ * Determina si una categoría debe incluirse para una entidad basándose en sus reglas de sistema.
+ *
+ * @param cat Categoría a evaluar.
+ * @param typeId Identificador de tipo de la entidad.
+ * @returns `true` si la categoría está permitida.
+ */
 function shouldIncludeCategoryForEntity(cat: MenuCategory, typeId: string): boolean {
   const sysId = makeSystemId(cat);
   return isAllowedByRule(sysId, typeId);
 }
 
 /**
- * Devuelve las categorías separadas en:
- * - specific: categorías específicas de la entidad
- * - global: categorías globales
- * - merged: orden final según insertAt / replace
- * @param typeId
+ * Devuelve la configuración específica configurada para una entidad desde `config.specific`.
+ *
+ * @param typeId Identificador de tipo de la entidad.
+ * @returns Configuración específica encontrada o `undefined`.
  */
 function getSpecificConfig(typeId: string): EntitySpecificConfig | undefined {
   if (!config.specific || typeof config.specific !== "object") return undefined;
@@ -95,12 +101,14 @@ function getSpecificConfig(typeId: string): EntitySpecificConfig | undefined {
 }
 
 /**
- * Devuelve la configuración de categorías para una entidad específica
- * @param typeId
- * @param entity
- * @param factionInfo Información de facción precalculada (opcional). Si se
+ * Resuelve y devuelve la configuración de categorías aplicables para una entidad específica.
+ * Combina categorías específicas, globales filtradas por reglas y submenús.
+ *
+ * @param typeId Identificador de tipo de la entidad objetivo.
+ * @param entity Entidad de Minecraft sobre la cual se calcula la facción y estado.
+ * @param factionInfoParam Información de facción precalculada (opcional). Si se
  *   omite, se calcula vía `getEntityFactionInfo(entity)` internamente.
- * @returns
+ * @returns Estructura `EntityConfig` con categorías resueltas, o `null` si la entidad está bloqueada.
  */
 export function getConfigForEntity(
   typeId: string,
@@ -136,11 +144,10 @@ export function getConfigForEntity(
   }
 
   if (!allowed) {
-    debugWarn(
-      "playerInteractWithEntity",
-      `menu blocked by config.entities[${groupName}].${typeId} = ${JSON.stringify(entVal)}`,
-      "blue"
-    );
+    debug("interactTrigger", `menu blocked by config.entities[${groupName}].${typeId} = ${JSON.stringify(entVal)}`, {
+      level: "warn",
+      color: "blue",
+    });
     return null;
   }
 
@@ -190,9 +197,10 @@ export function getConfigForEntity(
     merged = [...filteredGlobalCats];
   }
 
-  debugWarn(
-    "playerInteractWithEntity",
-    `resolved categories for ${typeId}: specific=${specificCats.length}, global=${globalCats.length}, merged=${merged.length}`
+  debug(
+    "interactTrigger",
+    `resolved categories for ${typeId}: specific=${specificCats.length}, global=${globalCats.length}, merged=${merged.length}`,
+    { level: "debug", color: "blue" }
   );
 
   return {
@@ -204,6 +212,14 @@ export function getConfigForEntity(
   };
 }
 
+/**
+ * Compara si un identificador de ítem coincide con un opener configurado,
+ * admitiendo comparación exacta con namespace o coincidencia por nombre corto.
+ *
+ * @param mainId Identificador completo o corto del ítem a evaluar.
+ * @param opener Identificador del ítem abridor configurado.
+ * @returns `true` si el ítem coincide con el abridor.
+ */
 export function itemMatches(mainId: string | null, opener: string): boolean {
   if (!mainId || !opener) return false;
   if (opener.includes(":")) return mainId === opener;
@@ -211,386 +227,4 @@ export function itemMatches(mainId: string | null, opener: string): boolean {
   const parts = mainId.split(":");
   const short = parts.length > 1 ? parts[1] : parts[0];
   return short === opener || mainId === opener || mainId.endsWith(`:${opener}`);
-}
-
-function normalizeBooleanDynamicProperty(raw: unknown): boolean | undefined {
-  if (raw === undefined || raw === null) return undefined;
-  if (raw === true || raw === "true" || raw === 1 || raw === "1") return true;
-  if (raw === false || raw === "false" || raw === 0 || raw === "0") return false;
-  return undefined;
-}
-
-function isTruthyToggleValue(raw: unknown): boolean {
-  const normalized = normalizeBooleanDynamicProperty(raw);
-  return normalized === undefined ? false : normalized;
-}
-
-function buildEntityOverwriteStatus(entity: Entity): string {
-  return isGlobalOverwriteAllowed(entity) ? "permitir" : "bloquear";
-}
-
-/**
- * Muestra el menú de categorías principal
- */
-function showCategoryMenu(
-  player: Player,
-  entity: Entity,
-  cfg: EntityConfig,
-  soldierName: string,
-  displayName: string,
-  typeId: string
-): void {
-  const catForm = new ActionFormData().title("SCPDystopia | Interacciones").body(`§7Unidad:§r ${soldierName}`);
-
-  const categoryButtonMap: MenuCategory[] = [];
-
-  if (cfg.specific.length && cfg.merged[0] === cfg.specific[0]) {
-    catForm.label("§8- Opciones específicas -§r");
-    for (const cat of cfg.specific) {
-      catForm.button(cat.category);
-      categoryButtonMap.push(cat);
-    }
-
-    if (cfg.global.length) {
-      catForm.divider();
-      catForm.label("§7- Opciones globales -§r");
-      for (const cat of cfg.global) {
-        catForm.button(cat.category);
-        categoryButtonMap.push(cat);
-      }
-    }
-  } else {
-    if (cfg.global.length) {
-      catForm.label("§7- Opciones globales -§r");
-      for (const cat of cfg.global) {
-        catForm.button(cat.category);
-        categoryButtonMap.push(cat);
-      }
-    }
-
-    if (cfg.specific.length) {
-      catForm.divider();
-      catForm.label("§8- Opciones específicas -§r");
-      for (const cat of cfg.specific) {
-        catForm.button(cat.category);
-        categoryButtonMap.push(cat);
-      }
-    }
-  }
-
-  catForm.show(player).then((catRes: ActionFormResponse) => {
-    // Si el usuario canceló en el menú principal, simplemente cerrar
-    if (!catRes || catRes.canceled) return;
-
-    const index = typeof catRes.selection === "number" ? catRes.selection : -1;
-    const group = categoryButtonMap[index];
-    if (!group) return;
-
-    handleCategorySelection(player, entity, group, cfg, soldierName, displayName, typeId);
-  });
-}
-
-/**
- * Maneja la selección de una categoría (submenu o entries directas)
- */
-function handleCategorySelection(
-  player: Player,
-  entity: Entity,
-  group: MenuCategory,
-  cfg: EntityConfig,
-  soldierName: string,
-  displayName: string,
-  typeId: string
-): void {
-  if (group.submenu) {
-    const submenuId = group.submenu;
-    const submenuCfg = config.submenus && config.submenus[submenuId];
-
-    if (!submenuCfg || !Array.isArray(submenuCfg.categories) || !submenuCfg.categories.length) {
-      debugWarn("playerInteractWithEntity", `submenu ${submenuId} not found or empty`, "blue");
-      return;
-    }
-
-    const rawSubCats = Array.isArray(submenuCfg.categories) ? submenuCfg.categories : [];
-    const filteredSubCats = rawSubCats.filter((sc) => {
-      if (!shouldIncludeCategoryForEntity(sc, typeId)) return false;
-      if (sc.requiresSpecial && !cfg.isSpecial) return false;
-      return true;
-    });
-
-    if (!filteredSubCats.length) {
-      debugWarn("playerInteractWithEntity", `submenu ${submenuId} empty after filtering`, "blue");
-      return;
-    }
-
-    const submenuForm = new ActionFormData().title(group.category).body(`§7Unidad:§r ${soldierName}`);
-
-    const submenuButtonMap: MenuCategory[] = [];
-    for (const subCat of filteredSubCats) {
-      submenuForm.button(subCat.category);
-      submenuButtonMap.push(subCat);
-    }
-
-    submenuForm.button("§8« Volver al menú principal");
-
-    submenuForm.show(player).then((subRes: ActionFormResponse) => {
-      // Si el usuario canceló, volver al menú principal
-      if (!subRes || subRes.canceled) {
-        system.run(() => {
-          showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
-        });
-        return;
-      }
-
-      const subIndex = typeof subRes.selection === "number" ? subRes.selection : -1;
-
-      // Botón de volver
-      if (subIndex === submenuButtonMap.length) {
-        showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
-        return;
-      }
-
-      const subCategory = submenuButtonMap[subIndex];
-      if (!subCategory || !subCategory.entries) return;
-
-      // Pasar información del submenu para poder volver
-      showEntryMenu(player, entity, subCategory, soldierName, displayName, cfg, typeId, group);
-    });
-  } else if (group.entries) {
-    // No viene de submenu, pasar null
-    showEntryMenu(player, entity, group, soldierName, displayName, cfg, typeId, null);
-  }
-}
-
-/**
- * Muestra el menú de entries (acciones finales)
- */
-function buildSystemCategorySummary(entity: Entity, typeId: string, displayName: string): string[] {
-  const factionInfo = getEntityFactionInfo(entity);
-  const healthComp = entity.getComponent("health");
-  const currentHealth = healthComp?.currentValue;
-  const maxHealth = healthComp?.effectiveMax;
-  const { totalSystems, savedSystems, statuses: systemStatuses } = getEntitySystemsStatus(entity);
-
-  // v4.0 — El resumen de sistemas lee desde DPs individuales de entidad
-  // escritas por setEntitySystemState, no desde los grupos estables globales.
-  const bodyLines = [`§7Unidad:§r ${displayName}`];
-
-  if (factionInfo) {
-    bodyLines.push(`§7Facción:§r ${factionInfo.faction}`);
-    if (factionInfo.isSpecial) {
-      const groupId = factionInfo.group ?? "noGroup";
-      bodyLines.push(`§7Grupo estable:§r ${SpecialGroupLabels[groupId] || String(groupId)}`);
-    } else {
-      const hierarchyId = factionInfo.hierarchy ?? "basic";
-      bodyLines.push(`§7Jerarquía:§r ${UnitHierarchyLabels[hierarchyId] || String(hierarchyId)}`);
-    }
-  }
-
-  bodyLines.push(`§7Sistemas en entidad:§r ${savedSystems} de ${totalSystems}`);
-
-  if (typeof currentHealth === "number" && typeof maxHealth === "number") {
-    bodyLines.push(`§7Salud:§r ${currentHealth} / ${maxHealth}`);
-  }
-
-  bodyLines.push("\n§rPulsa para ver las opciones configuradas:");
-  return bodyLines;
-}
-
-function showEntryMenu(
-  player: Player,
-  entity: Entity,
-  category: MenuCategory,
-  soldierName: string,
-  displayName: string,
-  cfg: EntityConfig,
-  typeId: string,
-  parentSubmenu: MenuCategory | null
-): void {
-  const isSystemStateCategory = category.id === "entity_system_state";
-  const entryForm = new ActionFormData()
-    .title(category.category)
-    .body(
-      isSystemStateCategory
-        ? buildSystemCategorySummary(entity, typeId, soldierName).join("\n")
-        : `§7Unidad:§r ${soldierName}\n§rSelecciona una acción:`
-    );
-
-  if (!category.entries) return;
-
-  if (category.entries.length === 1) {
-    const singleEntry = category.entries[0];
-    if (singleEntry.action === "toggle_entity_global_overwrite") {
-      showEntityGlobalOverwriteToggle(player, entity, cfg, soldierName, displayName, typeId, parentSubmenu);
-      return;
-    }
-  }
-
-  for (const e of category.entries) entryForm.button(e.label);
-
-  entryForm.show(player).then((entryRes: ActionFormResponse) => {
-    // Si el usuario canceló, volver al menú anterior
-    if (!entryRes || entryRes.canceled) {
-      system.run(() => {
-        // Si viene de un submenu, volver al submenu
-        if (parentSubmenu) {
-          handleCategorySelection(player, entity, parentSubmenu, cfg, soldierName, displayName, typeId);
-        } else {
-          // Si viene directo de una categoría, volver al menú principal
-          showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
-        }
-      });
-      return;
-    }
-
-    const entryIndex = typeof entryRes.selection === "number" ? entryRes.selection : -1;
-    if (!category.entries) return;
-
-    const entry = category.entries[entryIndex];
-    if (!entry) return;
-
-    if (entry.action === "view_entity_system_state") {
-      showEntitySystemStatus(player, entity, cfg, soldierName, displayName, typeId, category);
-      return;
-    }
-
-    if (entry.action === "assign_group") {
-      const groupId = String(entry.value ?? "");
-      setUnitGroup(entity, groupId);
-      const groupLabel = SpecialGroupLabels[groupId] || groupId;
-      player.sendMessage(`§8[§aMENU§8] §7${soldierName} §7-> Grupo: §r${groupLabel}`);
-      debugWarn(
-        "playerInteract:group",
-        `jugador=${player.name} | typeId=${typeId} | grupo=${groupLabel} | nametag=${soldierName}`,
-        "green"
-      );
-      return;
-    }
-
-    if (!entry.event) return;
-
-    let triggeredEvent = false;
-    try {
-      // si el evento está marcado como de taming intentamos domesticar
-      if (isAutoTameEvent(entry.event)) {
-        tryAutoTame(entity, player);
-      }
-      entity.triggerEvent(entry.event);
-      triggeredEvent = true;
-    } catch (e) {
-      debugWarn("playerInteractWithEntity", `triggerEvent failed: ${e}`, "red");
-    }
-
-    const mapped = findSystemStateByEvent(entry.event);
-    if (mapped && triggeredEvent) {
-      setEntitySystemState(entity, mapped.systemId, mapped.value);
-      const sysConfig = getSystemConfig(mapped.systemId);
-      const sysDisplay = sysConfig?.displayName || mapped.systemId;
-      const valueLabel = formatEntitySystemStateLabel(mapped.systemId, mapped.value);
-      player.sendMessage(`§8[§aMENU§8] §7${soldierName} §7-> §e${sysDisplay}§7: §f${valueLabel}`);
-      debugWarn(
-        "playerInteract:system",
-        `jugador=${player.name} | typeId=${typeId} | sistema=${mapped.systemId} | valor=${valueLabel} | key=${mapped.value}`,
-        "green"
-      );
-    } else if (entry.event && triggeredEvent && !mapped) {
-      // Evento disparado que NO corresponde a un sistema registrado (ej: variante específica)
-      debugWarn(
-        "playerInteract:specific",
-        `jugador=${player.name} | typeId=${typeId} | evento=${entry.event} | label=${entry.label}`,
-        "cyan"
-      );
-      player.sendMessage(`§8[§aMENU§8] §7${soldierName} §7-> §f${entry.label}`);
-    }
-  });
-}
-
-function showEntitySystemStatus(
-  player: Player,
-  entity: Entity,
-  cfg: EntityConfig,
-  soldierName: string,
-  displayName: string,
-  typeId: string,
-  parentCategory?: MenuCategory | null
-): void {
-  const { totalSystems, savedSystems, statuses: systemStatuses } = getEntitySystemsStatus(entity);
-  const dynamicProperties = entity.getDynamicPropertyIds?.() ?? [];
-  const unidadDisplay = !entity.nameTag ? `§b${typeId}` : `${soldierName} (${typeId})`;
-
-  const bodyLines = [
-    `§7Unidad:§r ${unidadDisplay}`,
-    `§7Tipo de Configuración:§r ${getGlobalOverwriteLabel(entity)}`,
-    `§7Propiedades dinámicas:§r ${dynamicProperties.length}`,
-    `§7Sistemas guardados:§r ${savedSystems}`,
-  ];
-
-  if (systemStatuses.length) {
-    bodyLines.push("§7Configuración de la entidad:");
-    for (const status of systemStatuses) {
-      bodyLines.push(`§6${status.displayName}§r: ${status.label}`);
-    }
-  } else {
-    bodyLines.push("§7No hay sistemas configurados para esta unidad.");
-  }
-
-  const statusForm = new ActionFormData().title("Estado de sistemas").body(bodyLines.join("\n"));
-
-  statusForm.button("§8Volver");
-  statusForm.show(player).then(() => {
-    if (parentCategory) {
-      // Volver a la categoría desde donde se abrió el estado de sistemas
-      showEntryMenu(player, entity, parentCategory, soldierName, displayName, cfg, typeId, null);
-    } else {
-      // Sin contexto de categoría -> volver al menú principal
-      showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
-    }
-  });
-}
-
-function showEntityGlobalOverwriteToggle(
-  player: Player,
-  entity: Entity,
-  cfg: EntityConfig,
-  soldierName: string,
-  displayName: string,
-  typeId: string,
-  parentSubmenu: MenuCategory | null
-): void {
-  const currentAllowed = isGlobalOverwriteAllowed(entity);
-  const form = new ModalFormData()
-    .title("§dControl de Configuración")
-    .label(
-      "§aActivado: §7La unidad usará la configuración global.\n§cDesactivado: §7La unidad ignora la configuración global (Ajuste local)."
-    )
-    .toggle("Usar configuración global", { defaultValue: currentAllowed })
-    .submitButton("§aGuardar");
-
-  form.show(player).then((res: any) => {
-    if (!res || res.canceled) {
-      system.run(() => {
-        if (parentSubmenu) {
-          handleCategorySelection(player, entity, parentSubmenu, cfg, soldierName, displayName, typeId);
-        } else {
-          showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
-        }
-      });
-      return;
-    }
-
-    const allowOverwrite = isTruthyToggleValue(res?.formValues?.[1]);
-    setGlobalOverwriteAllowed(entity, allowOverwrite);
-
-    player.sendMessage(
-      `§a[SCPD] Sobreescritura global ${allowOverwrite ? "permitida" : "bloqueada"} para ${soldierName}§r`
-    );
-
-    system.run(() => {
-      if (parentSubmenu) {
-        handleCategorySelection(player, entity, parentSubmenu, cfg, soldierName, displayName, typeId);
-      } else {
-        showCategoryMenu(player, entity, cfg, soldierName, displayName, typeId);
-      }
-    });
-  });
 }
