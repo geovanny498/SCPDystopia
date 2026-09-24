@@ -1,5 +1,3 @@
-import { world } from "@minecraft/server";
-
 // =====================
 // Configuración global
 // =====================
@@ -84,58 +82,6 @@ function isModuleEnabled(module: string): boolean {
 }
 
 // =====================
-// Utilidades de color
-// =====================
-
-// Colores para chat (Minecraft §)
-const CHAT_COLORS: Record<string, string> = {
-  black: "§0",
-  dark_blue: "§1",
-  dark_green: "§2",
-  dark_aqua: "§3",
-  dark_red: "§4",
-  dark_purple: "§5",
-  orange: "§6",
-  gray: "§7",
-  dark: "§8",
-  blue: "§9",
-  green: "§a",
-  aqua: "§b",
-  red: "§c",
-  magenta: "§d",
-  yellow: "§e",
-  white: "§f",
-  reset: "§r",
-};
-
-// =====================
-// Colores legacy (debugMessage/debugWarn/debugChat)
-// NO usar en código nuevo — usar MC_NAMED_COLORS + debug()
-// =====================
-
-// Colores para consola legacy (ANSI truecolor 24-bit, con nombres no oficiales)
-const CONSOLE_COLORS: Record<string, string> = {
-  black: "\x1b[38;2;0;0;0m",
-  dark_blue: "\x1b[38;2;0;0;170m",
-  dark_green: "\x1b[38;2;0;170;0m",
-  dark_aqua: "\x1b[38;2;0;170;170m",
-  dark_red: "\x1b[38;2;170;0;0m",
-  dark_purple: "\x1b[38;2;170;0;170m",
-  orange: "\x1b[38;2;255;170;0m",
-  gray: "\x1b[38;2;170;170;170m",
-  dark: "\x1b[38;2;85;85;85m",
-  blue: "\x1b[38;2;85;85;255m",
-  green: "\x1b[38;2;85;255;85m",
-  cyan: "\x1b[38;2;85;255;255m",
-  aqua: "\x1b[38;2;85;255;255m",
-  red: "\x1b[38;2;255;85;85m",
-  magenta: "\x1b[38;2;255;85;255m",
-  purple: "\x1b[38;2;170;0;170m",
-  yellow: "\x1b[38;2;255;255;85m",
-  white: "\x1b[38;2;255;255;255m",
-};
-
-// =====================
 // Colores oficiales Minecraft → ANSI (única fuente)
 // =====================
 
@@ -215,47 +161,6 @@ const MC_CODE_TO_NAME: Record<string, string> = {
 };
 
 // =====================
-// Consola (console.log)
-// =====================
-
-/**
- * Muestra mensajes de debug en la consola del servidor.
- * Úsalo para información general durante el desarrollo.
- * Requiere DEBUG_CONSOLE = true
- *
- * @param module - Nombre del módulo
- * @param message - Mensaje a mostrar
- * @param color - Color del texto
- */
-export function debugMessage(module: string, message: string, color: string = "gray"): void {
-  // El bloque "dev" es para ignorar esta función en producción al eliminarla con herramientas de bundling como esbuild o webpack
-  dev: {
-    if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
-
-    const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.gray;
-    console.log(`${c}[DEBUG:${module}] ${message}\x1b[0m`);
-  }
-}
-
-/**
- * Muestra advertencias en la consola del servidor.
- * Úsalo para situaciones inesperadas o potencialmente problemáticas.
- * Requiere DEBUG_CONSOLE = true
- *
- * @param module - Nombre del módulo
- * @param message - Mensaje de advertencia
- * @param color - Color del texto (por defecto yellow)
- */
-export function debugWarn(module: string, message: string, color: string = "yellow"): void {
-  dev: {
-    if (!DEBUG_CONSOLE || !isModuleEnabled(module)) return;
-
-    const c = CONSOLE_COLORS[color.toLowerCase()] ?? CONSOLE_COLORS.yellow;
-    console.warn(`${c}[WARN:${module}] ${message}\x1b[0m`);
-  }
-}
-
-// =====================
 // Consola con formato Minecraft → ANSI
 // =====================
 
@@ -288,7 +193,7 @@ export interface DebugOptions {
 /**
  * Función unificada de debug para consola. Convierte códigos de color Minecraft
  * (`§x`) a ANSI truecolor y re-aplica el color base tras cada `§r` para evitar
- * bleed. Usar esta función (no `debugMessage`/`debugWarn`) en código nuevo.
+ * bleed.
  *
  * Requiere `DEBUG_CONSOLE = true`.
  *
@@ -319,24 +224,3 @@ export function debug(module: string, message: string, options: DebugOptions = {
   }
 }
 
-// =====================
-// Chat del juego
-// =====================
-
-/**
- * Muestra mensajes de debug en el chat del juego.
- * Úsalo cuando necesites ver información en tiempo real mientras juegas.
- * Requiere DEBUG = true
- *
- * @param module - Nombre del módulo
- * @param message - Mensaje a mostrar en el chat
- * @param color - Color del texto
- */
-export function debugChat(module: string, message: string, color: string = "gray"): void {
-  dev: {
-    if (!DEBUG || !isModuleEnabled(module)) return;
-
-    const c = (CHAT_COLORS[color.toLowerCase()] ?? CHAT_COLORS.gray) as string;
-    world.sendMessage(`${CHAT_COLORS.dark}[DEBUG:${module}]${CHAT_COLORS.reset} ${c}${message}${CHAT_COLORS.reset}`);
-  }
-}

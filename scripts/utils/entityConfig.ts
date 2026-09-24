@@ -29,7 +29,6 @@ export const entityDamageConfig: Record<string, EntityDamageRule> = {
       const health = entity.getComponent("health");
       if (!health) return false;
       const maxHealth = health.effectiveMax;
-      // debugWarn("entityDamageConfig",`Wither salud actual: ${health.currentValue}, máxima: ${maxHealth}`);
       if (health.currentValue > maxHealth / 2) {
         return true; // solo recibe daño si >50%
       } else {
@@ -43,7 +42,6 @@ export const entityDamageConfig: Record<string, EntityDamageRule> = {
       const health = entity.getComponent("health");
       if (!health) return false;
       const maxHealth = health.effectiveMax;
-      // debugWarn("entityDamageConfig",`scp682 salud actual: ${health.currentValue}, máxima: ${maxHealth}`);
       if (health.currentValue < 39600) {
         return false; // No recibe daño si < 39600
       } else {
@@ -57,7 +55,6 @@ export const entityDamageConfig: Record<string, EntityDamageRule> = {
       const health = entity.getComponent("health");
       if (!health) return false;
       const maxHealth = health.effectiveMax;
-      // debugWarn("entityDamageConfig",`scp096 salud actual: ${health.currentValue}, máxima: ${maxHealth}`);
       if (health.currentValue < 10000) {
         return false; // No recibe daño si < 10000
       } else {

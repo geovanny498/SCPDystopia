@@ -9,12 +9,11 @@
 * **Documentación**: toda función, clase, interfaz, enum y tipo exportado debe incluir JSDoc con `@param` para cada parámetro y `@returns` cuando corresponda. El JSDoc debe aportar información útil; evitar repetir simplemente el nombre, tipo o comportamiento obvio.
 * **Comentarios**: nunca eliminar comentarios existentes del código base. Agregar comentarios explicativos en bucles complejos, secciones grandes y puntos donde sea difícil orientarse. Son obligatorios cuando la lógica no es obvia de un vistazo.
 * **Tipos**: prohibido usar `any` en firmas públicas. Usar interfaces del dominio existentes o definirlas en el mismo módulo de la feature.
-* **Logging**: usar `debug()` en **todo código nuevo**. `debugMessage`/`debugWarn` están deprecadas y se migran a `debug()` de a pocos archivos — no envolverlas con `debug()` (causaría bleed inesperado).
+* **Logging**: usar `debug()` en **todo código nuevo**.
   * **Uso de `debug()` vs `console.*`**: usar `debug()` para la lógica de juego, telemetría de entidades, raycasts, menús y flujo interno. Se **permite y recomienda conservar** `console.warn`/`console.error` (y mensajes de inicio) para errores críticos de inicialización del addon (`init.ts`), fallos en el registro de comandos de Minecraft o excepciones fatales no recuperables que deban registrarse siempre en `content_log.txt` / consola BDS independientemente del estado de los módulos de debug. Evitar `console.log` superfluo en bucles o eventos repetitivos.
   * `debug()` (**prioridad 1**): función unificada. Acepta `{ level?, color? }` donde `level` es `"debug"` (default, `console.log`), `"warn"` (`console.warn`), `"error"` (`console.error`). Convierte códigos `§` → ANSI truecolor y re-aplica color tras `§r`. Usar códigos `§` para destacar info clave, cerrar con `§r`. Máx. 1-2 colores por línea.
     * **Color selectivo, no obligatorio**: usar preferentemente `§` internos cuando haya un identificador o estado que merezca énfasis visual (typeId, systemId, player.name, entity name, palabras clave como `NO aplicado`, `FUERA DE SCOPE`). No añadir colores únicamente por cumplir una regla — priorizar legibilidad sobre decoración.
     * **Colores oficiales en `debug()`**: usar `MC_NAMED_COLORS` (scripts/utils/debug.ts). Nombres oficiales Java: `black`, `dark_blue`, `dark_green`, `dark_aqua`, `dark_red`, `dark_purple`, `gold`, `gray`, `dark_gray`, `blue`, `green`, `aqua`, `red`, `light_purple`, `yellow`, `white`, plus materiales BE (`minecoin_gold`, `material_quartz`, etc.) y formato (`bold`, `italic`, `reset`). No usar nombres legacy (`cyan`, `magenta`, `purple`, `orange`, `dark`).
-    * `debugMessage`/`debugWarn` (**prioridad 2**): migrar gradualmente. No usar en código nuevo.
 * **Configuración estática** (armas, proyectiles, sistemas, textos de UI): definirla en datos tipados separados, no como literales inline dispersos en lógica de negocio.
 * **Entidades y dimensiones**: centralizar consultas en `utils/entityQuery.ts` y constantes de dimensiones en un único lugar. No duplicar escaneos ni filtros por facción/jerarquía en cada módulo GUI.
 * **API Bedrock**: preferir siempre la API tipada oficial (`@minecraft/server`, `@minecraft/server-ui`) sobre patrones ad-hoc. Si una operación requiere lógica repetitiva, encapsularla en un helper del dominio, no copiarla.
@@ -59,7 +58,7 @@
 ## Jerarquía de reglas
 
 * **Bloqueo**: estado global sin cleanup, listeners huérfanos, `any` en firmas públicas, Maps/Records mutables globales sin interfaz encapsulada.
-* **Obligatorio**: tipado explícito, JSDoc en toda exportación, logging con `debug()` (con migración gradual de `debugMessage`/`debugWarn`), separación de responsabilidades, búsqueda y reutilización del código existente.
+* **Obligatorio**: tipado explícito, JSDoc en toda exportación, logging con `debug()`, separación de responsabilidades, búsqueda y reutilización del código existente.
 * **Recomendado**: datos tipados en archivos `.ts` para config estática, helpers para operaciones repetitivas.
 
 ## Flujo de compilación y despliegue

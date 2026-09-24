@@ -172,23 +172,6 @@ export function getAllFactionEntities(faction: string, dimension: Dimension): En
 }
 
 /**
- * Extrae el valor de texto de coordenadas desde formValues de un ModalFormData.
- * Devuelve `undefined` si no hay valor válido (campo vacío o no presente).
- */
-export function getCoordinateInputFromFormValues(formValues: any[] | undefined): string | undefined {
-  if (!formValues || !Array.isArray(formValues)) return undefined;
-
-  for (const value of formValues) {
-    if (typeof value === "string") {
-      const trimmed = value.trim();
-      if (trimmed.length > 0) return trimmed;
-    }
-  }
-
-  return undefined;
-}
-
-/**
  * Convierte un texto de coordenadas (x y z / x,y,z) a Vector3.
  * Si el texto está vacío, devuelve la ubicación actual del jugador.
  * Retorna null si el formato es inválido.
