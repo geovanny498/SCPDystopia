@@ -1,24 +1,35 @@
 // scripts/gui/teleportMenu/ddui/panels/specialTogglesPanel.ts
 
 /**
- * Panel de Toggles de Soldados Especiales por Bucket DDUI
+ * Panel de selección de nametags por bucket.
+ * La ejecución permanece en el bucket actual para permitir acciones sucesivas.
  * Muestra los nametags específicos de un bucket con observables reactivos,
- * permitiendo seleccionar unidades individuales, ingresar coordenadas y teletransportar.
+ * permitiendo seleccionar unidades, ingresar coordenadas y teletransportar.
+ * Panel de Toggles de Soldados Especiales por Bucket DDUI.
  */
 
 import { system } from "@minecraft/server";
 import { CustomForm, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
-import { CommonTexts, ResultMessages } from "../../teleport_config.js";
+import {
+  CommonTexts,
+  TELEPORT_PANEL_FEEDBACK_INITIAL,
+  TeleportFeedbackMessages,
+} from "../../teleport_config.js";
 import { compareNametags } from "../../../../utils/nametagSort.js";
 import { getSpecialEntitiesByNametags, parseTeleportDestination } from "../../core/teleport_utils.js";
 import { teleportEntitiesToPlayer } from "../../core/teleport_logic.js";
 import { debug } from "../../../../utils/debug.js";
 import { stripColorCodes } from "../../../commandMenu/ddui/helpers/formHelpers.js";
-import { TeleportDDUISession } from "../sessionStore.js";
+import { DDUIFeedbackPresenter } from "../../../shared/dduiFeedback.js";
+import { TeleportDDUISession, teleportMenuSessionStore } from "../sessionStore.js";
 import { showSpecialBucketsPanel } from "./specialBucketsPanel.js";
 
 /**
- * Muestra el panel con los toggles de nametags de un bucket de especiales
+ * Muestra los toggles de nametags de un bucket de especiales.
+ * @param session Sesión activa del jugador.
+ * @param bucketId Identificador del bucket actual.
+ * @param bucketData Datos descubiertos por el scanner para el bucket.
+ * Muestra el panel con los toggles de nametags de un bucket de especiales.
  * @param session - Sesión activa del jugador
  * @param bucketId - ID del bucket (ej: "commander_alpha1")
  * @param bucketData - Datos del bucket con label y nametagCounts
@@ -31,45 +42,47 @@ export function showSpecialTogglesPanel(
   const player = session.player;
   const faction = session.faction;
   session.currentView = "special_toggles";
+  session.activeBucketId = bucketId;
   session.closeReason = "user";
 
-  let nextPanel: (() => void) | undefined = undefined;
-
+  let nextPanel: (() => void) | undefined;
   const form = new CustomForm(player, bucketData.label);
+  const feedbackPresenter = new DDUIFeedbackPresenter(
+    player.id,
+    `teleportMenu:special:${faction}:${bucketId}`,
+    teleportMenuSessionStore,
+    TELEPORT_PANEL_FEEDBACK_INITIAL
+  );
+
   form.spacer();
   form.label("§7Selecciona las unidades a teletransportar:");
   form.spacer();
 
   // Ordenar los nametags alfabética y numéricamente
   const sortedNametags = Object.keys(bucketData.nametags).sort(compareNametags);
-
   // Mapa para enlazar cada nametag a su ObservableBoolean
   const toggleMap = new Map<string, ObservableBoolean>();
-
   for (const nametag of sortedNametags) {
     const count = bucketData.nametags[nametag];
     const isCurrentlySelected = session.isSpecialUnitSelected(faction, nametag);
     const countSuffix = count > 1 ? ` §8x${count}` : "";
-    const label = `${nametag}${countSuffix}`;
-
     const obs = new ObservableBoolean(isCurrentlySelected, { clientWritable: true });
     toggleMap.set(nametag, obs);
-    form.toggle(stripColorCodes(label), obs);
+    form.toggle(stripColorCodes(`${nametag}${countSuffix}`), obs);
   }
 
   // Campo de coordenadas de destino
   const coordsObs = new ObservableString("", { clientWritable: true });
   form.textField("Coordenadas destino (opcional):\n Ej: 100 64 -200 o ~ ~5 ~\n(vacío = tu posición actual)", coordsObs);
-
+  form.spacer();
+  form.label(feedbackPresenter.getObservable());
   form.spacer();
 
   // Helper para guardar el estado del bucket
   const saveCurrentBucketState = (): string[] => {
     const selected: string[] = [];
     for (const [nametag, obs] of toggleMap) {
-      if (obs.getData()) {
-        selected.push(nametag);
-      }
+      if (obs.getData()) selected.push(nametag);
     }
     session.saveSpecialSelection(faction, selected, sortedNametags);
     return selected;
@@ -77,66 +90,63 @@ export function showSpecialTogglesPanel(
 
   // Botón Submit: Teletransportar unidades seleccionadas
   form.button(stripColorCodes(CommonTexts.submitButton), () => {
-    session.closeReason = "navigation";
-
     const selectedNametags = saveCurrentBucketState();
-
     if (selectedNametags.length === 0) {
-      player.sendMessage("§c[TELEPORT] Debes seleccionar al menos una unidad.");
-      nextPanel = () => showSpecialTogglesPanel(session, bucketId, bucketData);
-      form.close();
+      feedbackPresenter.present({
+        context: "Teletransporte",
+        value: TeleportFeedbackMessages.noSelection,
+        status: "error",
+      });
       return;
     }
 
     // Resolver coordenadas
-    const coordsStr = coordsObs.getData().trim();
-    let targetLocation: { x: number; y: number; z: number } | undefined;
-
-    if (coordsStr !== "") {
-      const parsed = parseTeleportDestination(coordsStr, player);
-      if (!parsed) {
-        player.sendMessage("§c[TELEPORT] Coordenadas inválidas. Usa el formato: X Y Z o tildes (~ ~5 ~).");
-        nextPanel = () => showSpecialTogglesPanel(session, bucketId, bucketData);
-        form.close();
-        return;
-      }
-      targetLocation = parsed;
+    const targetLocation = parseTeleportDestination(coordsObs.getData().trim(), player);
+    if (!targetLocation) {
+      feedbackPresenter.present({
+        context: "Teletransporte",
+        value: TeleportFeedbackMessages.invalidCoordinates,
+        status: "error",
+      });
+      return;
     }
 
     // Obtener entidades en la dimensión del jugador
     const entities = getSpecialEntitiesByNametags(faction, selectedNametags, player.dimension);
-
     if (entities.length === 0) {
-      player.sendMessage(ResultMessages.noEntities(faction));
-      nextPanel = () => showSpecialBucketsPanel(session);
-      form.close();
+      feedbackPresenter.present({
+        context: "Teletransporte",
+        value: TeleportFeedbackMessages.noEntities,
+        status: "warn",
+      });
       return;
     }
 
     // Ejecutar teletransporte
     const result = teleportEntitiesToPlayer(entities, player, targetLocation);
-
-    if (result.count > 0) {
-      player.sendMessage(ResultMessages.success(result.count, faction));
-    } else {
-      player.sendMessage(ResultMessages.error);
-    }
-
-    // Volver al menú de buckets tras ejecutar
-    nextPanel = () => showSpecialBucketsPanel(session);
-    form.close();
+    // Volver al menú de buckets tras ejecutar: la navegación ahora es explícita.
+    const errorCount = result.errors?.length ?? 0;
+    feedbackPresenter.present({
+      context: "Teletransporte",
+      value:
+        result.count > 0 && result.hasErrors
+          ? TeleportFeedbackMessages.partial(result.count, errorCount)
+          : result.count > 0
+            ? TeleportFeedbackMessages.success(result.count)
+            : TeleportFeedbackMessages.error,
+      status: result.count > 0 && result.hasErrors ? "warn" : result.count > 0 ? "ok" : "error",
+    });
   });
 
   // Botón Volver al listado de buckets
   form.button(stripColorCodes(CommonTexts.backButton), () => {
-    session.closeReason = "navigation";
     saveCurrentBucketState();
+    session.closeReason = "navigation";
     nextPanel = () => showSpecialBucketsPanel(session);
     form.close();
   });
 
   session.setForm(form);
-
   form
     .show()
     .then((reason) => {
@@ -153,12 +163,8 @@ export function showSpecialTogglesPanel(
           color: "gray",
         });
         player.sendMessage("§e[TELEPORT] La interfaz no pudo abrirse porque estás ocupado.");
-      } else if (reason === "ServerClosed") {
-        if (session.closeReason === "navigation") {
-          system.run(() => {
-            nextPanel?.();
-          });
-        }
+      } else if (reason === "ServerClosed" && session.closeReason === "navigation") {
+        system.run(() => nextPanel?.());
       }
     })
     .catch((err) => {

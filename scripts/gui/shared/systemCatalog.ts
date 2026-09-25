@@ -858,12 +858,12 @@ export function isMenuFeatureVisible(
 
 export const PANEL_TITLES: Record<string, string> = {
   main: "§9Menú de comandos",
-  advanced: "§lConfiguración Avanzada",
+  advanced: "§9Configuración Avanzada",
   groups: "§lGrupos",
   groupsByFaction: "§9Grupos por Facción",
   history: "§9Historial",
-  scope: "§lPrioridad de Aplicación",
-  system: "§lSistemas",
+  scope: "§9Prioridad de Aplicación",
+  system: "§9Sistemas",
   roleMenu: "§l§6GESTIÓN DE ROLES",
 };
 

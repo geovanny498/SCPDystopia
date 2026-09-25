@@ -1,24 +1,36 @@
 // scripts/gui/teleportMenu/ddui/panels/normalPanel.ts
 
 /**
- * Panel de Soldados NO Especiales DDUI
+ * Panel de soldados no especiales DDUI.
+ * Mantiene la vista abierta mientras el jugador corrige o repite una acción.
+ * Permite seleccionar jerarquías (Básicos, Líderes, Comandantes) e ingresar
+ * coordenadas de destino opcionales.
+ * Panel de Soldados NO Especiales DDUI.
  * Permite seleccionar jerarquías (Básicos, Líderes, Comandantes),
  * ingresar coordenadas de destino opcionales y ejecutar el teletransporte.
  */
 
 import { system } from "@minecraft/server";
 import { CustomForm, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
-import { NormalSoldiersTexts, CommonTexts, ResultMessages } from "../../teleport_config.js";
-import { UnitHierarchy } from "../../../../constants/domains.js";
+import { UnitHierarchy, UnitHierarchyId } from "../../../../constants/domains.js";
+import {
+  CommonTexts,
+  NormalSoldiersTexts,
+  TELEPORT_PANEL_FEEDBACK_INITIAL,
+  TeleportFeedbackMessages,
+} from "../../teleport_config.js";
 import { getNormalEntitiesByHierarchy, parseTeleportDestination } from "../../core/teleport_utils.js";
 import { teleportEntitiesToPlayer } from "../../core/teleport_logic.js";
 import { debug } from "../../../../utils/debug.js";
 import { stripColorCodes } from "../../../commandMenu/ddui/helpers/formHelpers.js";
-import { TeleportDDUISession } from "../sessionStore.js";
-import { showTypePanel } from "./typePanel.js";
+import { DDUIFeedbackPresenter } from "../../../shared/dduiFeedback.js";
+import { TeleportDDUISession, teleportMenuSessionStore } from "../sessionStore.js";
+import { showMainPanel } from "./mainPanel.js";
 
 /**
- * Muestra el panel de soldados no especiales con toggles y coordenadas en DDUI
+ * Muestra el panel de soldados no especiales.
+ * @param session Sesión activa del jugador.
+ * Muestra el panel de soldados no especiales con toggles y coordenadas en DDUI.
  * @param session - Sesión activa del jugador
  */
 export function showNormalPanel(session: TeleportDDUISession): void {
@@ -27,10 +39,15 @@ export function showNormalPanel(session: TeleportDDUISession): void {
   session.currentView = "normal";
   session.closeReason = "user";
 
-  let nextPanel: (() => void) | undefined = undefined;
-
-  const title = (NormalSoldiersTexts.title as Record<string, string>)[faction] ?? "Soldados No especiales";
+  let nextPanel: (() => void) | undefined;
+  const title = NormalSoldiersTexts.title[faction] ?? "Soldados No especiales";
   const form = new CustomForm(player, title);
+  const feedbackPresenter = new DDUIFeedbackPresenter(
+    player.id,
+    `teleportMenu:normal:${faction}`,
+    teleportMenuSessionStore,
+    TELEPORT_PANEL_FEEDBACK_INITIAL
+  );
 
   form.spacer();
   form.label(NormalSoldiersTexts.description);
@@ -38,7 +55,6 @@ export function showNormalPanel(session: TeleportDDUISession): void {
 
   // Recuperar selección previa
   const savedSelection = session.getNormalSelection(faction);
-
   const basicObs = new ObservableBoolean(savedSelection[0], { clientWritable: true });
   const leaderObs = new ObservableBoolean(savedSelection[1], { clientWritable: true });
   const commanderObs = new ObservableBoolean(savedSelection[2], { clientWritable: true });
@@ -48,88 +64,91 @@ export function showNormalPanel(session: TeleportDDUISession): void {
   form.toggle(stripColorCodes(NormalSoldiersTexts.toggleBasic), basicObs);
   form.toggle(stripColorCodes(NormalSoldiersTexts.toggleLeader), leaderObs);
   form.toggle(stripColorCodes(NormalSoldiersTexts.toggleCommander), commanderObs);
-
   // Campo de coordenadas
   form.textField("Coordenadas destino (opcional):\n Ej: 100 64 -200 o ~ ~5 ~\n(vacío = tu posición actual)", coordsObs);
-
   form.spacer();
+  form.label(feedbackPresenter.getObservable());
+  form.spacer();
+
+  const saveSelection = (): [boolean, boolean, boolean] => {
+    const selection: [boolean, boolean, boolean] = [basicObs.getData(), leaderObs.getData(), commanderObs.getData()];
+    session.saveNormalSelection(faction, selection);
+    return selection;
+  };
 
   // Botón Submit: Ejecutar teletransporte
   form.button(stripColorCodes(CommonTexts.submitButton), () => {
-    session.closeReason = "navigation";
-
-    const isBasic = basicObs.getData();
-    const isLeader = leaderObs.getData();
-    const isCommander = commanderObs.getData();
-
     // Guardar selección
-    session.saveNormalSelection(faction, [isBasic, isLeader, isCommander]);
-
+    const [isBasic, isLeader, isCommander] = saveSelection();
     // Mapear jerarquías seleccionadas
-    const selectedHierarchies: string[] = [];
+    const selectedHierarchies: UnitHierarchyId[] = [];
     if (isBasic) selectedHierarchies.push(UnitHierarchy.BASIC);
     if (isLeader) selectedHierarchies.push(UnitHierarchy.LEADER);
     if (isCommander) selectedHierarchies.push(UnitHierarchy.COMMANDER);
 
     if (selectedHierarchies.length === 0) {
-      player.sendMessage(ResultMessages.noSelection);
-      nextPanel = () => showNormalPanel(session);
-      form.close();
+      feedbackPresenter.present({
+        context: "Teletransporte",
+        value: TeleportFeedbackMessages.noSelection,
+        status: "error",
+      });
       return;
     }
 
     // Resolver coordenadas
     const coordsStr = coordsObs.getData().trim();
-    let targetLocation: { x: number; y: number; z: number } | undefined;
-
-    if (coordsStr !== "") {
-      const parsed = parseTeleportDestination(coordsStr, player);
-      if (!parsed) {
-        player.sendMessage("§c[TELEPORT] Coordenadas inválidas. Usa el formato: X Y Z o tildes (~ ~5 ~).");
-        nextPanel = () => showNormalPanel(session);
-        form.close();
-        return;
-      }
-      targetLocation = parsed;
+    const targetLocation = parseTeleportDestination(coordsStr, player);
+    if (!targetLocation) {
+      feedbackPresenter.present({
+        context: "Teletransporte",
+        value: TeleportFeedbackMessages.invalidCoordinates,
+        status: "error",
+      });
+      return;
     }
 
     // Filtrar entidades en la dimensión del jugador
     const entities = getNormalEntitiesByHierarchy(faction, selectedHierarchies, player.dimension);
-
     if (entities.length === 0) {
-      player.sendMessage(ResultMessages.noEntities(faction));
-      form.close();
+      feedbackPresenter.present({
+        context: "Teletransporte",
+        value: TeleportFeedbackMessages.noEntities,
+        status: "warn",
+      });
       return;
     }
 
     // Ejecutar teletransporte
     const result = teleportEntitiesToPlayer(entities, player, targetLocation);
-
-    if (result.count > 0) {
-      player.sendMessage(ResultMessages.success(result.count, faction));
-    } else {
-      player.sendMessage(ResultMessages.error);
-    }
-    form.close();
+    const errorCount = result.errors?.length ?? 0;
+    feedbackPresenter.present({
+      context: "Teletransporte",
+      value:
+        result.count > 0 && result.hasErrors
+          ? TeleportFeedbackMessages.partial(result.count, errorCount)
+          : result.count > 0
+            ? TeleportFeedbackMessages.success(result.count)
+            : TeleportFeedbackMessages.error,
+      status: result.count > 0 && result.hasErrors ? "warn" : result.count > 0 ? "ok" : "error",
+    });
   });
 
   // Botón Volver
   form.button(stripColorCodes(CommonTexts.backButton), () => {
-    session.closeReason = "navigation";
     // Guardar selección actual antes de volver
-    session.saveNormalSelection(faction, [basicObs.getData(), leaderObs.getData(), commanderObs.getData()]);
-    nextPanel = () => showTypePanel(session);
+    saveSelection();
+    session.closeReason = "navigation";
+    nextPanel = () => showMainPanel(session);
     form.close();
   });
 
   session.setForm(form);
-
   form
     .show()
     .then((reason) => {
       session.setForm(undefined);
       if (reason === "ClientClosed") {
-        session.saveNormalSelection(faction, [basicObs.getData(), leaderObs.getData(), commanderObs.getData()]);
+        saveSelection();
         debug("teleportMenuDDUI", `Panel Normales cerrado por cliente (§b${player.name}§r)`, {
           level: "debug",
           color: "gray",
@@ -140,12 +159,8 @@ export function showNormalPanel(session: TeleportDDUISession): void {
           color: "gray",
         });
         player.sendMessage("§e[TELEPORT] La interfaz no pudo abrirse porque estás ocupado.");
-      } else if (reason === "ServerClosed") {
-        if (session.closeReason === "navigation") {
-          system.run(() => {
-            nextPanel?.();
-          });
-        }
+      } else if (reason === "ServerClosed" && session.closeReason === "navigation") {
+        system.run(() => nextPanel?.());
       }
     })
     .catch((err) => {

@@ -112,6 +112,19 @@ interface BucketData {
   unitCount: number;
 }
 
+/**
+ * Orden canónico de presentación de buckets. También gobierna la construcción
+ * final del resultado del scanner; no introduce una clasificación nueva.
+ */
+export const FINAL_BUCKET_ORDER = [
+  "commander_alpha1",
+  "commander_delta1",
+  "commander_other",
+  "leader_any",
+  "basic_any",
+  "other_units",
+] as const;
+
 export interface ScanResult {
   entities: ScannedEntity[];
   byHierarchy: Record<string, ScannedEntity[]>;
@@ -289,20 +302,11 @@ export function groupNametagsByBucket(
 
   // ── BUCLE 3: Pasada 2 optimizada con lookups O(1) ────────────────────────────
   const maxDropdowns = 10;
-  const finalBucketOrder: string[] = [
-    "commander_alpha1",
-    "commander_delta1",
-    "commander_other",
-    "leader_any",
-    "basic_any",
-    "other_units",
-  ];
-
   const result: Record<string, BucketData> = {};
   const resultEntityMap: Record<string, string[]> = {};
   const overflowEntries: [string, number][] = [];
 
-  for (const fk of finalBucketOrder) {
+  for (const fk of FINAL_BUCKET_ORDER) {
     let ntKeysFo: string[];
     let label: string;
 

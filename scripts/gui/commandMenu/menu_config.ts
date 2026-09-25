@@ -157,6 +157,7 @@ export {
   getScanCache,
   invalidateEntityQueryCache,
   getEntitiesCached,
+  FINAL_BUCKET_ORDER,
 } from "./model/menu_entity_scanner.js";
 
 // ── Definición de sistemas (adaptada al formato legacy) ─────────────────────

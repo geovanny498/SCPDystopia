@@ -8,6 +8,7 @@
 import { Entity, Dimension, Player } from "@minecraft/server";
 import { getEntityFactionInfo, isValidSoldier } from "../../commandMenu/model/menu_faction.js";
 import { Factions, UnitHierarchy } from "../../commandMenu/menu_config.js";
+import type { FactionId, UnitHierarchyId } from "../../../constants/domains.js";
 import { teamFamilies } from "../../../utils/teams.js";
 import { debug } from "../../../utils/debug.js";
 
@@ -18,7 +19,11 @@ import { debug } from "../../../utils/debug.js";
  * @param dimension - Dimensión donde buscar
  * @returns Array de entidades filtradas
  */
-export function getNormalEntitiesByHierarchy(faction: string, hierarchies: string[], dimension: Dimension): Entity[] {
+export function getNormalEntitiesByHierarchy(
+  faction: FactionId,
+  hierarchies: UnitHierarchyId[],
+  dimension: Dimension
+): Entity[] {
   const entities: Entity[] = [];
   const seen = new Set<string>();
 
@@ -48,7 +53,7 @@ export function getNormalEntitiesByHierarchy(faction: string, hierarchies: strin
         if (factionInfo.isSpecial) continue; // Solo queremos normales
 
         // Verificar que la jerarquía esté en el filtro
-        if (!factionInfo.hierarchy || !hierarchies.includes(factionInfo.hierarchy)) continue;
+        if (!isUnitHierarchyId(factionInfo.hierarchy) || !hierarchies.includes(factionInfo.hierarchy)) continue;
 
         seen.add(ent.id);
         entities.push(ent);
@@ -74,7 +79,7 @@ export function getNormalEntitiesByHierarchy(faction: string, hierarchies: strin
  * @returns Array de entidades filtradas
  */
 export function getSpecialEntitiesByNametags(
-  faction: string,
+  faction: FactionId,
   selectedNametags: string[],
   dimension: Dimension
 ): Entity[] {
@@ -135,7 +140,7 @@ export function getSpecialEntitiesByNametags(
  * @param dimension - Dimensión donde buscar
  * @returns Array de todas las entidades del bando
  */
-export function getAllFactionEntities(faction: string, dimension: Dimension): Entity[] {
+export function getAllFactionEntities(faction: FactionId, dimension: Dimension): Entity[] {
   const entities: Entity[] = [];
   const seen = new Set<string>();
 
@@ -169,6 +174,16 @@ export function getAllFactionEntities(faction: string, dimension: Dimension): En
 
   debug("teleportUtils", `Encontradas ${entities.length} entidades totales`, { level: "debug", color: "green" });
   return entities;
+}
+
+/**
+ * Valida la jerarquía recibida desde la inspección de una entidad antes de
+ * compararla con la selección tipada de la interfaz.
+ * @param hierarchy Valor externo que puede no corresponder a una jerarquía válida.
+ * @returns `true` cuando el valor es una jerarquía canónica de unidad.
+ */
+function isUnitHierarchyId(hierarchy: string | null): hierarchy is UnitHierarchyId {
+  return hierarchy !== null && Object.values(UnitHierarchy).includes(hierarchy as UnitHierarchyId);
 }
 
 /**

@@ -1,7 +1,9 @@
 // scripts/gui/teleportMenu/ddui/panels/allPanel.ts
 
 /**
- * Panel de Teletransporte "TODAS" DDUI
+ * Panel de Teletransporte "TODAS" DDUI.
+ * Agrupa jerarquías normales y nametags especiales en una sola vista persistente.
+ * Despliega en una sola vista toggles normales, especiales, coordenadas y submit.
  * Despliega en una sola vista:
  * - Toggles para todas las jerarquías normales (Básico, Líder, Comandante)
  * - Toggles individuales para cada nametag de cada bucket especial no vacío activo
@@ -11,9 +13,15 @@
 
 import { Entity, system } from "@minecraft/server";
 import { CustomForm, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
-import { TeleportAllTexts, CommonTexts, ResultMessages, getFactionLabel } from "../../teleport_config.js";
-import { UnitHierarchy } from "../../../../constants/domains.js";
-import { scanActiveUnits } from "../../../commandMenu/menu_config.js";
+import { FactionId, UnitHierarchy, UnitHierarchyId } from "../../../../constants/domains.js";
+import {
+  CommonTexts,
+  TELEPORT_PANEL_FEEDBACK_INITIAL,
+  TeleportAllTexts,
+  TeleportFeedbackMessages,
+  getFactionLabel,
+} from "../../teleport_config.js";
+import { FINAL_BUCKET_ORDER, scanActiveUnits } from "../../../commandMenu/menu_config.js";
 import { compareNametags } from "../../../../utils/nametagSort.js";
 import {
   getNormalEntitiesByHierarchy,
@@ -23,24 +31,32 @@ import {
 import { teleportEntitiesToPlayer } from "../../core/teleport_logic.js";
 import { debug } from "../../../../utils/debug.js";
 import { stripColorCodes } from "../../../commandMenu/ddui/helpers/formHelpers.js";
-import { TeleportDDUISession } from "../sessionStore.js";
-import { showTypePanel } from "./typePanel.js";
+import { DDUIFeedbackPresenter } from "../../../shared/dduiFeedback.js";
+import { TeleportDDUISession, teleportMenuSessionStore } from "../sessionStore.js";
+import { showMainPanel } from "./mainPanel.js";
 
 /**
- * Muestra el panel "TODAS" con todos los toggles de la facción seleccionada
+ * Muestra la vista agregada de unidades normales y especiales.
+ * @param session Sesión activa del jugador.
+ * Muestra el panel "TODAS" con todos los toggles de la facción seleccionada.
  * @param session - Sesión activa del jugador
  */
 export function showAllPanel(session: TeleportDDUISession): void {
   const player = session.player;
-  const faction = session.faction;
+  const faction: FactionId = session.faction;
   session.currentView = "all";
   session.closeReason = "user";
 
-  let nextPanel: (() => void) | undefined = undefined;
-
-  const factionTitle = (TeleportAllTexts.title as Record<string, string>)[faction] ?? "TODAS las Unidades";
+  let nextPanel: (() => void) | undefined;
+  const factionTitle = TeleportAllTexts.title[faction] ?? "TODAS las Unidades";
   const factionLabel = getFactionLabel(faction);
   const form = new CustomForm(player, factionTitle);
+  const feedbackPresenter = new DDUIFeedbackPresenter(
+    player.id,
+    `teleportMenu:all:${faction}`,
+    teleportMenuSessionStore,
+    TELEPORT_PANEL_FEEDBACK_INITIAL
+  );
 
   form.spacer();
   form.label(`§7Selecciona TODAS las unidades a teletransportar de ${factionLabel}§r:`);
@@ -48,17 +64,12 @@ export function showAllPanel(session: TeleportDDUISession): void {
 
   // Recuperar selección guardada de este menú si existe
   const savedAll = session.getAllMenuSelection(faction);
-
   // ===== SECCIÓN 1: Jerarquías Normales =====
-  form.label("§7── Soldados NO Especiales ──");
+  form.header("§7-Soldados NO Especiales-");
   form.spacer();
-  const basicDefault = savedAll?.hierarchies[0] ?? true;
-  const leaderDefault = savedAll?.hierarchies[1] ?? true;
-  const commanderDefault = savedAll?.hierarchies[2] ?? true;
-
-  const basicObs = new ObservableBoolean(basicDefault, { clientWritable: true });
-  const leaderObs = new ObservableBoolean(leaderDefault, { clientWritable: true });
-  const commanderObs = new ObservableBoolean(commanderDefault, { clientWritable: true });
+  const basicObs = new ObservableBoolean(savedAll?.hierarchies[0] ?? true, { clientWritable: true });
+  const leaderObs = new ObservableBoolean(savedAll?.hierarchies[1] ?? true, { clientWritable: true });
+  const commanderObs = new ObservableBoolean(savedAll?.hierarchies[2] ?? true, { clientWritable: true });
 
   form.toggle(stripColorCodes("§7Básicos"), basicObs);
   form.toggle(stripColorCodes("§eLíderes"), leaderObs);
@@ -67,42 +78,26 @@ export function showAllPanel(session: TeleportDDUISession): void {
   // ===== SECCIÓN 2: Soldados Especiales por Buckets Activos =====
   const scanResult = scanActiveUnits(player.dimension, faction);
   const buckets = scanResult.buckets;
-
-  const bucketOrder = [
-    "commander_alpha1",
-    "commander_delta1",
-    "commander_other",
-    "leader_any",
-    "basic_any",
-    "other_units",
-  ];
-
-  const nonEmptyBuckets = bucketOrder
-    .filter((bId) => buckets[bId] && buckets[bId].unitCount > 0)
-    .map((bId) => ({ id: bId, data: buckets[bId] }));
-
+  const nonEmptyBuckets = FINAL_BUCKET_ORDER.filter(
+    (bucketId) => buckets[bucketId] && buckets[bucketId].unitCount > 0
+  ).map((bucketId) => ({ id: bucketId, data: buckets[bucketId] }));
   // Mapa de nametag -> ObservableBoolean para especiales
   const specialToggleMap = new Map<string, ObservableBoolean>();
 
   if (nonEmptyBuckets.length > 0) {
     form.spacer();
-    form.label("§e── Soldados Especiales ──");
-
+    form.header("§6-Soldados Especiales-");
     for (const bucket of nonEmptyBuckets) {
       form.spacer();
-      form.label(`§e${bucket.data.label}:`);
+      form.header(`§e${bucket.data.label}:`);
       form.spacer();
-
       const sortedNametags = Object.keys(bucket.data.nametags).sort(compareNametags);
       for (const nametag of sortedNametags) {
         const count = bucket.data.nametags[nametag];
         const isSelected = savedAll ? savedAll.specialUnits.includes(nametag) : true;
-        const countSuffix = count > 1 ? ` §8x${count}` : "";
-        const label = `§7${nametag}${countSuffix}`;
-
         const obs = new ObservableBoolean(isSelected, { clientWritable: true });
         specialToggleMap.set(nametag, obs);
-        form.toggle(stripColorCodes(label), obs);
+        form.toggle(stripColorCodes(`§7${nametag}${count > 1 ? ` §8x${count}` : ""}`), obs);
       }
     }
   }
@@ -110,66 +105,51 @@ export function showAllPanel(session: TeleportDDUISession): void {
   // Campo de coordenadas de destino
   const coordsObs = new ObservableString("", { clientWritable: true });
   form.textField("Coordenadas destino (opcional):\n Ej: 100 64 -200 o ~ ~5 ~\n(vacío = tu posición actual)", coordsObs);
-
+  form.spacer();
+  form.label(feedbackPresenter.getObservable());
   form.spacer();
 
   // Helper para guardar el estado del formulario "TODAS"
   const saveAllState = (): {
     hierarchies: [boolean, boolean, boolean];
-    selectedHierarchies: string[];
+    selectedHierarchies: UnitHierarchyId[];
     selectedSpecialNametags: string[];
   } => {
-    const isBasic = basicObs.getData();
-    const isLeader = leaderObs.getData();
-    const isCommander = commanderObs.getData();
-
-    const selectedHierarchies: string[] = [];
-    if (isBasic) selectedHierarchies.push(UnitHierarchy.BASIC);
-    if (isLeader) selectedHierarchies.push(UnitHierarchy.LEADER);
-    if (isCommander) selectedHierarchies.push(UnitHierarchy.COMMANDER);
+    const hierarchies: [boolean, boolean, boolean] = [basicObs.getData(), leaderObs.getData(), commanderObs.getData()];
+    const selectedHierarchies: UnitHierarchyId[] = [];
+    if (hierarchies[0]) selectedHierarchies.push(UnitHierarchy.BASIC);
+    if (hierarchies[1]) selectedHierarchies.push(UnitHierarchy.LEADER);
+    if (hierarchies[2]) selectedHierarchies.push(UnitHierarchy.COMMANDER);
 
     const selectedSpecialNametags: string[] = [];
     for (const [nametag, obs] of specialToggleMap) {
-      if (obs.getData()) {
-        selectedSpecialNametags.push(nametag);
-      }
+      if (obs.getData()) selectedSpecialNametags.push(nametag);
     }
-
-    session.saveAllMenuSelection(faction, [isBasic, isLeader, isCommander], selectedSpecialNametags);
-
-    return {
-      hierarchies: [isBasic, isLeader, isCommander],
-      selectedHierarchies,
-      selectedSpecialNametags,
-    };
+    session.saveAllMenuSelection(faction, hierarchies, selectedSpecialNametags);
+    return { hierarchies, selectedHierarchies, selectedSpecialNametags };
   };
 
   // Botón Submit: Teletransportar TODAS las seleccionadas
   form.button(stripColorCodes(CommonTexts.submitButton), () => {
-    session.closeReason = "navigation";
-
     const { selectedHierarchies, selectedSpecialNametags } = saveAllState();
-
     if (selectedHierarchies.length === 0 && selectedSpecialNametags.length === 0) {
-      player.sendMessage("§c[TELEPORT] Debes seleccionar al menos una jerarquía o unidad especial.");
-      nextPanel = () => showAllPanel(session);
-      form.close();
+      feedbackPresenter.present({
+        context: "Teletransporte",
+        value: TeleportFeedbackMessages.noSelection,
+        status: "error",
+      });
       return;
     }
 
     // Resolver coordenadas
-    const coordsStr = coordsObs.getData().trim();
-    let targetLocation: { x: number; y: number; z: number } | undefined;
-
-    if (coordsStr !== "") {
-      const parsed = parseTeleportDestination(coordsStr, player);
-      if (!parsed) {
-        player.sendMessage("§c[TELEPORT] Coordenadas inválidas. Usa el formato: X Y Z o tildes (~ ~5 ~).");
-        nextPanel = () => showAllPanel(session);
-        form.close();
-        return;
-      }
-      targetLocation = parsed;
+    const targetLocation = parseTeleportDestination(coordsObs.getData().trim(), player);
+    if (!targetLocation) {
+      feedbackPresenter.present({
+        context: "Teletransporte",
+        value: TeleportFeedbackMessages.invalidCoordinates,
+        status: "error",
+      });
+      return;
     }
 
     // Obtener entidades normales
@@ -177,48 +157,47 @@ export function showAllPanel(session: TeleportDDUISession): void {
     if (selectedHierarchies.length > 0) {
       normalEntities = getNormalEntitiesByHierarchy(faction, selectedHierarchies, player.dimension);
     }
-
     // Obtener entidades especiales
     let specialEntities: Entity[] = [];
     if (selectedSpecialNametags.length > 0) {
       specialEntities = getSpecialEntitiesByNametags(faction, selectedSpecialNametags, player.dimension);
     }
-
     // Unir sin duplicados
     const allEntities = [...normalEntities, ...specialEntities];
 
     if (allEntities.length === 0) {
-      player.sendMessage(ResultMessages.noEntities(faction));
-      form.close();
+      feedbackPresenter.present({
+        context: "Teletransporte",
+        value: TeleportFeedbackMessages.noEntities,
+        status: "warn",
+      });
       return;
     }
 
     // Ejecutar teletransporte
     const result = teleportEntitiesToPlayer(allEntities, player, targetLocation);
-
-    if (result.count > 0) {
-      player.sendMessage(ResultMessages.success(result.count, faction));
-      if (result.hasErrors && result.errors) {
-        for (const errorMsg of result.errors) {
-          player.sendMessage(`§c[TELEPORT] ${errorMsg}`);
-        }
-      }
-    } else {
-      player.sendMessage(ResultMessages.error);
-    }
-    form.close();
+    const errorCount = result.errors?.length ?? 0;
+    feedbackPresenter.present({
+      context: "Teletransporte",
+      value:
+        result.count > 0 && result.hasErrors
+          ? TeleportFeedbackMessages.partial(result.count, errorCount)
+          : result.count > 0
+            ? TeleportFeedbackMessages.success(result.count)
+            : TeleportFeedbackMessages.error,
+      status: result.count > 0 && result.hasErrors ? "warn" : result.count > 0 ? "ok" : "error",
+    });
   });
 
   // Botón Volver
   form.button(stripColorCodes(CommonTexts.backButton), () => {
-    session.closeReason = "navigation";
     saveAllState();
-    nextPanel = () => showTypePanel(session);
+    session.closeReason = "navigation";
+    nextPanel = () => showMainPanel(session);
     form.close();
   });
 
   session.setForm(form);
-
   form
     .show()
     .then((reason) => {
@@ -235,12 +214,8 @@ export function showAllPanel(session: TeleportDDUISession): void {
           color: "gray",
         });
         player.sendMessage("§e[TELEPORT] La interfaz no pudo abrirse porque estás ocupado.");
-      } else if (reason === "ServerClosed") {
-        if (session.closeReason === "navigation") {
-          system.run(() => {
-            nextPanel?.();
-          });
-        }
+      } else if (reason === "ServerClosed" && session.closeReason === "navigation") {
+        system.run(() => nextPanel?.());
       }
     })
     .catch((err) => {

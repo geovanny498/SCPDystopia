@@ -9,6 +9,8 @@
 import { Player, system } from "@minecraft/server";
 import { CustomForm } from "@minecraft/server-ui";
 import { debug } from "../../../utils/debug.js";
+import { FactionId, Factions } from "../../../constants/domains.js";
+import { DDUIFeedbackEntry, DDUIFeedbackStore } from "../../shared/dduiFeedback.js";
 
 /**
  * Razón de cierre de un formulario DDUI para distinguir navegación interna de cancelación voluntaria.
@@ -34,7 +36,7 @@ export class TeleportDDUISession {
   /** Referencia viva al jugador de Bedrock */
   player: Player;
   /** Facción activa seleccionada ("foundation" o "chaos") */
-  faction: string = "foundation";
+  faction: FactionId = Factions.FOUNDATION;
   /** Vista actual activa */
   currentView: string = "main";
   /** ID del bucket de especiales activo si está en submenú */
@@ -44,19 +46,19 @@ export class TeleportDDUISession {
    * Estado de selección de unidades normales por facción.
    * Key: faction, Value: [basic, leader, commander]
    */
-  readonly normalSelection: Map<string, [boolean, boolean, boolean]> = new Map();
+  private readonly normalSelection: Map<FactionId, [boolean, boolean, boolean]> = new Map();
 
   /**
    * Estado de selección de unidades especiales por facción (nametags seleccionados).
    * Key: faction, Value: Set de nametags seleccionados
    */
-  readonly specialSelection: Map<string, Set<string>> = new Map();
+  private readonly specialSelection: Map<FactionId, Set<string>> = new Map();
 
   /**
    * Estado de selección del menú "TODAS" por facción.
    * Key: faction, Value: AllMenuFactionSelection
    */
-  readonly allMenuSelection: Map<string, AllMenuFactionSelection> = new Map();
+  private readonly allMenuSelection: Map<FactionId, AllMenuFactionSelection> = new Map();
 
   /** Razón por la cual se cerró el formulario actual */
   closeReason: TeleportCloseReason = "user";
@@ -116,7 +118,7 @@ export class TeleportDDUISession {
    * @param faction - Facción
    * @returns Tupla booleana [basic, leader, commander]
    */
-  getNormalSelection(faction: string): [boolean, boolean, boolean] {
+  getNormalSelection(faction: FactionId): [boolean, boolean, boolean] {
     const saved = this.normalSelection.get(faction);
     return saved ? [...saved] : [false, false, false];
   }
@@ -126,7 +128,7 @@ export class TeleportDDUISession {
    * @param faction - Facción
    * @param selection - Tupla booleana
    */
-  saveNormalSelection(faction: string, selection: [boolean, boolean, boolean]): void {
+  saveNormalSelection(faction: FactionId, selection: [boolean, boolean, boolean]): void {
     this.normalSelection.set(faction, [...selection]);
   }
 
@@ -135,7 +137,7 @@ export class TeleportDDUISession {
    * @param faction - Facción
    * @param nametag - Nametag de la unidad
    */
-  isSpecialUnitSelected(faction: string, nametag: string): boolean {
+  isSpecialUnitSelected(faction: FactionId, nametag: string): boolean {
     const set = this.specialSelection.get(faction);
     if (!set) return false;
     return set.has(nametag);
@@ -147,7 +149,7 @@ export class TeleportDDUISession {
    * @param selectedInBucket - Nametags seleccionados en este bucket
    * @param allInBucket - Todos los nametags presentes en este bucket
    */
-  saveSpecialSelection(faction: string, selectedInBucket: string[], allInBucket: string[]): void {
+  saveSpecialSelection(faction: FactionId, selectedInBucket: string[], allInBucket: string[]): void {
     let set = this.specialSelection.get(faction);
     if (!set) {
       set = new Set<string>();
@@ -168,8 +170,13 @@ export class TeleportDDUISession {
    * Obtiene la selección del menú "TODAS" para una facción
    * @param faction - Facción
    */
-  getAllMenuSelection(faction: string): AllMenuFactionSelection | undefined {
-    return this.allMenuSelection.get(faction);
+  getAllMenuSelection(faction: FactionId): AllMenuFactionSelection | undefined {
+    const saved = this.allMenuSelection.get(faction);
+    if (!saved) return undefined;
+    return {
+      hierarchies: [...saved.hierarchies],
+      specialUnits: [...saved.specialUnits],
+    };
   }
 
   /**
@@ -178,7 +185,7 @@ export class TeleportDDUISession {
    * @param hierarchies - Tupla de jerarquías
    * @param specialUnits - Array de nametags seleccionados
    */
-  saveAllMenuSelection(faction: string, hierarchies: [boolean, boolean, boolean], specialUnits: string[]): void {
+  saveAllMenuSelection(faction: FactionId, hierarchies: [boolean, boolean, boolean], specialUnits: string[]): void {
     this.allMenuSelection.set(faction, {
       hierarchies: [...hierarchies],
       specialUnits: [...specialUnits],
@@ -218,11 +225,12 @@ export interface TeleportSessionStore {
 }
 
 const sessions = new Map<string, TeleportDDUISession>();
+const lastFeedbackByPlayer = new Map<string, Record<string, DDUIFeedbackEntry>>();
 
 /**
  * Instancia singleton del almacén de sesiones de teleportMenu DDUI
  */
-export const teleportMenuSessionStore: TeleportSessionStore = {
+export const teleportMenuSessionStore: TeleportSessionStore & DDUIFeedbackStore = {
   get(playerId: string): TeleportDDUISession | undefined {
     return sessions.get(playerId);
   },
@@ -237,6 +245,7 @@ export const teleportMenuSessionStore: TeleportSessionStore = {
       session.cleanup();
     }
     sessions.clear();
+    lastFeedbackByPlayer.clear();
   },
   cleanup(playerId: string): void {
     const session = sessions.get(playerId);
@@ -244,6 +253,8 @@ export const teleportMenuSessionStore: TeleportSessionStore = {
       session.cleanup();
       sessions.delete(playerId);
     }
+    lastFeedbackByPlayer.delete(playerId);
+    debug("teleportMenuDDUI", `Feedback limpiado para §b${playerId}§r`, { level: "debug", color: "gray" });
   },
   getOrCreate(player: Player): TeleportDDUISession {
     let session = sessions.get(player.id);
@@ -258,5 +269,23 @@ export const teleportMenuSessionStore: TeleportSessionStore = {
       session.player = player;
     }
     return session;
+  },
+  getLast(playerId: string, viewId: string): DDUIFeedbackEntry | null {
+    const map = lastFeedbackByPlayer.get(playerId);
+    return map?.[viewId] ?? null;
+  },
+  setLast(playerId: string, viewId: string, entry: DDUIFeedbackEntry): void {
+    let map = lastFeedbackByPlayer.get(playerId);
+    if (!map) {
+      map = {};
+      lastFeedbackByPlayer.set(playerId, map);
+    }
+    map[viewId] = entry;
+  },
+  clearKey(playerId: string): void {
+    lastFeedbackByPlayer.delete(playerId);
+  },
+  clearAll(): void {
+    lastFeedbackByPlayer.clear();
   },
 };

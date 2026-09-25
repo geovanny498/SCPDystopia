@@ -9,11 +9,11 @@
 import { system } from "@minecraft/server";
 import { CustomForm } from "@minecraft/server-ui";
 import { SpecialSoldiersTexts, CommonTexts } from "../../teleport_config.js";
-import { scanActiveUnits } from "../../../commandMenu/menu_config.js";
+import { FINAL_BUCKET_ORDER, scanActiveUnits } from "../../../commandMenu/menu_config.js";
 import { debug } from "../../../../utils/debug.js";
 import { stripColorCodes } from "../../../commandMenu/ddui/helpers/formHelpers.js";
 import { TeleportDDUISession } from "../sessionStore.js";
-import { showTypePanel } from "./typePanel.js";
+import { showMainPanel } from "./mainPanel.js";
 import { showSpecialTogglesPanel } from "./specialTogglesPanel.js";
 
 /**
@@ -36,17 +36,8 @@ export function showSpecialBucketsPanel(session: TeleportDDUISession): void {
   const buckets = scanResult.buckets;
 
   // Orden fijo de buckets según arquitectura legacy
-  const bucketOrder = [
-    "commander_alpha1",
-    "commander_delta1",
-    "commander_other",
-    "leader_any",
-    "basic_any",
-    "other_units",
-  ];
-
   // Filtrar buckets que tengan al menos una unidad activa
-  const nonEmptyBuckets = bucketOrder
+  const nonEmptyBuckets = FINAL_BUCKET_ORDER
     .filter((bId) => buckets[bId] && buckets[bId].unitCount > 0)
     .map((bId) => ({ id: bId, data: buckets[bId] }));
 
@@ -60,7 +51,7 @@ export function showSpecialBucketsPanel(session: TeleportDDUISession): void {
 
     form.button(stripColorCodes(CommonTexts.backButton), () => {
       session.closeReason = "navigation";
-      nextPanel = () => showTypePanel(session);
+      nextPanel = () => showMainPanel(session);
       form.close();
     });
 
@@ -103,7 +94,7 @@ export function showSpecialBucketsPanel(session: TeleportDDUISession): void {
   // Botón Volver al menú de tipo
   form.button(stripColorCodes(CommonTexts.backButton), () => {
     session.closeReason = "navigation";
-    nextPanel = () => showTypePanel(session);
+    nextPanel = () => showMainPanel(session);
     form.close();
   });
 

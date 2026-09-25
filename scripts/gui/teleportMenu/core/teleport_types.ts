@@ -7,11 +7,6 @@
 import { Entity } from "@minecraft/server";
 
 /**
- * Información de una facción
- */
-export type FactionType = "foundation" | "chaos";
-
-/**
  * Lista de entidades filtradas
  * Simplemente un array de Entity ya que reutilizamos las funciones de menu_faction
  */
