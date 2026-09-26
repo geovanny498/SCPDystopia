@@ -394,7 +394,7 @@ function applySystemToEntitiesForSystem(
       value: `${label}: ${valueLabel} (${summary})`,
       status: "ok" as DDUIFeedbackStatus,
       timestamp: Date.now(),
-      viewId: `system:${systemId}`,
+      viewId: `commandMenu:${targetFaction ?? Factions.FOUNDATION}:system:${systemId}`,
     };
   } catch (e) {
     debug("commandMenuDDUI", `§cError§r aplicando control §b${systemId}§r [§b${key}§r]: ${e}`, {
@@ -443,7 +443,10 @@ export function buildSystemView({
       const session = commandMenuSessionStore.get(player.id);
 
       const feedbackPresenter = session
-        ? session.getOrCreateFeedbackPresenter(`system:${systemId}`, SYSTEM_PANEL_FEEDBACK_INITIAL)
+        ? session.getOrCreateFeedbackPresenter(
+            `commandMenu:${targetFaction ?? Factions.FOUNDATION}:system:${systemId}`,
+            SYSTEM_PANEL_FEEDBACK_INITIAL
+          )
         : null;
 
       form.spacer();

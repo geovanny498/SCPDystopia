@@ -12,10 +12,12 @@ import {
   SCOPE_RESPECT_LABEL,
   SCOPE_GLOBAL_LABEL,
   SCOPE_CONTEXT,
+  SYSTEM_SHORT_NAMES,
   isMenuFeatureVisible,
 } from "../../../shared/systemCatalog.js";
+import { SCOPE_PANEL_FEEDBACK_INITIAL } from "../../../shared/dduiFeedback.js";
 import { PlayerPermissionManager } from "../../../shared/playerPermissionManager.js";
-import { loadScope, saveScope, getScopeSummary } from "../../../commandMenu/model/menu_scope.js";
+import { loadScope, saveScope } from "../../../commandMenu/model/menu_scope.js";
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
@@ -69,15 +71,20 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
     form.label(PANEL_DESCRIPTIONS.scope);
     form.spacer();
 
-    const descriptionText = new ObservableString(getScopeSummary(scope, effectiveTarget));
-    form.label(descriptionText);
+    const feedbackPresenter = session.getOrCreateFeedbackPresenter(
+      `commandMenu:${effectiveTarget}:scope`,
+      SCOPE_PANEL_FEEDBACK_INITIAL
+    );
+    form.label(feedbackPresenter.getObservable());
     form.spacer();
 
     const showFoundationToggle = (effectiveTarget === "both" || effectiveTarget === "foundation") && canFoundation;
     const showChaosToggle = (effectiveTarget === "both" || effectiveTarget === "chaos") && canChaos;
 
     if (showFoundationToggle) {
-      const foundationLabel = effectiveTarget === "both" ? `Foundation: ${SCOPE_RESPECT_LABEL}` : SCOPE_RESPECT_LABEL;
+      const foundationLabel = new ObservableString(
+        `Foundation: ${scope.foundation.respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL}`
+      );
       const foundationObs = new ObservableBoolean(scope.foundation.respectEntityBlocks, { clientWritable: true });
       form.toggle(foundationLabel, foundationObs);
 
@@ -89,7 +96,14 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
             `§a[SCPDystopia] Scope Foundation actualizado: §f${respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL}`
           );
 
-          descriptionText.setData(getScopeSummary(scope, effectiveTarget));
+          foundationLabel.setData(
+            `Foundation: ${respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL}`
+          );
+          feedbackPresenter.present({
+            context: SYSTEM_SHORT_NAMES.scope,
+            value: `Foundation: ${respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL}`,
+            status: "ok",
+          });
           addHistoryEntry({
             playerName: player.name,
             faction: "foundation",
@@ -99,13 +113,20 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
           });
         } catch (e) {
           debug("commandMenuDDUI", `Error guardando scope Foundation: ${e}`, { level: "error", color: "red" });
+          feedbackPresenter.present({
+            context: SYSTEM_SHORT_NAMES.scope,
+            value: `Foundation: ${ERROR_MESSAGES.SCOPE_SAVE}`,
+            status: "error",
+          });
           player.sendMessage(ERROR_MESSAGES.SCOPE_SAVE);
         }
       });
     }
 
     if (showChaosToggle) {
-      const chaosLabel = effectiveTarget === "both" ? `Chaos: ${SCOPE_RESPECT_LABEL}` : SCOPE_RESPECT_LABEL;
+      const chaosLabel = new ObservableString(
+        `Chaos: ${scope.chaos.respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL}`
+      );
       const chaosObs = new ObservableBoolean(scope.chaos.respectEntityBlocks, { clientWritable: true });
       form.toggle(chaosLabel, chaosObs);
 
@@ -117,7 +138,12 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
             `§a[SCPDystopia] Scope Chaos actualizado: §f${respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL}`
           );
 
-          descriptionText.setData(getScopeSummary(scope, effectiveTarget));
+          chaosLabel.setData(`Chaos: ${respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL}`);
+          feedbackPresenter.present({
+            context: SYSTEM_SHORT_NAMES.scope,
+            value: `Chaos: ${respectEntityBlocks ? SCOPE_RESPECT_LABEL : SCOPE_GLOBAL_LABEL}`,
+            status: "ok",
+          });
           addHistoryEntry({
             playerName: player.name,
             faction: "chaos",
@@ -127,6 +153,11 @@ export function showScopePanel(player: Player, targetFaction?: TargetFaction): v
           });
         } catch (e) {
           debug("commandMenuDDUI", `Error guardando scope Chaos: ${e}`, { level: "error", color: "red" });
+          feedbackPresenter.present({
+            context: SYSTEM_SHORT_NAMES.scope,
+            value: `Chaos: ${ERROR_MESSAGES.SCOPE_SAVE}`,
+            status: "error",
+          });
           player.sendMessage(ERROR_MESSAGES.SCOPE_SAVE);
         }
       });

@@ -222,11 +222,12 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
 
     const nametags = Object.keys(eligibleEntitiesByNametag).sort(compareNametags);
     const totalEligibleUnits = nametags.reduce((sum, nt) => sum + (eligibleEntitiesByNametag[nt]?.length ?? 0), 0);
+    const feedbackViewId = `commandMenu:${faction}:bucket_assignment:${bucketId}`;
 
     form.label(`§7Rol: §f${bucket.label} §8(${totalEligibleUnits} unidades)`);
     form.spacer();
 
-    const feedbackPresenter = session.getOrCreateFeedbackPresenter("bucket_assignment", SYSTEM_PANEL_FEEDBACK_INITIAL);
+    const feedbackPresenter = session.getOrCreateFeedbackPresenter(feedbackViewId, SYSTEM_PANEL_FEEDBACK_INITIAL);
     form.label(feedbackPresenter.getObservable());
     form.spacer();
 
@@ -272,7 +273,7 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
       obs.subscribe((newIndex) => {
         if (newIndex < 0) return;
         const selectedGroup = groupOptions[newIndex]?.value ?? SpecialGroups.NO_GROUP;
-        applyGroupToNametag(player, faction, nt, selectedGroup);
+        applyGroupToNametag(player, faction, feedbackViewId, nt, selectedGroup);
       });
       form.dropdown(`${stripColorCodes(nt)}${ntCount > 1 ? ` (${ntCount})` : ""}`, obs, items);
       controls.push({ nametag: nt, obs, lastAppliedIndex: initialIndex >= 0 ? initialIndex : 0 });
@@ -331,7 +332,13 @@ function showBucketAssignment(player: Player, faction: TargetFaction, bucketId: 
   }
 }
 
-function applyGroupToNametag(player: Player, faction: TargetFaction, nametag: string, groupId: string): void {
+function applyGroupToNametag(
+  player: Player,
+  faction: TargetFaction,
+  feedbackViewId: string,
+  nametag: string,
+  groupId: string
+): void {
   try {
     const dimension = player.dimension;
     if (!dimension) {
@@ -382,7 +389,7 @@ function applyGroupToNametag(player: Player, faction: TargetFaction, nametag: st
 
     const session = commandMenuSessionStore.get(player.id);
     if (session) {
-      session.getOrCreateFeedbackPresenter("bucket_assignment", SYSTEM_PANEL_FEEDBACK_INITIAL).present({
+      session.getOrCreateFeedbackPresenter(feedbackViewId, SYSTEM_PANEL_FEEDBACK_INITIAL).present({
         context: groupLabel,
         value: `${nametag} (${appliedCount} unidades)`,
         status: "ok",

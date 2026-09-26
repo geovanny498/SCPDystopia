@@ -184,7 +184,7 @@ export class CommandMenuSession {
    * Devuelve el presenter de feedback para la vista indicada, creándolo si no
    * existe. El presenter se rehidrata desde `commandMenuSessionStore` si hay
    * una entry previa. Se destruye en `cleanup()`.
-   * @param viewId Identificador de la vista (`"system:movement"`, `"scope"`, etc.).
+   * @param viewId Identificador contextual de la vista (`"commandMenu:foundation:system:movement"`, por ejemplo).
    * @param initialText Texto inicial si no hay entry previa en el store.
    * @returns El presenter existente o recién creado.
    */

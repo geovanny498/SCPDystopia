@@ -2,6 +2,7 @@
 
 import { ObservableString } from "@minecraft/server-ui";
 import { debug } from "../../utils/debug.js";
+import { SYSTEM_SHORT_NAMES } from "./systemCatalog.js";
 
 /**
  * Estado semántico de una entrada de feedback DDUI. Determina el prefijo
@@ -151,6 +152,15 @@ export const SYSTEM_PANEL_FEEDBACK_INITIAL: string = formatFeedbackText({
   status: "idle",
   timestamp: 0,
   viewId: "system:*",
+});
+
+/** Texto inicial por defecto para la vista de prioridad de aplicación. */
+export const SCOPE_PANEL_FEEDBACK_INITIAL: string = formatFeedbackText({
+  context: SYSTEM_SHORT_NAMES.scope,
+  value: "N/A",
+  status: "idle",
+  timestamp: 0,
+  viewId: "commandMenu:*:scope",
 });
 
 /** Texto inicial por defecto para vistas del interactMenu. */

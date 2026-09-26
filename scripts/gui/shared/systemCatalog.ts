@@ -873,7 +873,7 @@ export const PANEL_DESCRIPTIONS: Record<string, string> = {
   groups: "Gestiona los grupos de unidades especiales.",
   groupsByFaction: "Selecciona una categoria para asignar grupos.",
   history: "§6Últimos cambios aplicados.",
-  scope: "Prioridad de aplicación de cambios. Los cambios se registran en el historial.",
+  scope: "Define si se respetan bloqueos o se aplica globalmente.",
   system: "Configura los sistemas de tus unidades.",
 };
 
@@ -981,7 +981,7 @@ export const ERROR_MESSAGES = {
 
 export const SCOPE_RESPECT_LABEL = "Respetar bloqueos";
 export const SCOPE_GLOBAL_LABEL = "Aplicar global";
-export const SCOPE_CONTEXT = "Prioridad de Aplicación";
+export const SCOPE_CONTEXT = "Modo";
 
 export const TOGGLE_ON_LABEL = "Activado";
 export const TOGGLE_OFF_LABEL = "Desactivado";
