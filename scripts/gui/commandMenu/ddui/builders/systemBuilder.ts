@@ -17,6 +17,7 @@ import {
   SystemId,
   isSystemVisibleForRole,
   isMenuFeatureVisible,
+  getSystemDefaultForKey,
   type CatalogSystem,
 } from "../../../shared/systemCatalog.js";
 import {
@@ -28,8 +29,15 @@ import { PlayerPermissionManager, FactionId } from "../../../shared/playerPermis
 import { commandMenuSessionStore } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
-import { SpecialGroups, Factions, FACTION_IDS, UnitHierarchyId, TargetFaction } from "../../../../constants/domains.js";
-import { getSystemDefaults } from "../../menu_config.js";
+import {
+  SpecialGroups,
+  Factions,
+  FACTION_IDS,
+  UnitHierarchyId,
+  TargetFaction,
+  type DefaultsKey,
+} from "../../../../constants/domains.js";
+import { getEntitySystemState, getSystemDefaults } from "../../menu_config.js";
 import { loadSystemStates, saveSystemAndUpdateMemory } from "../../core/menu_state.js";
 import { applySystemsToEntities } from "../../../commandMenu/core/menu_apply.js";
 import { scanActiveEntities } from "../../../commandMenu/model/menu_entity_scanner.js";
@@ -63,6 +71,12 @@ interface ToggleControlRecord extends BaseControl {
 }
 
 type ControlRecord = DropdownControlRecord | ToggleControlRecord;
+
+interface CountsAndNametags {
+  counts: Record<string, number>;
+  nametagsByKey: Record<string, Set<string>>;
+  differencesByKey: Record<string, Partial<Record<FactionId, number>>>;
+}
 
 function findOptionIndex(options: { value: string; label: string }[], value: unknown): number {
   if (value === undefined || value === null) return -1;
@@ -112,17 +126,19 @@ function buildDropdownItemsPlain(options: { label: string; value: unknown }[]): 
  * filtrando únicamente aquellas entidades actualmente elegibles según isEntityInScope.
  * @param {Dimension} dimension - Dimensión a evaluar
  * @param {string[]} factions - Lista de facciones a escanear
- * @returns {{ counts: Record<string, number>; nametagsByKey: Record<string, Set<string>> }} Conteos y nametags elegibles
+ * @param {SystemId} systemId - Sistema cuyo estado efectivo se diagnostica
+ * @param {Record<string, unknown>} visibleValues - Valores reales visibles por jerarquía/grupo
+ * @returns {CountsAndNametags} Conteos, nametags y diferencias elegibles por facción
  */
 function buildCountsAndNametags(
   dimension: Dimension,
-  factions: string[]
-): {
-  counts: Record<string, number>;
-  nametagsByKey: Record<string, Set<string>>;
-} {
+  factions: string[],
+  systemId: SystemId,
+  visibleValues: Record<string, unknown>
+): CountsAndNametags {
   const counts: Record<string, number> = {};
   const nametagsByKey: Record<string, Set<string>> = {};
+  const differencesByKey: Record<string, Partial<Record<FactionId, number>>> = {};
   const scope = loadScope();
 
   for (const fac of factions) {
@@ -134,6 +150,18 @@ function buildCountsAndNametags(
       const entityKey = se.isSpecial ? se.group : se.hierarchy;
       if (!entityKey) continue;
       counts[entityKey] = (counts[entityKey] || 0) + 1;
+
+      if (Object.prototype.hasOwnProperty.call(visibleValues, entityKey)) {
+        const registeredValue = getEntitySystemState(se.entity, systemId);
+        const effectiveValue =
+          registeredValue ?? getSystemDefaultForKey(systemId, se.faction as FactionId, entityKey as DefaultsKey);
+        if (effectiveValue !== visibleValues[entityKey]) {
+          const differencesByFaction = differencesByKey[entityKey] ?? {};
+          differencesByFaction[se.faction as FactionId] = (differencesByFaction[se.faction as FactionId] ?? 0) + 1;
+          differencesByKey[entityKey] = differencesByFaction;
+        }
+      }
+
       if (se.isSpecial && se.nametag) {
         if (!nametagsByKey[entityKey]) nametagsByKey[entityKey] = new Set();
         nametagsByKey[entityKey].add(stripColorCodes(se.nametag));
@@ -141,23 +169,61 @@ function buildCountsAndNametags(
     }
   }
 
-  return { counts, nametagsByKey };
+  return { counts, nametagsByKey, differencesByKey };
+}
+
+function buildVisibleValues(
+  controls: ControlRecord[],
+  systemOptions: { label: string; value: unknown; description?: string }[] | undefined
+): Record<string, unknown> {
+  const visibleValues: Record<string, unknown> = {};
+
+  for (const ctrl of controls) {
+    if (ctrl.kind === "dropdown") {
+      const selectedOption = systemOptions?.[ctrl.lastAppliedIndex] ?? systemOptions?.[0];
+      if (selectedOption !== undefined) {
+        visibleValues[ctrl.key] = selectedOption.value;
+      }
+    } else {
+      visibleValues[ctrl.key] = ctrl.lastValue;
+    }
+  }
+
+  return visibleValues;
 }
 
 function updateControlLabels(
   hierarchyControls: ControlRecord[],
   groupControls: ControlRecord[],
   counts: Record<string, number>,
-  nametagsByKey: Record<string, Set<string>>
+  nametagsByKey: Record<string, Set<string>>,
+  differencesByKey: Record<string, Partial<Record<FactionId, number>>>,
+  factions: FactionId[]
 ): void {
-  for (const ctrl of hierarchyControls) {
+  const buildLabelText = (ctrl: ControlRecord): string => {
     const count = counts[ctrl.key] || 0;
-    ctrl.labelObs.setData(`${stripColorCodes(ctrl.label)}: (${count})`);
+    const differences = differencesByKey[ctrl.key] ?? {};
+    const baseText = `${stripColorCodes(ctrl.label)}: (${count})`;
+
+    if (factions.length > 1) {
+      const foundationDifferent = differences[Factions.FOUNDATION] ?? 0;
+      const chaosDifferent = differences[Factions.CHAOS] ?? 0;
+      return foundationDifferent === 0 && chaosDifferent === 0
+        ? baseText
+        : `${baseText} · F:${foundationDifferent} C:${chaosDifferent} dif.`;
+    }
+
+    const different = differences[factions[0]] ?? 0;
+    return different === 0 ? baseText : `${baseText} · ${different} dif.`;
+  };
+
+  for (const ctrl of hierarchyControls) {
+    ctrl.labelObs.setData(buildLabelText(ctrl));
   }
 
   for (const ctrl of groupControls) {
     const count = counts[ctrl.key] || 0;
-    ctrl.labelObs.setData(`${stripColorCodes(ctrl.label)}: (${count})`);
+    ctrl.labelObs.setData(buildLabelText(ctrl));
 
     const nametagSet = nametagsByKey[ctrl.key];
     if (ctrl.descriptionObs) {
@@ -192,47 +258,20 @@ function buildControls(
   for (let i = 0; i < controlOptions.length; i++) {
     const opt = controlOptions[i];
     let initialValue: number | boolean = controlType === "dropdown" ? 0 : false;
-    let foundationValue: number | boolean | undefined;
-    let otherValue: number | boolean | undefined;
+    const referenceFaction = factions.length > 1 ? Factions.FOUNDATION : factions[0];
+    const referenceValue = initialStates[referenceFaction]?.[opt.value];
 
-    for (const fac of factions) {
-      const factionState = initialStates[fac as string] || {};
-      const currentValue = factionState[opt.value];
-      if (controlType === "dropdown") {
-        const foundIndex = findOptionIndex(systemOptionsForIndex, currentValue);
-        if (foundIndex >= 0) {
-          if (fac === Factions.FOUNDATION) foundationValue = foundIndex;
-          else if (otherValue === undefined) otherValue = foundIndex;
-          if (foundIndex !== initialValue && (foundIndex !== 0 || factions.indexOf(fac as any) === 0)) {
-            initialValue = foundIndex;
-          }
-        }
-      } else {
-        if (typeof currentValue === "boolean") {
-          if (fac === Factions.FOUNDATION) foundationValue = currentValue;
-          else if (otherValue === undefined) otherValue = currentValue;
-          initialValue = currentValue;
-        }
+    if (controlType === "dropdown") {
+      const foundIndex = findOptionIndex(systemOptionsForIndex, referenceValue);
+      if (foundIndex >= 0) {
+        initialValue = foundIndex;
       }
-    }
-
-    const hasDivergence =
-      factions.length > 1 &&
-      foundationValue !== undefined &&
-      otherValue !== undefined &&
-      foundationValue !== otherValue;
-
-    if (hasDivergence && controlType === "dropdown") {
-      initialValue = foundationValue as number;
+    } else if (typeof referenceValue === "boolean") {
+      initialValue = referenceValue;
     }
 
     const baseLabel = stripColorCodes(opt.label);
-    let labelText = `${baseLabel}: (0)`;
-    if (hasDivergence) {
-      labelText = `${baseLabel}: §e⚠ Valor distinto en Chaos`;
-    }
-
-    const labelObs = new ObservableString(labelText);
+    const labelObs = new ObservableString(`${baseLabel}: (0)`);
     const descObs = isGroup ? new ObservableString(`N/A`) : undefined;
 
     let disabled = false;
@@ -569,12 +608,29 @@ export function buildSystemView({
           isDropdown ? 0 : -1
         );
 
+        const refreshControlLabels = (): void => {
+          const visibleValues = buildVisibleValues([...hierarchyControls, ...groupControls], systemConfig.options);
+          const { counts, nametagsByKey, differencesByKey } = buildCountsAndNametags(
+            dimension,
+            factions,
+            systemId,
+            visibleValues
+          );
+          updateControlLabels(
+            hierarchyControls,
+            groupControls,
+            counts,
+            nametagsByKey,
+            differencesByKey,
+            factions
+          );
+        };
+
         let intervalId: number | null = null;
 
         intervalId = system.runInterval(() => {
           try {
-            const { counts, nametagsByKey } = buildCountsAndNametags(dimension, factions);
-            updateControlLabels(hierarchyControls, groupControls, counts, nametagsByKey);
+            refreshControlLabels();
           } catch (e) {
             debug("commandMenuDDUI", `Error en intervalo de contadores: ${e}`, { level: "warn", color: "yellow" });
           }
@@ -590,6 +646,7 @@ export function buildSystemView({
               if (idx === ctrl.lastAppliedIndex) return;
               if (idx < 0) return;
               const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
+              const appliedIndex = systemConfig.options![idx] === undefined ? 0 : idx;
               const entry = applySystemToEntitiesForSystem(
                 ctrl.key,
                 selectedOption.value,
@@ -601,6 +658,7 @@ export function buildSystemView({
                 targetFaction,
                 ctrl.label
               );
+              ctrl.lastAppliedIndex = appliedIndex;
               if (feedbackPresenter && entry) {
                 feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
               } else if (feedbackPresenter) {
@@ -610,7 +668,6 @@ export function buildSystemView({
                   status: "error",
                 });
               }
-              ctrl.lastAppliedIndex = idx;
             });
           } else {
             ctrl.obs.subscribe((enabled: boolean) => {
@@ -626,6 +683,7 @@ export function buildSystemView({
                 targetFaction,
                 ctrl.label
               );
+              ctrl.lastValue = enabled;
               if (feedbackPresenter && entry) {
                 feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
               } else if (feedbackPresenter) {
@@ -635,7 +693,6 @@ export function buildSystemView({
                   status: "error",
                 });
               }
-              ctrl.lastValue = enabled;
             });
           }
         }
@@ -646,6 +703,7 @@ export function buildSystemView({
               if (idx === ctrl.lastAppliedIndex) return;
               if (idx < 0) return;
               const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
+              const appliedIndex = systemConfig.options![idx] === undefined ? 0 : idx;
               const entry = applySystemToEntitiesForSystem(
                 ctrl.key,
                 selectedOption.value,
@@ -657,6 +715,7 @@ export function buildSystemView({
                 targetFaction,
                 ctrl.label
               );
+              ctrl.lastAppliedIndex = appliedIndex;
               if (feedbackPresenter && entry) {
                 feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
               } else if (feedbackPresenter) {
@@ -666,7 +725,6 @@ export function buildSystemView({
                   status: "error",
                 });
               }
-              ctrl.lastAppliedIndex = idx;
             });
           } else {
             ctrl.obs.subscribe((enabled: boolean) => {
@@ -682,6 +740,7 @@ export function buildSystemView({
                 targetFaction,
                 ctrl.label
               );
+              ctrl.lastValue = enabled;
               if (feedbackPresenter && entry) {
                 feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
               } else if (feedbackPresenter) {
@@ -691,13 +750,11 @@ export function buildSystemView({
                   status: "error",
                 });
               }
-              ctrl.lastValue = enabled;
             });
           }
         }
 
-        const { counts, nametagsByKey } = buildCountsAndNametags(dimension, factions);
-        updateControlLabels(hierarchyControls, groupControls, counts, nametagsByKey);
+        refreshControlLabels();
         form.spacer();
         form.button(stripColorCodes(BACK_BUTTON_LABEL), () => {
           closeReason = "navigation";
