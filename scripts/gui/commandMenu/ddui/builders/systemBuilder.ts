@@ -1,7 +1,14 @@
 // scripts/gui/commandMenu/ddui/builders/systemBuilder.ts
 
 import { Player, Dimension, Entity, system } from "@minecraft/server";
-import { CustomForm, ObservableNumber, ObservableBoolean, ObservableString } from "@minecraft/server-ui";
+import {
+  CustomForm,
+  ObservableNumber,
+  ObservableBoolean,
+  ObservableString,
+  type DropdownOptions,
+  type ToggleOptions,
+} from "@minecraft/server-ui";
 import { debug } from "../../../../utils/debug.js";
 import {
   CATALOG_SYSTEMS,
@@ -19,14 +26,16 @@ import {
   isMenuFeatureVisible,
   getSystemDefaultForKey,
   type CatalogSystem,
+  type OptionValue,
+  type SystemOption,
 } from "../../../shared/systemCatalog.js";
 import {
   SYSTEM_PANEL_FEEDBACK_INITIAL,
   type DDUIFeedbackEntry,
-  DDUIFeedbackStatus,
+  type DDUIFeedbackPresenter,
 } from "../../../shared/dduiFeedback.js";
 import { PlayerPermissionManager, FactionId } from "../../../shared/playerPermissionManager.js";
-import { commandMenuSessionStore } from "../sessionStore.js";
+import { commandMenuSessionStore, type CommandMenuSession } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
 import {
@@ -42,6 +51,7 @@ import { loadSystemStates, saveSystemAndUpdateMemory } from "../../core/menu_sta
 import { applySystemsToEntities } from "../../../commandMenu/core/menu_apply.js";
 import { scanActiveEntities } from "../../../commandMenu/model/menu_entity_scanner.js";
 import { loadScope, isEntityInScope } from "../../../commandMenu/model/menu_scope.js";
+import type { EntityFactionInfo } from "../../../commandMenu/model/menu_faction.js";
 
 export interface SystemViewParams {
   systemId: SystemId;
@@ -78,24 +88,23 @@ interface CountsAndNametags {
   differencesByKey: Record<string, Partial<Record<FactionId, number>>>;
 }
 
-function findOptionIndex(options: { value: string; label: string }[], value: unknown): number {
+function findOptionIndex(options: readonly SystemOption[], value: unknown): number {
   if (value === undefined || value === null) return -1;
-  const strValue = typeof value === "boolean" ? String(value) : String(value);
+  const strValue = String(value);
   const found = options.findIndex((opt) => opt.value === strValue);
   return found;
 }
 
 function buildInitialState(
   systemId: SystemId,
-  factions: string[],
-  key: string
+  factions: readonly FactionId[]
 ): Record<string, Record<string, unknown>> {
   const loadedStates = loadSystemStates([systemId]);
   const defaults = getSystemDefaults(systemId);
   const result: Record<string, Record<string, unknown>> = {};
   for (const fac of factions) {
     const loadedFaction = (loadedStates[systemId]?.[fac] as Record<string, unknown>) || {};
-    const defaultFaction = (defaults[fac as FactionId] as Record<string, unknown>) || {};
+    const defaultFaction = (defaults[fac] as Record<string, unknown>) || {};
     const merged: Record<string, unknown> = { ...defaultFaction };
     for (const k of Object.keys(loadedFaction)) {
       if (loadedFaction[k] !== undefined) {
@@ -108,7 +117,7 @@ function buildInitialState(
 }
 
 function buildDropdownItems(
-  options: { label: string; value: unknown; description?: string }[]
+  options: SystemOption[]
 ): { label: string; value: number; description?: string }[] {
   return options.map((o, idx) => ({
     label: stripColorCodes(o.label),
@@ -117,7 +126,7 @@ function buildDropdownItems(
   }));
 }
 
-function buildDropdownItemsPlain(options: { label: string; value: unknown }[]): { label: string; value: number }[] {
+function buildDropdownItemsPlain(options: SystemOption[]): { label: string; value: number }[] {
   return options.map((o, idx) => ({ label: stripColorCodes(o.label), value: idx }));
 }
 
@@ -125,14 +134,14 @@ function buildDropdownItemsPlain(options: { label: string; value: unknown }[]): 
  * Construye los conteos por jerarquía/grupo y el conjunto de nametags de entidades especiales,
  * filtrando únicamente aquellas entidades actualmente elegibles según isEntityInScope.
  * @param {Dimension} dimension - Dimensión a evaluar
- * @param {string[]} factions - Lista de facciones a escanear
+ * @param {readonly FactionId[]} factions - Lista de facciones a escanear
  * @param {SystemId} systemId - Sistema cuyo estado efectivo se diagnostica
  * @param {Record<string, unknown>} visibleValues - Valores reales visibles por jerarquía/grupo
  * @returns {CountsAndNametags} Conteos, nametags y diferencias elegibles por facción
  */
 function buildCountsAndNametags(
   dimension: Dimension,
-  factions: string[],
+  factions: readonly FactionId[],
   systemId: SystemId,
   visibleValues: Record<string, unknown>
 ): CountsAndNametags {
@@ -174,7 +183,7 @@ function buildCountsAndNametags(
 
 function buildVisibleValues(
   controls: ControlRecord[],
-  systemOptions: { label: string; value: unknown; description?: string }[] | undefined
+  systemOptions: SystemOption[] | undefined
 ): Record<string, unknown> {
   const visibleValues: Record<string, unknown> = {};
 
@@ -198,7 +207,7 @@ function updateControlLabels(
   counts: Record<string, number>,
   nametagsByKey: Record<string, Set<string>>,
   differencesByKey: Record<string, Partial<Record<FactionId, number>>>,
-  factions: FactionId[]
+  factions: readonly FactionId[]
 ): void {
   const buildLabelText = (ctrl: ControlRecord): string => {
     const count = counts[ctrl.key] || 0;
@@ -242,27 +251,25 @@ function updateControlLabels(
 
 function buildControls(
   controlOptions: { value: string; label: string }[],
-  systemOptions: { label: string; value: unknown; description?: string }[] | undefined,
   initialStates: Record<string, Record<string, unknown>>,
-  factions: string[],
+  factions: readonly FactionId[],
   form: CustomForm,
-  controlType: "dropdown" | "toggle",
   isGroup: boolean,
   systemConfig: CatalogSystem,
   visibleObs?: ObservableBoolean,
   firstVisibleIndex: number = -1
 ): ControlRecord[] {
   const controls: ControlRecord[] = [];
-  const systemOptionsForIndex = systemOptions?.map((o) => ({ value: String(o.value), label: o.label })) ?? [];
+  const { controlType, options: systemOptions } = systemConfig;
+  const referenceFaction = factions.length > 1 ? Factions.FOUNDATION : factions[0];
 
   for (let i = 0; i < controlOptions.length; i++) {
     const opt = controlOptions[i];
     let initialValue: number | boolean = controlType === "dropdown" ? 0 : false;
-    const referenceFaction = factions.length > 1 ? Factions.FOUNDATION : factions[0];
     const referenceValue = initialStates[referenceFaction]?.[opt.value];
 
     if (controlType === "dropdown") {
-      const foundIndex = findOptionIndex(systemOptionsForIndex, referenceValue);
+      const foundIndex = findOptionIndex(systemOptions ?? [], referenceValue);
       if (foundIndex >= 0) {
         initialValue = foundIndex;
       }
@@ -282,14 +289,14 @@ function buildControls(
 
     if (controlType === "dropdown") {
       const obs = new ObservableNumber(initialValue as number, { clientWritable: true });
-      const dropdownOptions: Record<string, unknown> = {};
+      const dropdownOptions: DropdownOptions = {};
       if (disabled) dropdownOptions.disabled = true;
-      if (isGroup) dropdownOptions.description = descObs;
+      if (isGroup && descObs) dropdownOptions.description = descObs;
       if (visibleObs) dropdownOptions.visible = visibleObs;
       form.dropdown(
         labelObs,
         obs,
-        controlType === "dropdown" && i === firstVisibleIndex
+        i === firstVisibleIndex
           ? buildDropdownItems(systemOptions ?? [])
           : buildDropdownItemsPlain(systemOptions ?? []),
         Object.keys(dropdownOptions).length > 0 ? dropdownOptions : undefined
@@ -305,7 +312,7 @@ function buildControls(
       });
     } else {
       const obs = new ObservableBoolean(initialValue as boolean, { clientWritable: true });
-      const toggleOptions: Record<string, unknown> = {};
+      const toggleOptions: ToggleOptions = {};
       if (disabled) toggleOptions.disabled = true;
       if (isGroup && descObs) toggleOptions.description = descObs;
       if (visibleObs) toggleOptions.visible = visibleObs;
@@ -327,18 +334,18 @@ function buildControls(
 
 function applySystemToEntitiesForSystem(
   key: string,
-  value: unknown,
+  value: OptionValue,
   valueLabel: string,
-  factions: string[],
+  factions: readonly FactionId[],
   dimension: Dimension,
   systemId: SystemId,
   player: Player,
-  targetFaction: string | undefined,
+  targetFaction: TargetFaction | undefined,
   label: string
 ): DDUIFeedbackEntry | null {
   try {
     const appliedEntries: string[] = [];
-    const allEligible: { entity: Entity; factionInfo: any }[] = [];
+    const allEligible: { entity: Entity; factionInfo: EntityFactionInfo }[] = [];
     const scope = loadScope();
 
     for (const fac of factions) {
@@ -393,7 +400,7 @@ function applySystemToEntitiesForSystem(
     });
 
     const summary = appliedEntries.length > 0 ? appliedEntries.join(" | ") : "0 unidades";
-    const displayName = getSystemShortName(systemId);
+    const systemShortName = getSystemShortName(systemId);
 
     const partialState: Record<string, Record<string, unknown>> = {};
     for (const fac of factions) {
@@ -413,7 +420,7 @@ function applySystemToEntitiesForSystem(
         addHistoryEntry({
           playerName: player.name,
           faction: fac,
-          systemShortName: getSystemShortName(systemId),
+          systemShortName,
           key: label,
           value: valueLabel,
         });
@@ -422,16 +429,16 @@ function applySystemToEntitiesForSystem(
       addHistoryEntry({
         playerName: player.name,
         faction: targetFaction ?? Factions.FOUNDATION,
-        systemShortName: getSystemShortName(systemId),
+        systemShortName,
         key: label,
         value: valueLabel,
       });
     }
 
     return {
-      context: displayName,
+      context: systemShortName,
       value: `${label}: ${valueLabel} (${summary})`,
-      status: "ok" as DDUIFeedbackStatus,
+      status: "ok",
       timestamp: Date.now(),
       viewId: `commandMenu:${targetFaction ?? Factions.FOUNDATION}:system:${systemId}`,
     };
@@ -441,6 +448,122 @@ function applySystemToEntitiesForSystem(
       color: "red",
     });
     return null;
+  }
+}
+
+function resolveSystemViewFilter(
+  player: Player,
+  targetFaction: TargetFaction | undefined,
+  isAdmin: boolean,
+  viewFilter: SystemViewParams["viewFilter"],
+  session: CommandMenuSession | undefined
+): { canFilter: boolean; resolvedViewFilter: "all" | "hierarchy" | "specials" } {
+  let canFilter = isAdmin;
+  if (!canFilter) {
+    if (targetFaction === "both") {
+      const foundationRole = PlayerPermissionManager.getPlayerRole(player, Factions.FOUNDATION);
+      const chaosRole = PlayerPermissionManager.getPlayerRole(player, Factions.CHAOS);
+      canFilter =
+        isMenuFeatureVisible("scope", foundationRole, false, "foundation") ||
+        isMenuFeatureVisible("scope", chaosRole, false, "chaos");
+    } else if (targetFaction) {
+      const scopeRole = PlayerPermissionManager.getPlayerRole(player, targetFaction as FactionId);
+      canFilter = isMenuFeatureVisible("scope", scopeRole, false, targetFaction);
+    }
+  }
+
+  if (!canFilter) {
+    return { canFilter, resolvedViewFilter: "specials" };
+  }
+
+  let persistedFilter: "all" | "hierarchy" | "specials" | undefined;
+  try {
+    const dp = player.getDynamicProperty("scpd_system_view_filter");
+    if (dp === "all" || dp === "hierarchy" || dp === "specials") {
+      persistedFilter = dp;
+    }
+  } catch {
+    // DP no disponible
+  }
+
+  return {
+    canFilter,
+    resolvedViewFilter:
+      viewFilter ??
+      persistedFilter ??
+      (session?.formState.systemViewFilter as "all" | "hierarchy" | "specials" | undefined) ??
+      "all",
+  };
+}
+
+function subscribeToSystemControls(
+  hierarchyControls: ControlRecord[],
+  groupControls: ControlRecord[],
+  feedbackPresenter: DDUIFeedbackPresenter | null,
+  systemConfig: CatalogSystem,
+  factions: readonly FactionId[],
+  dimension: Dimension,
+  systemId: SystemId,
+  player: Player,
+  targetFaction: TargetFaction | undefined
+): void {
+  const systemOptions = systemConfig.options;
+
+  for (const ctrl of [...hierarchyControls, ...groupControls]) {
+    if (ctrl.kind === "dropdown") {
+      ctrl.obs.subscribe((idx: number) => {
+        if (idx === ctrl.lastAppliedIndex) return;
+        if (idx < 0) return;
+        const selectedOption = systemOptions![idx] ?? systemOptions![0];
+        const appliedIndex = systemOptions![idx] === undefined ? 0 : idx;
+        const entry = applySystemToEntitiesForSystem(
+          ctrl.key,
+          selectedOption.value,
+          selectedOption.label,
+          factions,
+          dimension,
+          systemId,
+          player,
+          targetFaction,
+          ctrl.label
+        );
+        ctrl.lastAppliedIndex = appliedIndex;
+        if (feedbackPresenter && entry) {
+          feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
+        } else if (feedbackPresenter) {
+          feedbackPresenter.present({
+            context: systemConfig.displayName,
+            value: ERROR_MESSAGES.APPLY,
+            status: "error",
+          });
+        }
+      });
+    } else {
+      ctrl.obs.subscribe((enabled: boolean) => {
+        if (enabled === ctrl.lastValue) return;
+        const entry = applySystemToEntitiesForSystem(
+          ctrl.key,
+          enabled,
+          enabled ? TOGGLE_ON_LABEL : TOGGLE_OFF_LABEL,
+          factions,
+          dimension,
+          systemId,
+          player,
+          targetFaction,
+          ctrl.label
+        );
+        ctrl.lastValue = enabled;
+        if (feedbackPresenter && entry) {
+          feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
+        } else if (feedbackPresenter) {
+          feedbackPresenter.present({
+            context: systemConfig.displayName,
+            value: ERROR_MESSAGES.APPLY,
+            status: "error",
+          });
+        }
+      });
+    }
   }
 }
 
@@ -454,7 +577,7 @@ export function buildSystemView({
   const systemConfig = CATALOG_SYSTEMS[systemId];
   if (!systemConfig) {
     return () => {
-      player.sendMessage("§c[SCPDystopia] Sistema no encontrado.");
+      player.sendMessage(ERROR_MESSAGES.SYSTEM_NOT_FOUND);
     };
   }
 
@@ -476,9 +599,9 @@ export function buildSystemView({
       const form = new CustomForm(player, `${PANEL_TITLES.system} - ${systemConfig.displayName}`);
 
       const dimension = player.dimension;
-      const factions: FactionId[] =
+      const factions: readonly FactionId[] =
         targetFaction === "both" ? FACTION_IDS : [(targetFaction ?? Factions.FOUNDATION) as FactionId];
-      const initialStates = buildInitialState(systemId, factions, systemId);
+      const initialStates = buildInitialState(systemId, factions);
       const session = commandMenuSessionStore.get(player.id);
 
       const feedbackPresenter = session
@@ -498,40 +621,13 @@ export function buildSystemView({
       }
 
       if ((systemConfig.controlType === "dropdown" && systemConfig.options) || systemConfig.controlType === "toggle") {
-        const isAdmin = PlayerPermissionManager.isAdmin(player);
-        let canFilter = isAdmin;
-        if (!canFilter) {
-          if (targetFaction === "both") {
-            const foundationRole = PlayerPermissionManager.getPlayerRole(player, Factions.FOUNDATION);
-            const chaosRole = PlayerPermissionManager.getPlayerRole(player, Factions.CHAOS);
-            canFilter =
-              isMenuFeatureVisible("scope", foundationRole, false, "foundation") ||
-              isMenuFeatureVisible("scope", chaosRole, false, "chaos");
-          } else if (targetFaction) {
-            const role = PlayerPermissionManager.getPlayerRole(player, targetFaction as FactionId);
-            canFilter = isMenuFeatureVisible("scope", role, false, targetFaction);
-          }
-        }
-
-        let resolvedViewFilter: "all" | "hierarchy" | "specials";
-        if (canFilter) {
-          let persistedFilter: "all" | "hierarchy" | "specials" | undefined;
-          try {
-            const dp = player.getDynamicProperty("scpd_system_view_filter");
-            if (dp === "all" || dp === "hierarchy" || dp === "specials") {
-              persistedFilter = dp;
-            }
-          } catch {
-            // DP no disponible
-          }
-          resolvedViewFilter =
-            viewFilter ??
-            persistedFilter ??
-            (session?.formState.systemViewFilter as "all" | "hierarchy" | "specials" | undefined) ??
-            "all";
-        } else {
-          resolvedViewFilter = "specials";
-        }
+        const { canFilter, resolvedViewFilter } = resolveSystemViewFilter(
+          player,
+          targetFaction,
+          isAdmin,
+          viewFilter,
+          session
+        );
 
         const hierarchyVisibleObs = new ObservableBoolean(
           resolvedViewFilter === "all" || resolvedViewFilter === "hierarchy"
@@ -577,17 +673,14 @@ export function buildSystemView({
 
         const hierarchyControls = buildControls(
           HIERARCHY_OPTIONS,
-          systemConfig.options!,
           initialStates,
           factions,
           form,
-          systemConfig.controlType,
           false,
           systemConfig,
           hierarchyVisibleObs,
           isDropdown ? 0 : -1
         );
-        // form.spacer({ visible: hierarchyVisibleObs });
 
         form.spacer({ visible: groupVisibleObs });
         form.header(SYSTEM_VIEW_FILTER_OPTIONS.find((o) => o.value === "specials")!.label, {
@@ -597,11 +690,9 @@ export function buildSystemView({
 
         const groupControls = buildControls(
           SPECIAL_GROUP_OPTIONS,
-          systemConfig.options!,
           initialStates,
           factions,
           form,
-          systemConfig.controlType,
           true,
           systemConfig,
           groupVisibleObs,
@@ -626,9 +717,7 @@ export function buildSystemView({
           );
         };
 
-        let intervalId: number | null = null;
-
-        intervalId = system.runInterval(() => {
+        const intervalId = system.runInterval(() => {
           try {
             refreshControlLabels();
           } catch (e) {
@@ -640,119 +729,17 @@ export function buildSystemView({
           session.registerInterval(intervalId);
         }
 
-        for (const ctrl of hierarchyControls) {
-          if (ctrl.kind === "dropdown") {
-            ctrl.obs.subscribe((idx: number) => {
-              if (idx === ctrl.lastAppliedIndex) return;
-              if (idx < 0) return;
-              const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
-              const appliedIndex = systemConfig.options![idx] === undefined ? 0 : idx;
-              const entry = applySystemToEntitiesForSystem(
-                ctrl.key,
-                selectedOption.value,
-                selectedOption.label,
-                factions,
-                dimension,
-                systemId,
-                player,
-                targetFaction,
-                ctrl.label
-              );
-              ctrl.lastAppliedIndex = appliedIndex;
-              if (feedbackPresenter && entry) {
-                feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
-              } else if (feedbackPresenter) {
-                feedbackPresenter.present({
-                  context: systemConfig.displayName,
-                  value: "Error al aplicar",
-                  status: "error",
-                });
-              }
-            });
-          } else {
-            ctrl.obs.subscribe((enabled: boolean) => {
-              if (enabled === ctrl.lastValue) return;
-              const entry = applySystemToEntitiesForSystem(
-                ctrl.key,
-                enabled,
-                enabled ? TOGGLE_ON_LABEL : TOGGLE_OFF_LABEL,
-                factions,
-                dimension,
-                systemId,
-                player,
-                targetFaction,
-                ctrl.label
-              );
-              ctrl.lastValue = enabled;
-              if (feedbackPresenter && entry) {
-                feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
-              } else if (feedbackPresenter) {
-                feedbackPresenter.present({
-                  context: systemConfig.displayName,
-                  value: ERROR_MESSAGES.APPLY,
-                  status: "error",
-                });
-              }
-            });
-          }
-        }
-
-        for (const ctrl of groupControls) {
-          if (ctrl.kind === "dropdown") {
-            ctrl.obs.subscribe((idx: number) => {
-              if (idx === ctrl.lastAppliedIndex) return;
-              if (idx < 0) return;
-              const selectedOption = systemConfig.options![idx] ?? systemConfig.options![0];
-              const appliedIndex = systemConfig.options![idx] === undefined ? 0 : idx;
-              const entry = applySystemToEntitiesForSystem(
-                ctrl.key,
-                selectedOption.value,
-                selectedOption.label,
-                factions,
-                dimension,
-                systemId,
-                player,
-                targetFaction,
-                ctrl.label
-              );
-              ctrl.lastAppliedIndex = appliedIndex;
-              if (feedbackPresenter && entry) {
-                feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
-              } else if (feedbackPresenter) {
-                feedbackPresenter.present({
-                  context: systemConfig.displayName,
-                  value: ERROR_MESSAGES.APPLY,
-                  status: "error",
-                });
-              }
-            });
-          } else {
-            ctrl.obs.subscribe((enabled: boolean) => {
-              if (enabled === ctrl.lastValue) return;
-              const entry = applySystemToEntitiesForSystem(
-                ctrl.key,
-                enabled,
-                enabled ? TOGGLE_ON_LABEL : TOGGLE_OFF_LABEL,
-                factions,
-                dimension,
-                systemId,
-                player,
-                targetFaction,
-                ctrl.label
-              );
-              ctrl.lastValue = enabled;
-              if (feedbackPresenter && entry) {
-                feedbackPresenter.present({ context: entry.context, value: entry.value, status: entry.status });
-              } else if (feedbackPresenter) {
-                feedbackPresenter.present({
-                  context: systemConfig.displayName,
-                  value: ERROR_MESSAGES.APPLY,
-                  status: "error",
-                });
-              }
-            });
-          }
-        }
+        subscribeToSystemControls(
+          hierarchyControls,
+          groupControls,
+          feedbackPresenter,
+          systemConfig,
+          factions,
+          dimension,
+          systemId,
+          player,
+          targetFaction
+        );
 
         refreshControlLabels();
         form.spacer();
@@ -782,7 +769,7 @@ export function buildSystemView({
                   level: "debug",
                   color: "gray",
                 });
-                if (session && intervalId !== null) {
+                if (session) {
                   session.unregisterInterval(intervalId);
                 }
                 if (returnTo === "advanced") {
