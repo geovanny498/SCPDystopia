@@ -1,6 +1,6 @@
 // scripts/gui/commandMenu/ddui/builders/systemBuilder.ts
 
-import { Player, Dimension, Entity, system } from "@minecraft/server";
+import { Player, Dimension, system } from "@minecraft/server";
 import {
   CustomForm,
   ObservableNumber,
@@ -48,10 +48,14 @@ import {
 } from "../../../../constants/domains.js";
 import { getEntitySystemState, getSystemDefaults } from "../../menu_config.js";
 import { loadSystemStates, saveSystemAndUpdateMemory } from "../../core/menu_state.js";
-import { applySystemsToEntities } from "../../../commandMenu/core/menu_apply.js";
+import {
+  applySystemsToEntities,
+  type EligibleSoldier,
+} from "../../../commandMenu/core/menu_apply.js";
 import { scanActiveEntities } from "../../../commandMenu/model/menu_entity_scanner.js";
 import { loadScope, isEntityInScope } from "../../../commandMenu/model/menu_scope.js";
-import type { EntityFactionInfo } from "../../../commandMenu/model/menu_faction.js";
+import { isSystemBlockedForEntity } from "../../../commandMenu/model/menu_faction.js";
+import type { SystemFactionState, SystemState } from "../../../commandMenu/model/menu_system_state.js";
 
 export interface SystemViewParams {
   systemId: SystemId;
@@ -98,14 +102,14 @@ function findOptionIndex(options: readonly SystemOption[], value: unknown): numb
 function buildInitialState(
   systemId: SystemId,
   factions: readonly FactionId[]
-): Record<string, Record<string, unknown>> {
+): SystemState {
   const loadedStates = loadSystemStates([systemId]);
   const defaults = getSystemDefaults(systemId);
-  const result: Record<string, Record<string, unknown>> = {};
+  const result: SystemState = {};
   for (const fac of factions) {
-    const loadedFaction = (loadedStates[systemId]?.[fac] as Record<string, unknown>) || {};
-    const defaultFaction = (defaults[fac] as Record<string, unknown>) || {};
-    const merged: Record<string, unknown> = { ...defaultFaction };
+    const loadedFaction: SystemFactionState = loadedStates[systemId]?.[fac] || {};
+    const defaultFaction: SystemFactionState = defaults[fac] || {};
+    const merged: SystemFactionState = { ...defaultFaction };
     for (const k of Object.keys(loadedFaction)) {
       if (loadedFaction[k] !== undefined) {
         merged[k] = loadedFaction[k];
@@ -132,17 +136,17 @@ function buildDropdownItemsPlain(options: SystemOption[]): { label: string; valu
 
 /**
  * Construye los conteos por jerarquía/grupo y el conjunto de nametags de entidades especiales,
- * filtrando únicamente aquellas entidades actualmente elegibles según isEntityInScope.
+ * filtrando únicamente entidades elegibles según scope y compatibilidad de catálogo.
  * @param {Dimension} dimension - Dimensión a evaluar
  * @param {readonly FactionId[]} factions - Lista de facciones a escanear
- * @param {SystemId} systemId - Sistema cuyo estado efectivo se diagnostica
+ * @param {CatalogSystem} systemConfig - Sistema cuya elegibilidad y estado efectivo se diagnostican
  * @param {Record<string, unknown>} visibleValues - Valores reales visibles por jerarquía/grupo
  * @returns {CountsAndNametags} Conteos, nametags y diferencias elegibles por facción
  */
 function buildCountsAndNametags(
   dimension: Dimension,
   factions: readonly FactionId[],
-  systemId: SystemId,
+  systemConfig: CatalogSystem,
   visibleValues: Record<string, unknown>
 ): CountsAndNametags {
   const counts: Record<string, number> = {};
@@ -156,14 +160,17 @@ function buildCountsAndNametags(
       if (!isEntityInScope(se.entity, se.faction, scope, se.nametag)) {
         continue;
       }
+      if (isSystemBlockedForEntity(systemConfig, se.entity)) continue;
+
       const entityKey = se.isSpecial ? se.group : se.hierarchy;
       if (!entityKey) continue;
       counts[entityKey] = (counts[entityKey] || 0) + 1;
 
       if (Object.prototype.hasOwnProperty.call(visibleValues, entityKey)) {
-        const registeredValue = getEntitySystemState(se.entity, systemId);
+        const registeredValue = getEntitySystemState(se.entity, systemConfig.id);
         const effectiveValue =
-          registeredValue ?? getSystemDefaultForKey(systemId, se.faction as FactionId, entityKey as DefaultsKey);
+          registeredValue ??
+          getSystemDefaultForKey(systemConfig.id, se.faction as FactionId, entityKey as DefaultsKey);
         if (effectiveValue !== visibleValues[entityKey]) {
           const differencesByFaction = differencesByKey[entityKey] ?? {};
           differencesByFaction[se.faction as FactionId] = (differencesByFaction[se.faction as FactionId] ?? 0) + 1;
@@ -251,7 +258,7 @@ function updateControlLabels(
 
 function buildControls(
   controlOptions: { value: string; label: string }[],
-  initialStates: Record<string, Record<string, unknown>>,
+  initialStates: SystemState,
   factions: readonly FactionId[],
   form: CustomForm,
   isGroup: boolean,
@@ -338,19 +345,18 @@ function applySystemToEntitiesForSystem(
   valueLabel: string,
   factions: readonly FactionId[],
   dimension: Dimension,
-  systemId: SystemId,
+  systemConfig: CatalogSystem,
   player: Player,
   targetFaction: TargetFaction | undefined,
   label: string
 ): DDUIFeedbackEntry | null {
   try {
-    const appliedEntries: string[] = [];
-    const allEligible: { entity: Entity; factionInfo: EntityFactionInfo }[] = [];
+    const systemId = systemConfig.id;
+    const allEligible: EligibleSoldier[] = [];
     const scope = loadScope();
 
     for (const fac of factions) {
       const scanResult = scanActiveEntities(dimension, fac);
-      let totalAffected = 0;
 
       for (const se of scanResult.entities) {
         if (se.faction !== fac) continue;
@@ -363,33 +369,27 @@ function applySystemToEntitiesForSystem(
         if (!isEntityInScope(se.entity, se.faction, scope, se.nametag)) {
           continue;
         }
+        if (isSystemBlockedForEntity(systemConfig, se.entity)) continue;
 
         allEligible.push({
           entity: se.entity,
           factionInfo: {
-            faction: se.faction,
+            faction: fac,
             isSpecial: se.isSpecial,
             nametag: se.nametag,
             hierarchy: se.hierarchy,
             group: se.group || (se.isSpecial ? SpecialGroups.NO_GROUP : null),
           },
         });
-        totalAffected++;
-      }
-
-      if (totalAffected > 0) {
-        appliedEntries.push(
-          `${FACTION_DISPLAY_NAMES[fac as keyof typeof FACTION_DISPLAY_NAMES] ?? fac}: ${totalAffected}`
-        );
       }
     }
 
-    const systemOverrideState: Record<string, Record<string, unknown>> = {};
+    const systemOverrideState: SystemState = {};
     for (const fac of factions) {
       systemOverrideState[fac] = { [key]: value };
     }
 
-    applySystemsToEntities(allEligible, [systemId], {
+    const { successes } = applySystemsToEntities(allEligible, [systemId], {
       player,
       skipCompatibilityCheck: true,
       cached: {
@@ -399,10 +399,22 @@ function applySystemToEntitiesForSystem(
       },
     });
 
+    const appliedEntries: string[] = [];
+    for (const fac of factions) {
+      const appliedCount = successes.filter(
+        (success) => success.systemId === systemId && success.faction === fac
+      ).length;
+      if (appliedCount > 0) {
+        appliedEntries.push(
+          `${FACTION_DISPLAY_NAMES[fac as keyof typeof FACTION_DISPLAY_NAMES] ?? fac}: ${appliedCount}`
+        );
+      }
+    }
+
     const summary = appliedEntries.length > 0 ? appliedEntries.join(" | ") : "0 unidades";
     const systemShortName = getSystemShortName(systemId);
 
-    const partialState: Record<string, Record<string, unknown>> = {};
+    const partialState: SystemState = {};
     for (const fac of factions) {
       partialState[fac] = { [key]: value };
     }
@@ -443,7 +455,7 @@ function applySystemToEntitiesForSystem(
       viewId: `commandMenu:${targetFaction ?? Factions.FOUNDATION}:system:${systemId}`,
     };
   } catch (e) {
-    debug("commandMenuDDUI", `§cError§r aplicando control §b${systemId}§r [§b${key}§r]: ${e}`, {
+    debug("commandMenuDDUI", `§cError§r aplicando control §b${systemConfig.id}§r [§b${key}§r]: ${e}`, {
       level: "error",
       color: "red",
     });
@@ -503,7 +515,6 @@ function subscribeToSystemControls(
   systemConfig: CatalogSystem,
   factions: readonly FactionId[],
   dimension: Dimension,
-  systemId: SystemId,
   player: Player,
   targetFaction: TargetFaction | undefined
 ): void {
@@ -522,7 +533,7 @@ function subscribeToSystemControls(
           selectedOption.label,
           factions,
           dimension,
-          systemId,
+          systemConfig,
           player,
           targetFaction,
           ctrl.label
@@ -547,7 +558,7 @@ function subscribeToSystemControls(
           enabled ? TOGGLE_ON_LABEL : TOGGLE_OFF_LABEL,
           factions,
           dimension,
-          systemId,
+          systemConfig,
           player,
           targetFaction,
           ctrl.label
@@ -704,7 +715,7 @@ export function buildSystemView({
           const { counts, nametagsByKey, differencesByKey } = buildCountsAndNametags(
             dimension,
             factions,
-            systemId,
+            systemConfig,
             visibleValues
           );
           updateControlLabels(
@@ -736,7 +747,6 @@ export function buildSystemView({
           systemConfig,
           factions,
           dimension,
-          systemId,
           player,
           targetFaction
         );

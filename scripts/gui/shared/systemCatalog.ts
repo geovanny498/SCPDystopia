@@ -521,7 +521,7 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
       // [UnitHierarchy.LEADER]: true, //no definido → habilitado
       // [UnitHierarchy.COMMANDER]: true, //no definido → habilitado
     },
-    // Compatibilidad por familia (interactMenu)
+    // Compatibilidad por entidad según sus familias
     allowedFamilies: [
       "hierarchy_leader", // Líderes pueden usar spawn
       "hierarchy_commander", // Comandantes pueden usar spawn (con excepciones)

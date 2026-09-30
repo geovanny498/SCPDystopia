@@ -10,12 +10,13 @@ import {
 import { debug } from "../../../utils/debug.js";
 import { systems, invalidateScanCache, invalidateEntityQueryCache, getEntitiesCached } from "../menu_config.js";
 import { loadSystemOrDefault } from "./menu_state.js";
-import { shouldApplyToFutureEntities, canApplySystem, SystemState } from "../menu_rules.js";
+import { shouldApplyToFutureEntities, canApplySystem } from "../menu_rules.js";
 import { getEntityFactionInfo, isValidSoldier } from "../model/menu_faction.js";
 import { loadScope, isEntityInScope } from "../model/menu_scope.js";
 import { applySystemToEntity } from "./menu_apply.js";
 import { teamFamilies } from "../../../utils/teams.js";
 import { ENTITY_GROUP_DP } from "../../shared/entityGroups.js";
+import type { AllSystemStates, SystemState } from "../model/menu_system_state.js";
 
 /**
  * Lista de soldados conocidos (independiente de toggle_system)
@@ -25,7 +26,7 @@ const menuSoldiers: string[] = [];
 /**
  * Estados de sistemas en memoria (independiente de toggle_system)
  */
-const menuSystemStates: Record<string, SystemState> = {};
+const menuSystemStates: AllSystemStates = {};
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // §  ESTADOS DE SISTEMAS
@@ -49,8 +50,10 @@ function loadAllSystemStates() {
 
 /**
  * Obtiene los estados en memoria (para menu_apply.ts)
+ *
+ * @returns Colección dispersa de estados cargados por sistema.
  */
-export function getMenuSystemStates(): Record<string, SystemState> {
+export function getMenuSystemStates(): AllSystemStates {
   return menuSystemStates;
 }
 
@@ -152,7 +155,7 @@ function handleSoldierEntity(ent: Entity, { forceApply = false } = {}) {
       // Verificar compatibilidad
       const compatResult = canApplySystem(
         systemId,
-        menuSystemStates as Record<string, Record<string, SystemState>>,
+        menuSystemStates,
         faction,
         isSpecial
       );
@@ -215,8 +218,12 @@ export function initializeMenuEvents() {
 
 /**
  * Actualiza el estado de un sistema en memoria
+ *
+ * @param systemId - ID textual del sistema actualizado.
+ * @param state - Estado completo que sustituirá al valor en memoria.
+ * @returns No devuelve ningún valor.
  */
-export function updateMenuSystemState(systemId: string, state: SystemState) {
+export function updateMenuSystemState(systemId: string, state: SystemState): void {
   menuSystemStates[systemId] = state;
   debug("menuEvents", `Estado actualizado en memoria: §a${systemId}§r`, { color: "gray", level: "debug" });
 }

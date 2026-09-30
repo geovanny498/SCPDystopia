@@ -1,5 +1,5 @@
 // scripts/gui/commandMenu/menu_apply.ts
-import { world, system, Entity, Player } from "@minecraft/server";
+import { system, Entity, Player, Dimension } from "@minecraft/server";
 import { debug } from "../../../utils/debug.js";
 import {
   ControlType,
@@ -7,18 +7,66 @@ import {
   setEntitySystemState,
   getEntitySystemState,
   SpecialGroups,
-  UnitHierarchy,
   formatEntitySystemStateLabel,
 } from "../menu_config.js";
-import { CATALOG_SYSTEMS, SYSTEM_SHORT_NAMES, type SystemId } from "../../shared/systemCatalog.js";
+import {
+  CATALOG_SYSTEMS,
+  SYSTEM_SHORT_NAMES,
+  type CatalogSystem,
+  type SystemId,
+} from "../../shared/systemCatalog.js";
 import { entityHistoryStore } from "../../shared/entityHistory.js";
 import { canApplySystem } from "../menu_rules.js";
-import { getEntityFactionInfo, isValidSoldier, getEntityConfigValue } from "../model/menu_faction.js";
-import { loadScope, isEntityInScope } from "../model/menu_scope.js";
+import {
+  getEntityFactionInfo,
+  isValidSoldier,
+  getEntityConfigValue,
+  isSystemBlockedForEntity,
+  type EntityFactionInfo,
+} from "../model/menu_faction.js";
+import { isEntityInScope, type ScopeData } from "../model/menu_scope.js";
 import { getAllAddonEntitiesInDimensions } from "../../../utils/entityQuery.js";
+import type { AllSystemStates, SystemState } from "../model/menu_system_state.js";
 
 // eventos que, al activarse, deberían intentar domesticar la entidad
 import { isAutoTameEvent } from "../menu_config.js";
+
+/** Configuración mínima que el ejecutor necesita del catálogo o del shim legacy. */
+export type SystemExecutionConfig = Pick<CatalogSystem, "controlType" | "displayName">;
+
+/** Datos precomputados que puede reutilizar una aplicación individual o masiva. */
+export interface ApplySystemCache {
+  systemStates?: AllSystemStates;
+}
+
+/** Entidad y contexto de facción aceptados por el aplicador masivo. */
+export interface EligibleSoldier {
+  entity: Entity;
+  factionInfo: EntityFactionInfo;
+}
+
+/** Aplicación individual que terminó con éxito dentro de un lote. */
+export interface SystemApplicationSuccess {
+  readonly systemId: SystemId;
+  readonly faction: EntityFactionInfo["faction"];
+}
+
+/** Resultado observable de una aplicación masiva de sistemas. */
+export interface ApplySystemsResult {
+  readonly successes: readonly SystemApplicationSuccess[];
+}
+
+/** Opciones existentes para la aplicación masiva de sistemas. */
+export interface ApplySystemsOptions {
+  player?: Player | null;
+  skipCompatibilityCheck?: boolean;
+  cached?: ApplySystemCache;
+}
+
+/** Accessors de estado inyectados desde `menu_events.ts` para evitar un ciclo de imports. */
+export interface MenuEventAccessors {
+  getMenuSystemStates: () => AllSystemStates;
+}
 
 /**
  * Registra en el historial por entidad un cambio de sistema aplicado por
@@ -33,7 +81,7 @@ import { isAutoTameEvent } from "../menu_config.js";
 function recordCommandHistory(
   ent: Entity,
   systemId: string,
-  systemConfig: any,
+  systemConfig: SystemExecutionConfig,
   configValue: unknown,
   player: Player | null
 ): void {
@@ -51,10 +99,14 @@ function recordCommandHistory(
 }
 
 // Importar funciones de menu_events (se inyectarán para evitar ciclos)
-let _getMenuSystemStates: any = null;
+let _getMenuSystemStates: MenuEventAccessors["getMenuSystemStates"] | null = null;
 
-// Exportar funciones de acceso para uso externo
-export function getMenuSystemStates(): any {
+/**
+ * Obtiene los estados en memoria mediante el accessor inyectado.
+ *
+ * @returns Estados disponibles o una colección vacía antes de la inyección.
+ */
+export function getMenuSystemStates(): AllSystemStates {
   return _getMenuSystemStates ? _getMenuSystemStates() : {};
 }
 
@@ -118,9 +170,12 @@ export function tryAutoTame(ent: Entity, player: Player): void {
 }
 
 /**
- * Inyecta las funciones de menu_events para evitar importaciones circulares
+ * Inyecta las funciones de `menu_events` para evitar importaciones circulares.
+ *
+ * @param accessors - Accessors del estado compartido del menú.
+ * @returns No devuelve ningún valor.
  */
-export function injectMenuEventAccessors(accessors: { getMenuSystemStates: () => any }): void {
+export function injectMenuEventAccessors(accessors: MenuEventAccessors): void {
   _getMenuSystemStates = accessors.getMenuSystemStates;
 }
 
@@ -142,26 +197,30 @@ function safeTriggerEvent(ent: Entity, eventName: string, player: Player | null 
 }
 
 /**
- * Aplica un sistema a una entidad específica usando eventos de la configuración
- * @param systemId
- * @param systemConfig
- * @param ent
- * @param stateOverride
- * @param skipCompatibilityCheck
- * @param factionInfoOverride
- * @param player
- * @param cached
- * @returns boolean indicando si el sistema se aplicó exitosamente
+ * Aplica un sistema a una entidad específica usando eventos de la configuración.
+ * La compatibilidad entidad ↔ catálogo se comprueba siempre; el flag de omisión
+ * solo afecta a los requisitos entre sistemas evaluados por `canApplySystem`.
+ *
+ * @param systemId - ID del sistema que se aplicará.
+ * @param systemConfig - Configuración usada por el flujo de ejecución actual.
+ * @param ent - Entidad objetivo.
+ * @param stateOverride - Estado específico que sustituye temporalmente al guardado.
+ * @param skipCompatibilityCheck - Omite únicamente requisitos entre sistemas.
+ * @param factionInfoOverride - Contexto de facción ya calculado para la entidad.
+ * @param player - Jugador que inició la acción, si corresponde.
+ * @param cached - Datos precomputados para aplicaciones masivas.
+ * @returns `true` solo cuando la aplicación terminó con éxito; `false` ante
+ * incompatibilidad de entidad, validación fallida o error runtime del evento.
  */
 export function applySystemToEntity(
   systemId: string,
-  systemConfig: any,
+  systemConfig: SystemExecutionConfig,
   ent: Entity,
-  stateOverride: any = null,
+  stateOverride: SystemState | null = null,
   skipCompatibilityCheck = false,
-  factionInfoOverride: any = null,
+  factionInfoOverride: EntityFactionInfo | null = null,
   player: Player | null = null,
-  cached: any = {} // Datos precomputados para aplicaciones masivas
+  cached: ApplySystemCache = {} // Datos precomputados para aplicaciones masivas
 ): boolean {
   // DEBUG CACHE: Verificar si la cache se está usando en applySystemToEntity
   const cacheUsed = !!cached?.systemStates;
@@ -174,7 +233,11 @@ export function applySystemToEntity(
   try {
     if (!ent || !isValidSoldier(ent)) return false;
 
-    const systemStates = cached?.systemStates || (_getMenuSystemStates ? _getMenuSystemStates() : {});
+    const catalogSystem = CATALOG_SYSTEMS[systemId as SystemId];
+    if (!catalogSystem || isSystemBlockedForEntity(catalogSystem, ent)) return false;
+
+    const systemStates: AllSystemStates =
+      cached.systemStates ?? (_getMenuSystemStates ? _getMenuSystemStates() : {});
     const state = stateOverride || systemStates[systemId];
 
     if (!state) {
@@ -220,7 +283,7 @@ export function applySystemToEntity(
     }
 
     const factionState = state[faction];
-    if (!factionState) {
+    if (!factionState || typeof factionState !== "object" || Array.isArray(factionState)) {
       debug("menuApply:entity", `Sistema §a${systemId}§r: §cSin configuración§r para §a${faction}§r`, {
         level: "warn",
         color: "yellow",
@@ -322,11 +385,14 @@ export function applySystemToEntity(
  * @param scope - Scope opcional para filtrar entidades
  * @returns Lista de entidades elegibles con su información de facción
  */
-export function getEligibleSoldiers(dimensions: any[], scope: any = null): any[] {
-  const seen = new Set();
-  const eligible = [];
+export function getEligibleSoldiers(
+  dimensions: Dimension[],
+  scope: ScopeData | null = null
+): EligibleSoldier[] {
+  const seen = new Set<string>();
+  const eligible: EligibleSoldier[] = [];
 
-  const entities = getAllAddonEntitiesInDimensions(dimensions as any);
+  const entities = getAllAddonEntitiesInDimensions(dimensions);
   for (const ent of entities) {
     if (!ent?.id || seen.has(ent.id)) continue;
     seen.add(ent.id);
@@ -346,12 +412,18 @@ export function getEligibleSoldiers(dimensions: any[], scope: any = null): any[]
 }
 
 /**
- * Aplica múltiples sistemas a un conjunto de entidades ya filtradas
- * @param eligibleSoldiers
- * @param systemIds
- * @param options
+ * Aplica múltiples sistemas a un conjunto de entidades ya filtradas.
+ *
+ * @param eligibleSoldiers - Entidades y contextos de facción que se evaluarán.
+ * @param systemIds - IDs de los sistemas que se intentarán aplicar.
+ * @param options - Contexto opcional del jugador, compatibilidad y estados cacheados.
+ * @returns Registros correspondientes exclusivamente a aplicaciones exitosas.
  */
-export function applySystemsToEntities(eligibleSoldiers: any[], systemIds: string[], options: any = {}): void {
+export function applySystemsToEntities(
+  eligibleSoldiers: readonly EligibleSoldier[],
+  systemIds: readonly string[],
+  options: ApplySystemsOptions = {}
+): ApplySystemsResult {
   const { player = null, skipCompatibilityCheck = false, cached = {} } = options;
 
   // DEBUG CACHE: Verificar si la cache se está usando
@@ -366,7 +438,7 @@ export function applySystemsToEntities(eligibleSoldiers: any[], systemIds: strin
 
   let totalChecked = 0;
   let skippedNoChange = 0;
-  let appliedCount = 0;
+  const successes: SystemApplicationSuccess[] = [];
 
   for (const { entity, factionInfo } of eligibleSoldiers) {
     for (const systemId of systemIds) {
@@ -434,49 +506,20 @@ export function applySystemsToEntities(eligibleSoldiers: any[], systemIds: strin
           systemStates,
         }
       );
-      if (applied) appliedCount++;
+      if (applied) {
+        successes.push({
+          systemId: systemConfig.id,
+          faction: factionInfo.faction,
+        });
+      }
     }
   }
 
   debug(
     "menuApply",
-    `applySystemsToEntities: ${totalChecked} verificados, ${skippedNoChange} §csin cambios§r, ${appliedCount} aplicados`,
+    `applySystemsToEntities: ${totalChecked} verificados, ${skippedNoChange} §csin cambios§r, ${successes.length} aplicados`,
     { level: "debug", color: "aqua" }
   );
-}
 
-/**
- * Aplica un sistema a todas las entidades usando eventos de la configuración
- */
-export function applySystemWithEvents(
-  systemId: string,
-  systemConfig: any,
-  dimension: any = null,
-  player: Player | null = null
-): void {
-  try {
-    const dims = dimension
-      ? [dimension]
-      : ["overworld", "nether", "the_end"].map((id) => world.getDimension(id)).filter(Boolean);
-
-    const scope = loadScope();
-
-    // Log para diagnosticar estados
-    debug("menuApply", `=== Aplicando sistema §a${systemId}§r ===`, { level: "debug", color: "aqua" });
-
-    const cached = {
-      systemStates: _getMenuSystemStates ? _getMenuSystemStates() : {},
-    };
-
-    const eligible = getEligibleSoldiers(dims as any, scope);
-    applySystemsToEntities(eligible, [systemId], { player, cached });
-
-    const dimLabel = dimension ? ((dimension as any).id ?? "custom") : "all";
-    debug("menuApply", `Sistema §a${systemId}§r aplicado a ${eligible.length} entidades en dim=${dimLabel}`, {
-      level: "debug",
-      color: "green",
-    });
-  } catch (e) {
-    debug("menuApply", `§cError§r en applySystemWithEvents(§a${systemId}§r): ${e}`, { level: "error", color: "red" });
-  }
+  return { successes };
 }

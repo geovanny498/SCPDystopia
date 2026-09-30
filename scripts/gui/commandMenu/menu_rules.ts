@@ -9,14 +9,8 @@
  */
 
 import { debug } from "../../utils/debug.js";
-
-export type SystemState = {
-  mode?: string;
-  enable?: boolean;
-  includeSpecial?: boolean;
-} & Record<string, unknown>;
-
-export type AllSystemStates = Record<string, Record<string, SystemState>>;
+import type { FactionId } from "../../constants/domains.js";
+import type { AllSystemStates } from "./model/menu_system_state.js";
 
 /**
  * Definición de reglas de compatibilidad para cada sistema
@@ -105,16 +99,17 @@ export function getSystemRules(systemId: string) {
 
 /**
  * Verifica si un sistema puede aplicarse según sus reglas de compatibilidad
- * @param {string} systemId - ID del sistema a verificar
- * @param {Object} allSystemStates - Estados de todos los sistemas { systemId: { faction: { mode/enable, includeSpecial } } }
- * @param {string} faction - "foundation" | "chaos"
- * @param {boolean} isSpecial - Si la entidad es especial
- * @returns {Object} - { canApply: boolean, reason: string }
+ *
+ * @param systemId - ID del sistema a verificar.
+ * @param allSystemStates - Colección dispersa de estados por sistema y facción.
+ * @param faction - Facción de la entidad evaluada.
+ * @param isSpecial - Si la entidad es especial.
+ * @returns Resultado de compatibilidad y motivo de la decisión.
  */
 export function canApplySystem(
   systemId: string,
   allSystemStates: AllSystemStates,
-  faction: string,
+  faction: FactionId,
   isSpecial: boolean
 ) {
   const rules = getSystemRules(systemId);
@@ -146,7 +141,8 @@ export function canApplySystem(
     }
 
     const requiredState = allSystemStates[requiredSystemId];
-    if (!requiredState || !requiredState[faction]) {
+    const factionState = requiredState?.[faction];
+    if (!factionState) {
       debug("menuRules:compat", `No hay estado para §b${requiredSystemId}§r en faction §a${faction}§r`, {
         level: "warn",
         color: "yellow",
@@ -156,8 +152,6 @@ export function canApplySystem(
         reason: `No hay estado para ${requiredSystemId}`,
       };
     }
-
-    const factionState = requiredState[faction];
 
     // Obtener el valor actual (mode para dropdown, enable para toggle)
     const currentValue = isSpecial
@@ -232,16 +226,16 @@ export function shouldApplyToFutureEntities(systemId: string, isSpawn: boolean =
 
 /**
  * Filtra los sistemas que deben aplicarse según las reglas de compatibilidad
- * @param {Array<string>} systemIds - IDs de sistemas a aplicar
- * @param {Object} allSystemStates - Estados de todos los sistemas
- * @param {string} faction - "foundation" | "chaos"
- * @param {boolean} isSpecial - Si la entidad es especial
- * @returns {Array<string>} - IDs de sistemas que pueden aplicarse
+ * @param systemIds - IDs de sistemas a aplicar.
+ * @param allSystemStates - Colección dispersa de estados por sistema y facción.
+ * @param faction - Facción de la entidad evaluada.
+ * @param isSpecial - Si la entidad es especial.
+ * @returns IDs de sistemas que pueden aplicarse.
  */
 export function filterApplicableSystems(
   systemIds: string[],
   allSystemStates: AllSystemStates,
-  faction: string,
+  faction: FactionId,
   isSpecial: boolean
 ) {
   return systemIds.filter((systemId) => {

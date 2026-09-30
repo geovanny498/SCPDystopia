@@ -14,11 +14,13 @@ import { Factions, UnitHierarchy, SpecialGroups } from "../menu_config.js";
 import { getUnitGroup } from "./menu_groups.js";
 import { getTeam, teamFamilies } from "../../../utils/teams.js";
 import { debug } from "../../../utils/debug.js";
-import type { CatalogSystem } from "../../shared/systemCatalog.js";
-import type { UnitHierarchyId } from "../../../constants/domains.js";
+import type { CatalogSystem, OptionValue } from "../../shared/systemCatalog.js";
+import type { FactionId, UnitHierarchyId } from "../../../constants/domains.js";
+import type { SystemFactionState } from "./menu_system_state.js";
 
+/** Contexto de facción, especialidad y agrupación resuelto para una entidad. */
 export interface EntityFactionInfo {
-  faction: string;
+  faction: FactionId;
   isSpecial: boolean;
   nametag: string;
   hierarchy: string | null;
@@ -35,7 +37,7 @@ const HIERARCHY_FAMILIES: Record<string, string> = {
 
 // ── Detección de facción por familias ───────────────────────────────────────
 
-function detectFactionByFamilies(ent: Entity): string | null {
+function detectFactionByFamilies(ent: Entity): FactionId | null {
   const typeFamilies = ent.getComponent(EntityComponentTypes.TypeFamily);
   if (!typeFamilies) return null;
 
@@ -72,6 +74,8 @@ function detectHierarchyByEntity(ent: Entity): string | null {
 /**
  * Determina toda la información de facción de una entidad.
  * Sin listas hardcodeadas de unidades.
+ * @param ent - Entidad cuyo contexto de facción se resolverá.
+ * @returns Información de facción o `null` cuando no pertenece a un bando válido.
  */
 export function getEntityFactionInfo(ent: Entity): EntityFactionInfo | null {
   if (!ent) return null;
@@ -162,9 +166,16 @@ export function isValidSoldier(ent: Entity): boolean {
 
 /**
  * Obtiene el valor de configuración que aplica a una entidad según su jerarquía/grupo.
- * systemState tiene la forma: { faction: { grupo_o_jerarquia: valor, ... }, ... }
+ * El estado recibido corresponde exclusivamente al fragmento de una facción.
+ *
+ * @param systemState - Valores de una sola facción, si el sistema los tiene configurados.
+ * @param factionInfo - Contexto de jerarquía, grupo y nametag de la entidad.
+ * @returns Valor aplicable o `undefined` cuando no existe una configuración coincidente.
  */
-export function getEntityConfigValue(systemState: Record<string, unknown>, factionInfo: EntityFactionInfo): unknown {
+export function getEntityConfigValue(
+  systemState: SystemFactionState | undefined,
+  factionInfo: EntityFactionInfo
+): OptionValue | undefined {
   if (!systemState) return undefined;
 
   // systemState es el objeto de la facción: { basic/leader/commander/groupA-D/noGroup: valor }
@@ -208,7 +219,8 @@ export function getEntityFamilies(ent: Entity): string[] {
  * 2. Si `system.allowedFamilies` está definido y la entidad NO tiene ninguna → true
  * 3. En otro caso → false
  *
- * Aplica a: interactMenu DDUI únicamente
+ * Política compartida para consumidores que ya disponen de las familias.
+ * Permite reutilizar un mismo array al evaluar varios sistemas.
  *
  * @param system - Configuración del sistema desde el catálogo
  * @param families - Familias de la entidad (de getEntityFamilies)
@@ -231,6 +243,19 @@ export function isSystemBlockedByFamilies(system: CatalogSystem, families: strin
 
   // Paso 3: Si no hay restricciones o pasa ambas, permitir
   return false;
+}
+
+/**
+ * Indica si una entidad está bloqueada para un sistema según sus familias.
+ * Delega la interpretación del catálogo en `isSystemBlockedByFamilies` para
+ * mantener una única política de compatibilidad.
+ *
+ * @param system - Configuración canónica del sistema.
+ * @param entity - Entidad cuya compatibilidad se evaluará.
+ * @returns `true` cuando la entidad no es elegible para el sistema.
+ */
+export function isSystemBlockedForEntity(system: CatalogSystem, entity: Entity): boolean {
+  return isSystemBlockedByFamilies(system, getEntityFamilies(entity));
 }
 
 /**
