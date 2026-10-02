@@ -3,7 +3,7 @@ dist/
 lib/
 *.mcaddon
 *.mcpack
-
+.codex
 # Logs
 *.log
 npm-debug.log*
