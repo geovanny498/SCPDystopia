@@ -22,4 +22,4 @@ event entity @e[type=lc:dt_epsilon6c] humanoid:start_teleport
 
 event entity @e[type=lc:dt_alpha1] humanoid:start_teleport
 event entity @e[type=lc:dt_alpha1l] humanoid:start_teleport
-event entity @e[type=lc:dt_alpha1c] humanoid:start_teleport
+event entity @e[type=lc:dt_delta1c] humanoid:start_teleport

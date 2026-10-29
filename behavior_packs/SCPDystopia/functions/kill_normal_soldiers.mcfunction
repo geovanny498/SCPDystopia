@@ -4,10 +4,12 @@ tag @e[family=chaos_insurgency] add eliminar
 
 tag @e[name="§c§lMTF Delta-1 Chara"] remove eliminar
 
+tag @e[name="§d§lMTF Delta-1 Steve"] remove eliminar
+tag @e[name="§d§lMTF Delta-1 Alex"] remove eliminar
+tag @e[name="§d§lMTF Delta-1 Anonymous"] remove eliminar
 tag @e[name="§d§lMTF Delta-1 Frisk"] remove eliminar
-tag @e[name="§d§lMTF Delta-1 Commander"] remove eliminar
+tag @e[name="§d§lMTF Delta-1 ErrorUnry"] remove eliminar
 tag @e[name="§d§lMTF Delta-1 Mita"] remove eliminar
-tag @e[name="§d§lMTF Delta-1 Leader"] remove eliminar
 
 tag @e[name="§lMTF Alpha-1 Commander"] remove eliminar
 tag @e[name="§lMTF Alpha-1 Commander 2"] remove eliminar

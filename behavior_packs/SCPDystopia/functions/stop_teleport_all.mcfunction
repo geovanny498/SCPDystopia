@@ -22,6 +22,6 @@ event entity @e[type=lc:dt_epsilon6c] humanoid:stop_teleport
 
 event entity @e[type=lc:dt_alpha1] humanoid:stop_teleport
 event entity @e[type=lc:dt_alpha1l] humanoid:stop_teleport
-event entity @e[type=lc:dt_alpha1c] humanoid:stop_teleport
+event entity @e[type=lc:dt_delta1c] humanoid:stop_teleport
 event entity @e[type=lc:dt_chara] humanoid:stop_teleport
 event entity @e[type=lc:dt_thedeath] humanoid:stop_teleport

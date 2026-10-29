@@ -7,7 +7,7 @@ export const teamGroups: Record<string, Set<string>> = {
   foundation: new Set([
     "lc:dt_chara",
     "lc:dt_thedeath",
-    "lc:dt_alpha1c",
+    "lc:dt_delta1c",
     "lc:dt_alpha1l",
     "lc:dt_alpha1",
     "lc:dt_epsilon11c",

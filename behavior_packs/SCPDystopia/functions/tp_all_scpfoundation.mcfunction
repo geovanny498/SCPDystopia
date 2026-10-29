@@ -16,7 +16,7 @@ tp @e[type=lc:dt_epsilon6c] @s
 
 tp @e[type=lc:dt_alpha1] @s
 tp @e[type=lc:dt_alpha1l] @s
-tp @e[type=lc:dt_alpha1c] @s
+tp @e[type=lc:dt_delta1c] @s
 
 tp @e[type=lc:dt_chara] @s
 tp @e[type=lc:dt_thedeath] @s

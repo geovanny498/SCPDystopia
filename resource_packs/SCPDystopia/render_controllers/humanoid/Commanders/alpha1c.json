@@ -1,28 +1,32 @@
 {
-    "format_version": "1.8.0",
-    "render_controllers": {
-        "controller.render.alpha1c": {
-            "arrays": {
-                "geometries": {
-                    "Array.geos": [ 
-                        "Geometry.alpha1c",
-                        "Geometry.alpha2c",
-                        "Geometry.alpha1cf",
-                        "Geometry.alpha2cf"
-                    ]
-                },
-                "textures": {
-                    "Array.skins": [
-                        "Texture.alpha1c",
-                        "Texture.alpha2c",
-                        "Texture.alpha1cf",
-                        "Texture.alpha2cf"
-                    ]
-                }
-            },
-            "geometry": "Array.geos[query.variant]",
-            "materials": [ { "*": "Material.default" } ],
-            "textures": [ "Array.skins[query.variant]" ]
+  "format_version": "1.8.0",
+  "render_controllers": {
+    "controller.render.delta1c": {
+      "arrays": {
+        "geometries": {
+          "Array.geos": [
+            "Geometry.delta1c_1",
+            "Geometry.delta1c_f1",
+            "Geometry.delta1c_2",
+            "Geometry.delta1c_f2",
+            "Geometry.delta1c_3",
+            "Geometry.delta1c_f3"
+          ]
+        },
+        "textures": {
+          "Array.skins": [
+            "Texture.delta1c_1",
+            "Texture.delta1c_f1",
+            "Texture.delta1c_2",
+            "Texture.delta1c_f2",
+            "Texture.delta1c_3",
+            "Texture.delta1c_f3"
+          ]
         }
+      },
+      "geometry": "Array.geos[query.variant]",
+      "materials": [{ "*": "Material.default" }],
+      "textures": ["Array.skins[query.variant]"]
     }
+  }
 }

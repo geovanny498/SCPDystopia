@@ -91,8 +91,6 @@ export interface CatalogSystem {
   displayName: string;
   controlType: "dropdown" | "toggle";
   options?: SystemOption[];
-  eventTrue?: string;
-  eventFalse?: string;
   description: string;
   category: CategoryId;
   dynamicProperty: string;
@@ -101,8 +99,6 @@ export interface CatalogSystem {
   supportsHierarchy: boolean;
   supportsGroups: boolean;
   defaults: Record<FactionId, Record<DefaultsKey, OptionValue>>;
-  labelTrue?: string;
-  labelFalse?: string;
   minRole?: RoleId;
   blockedByHierarchy?: Partial<Record<UnitHierarchyId, boolean>>;
   allowedFamilies?: string[];
@@ -122,34 +118,34 @@ export const MOVEMENT_OPTIONS: SystemOption[] = [
   {
     value: "follow_close",
     label: "§aSeguir jugador (Cerca)",
-    description: "Escolta cercana. Teletransporte de combate activo",
+    description: "§aEscolta cercana. Teletransporte de combate activo",
     eventStart: "humanoid:set_tamed_close",
     autoTame: true,
   },
   {
     value: "follow_mid",
     label: "§eSeguir jugador (Media)",
-    description: "Grupo extendido. Unidades de apoyo",
+    description: "§eGrupo extendido. Unidades de apoyo",
     eventStart: "humanoid:set_tamed_mid",
     autoTame: true,
   },
   {
     value: "follow_far",
     label: "§6Seguir jugador (Lejos)",
-    description: "Grupo operando separado. Mantiene posición relativa",
+    description: "§6Grupo operando separado. Mantiene posición relativa",
     eventStart: "humanoid:set_tamed_far",
     autoTame: true,
   },
   {
     value: "free",
     label: "§9Caminar libremente",
-    description: "Autonomía total. Sin dueño ni teletransporte",
+    description: "§9Autonomía total. Sin dueño ni teletransporte",
     eventStart: "mtf:to_move_free",
   },
   {
     value: "stop",
     label: "§cDetenerse",
-    description: "Guardia estática. Mantiene ataque y rotación activos",
+    description: "§cGuardia estática. Mantiene ataque y rotación activos",
     eventStart: "mtf:to_stop",
   },
 ];
@@ -158,31 +154,31 @@ export const FIRE_OPTIONS: SystemOption[] = [
   {
     value: "maximum",
     label: "§cMáxima",
-    description: "Detección máxima. Guerra y defensa. Hasta ~48m-64m según unidad",
+    description: "§cDetección máxima. Guerra y defensa. Hasta ~48m-64m según unidad",
     eventStart: "humanoid:fire_maximum",
   },
   {
     value: "advanced",
     label: "§9Avanzada",
-    description: "Combate ofensivo. Ataque controlado. Hasta ~36m-48m según unidad",
+    description: "§9Combate ofensivo. Ataque controlado. Hasta ~36m-48m según unidad",
     eventStart: "humanoid:fire_advanced",
   },
   {
     value: "intermediate",
     label: "§aIntermedia",
-    description: "Exploración estándar. Cobertura general. Hasta ~26m-34m según unidad",
+    description: "§aExploración estándar. Cobertura general. Hasta ~26m-34m según unidad",
     eventStart: "humanoid:fire_intermediate",
   },
   {
     value: "close",
     label: "§bCercana",
-    description: "CQB y escolta. Interiores cerrados. Hasta ~16m-22m según unidad",
+    description: "§bCQB y escolta. Interiores cerrados. Hasta ~16m-22m según unidad",
     eventStart: "humanoid:fire_close",
   },
   {
     value: "neutral",
     label: "§eNeutral / Sigilo",
-    description: "Sin detección visual. Pasa desapercibido. Solo responde al daño",
+    description: "§eSin detección visual. Pasa desapercibido. Solo responde al daño",
     eventStart: "humanoid:fire_neutral",
   },
 ];
@@ -191,19 +187,19 @@ export const TELEPORT_OPTIONS: SystemOption[] = [
   {
     value: "normal",
     label: "§aModerado",
-    description: "Teletransporta hacia el enemigo si está a más de ~30m",
+    description: "§aTeletransporta hacia el enemigo si está a más de ~30m",
     eventStart: "humanoid:start_teleport",
   },
   {
     value: "near",
     label: "§6Cercano",
-    description: "Teletransporta hacia el enemigo si está a más de ~15m",
+    description: "§6Teletransporta hacia el enemigo si está a más de ~15m",
     eventStart: "humanoid:start_teleport_near",
   },
   {
     value: "false",
     label: "§cDesactivado",
-    description: "Avanza hacia el enemigo usando solo navegación a pie",
+    description: "§cAvanza hacia el enemigo usando solo navegación a pie",
     eventStop: "humanoid:stop_teleport",
   },
 ];
@@ -281,26 +277,73 @@ export const ARMAMENT_OPTIONS: SystemOption[] = [
   {
     value: "low",
     label: "§7Bajo",
-    description: "Armamento básico; prioriza subfusiles y armas de bajo daño.",
+    description: "§7Armamento básico; prioriza subfusiles y armas de bajo daño.",
     eventStart: "humanoid:armament_low",
   },
   {
     value: "standard",
     label: "§eEstándar",
-    description: "Armamento equilibrado por unidad (predeterminado).",
+    description: "§eArmamento equilibrado por unidad (predeterminado).",
     eventStart: "humanoid:armament_standard",
   },
   {
     value: "high",
     label: "§6Alto",
-    description: "Escalada táctica; mayor acceso a armas de asalto de alto rendimiento.",
+    description: "§6Escalada táctica; mayor acceso a armas de asalto de alto rendimiento.",
     eventStart: "humanoid:armament_high",
   },
   {
     value: "extreme",
     label: "§cExtremo",
-    description: "Combate intenso; mayor preferencia por armamento de élite.",
+    description: "§cCombate intenso; mayor preferencia por armamento de élite.",
     eventStart: "humanoid:armament_extreme",
+  },
+];
+
+// ── Opciones de sistemas toggle ─────────────────────────────────────────────
+
+export const SPAWN_OPTIONS: SystemOption[] = [
+  {
+    value: "true",
+    label: "§aActivar",
+    description: "§aEl spawn de refuerzos está activado§7. Se generan unidades cada cierto tiempo",
+    eventStart: "humanoid:start_spawn_soldiers",
+  },
+  {
+    value: "false",
+    label: "§cDesactivar",
+    description: "§cEl spawn de refuerzos está desactivado§7. No se generan refuerzos",
+    eventStop: "humanoid:stop_spawn_soldiers",
+  },
+];
+
+export const HEALTH_OPTIONS: SystemOption[] = [
+  {
+    value: "true",
+    label: "§aMostrar",
+    description: "§aLa barra de vida está visible§7. Se muestra la salud de la unidad",
+    eventStart: "humanoid:show_boss_bar",
+  },
+  {
+    value: "false",
+    label: "§cOcultar",
+    description: "§cLa barra de vida está oculta§7. No se muestra la salud de la unidad",
+    eventStop: "humanoid:dont_show_boss_bar",
+  },
+];
+
+export const INVINCIBLE_OPTIONS: SystemOption[] = [
+  {
+    value: "true",
+    label: "§aActivar",
+    description: "§aLa entidad es invulnerable§7. Ignora todo el daño recibido",
+    eventStart: "humanoid:start_invincible",
+  },
+  {
+    value: "false",
+    label: "§cDesactivar",
+    description: "§cLa entidad vuelve a recibir daño§7. La invulnerabilidad está desactivada",
+    eventStop: "humanoid:stop_invincible",
   },
 ];
 
@@ -501,16 +544,13 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     id: SystemIds.SPAWN,
     displayName: "§bTraer refuerzos",
     controlType: "toggle",
-    eventTrue: "humanoid:start_spawn_soldiers",
-    eventFalse: "humanoid:stop_spawn_soldiers",
+    options: SPAWN_OPTIONS,
     description: "",
     category: CategoryIds.ADVANCED,
     menu: "both",
     dynamicProperty: "scpd_system_spawn",
     tooltip:
       "§7Habilita la capacidad de generar refuerzos adicionales (Sólo líderes y algunos comandantes).\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
-    labelTrue: "§aActivar",
-    labelFalse: "§cDesactivar",
     supportsSpecials: true,
     supportsHierarchy: true,
     supportsGroups: true,
@@ -556,16 +596,13 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     id: SystemIds.HEALTH,
     displayName: "§cBarra de vida",
     controlType: "toggle",
-    eventTrue: "humanoid:show_boss_bar",
-    eventFalse: "humanoid:dont_show_boss_bar",
+    options: HEALTH_OPTIONS,
     description: "",
     category: CategoryIds.ADVANCED,
     menu: "both",
     dynamicProperty: "scpd_system_health",
     tooltip:
       "§7Visualización de la salud de las unidades cercanas en la interfaz.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
-    labelTrue: "§aMostrar",
-    labelFalse: "§cOcultar",
     supportsSpecials: true,
     supportsHierarchy: true,
     supportsGroups: true,
@@ -597,15 +634,12 @@ export const CATALOG_SYSTEMS: Record<SystemId, CatalogSystem> = {
     id: SystemIds.INVINCIBLE,
     displayName: "Invencibilidad",
     controlType: "toggle",
-    eventTrue: "humanoid:start_invincible",
-    eventFalse: "humanoid:stop_invincible",
+    options: INVINCIBLE_OPTIONS,
     description: "",
     category: CategoryIds.ADVANCED,
     menu: "both",
     dynamicProperty: "scpd_system_invincible",
     tooltip: "§7Hace invulnerable a la unidad. Usar con precaución.\n\nEstados:\n- §aActivado\n§7- §cDesactivado",
-    labelTrue: "§aActivar",
-    labelFalse: "§cDesactivar",
     supportsSpecials: true,
     supportsHierarchy: true,
     supportsGroups: true,
@@ -1023,7 +1057,9 @@ export function getSystemEvent(
 
   if (isToggleSystem(sys)) {
     const boolVal = typeof value === "boolean" ? value : value === "true";
-    const ev = boolVal ? sys.eventTrue : sys.eventFalse;
+    const opt = sys.options?.find((o) => o.value === String(boolVal));
+    if (!opt) return undefined;
+    const ev = opt.eventStart ?? opt.eventStop;
     if (!ev) return undefined;
     return { event: ev };
   }

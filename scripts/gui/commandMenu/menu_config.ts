@@ -196,8 +196,8 @@ function mapSystemToLegacy(sys: CatalogSystem): MenuSystem {
       defaults: sys.defaults as Record<string, unknown>,
       events: {
         enable: {
-          true: sys.eventTrue ?? "",
-          false: sys.eventFalse ?? "",
+          true: sys.options?.find((o) => o.value === "true")?.eventStart ?? "",
+          false: sys.options?.find((o) => o.value === "false")?.eventStop ?? "",
         },
       },
     };

@@ -21,4 +21,4 @@ event entity @e[type=lc:dt_epsilon6c] humanoid:set_tamed_far
 
 event entity @e[type=lc:dt_alpha1] humanoid:set_tamed_far
 event entity @e[type=lc:dt_alpha1l] humanoid:set_tamed_far
-event entity @e[type=lc:dt_alpha1c] humanoid:set_tamed_far
+event entity @e[type=lc:dt_delta1c] humanoid:set_tamed_far

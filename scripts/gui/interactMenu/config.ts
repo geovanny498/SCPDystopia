@@ -67,7 +67,9 @@ import {
   FIRE_OPTIONS,
   TELEPORT_OPTIONS,
   WEAPON_OPTIONS,
-  CATALOG_SYSTEMS,
+  SPAWN_OPTIONS,
+  HEALTH_OPTIONS,
+  INVINCIBLE_OPTIONS,
   GROUP_DESCRIPTIONS,
   GROUP_LABELS,
   getGroupsOrderForAssignment,
@@ -95,7 +97,7 @@ const config: GuiConfig = {
     foundation: {
       "lc:dt_chara": true,
       "lc:dt_thedeath": true,
-      "lc:dt_alpha1c": true,
+      "lc:dt_delta1c": true,
       "lc:dt_alpha1l": true,
       "lc:dt_alpha1": true,
       "lc:dt_epsilon11c": true,
@@ -200,42 +202,22 @@ const config: GuiConfig = {
         {
           id: SystemIds.SPAWN,
           category: `${SYSTEM_DISPLAY_NAMES.spawn}§r`,
-          description: "Activa o detiene el spawn automático de refuerzos",
-          entries: (() => {
-            const sys = CATALOG_SYSTEMS[SystemIds.SPAWN];
-            return [
-              {
-                label: sys.labelTrue!,
-                event: sys.eventTrue!,
-                description: "Activa o detiene el spawn automático de refuerzos",
-              },
-              {
-                label: sys.labelFalse!,
-                event: sys.eventFalse!,
-                description: "Activa o detiene el spawn automático de refuerzos",
-              },
-            ];
-          })(),
+          description: SPAWN_OPTIONS[0].description ?? "",
+          entries: SPAWN_OPTIONS.map((opt: SystemOption) => ({
+            label: opt.label,
+            event: opt.eventStart ?? opt.eventStop,
+            description: opt.description,
+          })),
         },
         {
           id: SystemIds.HEALTH,
           category: `${SYSTEM_DISPLAY_NAMES.health}§r`,
-          description: "Muestra u oculta la barra de vida de la entidad",
-          entries: (() => {
-            const sys = CATALOG_SYSTEMS[SystemIds.HEALTH];
-            return [
-              {
-                label: sys.labelTrue!,
-                event: sys.eventTrue!,
-                description: "Muestra u oculta la barra de vida de la entidad",
-              },
-              {
-                label: sys.labelFalse!,
-                event: sys.eventFalse!,
-                description: "Muestra u oculta la barra de vida de la entidad",
-              },
-            ];
-          })(),
+          description: HEALTH_OPTIONS[0].description ?? "",
+          entries: HEALTH_OPTIONS.map((opt: SystemOption) => ({
+            label: opt.label,
+            event: opt.eventStart ?? opt.eventStop,
+            description: opt.description,
+          })),
         },
         {
           id: SystemIds.TELEPORT,
@@ -249,22 +231,12 @@ const config: GuiConfig = {
         {
           id: SystemIds.INVINCIBLE,
           category: `${SYSTEM_DISPLAY_NAMES.invincible}§r`,
-          description: "Hace que la entidad ignore todo el daño recibido",
-          entries: (() => {
-            const sys = CATALOG_SYSTEMS[SystemIds.INVINCIBLE];
-            return [
-              {
-                label: sys.labelTrue!,
-                event: sys.eventTrue!,
-                description: "Hace que la entidad ignore todo el daño recibido",
-              },
-              {
-                label: sys.labelFalse!,
-                event: sys.eventFalse!,
-                description: "Hace que la entidad ignore todo el daño recibido",
-              },
-            ];
-          })(),
+          description: INVINCIBLE_OPTIONS[0].description ?? "",
+          entries: INVINCIBLE_OPTIONS.map((opt: SystemOption) => ({
+            label: opt.label,
+            event: opt.eventStart ?? opt.eventStop,
+            description: opt.description,
+          })),
         },
       ],
     },
@@ -329,19 +301,19 @@ const config: GuiConfig = {
           category: "Variante",
           entries: [
             {
-              label: "Sin máscara",
+              label: "Estándar",
               event: "start_variant0",
             },
             {
-              label: "Con máscara",
+              label: "Operativa",
               event: "start_variant1",
             },
             {
-              label: "Sin máscara (Sangre)",
+              label: "Avanzada",
               event: "start_variant2",
             },
             {
-              label: "Con máscara (Sangre)",
+              label: "Extrema",
               event: "start_variant3",
             },
           ],
@@ -375,7 +347,7 @@ const config: GuiConfig = {
         },
       ],
     },
-    "lc:dt_alpha1c": {
+    "lc:dt_delta1c": {
       replace: false,
       insertAt: "end",
       categories: [
@@ -383,20 +355,28 @@ const config: GuiConfig = {
           category: "Variante",
           entries: [
             {
-              label: "MTF Delta-1 Commander",
-              event: "start_variant1",
-            },
-            {
-              label: "MTF Delta-1 Mita",
-              event: "start_variant3",
-            },
-            {
-              label: "MTF Delta-1 Leader",
+              label: "MTF Delta-1 Steve",
               event: "start_variant0",
             },
             {
-              label: "MTF Delta-1 Frisk",
+              label: "MTF Delta-1 Alex",
+              event: "start_variant1",
+            },
+            {
+              label: "MTF Delta-1 Anonymous",
               event: "start_variant2",
+            },
+            {
+              label: "MTF Delta-1 Frisk",
+              event: "start_variant3",
+            },
+            {
+              label: "MTF Delta-1 ErrorUnry",
+              event: "start_variant4",
+            },
+            {
+              label: "MTF Delta-1 Mita",
+              event: "start_variant5",
             },
           ],
         },

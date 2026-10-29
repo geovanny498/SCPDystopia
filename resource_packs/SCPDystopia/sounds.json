@@ -558,7 +558,7 @@
         "pitch": [0.95, 1.05],
         "volume": 0.85
       },
-      "lc:dt_alpha1c": {
+      "lc:dt_delta1c": {
         "events": {
           "step": {
             "pitch": 0.9,

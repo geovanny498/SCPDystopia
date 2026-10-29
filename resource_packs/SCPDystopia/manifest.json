@@ -21,11 +21,15 @@
       "folder_name": "hazmat",
       "memory_tier": 1,
       "name": "§7§lHazmat Delta-1"
+    },{
+      "folder_name": "tactical",
+      "memory_tier": 1,
+      "name": "§c§lTactical Delta-1"
     },
     {
-      "folder_name": "normal",
+      "folder_name": "standard",
       "memory_tier": 1,
-      "name": "§4§lNormal Delta-1"
+      "name": "§c§lStandard Delta-1"
     }
   ]
 }

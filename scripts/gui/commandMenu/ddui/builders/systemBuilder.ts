@@ -38,6 +38,7 @@ import { PlayerPermissionManager, FactionId } from "../../../shared/playerPermis
 import { commandMenuSessionStore, type CommandMenuSession } from "../sessionStore.js";
 import { stripColorCodes } from "../helpers/formHelpers.js";
 import { addHistoryEntry, getSystemShortName } from "../helpers/historyStore.js";
+import { compareNametags } from "../../../../utils/nametagSort.js";
 import {
   SpecialGroups,
   Factions,
@@ -48,10 +49,7 @@ import {
 } from "../../../../constants/domains.js";
 import { getEntitySystemState, getSystemDefaults } from "../../menu_config.js";
 import { loadSystemStates, saveSystemAndUpdateMemory } from "../../core/menu_state.js";
-import {
-  applySystemsToEntities,
-  type EligibleSoldier,
-} from "../../../commandMenu/core/menu_apply.js";
+import { applySystemsToEntities, type EligibleSoldier } from "../../../commandMenu/core/menu_apply.js";
 import { scanActiveEntities } from "../../../commandMenu/model/menu_entity_scanner.js";
 import { loadScope, isEntityInScope } from "../../../commandMenu/model/menu_scope.js";
 import { isSystemBlockedForEntity } from "../../../commandMenu/model/menu_faction.js";
@@ -70,6 +68,8 @@ interface BaseControl {
   label: string;
   labelObs: ObservableString;
   descriptionObs?: ObservableString;
+  tooltipObs?: ObservableString;
+  latestNametacks?: Set<string>;
 }
 
 interface DropdownControlRecord extends BaseControl {
@@ -99,10 +99,7 @@ function findOptionIndex(options: readonly SystemOption[], value: unknown): numb
   return found;
 }
 
-function buildInitialState(
-  systemId: SystemId,
-  factions: readonly FactionId[]
-): SystemState {
+function buildInitialState(systemId: SystemId, factions: readonly FactionId[]): SystemState {
   const loadedStates = loadSystemStates([systemId]);
   const defaults = getSystemDefaults(systemId);
   const result: SystemState = {};
@@ -120,9 +117,7 @@ function buildInitialState(
   return result;
 }
 
-function buildDropdownItems(
-  options: SystemOption[]
-): { label: string; value: number; description?: string }[] {
+function buildDropdownItems(options: SystemOption[]): { label: string; value: number; description?: string }[] {
   return options.map((o, idx) => ({
     label: stripColorCodes(o.label),
     value: idx,
@@ -169,8 +164,7 @@ function buildCountsAndNametags(
       if (Object.prototype.hasOwnProperty.call(visibleValues, entityKey)) {
         const registeredValue = getEntitySystemState(se.entity, systemConfig.id);
         const effectiveValue =
-          registeredValue ??
-          getSystemDefaultForKey(systemConfig.id, se.faction as FactionId, entityKey as DefaultsKey);
+          registeredValue ?? getSystemDefaultForKey(systemConfig.id, se.faction as FactionId, entityKey as DefaultsKey);
         if (effectiveValue !== visibleValues[entityKey]) {
           const differencesByFaction = differencesByKey[entityKey] ?? {};
           differencesByFaction[se.faction as FactionId] = (differencesByFaction[se.faction as FactionId] ?? 0) + 1;
@@ -180,7 +174,7 @@ function buildCountsAndNametags(
 
       if (se.isSpecial && se.nametag) {
         if (!nametagsByKey[entityKey]) nametagsByKey[entityKey] = new Set();
-        nametagsByKey[entityKey].add(stripColorCodes(se.nametag));
+        nametagsByKey[entityKey].add(se.nametag);
       }
     }
   }
@@ -248,11 +242,46 @@ function updateControlLabels(
       } else {
         const sorted = Array.from(nametagSet).sort();
         const MAX_DISPLAY = 3;
-        const truncated = sorted.slice(0, MAX_DISPLAY).join(", ");
+        const truncated = sorted.slice(0, MAX_DISPLAY).map(stripColorCodes).join(", ");
         const more = sorted.length > MAX_DISPLAY ? ` +${sorted.length - MAX_DISPLAY} más` : "";
         ctrl.descriptionObs.setData(`${truncated}${more}`);
       }
     }
+  }
+}
+
+/**
+ * Actualiza el tooltip de un control con información contextual:
+ * - Option/estado description (del catálogo, con códigos de color preservados)
+ * - ALL nametacks (solo para grupos especiales, desde ctrl.latestNametacks)
+ * @param ctrl - El control cuyo tooltip se actualiza
+ * @param systemConfig - Configuración del sistema desde el catálogo
+ */
+function updateControlTooltip(ctrl: ControlRecord, systemConfig: CatalogSystem): void {
+  if (!ctrl.tooltipObs) return;
+
+  const systemOptions = systemConfig.options ?? [];
+  let optionDesc: string | undefined;
+
+  if (ctrl.kind === "dropdown") {
+    const idx = ctrl.lastAppliedIndex;
+    const opt = systemOptions[idx] ?? systemOptions[0];
+    optionDesc = opt?.description;
+  } else {
+    const opt = systemOptions.find((o) => o.value === String(ctrl.lastValue));
+    optionDesc = opt?.description;
+  }
+
+  const isGroup = !!ctrl.descriptionObs;
+  const nametacks = ctrl.latestNametacks;
+
+  if (isGroup && nametacks && nametacks.size > 0) {
+    const sorted = Array.from(nametacks).sort(compareNametags);
+    ctrl.tooltipObs.setData(`§7${optionDesc ?? ""}\n§7---§r\n${sorted.join("\n§r")}`);
+  } else if (optionDesc) {
+    ctrl.tooltipObs.setData(`§7${optionDesc}`);
+  } else {
+    ctrl.tooltipObs.setData("");
   }
 }
 
@@ -287,6 +316,7 @@ function buildControls(
     const baseLabel = stripColorCodes(opt.label);
     const labelObs = new ObservableString(`${baseLabel}: (0)`);
     const descObs = isGroup ? new ObservableString(`N/A`) : undefined;
+    const tooltipObs = new ObservableString("");
 
     let disabled = false;
     if (!isGroup) {
@@ -299,6 +329,7 @@ function buildControls(
       const dropdownOptions: DropdownOptions = {};
       if (disabled) dropdownOptions.disabled = true;
       if (isGroup && descObs) dropdownOptions.description = descObs;
+      dropdownOptions.tooltip = tooltipObs;
       if (visibleObs) dropdownOptions.visible = visibleObs;
       form.dropdown(
         labelObs,
@@ -313,6 +344,8 @@ function buildControls(
         label: opt.label,
         labelObs,
         descriptionObs: descObs,
+        tooltipObs,
+        latestNametacks: undefined,
         kind: "dropdown",
         obs,
         lastAppliedIndex: initialValue as number,
@@ -322,6 +355,7 @@ function buildControls(
       const toggleOptions: ToggleOptions = {};
       if (disabled) toggleOptions.disabled = true;
       if (isGroup && descObs) toggleOptions.description = descObs;
+      toggleOptions.tooltip = tooltipObs;
       if (visibleObs) toggleOptions.visible = visibleObs;
       form.toggle(labelObs, obs, Object.keys(toggleOptions).length > 0 ? toggleOptions : undefined);
       controls.push({
@@ -329,6 +363,8 @@ function buildControls(
         label: opt.label,
         labelObs,
         descriptionObs: descObs,
+        tooltipObs,
+        latestNametacks: undefined,
         kind: "toggle",
         obs,
         lastValue: initialValue as boolean,
@@ -548,6 +584,7 @@ function subscribeToSystemControls(
             status: "error",
           });
         }
+        updateControlTooltip(ctrl, systemConfig);
       });
     } else {
       ctrl.obs.subscribe((enabled: boolean) => {
@@ -573,6 +610,7 @@ function subscribeToSystemControls(
             status: "error",
           });
         }
+        updateControlTooltip(ctrl, systemConfig);
       });
     }
   }
@@ -718,14 +756,11 @@ export function buildSystemView({
             systemConfig,
             visibleValues
           );
-          updateControlLabels(
-            hierarchyControls,
-            groupControls,
-            counts,
-            nametagsByKey,
-            differencesByKey,
-            factions
-          );
+          updateControlLabels(hierarchyControls, groupControls, counts, nametagsByKey, differencesByKey, factions);
+          for (const ctrl of [...hierarchyControls, ...groupControls]) {
+            ctrl.latestNametacks = nametagsByKey[ctrl.key] ?? new Set();
+            updateControlTooltip(ctrl, systemConfig);
+          }
         };
 
         const intervalId = system.runInterval(() => {

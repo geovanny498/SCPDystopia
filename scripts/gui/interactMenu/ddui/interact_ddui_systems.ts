@@ -9,7 +9,7 @@ import {
 } from "@minecraft/server-ui";
 import { system } from "@minecraft/server";
 import { debug } from "../../../utils/debug.js";
-import { isSystemVisibleForRole, CATALOG_SYSTEMS, type SystemId } from "../../shared/systemCatalog.js";
+import { isSystemVisibleForRole, CATALOG_SYSTEMS, isToggleSystem, type SystemId } from "../../shared/systemCatalog.js";
 import { PlayerPermissionManager, type FactionId, type RoleId } from "../../shared/playerPermissionManager.js";
 import { getEntityFamilies, isSystemBlockedByFamilies } from "../../commandMenu/model/menu_faction.js";
 import { isGlobalOverwriteAllowed, setGlobalOverwriteAllowed } from "../../shared/entityScope.js";
@@ -69,7 +69,6 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
         form.spacer();
 
         const advancedCategories = session.cfg.submenus?.advanced?.categories || [];
-        const TOGGLE_SYSTEMS = new Set(["spawn", "health", "invincible"]);
 
         const isAdmin = PlayerPermissionManager.isAdmin(session.player);
         const factionInfo = session.factionInfo;
@@ -97,10 +96,10 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
             continue;
           }
 
-          const isToggleSystem = TOGGLE_SYSTEMS.has(adv.id);
+          const isToggle = isToggleSystem(sysConfig);
           const disabledByFamily = isSystemBlockedByFamilies(sysConfig, entityFamilies);
 
-          if (isToggleSystem) {
+          if (isToggle) {
             let enableEvent: string | undefined;
             let disableEvent: string | undefined;
             for (const entry of entries) {
@@ -113,6 +112,13 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
             const currentRaw = getEntitySystemState(session.entity, adv.id);
             const initialValue = typeof currentRaw === "boolean" ? currentRaw : false;
             const toggleObs = new ObservableBoolean(initialValue, { clientWritable: true });
+            const trueEntry = entries.find((e) => e.event === enableEvent);
+            const falseEntry = entries.find((e) => e.event === disableEvent);
+            const descObs = new ObservableString(
+              initialValue
+                ? (trueEntry?.description ? stripColorCodes(trueEntry.description) : "")
+                : (falseEntry?.description ? stripColorCodes(falseEntry.description) : "")
+            );
             let lastValue = initialValue;
             toggleObs.subscribe((newValue) => {
               if (newValue === lastValue) return;
@@ -121,11 +127,15 @@ export function showInteractDDUISystems(session: InteractDDUISession): void {
               if (targetEntry) {
                 session.applyEntryAction(targetEntry, undefined, adv.category);
               }
+              const descEntry = newValue ? trueEntry : falseEntry;
+              descObs.setData(
+                descEntry?.description ? stripColorCodes(descEntry.description) : ""
+              );
               lastValue = newValue;
             });
             const toggleDisabled = disabledByFamily;
             form.toggle(stripColorCodes(adv.category), toggleObs, {
-              description: adv.description ? stripColorCodes(adv.description) : undefined,
+              description: descObs,
               disabled: toggleDisabled,
             });
           } else {

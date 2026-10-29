@@ -2,21 +2,25 @@
   "format_version": "1.10.0",
   "minecraft:client_entity": {
     "description": {
-      "identifier": "lc:dt_alpha1c",
+      "identifier": "lc:dt_delta1c",
       "materials": {
         "default": "npc"
       },
       "textures": {
-        "alpha1c": "textures/entity/humanoid/Commanders/alpha1c",
-        "alpha2c": "textures/entity/humanoid/Commanders/alpha2c",
-        "alpha1cf": "textures/entity/humanoid/Commanders/alpha1cf",
-        "alpha2cf": "textures/entity/humanoid/Commanders/alpha2cf"
+        "delta1c_1": "textures/entity/humanoid/Commanders/delta1c_1",
+        "delta1c_f1": "textures/entity/humanoid/Commanders/delta1c_f1",
+        "delta1c_2": "textures/entity/humanoid/Commanders/delta1c_2",
+        "delta1c_f2": "textures/entity/humanoid/Commanders/delta1c_f2",
+        "delta1c_3": "textures/entity/humanoid/Commanders/delta1c_3",
+        "delta1c_f3": "textures/entity/humanoid/Commanders/delta1c_f3"
       },
       "geometry": {
-        "alpha1c": "geometry.humanoid.base",
-        "alpha2c": "geometry.humanoid.base",
-        "alpha1cf": "geometry.humanoid.slim.base",
-        "alpha2cf": "geometry.humanoid.slim.base"
+        "delta1c_1": "geometry.humanoid.base",
+        "delta1c_f1": "geometry.humanoid.slim.base",
+        "delta1c_2": "geometry.humanoid.base",
+        "delta1c_f2": "geometry.humanoid.slim.base",
+        "delta1c_3": "geometry.humanoid.base",
+        "delta1c_f3": "geometry.humanoid.slim.base"
       },
       "animations": {
         // Animation Controllers
@@ -47,7 +51,7 @@
           "variable.idling_speed = 70;"
         ]
       },
-      "render_controllers": ["controller.render.alpha1c"],
+      "render_controllers": ["controller.render.delta1c"],
       "spawn_egg": {
         "base_color": "#961CD4",
         "overlay_color": "#271D29"

@@ -3,10 +3,12 @@ tag @e[family=foundation] add normal_soldiers
 
 tag @e[name="§c§lMTF Delta-1 Chara"] remove normal_soldiers
 
+tag @e[name="§d§lMTF Delta-1 Steve"] remove normal_soldiers
+tag @e[name="§d§lMTF Delta-1 Alex"] remove normal_soldiers
+tag @e[name="§d§lMTF Delta-1 Anonymous"] remove normal_soldiers
 tag @e[name="§d§lMTF Delta-1 Frisk"] remove normal_soldiers
-tag @e[name="§d§lMTF Delta-1 Commander"] remove normal_soldiers
+tag @e[name="§d§lMTF Delta-1 ErrorUnry"] remove normal_soldiers
 tag @e[name="§d§lMTF Delta-1 Mita"] remove normal_soldiers
-tag @e[name="§d§lMTF Delta-1 Leader"] remove normal_soldiers
 
 
 tag @e[name="§lMTF Alpha-1 Commander"] remove normal_soldiers

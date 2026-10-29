@@ -6,7 +6,7 @@ kill @e[type=lc:dt_epsilon6c]
 
 
 kill @e[type=lc:dt_alpha1l]
-kill @e[type=lc:dt_alpha1c]
+kill @e[type=lc:dt_delta1c]
 
 kill @e[type=lc:dt_chara]
 kill @e[type=lc:dt_thedeath]

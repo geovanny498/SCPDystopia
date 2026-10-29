@@ -8,7 +8,7 @@
   "format_version": "1.26.20",
   "minecraft:entity": {
     "description": {
-      "identifier": "lc:dt_alpha1c",
+      "identifier": "lc:dt_delta1c",
       "is_spawnable": true,
       "is_summonable": true,
       "is_experimental": false,
@@ -201,7 +201,7 @@
         "minecraft:nameable": {
           "name_actions": [
             {
-              "name_filter": "§d§lMTF Delta-1 Leader",
+              "name_filter": "§d§lMTF Delta-1 Commander",
               "on_named": {
                 "event": "start_variant1",
                 "target": "self"
@@ -235,7 +235,7 @@
         "minecraft:nameable": {
           "name_actions": [
             {
-              "name_filter": "§d§lMTF Delta-1 Mita",
+              "name_filter": "§d§lMTF Delta-1 Commander",
               "on_named": {
                 "event": "start_variant3",
                 "target": "self"
@@ -252,7 +252,41 @@
         "minecraft:nameable": {
           "name_actions": [
             {
-              "name_filter": "§d§lMTF Delta-1 Frisk",
+              "name_filter": "§d§lMTF Delta-1 Commander",
+              "on_named": {
+                "event": "start_variant4",
+                "target": "self"
+              }
+            }
+          ],
+          "always_show": true
+        }
+      },
+      "variant4": {
+        "minecraft:variant": {
+          "value": 4
+        },
+        "minecraft:nameable": {
+          "name_actions": [
+            {
+              "name_filter": "§d§lMTF Delta-1 Commander",
+              "on_named": {
+                "event": "start_variant5",
+                "target": "self"
+              }
+            }
+          ],
+          "always_show": true
+        }
+      },
+      "variant5": {
+        "minecraft:variant": {
+          "value": 5
+        },
+        "minecraft:nameable": {
+          "name_actions": [
+            {
+              "name_filter": "§d§lMTF Delta-1 Commander",
               "on_named": {
                 "event": "start_variant0",
                 "target": "self"
@@ -1330,6 +1364,18 @@
                 "add": {
                   "component_groups": ["variant3"]
                 }
+              },
+              {
+                "weight": 1,
+                "add": {
+                  "component_groups": ["variant4"]
+                }
+              },
+              {
+                "weight": 1,
+                "add": {
+                  "component_groups": ["variant5"]
+                }
               }
             ]
           },
@@ -1599,6 +1645,16 @@
       "start_variant3": {
         "add": {
           "component_groups": ["variant3"]
+        }
+      },
+      "start_variant4": {
+        "add": {
+          "component_groups": ["variant4"]
+        }
+      },
+      "start_variant5": {
+        "add": {
+          "component_groups": ["variant5"]
         }
       },
       "humanoid:heal": {

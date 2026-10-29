@@ -22,6 +22,6 @@ event entity @e[type=lc:dt_epsilon6c] mtf:to_move_free
 
 event entity @e[type=lc:dt_alpha1] mtf:to_move_free
 event entity @e[type=lc:dt_alpha1l] mtf:to_move_free
-event entity @e[type=lc:dt_alpha1c] mtf:to_move_free
+event entity @e[type=lc:dt_delta1c] mtf:to_move_free
 event entity @e[type=lc:dt_chara] mtf:to_move_free
 event entity @e[type=lc:dt_thedeath] mtf:to_move_free
